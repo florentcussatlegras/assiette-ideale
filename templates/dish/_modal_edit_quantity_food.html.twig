@@ -24,15 +24,17 @@
 
                 <input name="food_group_slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
 
-                <input name="foods[{{ food.id }}][quantity]" 
-                            type="text" 
-                            class="w-24" 
-                            placeholder="Quantité" 
-                            aria-label="default input inline 1" 
-                            {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                                    and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
-                                        value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
-                            {% endif %}>
+                <input 
+                    name="foods[{{ food.id }}][quantity]" 
+                    type="text" 
+                    class="w-24" 
+                    placeholder="Quantité" 
+                    aria-label="default input inline 1" 
+                    {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                            and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
+                                value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
+                    {% endif %}
+                >
                 
                 <select name="foods[{{ food.id }}][unit_measure]" aria-label="Default select example">
                 
@@ -43,8 +45,8 @@
                             <option value="{{ unitMeasure.alias }}"
                             
                                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                                and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
-                        and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                        and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+                                        and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
                                     selected="selected"
                                 {% endif %}>
 
