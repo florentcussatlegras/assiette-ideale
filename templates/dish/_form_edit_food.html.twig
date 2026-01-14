@@ -36,15 +36,14 @@
 
                     {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
             
-                        <option value="{{ unitMeasure.alias }}"
-                        
+                        <option 
+                            value="{{ unitMeasure.alias }}"
                             {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                                      and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
                                     and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
-
                                 selected="selected"
-                                
-                            {% endif %}>
+                            {% endif %}
+                        >
 
                             {{ unitMeasure.alias }}
                                     
