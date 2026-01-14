@@ -12,7 +12,6 @@
                 que vous souhaitez ajouter au plat :
             </p>
     
-            {# <form action="{{ path('app_dish_food_edit', {idFood: food.id, idDish: idDish}) }}" method="POST" #}
             <form method="POST" class="flex flex-row gap-2">
 
                 <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />

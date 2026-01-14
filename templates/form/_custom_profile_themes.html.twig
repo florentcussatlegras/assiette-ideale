@@ -26,7 +26,6 @@
         <ul class="w-full list-none">
             {%- for error in errors -%}
                 <li class="{{ error_item_class|default('flex justify-center text-red-700 my-1') }}">
-                    {# <i class="w-4 h-4 mr-2" data-feather="alert-circle"></i> #}
                     <span>{{ error.message }}</span>
                 </li>
             {%- endfor -%}
