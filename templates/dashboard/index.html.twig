@@ -11,8 +11,11 @@
 			<div class="flex flex-col md:flex-row md:items-center gap-2 justify-between w-full mb-4">
 
 				<h1 class="text-4xl mb-0 font-bold relative">
+
 					{% trans with {'username': "<span class=\"font-bold tracking-tight\">#{app.user.username}</span>" } from 'dashboard'%}dashboard.welcome{% endtrans %}
+					
 					<div class="absolute top-10 left-0 text-sm font-light text-neutral-500">Inscrit le {{ app.user.registerAt|date('d/m/Y') }}</div>
+				
 				</h1>
 
 				<span class="my-4 md:my-0">
@@ -24,23 +27,31 @@
 			<div class="flex flex-col md:flex-row items-start md:items-end mb-6">
 
 				<div class="flex flex-row gap-2 lg:gap-4 items-center">
+
 					<a class="link-white rounded-lg font-bold py-2 flex items-center text-white bg-sky-600 shadow-soft px-2 text-base transition duration-300 hover:bg-sky-700" href="{{ path('app_profile_index') }}">
 						<span>{% trans from 'dashboard' %}dashboard.buttons.see_profile{% endtrans %}</span>
 					</a>
+
 					<a href="{{ path('app_favorite_dishes_list') }}" class="font-bold text-base rounded-lg px-4 py-2 text-sky-600 hover:text-sky-700 bg-gray-200 hover:text-sky-500 current-shadow hover:shadow-lg">Mes plats préférés</a>
+				
 				</div>
 
 				<div class="flex flex-col items-start md:items-end ml-0 md:ml-auto pt-6 md:pt-1 text-sm lg:text-base gap-1 mb-2 md:mb-0">
+					
 					<span class="font-bold text-right md:ml-auto">{% trans from 'dashboard' %}dashboard.search_menu_week{% endtrans %}</span>
+					
 					<div class="md:ml-auto">{{ render(controller('App\\Controller\\meal\\SearchController::searchWeekMenu')) }}</div>
+				
 				</div>
 
 			</div>
 
 			<div class="grid grid-cols-12 gap-6">
+
 				{% for category in secondary %}
 					{{ include('dashboard/_category.html.twig') }}
 				{% endfor %}
+				
 			</div>
 
 		</div>
