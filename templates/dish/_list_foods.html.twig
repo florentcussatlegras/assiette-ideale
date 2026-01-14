@@ -13,18 +13,28 @@
                         {% for id, item in foods %}
                  
                             {% if item.quantity is not empty %}
+                            
                                 <div 
                                     class="flex flex-row items-center {% if loop.index is odd %} bg-slate-100{% endif %}"
                                     {{ stimulus_controller('foods-dish', { url: path('app_dish_food_edit', {'idFood': item.food.id, 'idDish': idDish}) }) }}
                                 >
+
                                     <div class="pl-2 py-2 flex items-center gap-2 w-1/2">
+
                                         {% if item.food.picture is not null %}
+
                                             <img alt="Image aliment" class="rounded-lg w-12" src="{{ item.food.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                                        
                                         {% else %}
+                                           
                                             <img src="{{ asset('uploads/dish/pic_dish_default.jpg') }}" alt="Photo plat {{ item.food.name }}" class="rounded-lg w-12">
+                                        
                                         {% endif %}
+                                        
                                         <a class="font-bold text-light-blue">{{ item.food.name }}</a>
+                                        
                                         <div class="text-gray-600 text-xs whitespace-nowrap">{{ item.food.isSubFoodGroup ? item.food.name : item.food.subFoodGroup }}</div>
+                                    
                                     </div>
     
                                     <div class="w-2/6 flex flex-row items-center justify-center h-full" style="height: 100%" data-foods-dish-target="quantity"> 
