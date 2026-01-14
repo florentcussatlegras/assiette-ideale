@@ -39,9 +39,11 @@
                         <option value="{{ unitMeasure.alias }}"
                         
                             {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                            and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
-                    and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                     and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+                                    and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+
                                 selected="selected"
+                                
                             {% endif %}>
 
                             {{ unitMeasure.alias }}
