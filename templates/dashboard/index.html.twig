@@ -4,57 +4,6 @@
 
 {% block body %}
 
-	{# <main role="main">
-				
-				    <div class="p-5">
-				
-				        {{ include("partials/_alert.html.twig") }}
-				
-				        <div class="flex flex-col w-4/5 mx-auto">
-				            
-				            <div class="flex flex-col gap-10 mb-5">
-				
-				                <div class="flex flex-row mt-4 items-center">
-				                    <div class="flex flex-col gap-4 items-start">
-				                        <h1 class="text-2xl">Bienvenue <span class="text-dark-blue font-bold tracking-tight">{{ app.user.username|capitalize }}</span></h1>
-				                        <a class="border border-black font-bold px-4 py-2 rounded-full flex items-center gap-2 mr-4" href="{{ path('app_profile_index') }}"> 
-				                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="user" class="w-6 h-6 text-cool-gray-800 dark:text-cool-gray-200 group-hover:text-purple-600 group-focus:text-purple-600 dark:group-hover:text-purple-50 dark:group-focus:text-purple-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-				                            <span>Voir mon profil</span> 
-				                        </a>
-				                    </div>
-				                    <a type="button" class="ml-auto bg-gray rounded-full font-bold text-lg px-4 py-3 flex items-center gap-2" href="{{ path('app_dish_food_session_clear') }}" style="box-shadow: rgba(0, 0, 0, 0.12) 0px 0px 6px 0px, rgba(0, 0, 0, 0.12) 0px 6px 6px 0px"> 
-				                        <svg viewBox="0 0 24 24" class="w-5 h-5" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
-				                        <span>Proposer une recette</span>
-				                    </a>
-				                </div>
-				
-				                <div class="flex items-center button-group mb-2">
-				                
-				                   
-				
-				                    {{ render(path('app_balance_sheet_show_imc_alert')) }}
-				
-				                     <div class="flex flex-col gap-4 items-start ml-auto"> 
-				                        <h2 class="text-dark-blue font-bold ml-auto">Retrouver vos plats par semaine</h2>
-				                        {{ render(controller('App\\Controller\\meal\\SearchController::searchWeekMenu')) }}
-				                    </div>
-				
-				                </div>
-				
-				            </div>
-				
-				            <div class="grid grid-cols-12 gap-6">
-				                {% for category in secondary %}
-				                    {{ include('dashboard/_category.html.twig') }}
-				                {% endfor %}
-				            </div>
-				            
-				        </div>
-				
-				    </div>
-				
-				</main> #}
-
 	<main role="main">
 
 		<div class="flex flex-col w-full md:w-4/5 mx-auto py-12">
