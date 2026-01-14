@@ -1,6 +1,4 @@
-
 <div class="flex">
-{# <div class="flex py-2 bg-gray-100 text-xl px-6 tracking-tight"> #}
 
 	{% if app.session.has('_meal_day_' ~ rankMeal) and 'type' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['type'] is not null %}
 		{% set currentTypeMeal = app.session.get('_meal_day_' ~ rankMeal)['type'] %}
@@ -21,20 +19,6 @@
 			{% endfor %}
 		{% endif %}
 	{% endif %}
-
-	{# {% if rankMeal > 0 and app.session.get('_meal_day_' ~ (rankMeal-1))['type'] == null %}
-
-		{% set rankPreviousType = null %}
-
-	{% else %}
-
-		{% if 'rankPreviousType' in app.session.get('_meal_day_' ~ rankMeal)|keys %}
-			{% set rankPreviousType = app.session.get('_meal_day_' ~ rankMeal)['rankPreviousType'] %}
-		{% else %}
-			{% set rankPreviousType = 0 %}
-		{% endif %}
-
-	{% endif %} #}
 
 	<div class="flex flex-col-reverse md:flex-row items-start md:items-center w-full gap-2 md:gap-0">
 
@@ -103,12 +87,10 @@
 		</div>
 
 		<span class="my-hidden md:flex items-center bg-yellow-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-4">
-		{# {{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)|round()) }} #}
 			{{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
 		</span>
 
 		<span class="md:my-hidden flex items-center bg-yellow-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-0">
-			{# {{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)|round()) }} #}
 			{{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
 		</span>
 

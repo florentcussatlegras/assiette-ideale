@@ -1,4 +1,3 @@
-
 {% set allowedCodes = [
     constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL'),
     constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS'),
@@ -11,6 +10,7 @@
     {% if alert is defined and app.session.get('_meal_day_date') != 'model' %}
         
         {% if showPopover is true %}
+
             <div 
                 {{ stimulus_controller('popover-info', {
                     url: path('meal_popover_energy')
@@ -18,37 +18,29 @@
                 class="absolute left-4 flex items-center"
             >
                 <button 
-                        {# data-modal-target="alert-energy-modal" 
-                        data-modal-toggle="alert-energy-modal" #}
                         data-action="click->popover-info#show"
                         data-energy="{{ mealDayEnergy }}"
                         class="cursor-pointer {{ bgColor }} overflow-hidden"
                 >
+
                     {% if alert.code in allowedCodes %}
                         {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(7), opacity: 1 }) }}
                     {% endif %}
+
                 </button>
+
                 {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
             </div>
+
          {% else %}
+
             {% if alert.code in allowedCodes %}
                 {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(7), opacity: 1 }) }}
             {% endif %}
+
             {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
+
         {% endif %}
-
-        {# {% else %}
-
-            {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') or
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') or 
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS') or
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')
-                    %}
-            
-                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(26), opacity: 1 }) }}
-            {% endif %}
-
-        {% endif %} #}
 
     {% endif %}
 
@@ -59,8 +51,11 @@
     {% endif %}
 
     <div class="flex items-end gap-2">
+
         <span class="text-3xl font-semibold leading-none" style="color: {{ color }}">{{ mealDayEnergy|round }}</span>
+
         <span class="text-base" style="color: {{ color }}">Kcal</span>
+        
     </div>
 
     <input 

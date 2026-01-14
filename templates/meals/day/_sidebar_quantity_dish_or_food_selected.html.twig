@@ -1,11 +1,5 @@
-
-					
-    {% if newDishOrFood.type == 'Dish' %}
-
-        {{ newDishOrFood.quantity }} portions
-
-    {% else %}
-
-        {{ "#{newDishOrFood.quantity} #{newDishOrFood.unitMeasureAlias}" }}
-
-    {% endif %}
+{% if newDishOrFood.type == 'Dish' %}
+    {{ newDishOrFood.quantity }} portions
+{% else %}
+    {{ "#{newDishOrFood.quantity} #{newDishOrFood.unitMeasureAlias}" }}
+{% endif %}

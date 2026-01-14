@@ -23,37 +23,13 @@
 				class="bg-white p-6 rounded-2xl shadow-soft w-1/2"
 				data-model-meal-target="content"
 			>
+
 				{{ include('meals/model/_list.html.twig') }}
+				
 			</div>
 
 		</div>
 
 	</main>
-
-	{# <script type="text/javascript">
-
-		$(function(){
-
-			$('.expend-down').bind('click', function(e){
-				e.preventDefault();
-				let modelMealId = $(this).data('model-meal-id');
-				let rank = $(this).data('rank');
-				$('#list-model-meal-'+modelMealId+'-'+rank).fadeIn(300);
-				// $(this).parent().siblings('.list-model-meal').fadeIn(300);
-				$(this).hide().siblings('.expend-up').show();
-			});
-
-			$('.expend-up').bind('click', function(e){
-				e.preventDefault();
-				let modelMealId = $(this).data('model-meal-id');
-				let rank = $(this).data('rank');
-				$('#list-model-meal-'+modelMealId+'-'+rank).fadeOut(300)
-				// $(this).parent().siblings('.list-model-meal').fadeOut(300);
-				$(this).hide().siblings('.expend-down').show();
-			});
-
-		});
-
-	</script> #}
 
 {% endblock %}
