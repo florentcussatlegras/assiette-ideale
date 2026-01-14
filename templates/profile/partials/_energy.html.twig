@@ -1,24 +1,20 @@
-   <div class="bg-red-100 rounded-2xl w-full p-4 relative shadow-soft">
+<div class="bg-red-100 rounded-2xl w-full p-4 relative shadow-soft">
                         
     <div class="pb-2 flex items-center justify-center text-base font-medium text-red-700 border-b border-red-700 w-full">
-        <center>{% trans from 'profile' %}profile.energy.title{% endtrans %}</center>
+
+        {% trans from 'profile' %}profile.energy.title{% endtrans %}
+
     </div>
     
     <div class="pt-4 flex items-center justify-center my-2 text-xl text-red-700 font-bold">
 
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 items-center">
         
             {% if app.user.energy %}
 
-                    <center>
-                        {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
-                    </center>
-
-                    {# {% if app.user.automaticCalculateEnergy is same as(true) %}
-                        <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
-                    {% else %}
-                        <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
-                    {% endif %} #}
+                <span>
+                    {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
+                </span>
 
             {% else %}
             
@@ -60,9 +56,5 @@
         </div>
 
     </div>
-
-    {# <div class="absolute" style="top: 40px; left: 10px">
-        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceEnergyAlerts, size: 16, opacity: 0.3 }) }}
-    </div> #}
     
 </div>
