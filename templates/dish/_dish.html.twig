@@ -1,0 +1,126 @@
+
+
+
+    <div class="card-wrapper p-0 shadow-soft rounded-2xl overflow-hidden">
+
+        <div class="absolute top-6 pl-4">
+            {{ include('dish/_list_fgp_colors.html.twig') }}
+        </div>
+
+        {% if favoriteDishesId is defined %}
+
+            <div class="absolute right-4 top-4">
+                <button 
+                    data-action="favorite-dishes#toggle"
+                    data-dish-id="{{ dish.id }}"
+                    class="btn-heart cursor-pointer"
+                >
+                    <span class="heart {{ dish.id in favoriteDishesId ? 'hidden' }}">
+                        {{ include('partials/svg/heart.html.twig')}} 
+                    </span>
+                    <span class="heart-fill {{ dish.id not in favoriteDishesId ? 'hidden' }}">
+                        {{ include('partials/svg/heart-fill.html.twig')}}
+                    </span>
+                </button>
+            </div>
+        
+        {% else %}
+
+            <div class="absolute top-4 right-4 pl-4">
+                <button
+                    data-action="favorite-dishes#remove"
+                    data-dish-id="{{ dish.id }}"
+                >
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+                    </svg>
+                </button>
+            </div>
+
+        {% endif %}
+       
+        <div class="flex w-full rounded-t-2xl border-white overflow-hidden">
+
+            <a href="{{ path('app_dish_show', { id : dish.id, slug : dish.slug }) }}" class="w-full">
+                {% if dish.picture is empty %}
+                    <img class="rounded-2xl" src="https://via.placeholder.com/500">
+                {% else %}
+                    <img class="w-full rounded-2xl" alt="Photo de l'aliment {{ dish.name }}" src="{{ dish.picturePath|imagine_filter('squared_thumbnail_medium') }}">
+                {% endif %}
+            </a>
+
+            <div class="description w-11-12 py-4 flex-row justify-between my-hidden ml-auto bg-white text-sm">
+
+                <div class="w-full px-4">
+
+                    <div class="flex gap-4">
+
+                        <label>{{ 'recipe.person'|trans({'length' : dish.lengthPersonForRecipe}, 'recipe') }}</label>
+
+                        {% if dish.preparationTimeUnitTime is not null %}           
+                            <div class="flex gap-2">
+                                <label>{{ 'recipe.time.label.preparation'|trans({}, 'recipe') }}</label>
+                                <span class="font-normal">
+                                    {{ 'recipe.time.value'|trans({'duration' : dish.preparationTime, 'unit_time' : dish.preparationTimeUnitTime.alias}, 'recipe') }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        {% if dish.cookingTimeUnitTime is not null %} 
+                            <div class="flex mb-2 gap-2">
+                                <label>{{ 'recipe.time.label.cooking'|trans({}, 'recipe') }}</label>
+                                <span class="font-normal">
+                                    {{ 'recipe.time.value'|trans({'duration' : dish.cookingTime, 'unit_time' : dish.cookingTimeUnitTime.alias}, 'recipe') }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                    </div>
+            
+                    <ul class="font-normal mt-3 flex flex-row flex-wrap gap-4">
+                        {% for dishFood in dish.dishFoods %}
+                            <li class="flex items-center gap-2 leading-3">
+                                <span class="w-2 h-2 rounded-sm" style="border: 1px solid {{ dishFood.food.foodGroup.parent.color }}; background-color: {{ dishFood.food.foodGroup.parent.color }}"></span>
+                                {{ dishFood.quantityReal }} {{ dishFood.unitMeasure.alias }} de <a href="{{ path('app_food_show', {slug: dishFood.food.slug}) }}" class="text-sky-600">{{ dishFood.food.name }}</a>
+                            </li>
+                        {% endfor %}
+                        {% for spice in dish.spices %}
+                            <li>{{ spice.name }}</li> 
+                        {% endfor %}
+                    </ul>
+                
+                </div>
+
+                {# <div class="flex flex-col ml-auto pr-24 gap-2">
+
+                    {% if dish.preparationTimeUnitTime is not null %}           
+                        <div class="flex flex-col">
+                            <label>{{ 'recipe.time.label.preparation'|trans({}, 'recipe') }}</label>
+                            <span class="font-normal">
+                                {{ 'recipe.time.value'|trans({'duration' : dish.preparationTime, 'unit_time' : dish.preparationTimeUnitTime.alias}, 'recipe') }}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                    {% if dish.cookingTimeUnitTime is not null %} 
+                        <div class="flex mb-2 flex-col">
+                            <label>{{ 'recipe.time.label.cooking'|trans({}, 'recipe') }}</label>
+                            <span class="font-normal">
+                                {{ 'recipe.time.value'|trans({'duration' : dish.cookingTime, 'unit_time' : dish.cookingTimeUnitTime.alias}, 'recipe') }}
+                            </span>
+                        </div>
+                    {% endif %}
+
+                </div> #}
+
+            </div>
+
+        </div>
+   
+    <a href="{{ path('app_dish_show', { id: dish.id, slug: dish.slug }) }}" class="absolute bottom-0 w-full p-4 leading-6 bg-white mt-4 rounded-b-2xl text-base font-bold">
+        {{ dish.name }}
+    </a>
+   
+
+    </div>
+

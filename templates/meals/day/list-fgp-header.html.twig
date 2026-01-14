@@ -1,0 +1,15 @@
+<div class="plist flex gap-6 mx-12 pb-2 justify-end">
+
+	{% for foodGroupParent in foodGroupParents %}
+
+		<a href="#" class="fgp" title="{{ foodGroupParent.name }}">
+
+			<div class="picto w-12 h-12 flex items-center justify-center" style="background-color:{{ foodGroupParent.degradedColor }}">
+				{{ include('meals/pictos/foodgroupparent/' ~ foodGroupParent.alias ~ '.xml.twig', {'color' : foodGroupParent.color }) }}
+			</div>
+		
+		</a>
+
+	{% endfor %}
+    
+</div>

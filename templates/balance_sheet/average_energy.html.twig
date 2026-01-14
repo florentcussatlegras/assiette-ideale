@@ -1,0 +1,62 @@
+
+<div class="flex flex-row items-center gap-2 py-1 my-4 text-xl w-full">
+
+    {% set levelAlert = balance_sheet_alerts.energy %}
+    {# {{ include('balance_sheet/_icon_warning.html.twig', { size: 5 }) }} #}
+
+    <div class="flex flex-col w-full">
+
+        {# <div class="flex flex-row items-center gap-2 w-[400px] xl:w-[500px] min-w-0"> #}
+        <div class="flex flex-row items-center gap-2 w-full xl:w-[500px]">
+
+            <div class="flex items-center gap-2">
+                <label class="md:w-48 text-lg md:text-xl">Energie</label>
+                <div class="flex justify-center w-32 text-sm md:text-xl ml-auto md:ml-0">
+                    <span class="bg-gray rounded-full px-2 py-1 font-semibold" style="color: {{ levelAlert.color }}">{{ average_energy }} Kcal</span>
+                </div>
+            </div>
+
+            <div class="flex gap-2 items-center ml-auto" style="color: {{ levelAlert.color }}">
+
+                <a href="#" class="relative" data-action="click->popover-info#show" style="color: {{ levelAlert.color }}">
+                    {{ include('balance_sheet/_icon_warning.html.twig', { size: 7 }) }}
+                </a>
+
+                <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+            </div>
+
+        </div>
+
+        <div data-balance-sheet-target="detailsAlert" class="text-sm md:text-xl details-alert hidden mt-2" style="color: {{ levelAlert.color }}">
+            {{ render(path('app_balance_sheet_message_details_alert_energy', { 'energy': average_energy })) }}
+        </div>
+
+    </div>
+
+     
+
+    {# <div class="flex w-1/2 items-center">
+        <div class="bg-gray rounded-full px-2 py-1 font-semibold">{{ average_energy }} Kcal</div>
+    </div>
+    <div class="flex w-1/2 gap-2 items-center" style="color: {{ levelAlert.color }}"> #}
+        {# <div
+            {{ stimulus_controller('popover-info', {
+                url: path('meal_popover_energy', {
+                    'energy': average_energy
+                })
+            }) }}
+            class="flex"
+        > #}
+            {# <a href="#" class="relative" data-action="click->popover-info#show">
+                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: levelAlert, size: 10 }) }} #}
+                {# {{ include('partials/_popover_info.html.twig', { top: "50%", right: "0" }) }} #}
+            {# </a> #}
+            {# {{ render(path('meal_popover_energy', { 'energy': average_energy })) }} #}
+        {# </div> #}
+        {# <span>{{ balance_sheet_alerts.energy.text }}</span> #}
+    {# </div> #}
+</div>
+
+
+

@@ -1,0 +1,24 @@
+
+<div {{attributes}} class="flex flex-col relative">
+
+    <div class="flex">
+        <input
+            type="search"
+            data-model="query"
+            {# data-action="live#update" #}
+            placeholder="Exple: Miel, côte de porc..."
+            class="w-full"
+        >
+    </div>
+
+    <div class="flex flex-wrap shadow-md bg-white absolute top-12" data-loading="addClass(opacity-50)">     
+        {% if this.foods|length > 0 %}   
+            {% for food in this.foods %}
+                {{ include("dish/_search_row_food.html.twig", {unitMeasures: this.unitMeasures, idDish: this.idDish}) }}
+            {% endfor %}
+        {% elseif this.foods is not null %}
+            <div class="text-lg p-4">No food found matching "{{ query }}"</div>
+        {% endif %}
+    </div>
+
+</div>

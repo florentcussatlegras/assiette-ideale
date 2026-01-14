@@ -1,0 +1,69 @@
+<div class="flex flex-col xl:flex-row gap-4 items-start justify-start w-full">
+
+    <div class="w-full xl:w-[500px] min-w-0">
+
+        {% for fgpAlias, quantity in average_fgp %}
+
+            <div class="flex flex-col items-start py-1 w-full">
+
+                {% if fgpAlias in balance_sheet_alerts|keys %}
+
+                    {% set levelAlert = balance_sheet_alerts[fgpAlias] %}
+
+                    <div class="flex flex-col gap-2 md:gap-0 md:flex-row items-start md:items-center w-full xl-w-500 justify-between">
+                    
+                        <div class="flex items-center gap-2 w-full">
+                            <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ fgpAlias|foodGroupParent.color }}"></div>
+                            <label class="w-42 md:w-48 mb-0">{{ fgpAlias|foodGroupParent|capitalize }}</label>
+                            <div class="flex justify-end md:justify-center w-auto md:w-28 ml-auto text-sm md:text-xl mr-0 md:mr-16">
+                                <span class="bg-gray rounded-full px-2 py-1 font-semibold" style="color: {{ levelAlert.color }}">{{ quantity }} g</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 items-center ml-auto" style="color: {{ levelAlert.color }}">
+
+                            <a href="#" class="relative" data-action="click->popover-info#show" style="color: {{ levelAlert.color }}">
+                                {{ include('balance_sheet/_icon_warning.html.twig', { size: 7 }) }}
+                            </a>
+
+                            <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+                        </div>
+
+                    </div>
+
+                    <div data-balance-sheet-target="detailsAlert" class="details-alert hidden py-2 text-sm" style="color: {{ levelAlert.color }}">
+                        {{ render(path('app_balance_sheet_message_details_alert_fgp', { 'fgpAlias': fgpAlias, 'quantity': quantity, 'alertCode': levelAlert.code })) }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    {# <div class="flex flex-row justify-center gap-4 w-full xl:w-3/5">
+        {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', { 'averageFgp': average_fgp|serialize, title: 'Votre consommation', 'displayLabel': true })) }}
+        {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', { 'averageFgp': average_fgp_recommended|serialize, title: 'Nos recommandations', 'displayLabel': false })) }}
+    </div> #}
+
+    <div class="flex flex-row justify-center w-full flex-1 charts-container">
+        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
+                'averageFgp': average_fgp|serialize,
+                'title': 'Votre consommation',
+                'displayLabel': true
+            })) }}
+        </div>
+        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
+                'averageFgp': average_fgp_recommended|serialize,
+                'title': 'Nos recommandations',
+                'displayLabel': false
+            })) }}
+        </div>
+    </div>
+    
+</div>

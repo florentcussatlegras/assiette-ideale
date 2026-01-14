@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    <div class="px-5">
+
+        <div class="w-1/2 mx-auto mt-4 mb-4">
+
+            <div class="w-3/5">
+
+                <span class="inline-flex items-center justify-center text-4xl leading-none text-dark-blue font-bold">
+                    Ajouter un aliment
+                </span>
+
+            </div>
+
+            <div class="flex gap-10">
+
+                {{ form_start(form) }}
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.pictureFile) }}
+                        {{ form_row(form.isSubFoodGroup) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.info) }}
+                        {{ form_row(form.medianWeight) }}
+                        {{ form_row(form.showMedianWeight) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.haveGluten) }}
+                        {{ form_row(form.haveLactose) }}
+                        {{ form_row(form.notConsumableRaw) }}
+                        {{ form_row(form.canBeAPart) }}
+                    </div>
+                    
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.nutritionalTable.energy) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.foodGroup) }}
+                        {{ form_row(form.subFoodGroup) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.nutritionalTable.protein) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.nutritionalTable.lipid) }}
+                        {{ form_row(form.nutritionalTable.saturatedFattyAcid) }}
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        {{ form_row(form.nutritionalTable.carbohydrate) }}
+                        {{ form_row(form.nutritionalTable.sugar) }}
+                    </div>
+
+                     <div class="flex items-center gap-4">
+                        {{ form_row(form.nutritionalTable.fiber) }}
+                        {{ form_row(form.nutritionalTable.salt) }}
+                    </div>
+
+                     <div class="flex gap-12">
+                        {{ form_row(form.nutritionalTable.nutriscore) }}
+                        {{ form_row(form.unitMeasures, {'attr': {'class': 'w-full h-32'}}) }}
+                    </div>
+
+                {{ form_end(form) }}
+            
+            <div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+

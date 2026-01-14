@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="box mt-10 mx-auto w-1/3">
+
+    <table class="table">
+
+        <thead>
+            <tr class="bg-sky-700 text-white">
+                <th>Identifiant</th>
+                <th>Roles</th>
+                <th>Validation</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for username, formRoleUserView in formRoleUserViews %}
+                {{ form_start(formRoleUserView) }}
+                    <tr>
+                        <td class="whitespace-nowrap border">{{ username }}</td>
+                        <td class="whitespace-nowrap border">{{ form_widget(formRoleUserView) }}</td>
+                        <td class="whitespace-nowrap border">
+                            <div class="button-group border">
+                                <button class="btn btn-primary">Valider</button>
+                                <a href="{{ path('app_users_roles_export', { username : username }) }}">Export json</a>
+                            </div>
+                        </td>
+                    </tr>
+                {{ form_end(formRoleUserView) }}
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

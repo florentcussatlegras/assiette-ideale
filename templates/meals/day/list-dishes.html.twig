@@ -1,0 +1,116 @@
+
+	{# <div 
+		{{ stimulus_controller('dishes-meal', {
+			urlRemoveItem: path('meal_day_remove_dish', {'rankMeal': rankMeal, 'rankDish': loop.index0, 'ajax': 1}),
+			urlReload: path('meal_day', {'ajax': 1})
+		}) }}
+	> #}
+		
+		{% for item in app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] %}
+		
+			{% set element = object(item['id'], 'App\\Entity\\' ~ item['type']) %}
+
+			{# <div class="row-dish flex-col items-start{% if loop.index0 is odd %} bg-gray-slight{% endif %}" data-rank-dish="{{ loop.index0 }}"> #}
+
+			<div 
+				class="row-dish flex items-center{% if loop.index0 is odd %} bg-gray-slight{% endif %}" 
+				{# data-rank-dish="{{ loop.index0 }}" #}
+				{{ stimulus_controller('dishes-meal', {
+					urlRemoveItem: path('meal_day_remove_dish', { 'rankMeal': rankMeal, 'rankDish': loop.index0, 'ajax': 1 }),
+					urlReload: path('meal_day', { 'ajax': 1 }),
+				}) }}
+			>		
+
+				{# <div class="dish flex w-3/4 lg:w-2/3 xl:w-1/2 items-center border"> #}
+				<div class="dish flex relative items-center w-1/2">
+					
+					<div class="w-6 h-6 ml-4 md:mr-4">
+						<input
+							type="checkbox" 
+							data-meal-target="selectDish"
+							data-action="meal#selectDish"
+							data-rank-meal="{{ rankMeal }}"
+							value="{{ loop.index0 }}"
+							class="cursor-pointer"
+						/>
+					</div>
+
+					<div class="text-slate-300 font-bold pl-2 w-4">{{ loop.index }}</div>
+					
+					<div>
+						{% if element.picture is not null and element.picturePath is not null %}
+							<img src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ element.slug }}" class="rounded-lg w-4 md:w-10" style="max-width: 60px; min-width: 35px">
+						{% else %}
+							<img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg" style="max-width: 35px; min-width: 35px" />
+						{% endif %}
+					</div>
+
+					<div class="flex flex-col mr-8 w-2/3 py-2">
+
+						<a 
+							class="text-sm font-bold tracking-tight text-sky-600 hover:text-sky-700 transition duration-300"
+							style="line-height: 20px"
+							{% if instanceOf(element, 'App\\Entity\\Dish') %}
+								href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}"
+							{% else %}
+								href="{{ path('app_food_show', { slug: element.slug }) }}"
+							{% endif %}
+							role="option"
+						>
+							{{ element.name }}
+						</a>
+
+						<span class="text-xs text-gray-500 font-bold">
+							{{ item['quantity'] }} 
+							{% if item['type'] == 'Dish' %}portion{{ item['quantity'] > 1 ? "s" : ""}}{% else %}{{ item['unitMeasureAlias'] }}{% endif %}
+						</span>
+						
+					</div>
+
+					{% if app.session.get('_meal_day_date') != 'model' %}
+						<div class="w-1/3">
+						{{ render(controller("App\\Controller\\meal\\AlertController::show", {'class' : item.type, 'dishOrFoodId' : element.id, 'isSelected' : true, 'rankMeal' : rankMeal, 'rankDish' : loop.index0})) }}
+						</div>
+					{% endif %}
+
+				</div>
+
+				{# <div class="flex w-1/4 lg:w-1/3 xl:w-1/2 items-center"> #}
+				<div class="flex relative items-center w-1/5 md:w-1/2">
+
+					<div class="list-fgp items-center justify-center my-hidden xl:flex">
+						{{ render(controller("App\\Controller\\meal\\DefaultController::fgpQuantitiesByDishOrFood", { item: item })) }}
+					</div>
+
+					<div class="flex ml-auto md:pr-6">
+						
+						<div class="my-hidden md:flex items-center text-xs md:text-sm font-bold md:mr-12 lg:mr-36">
+							<span class="px-2 py-1">{{ render(controller("App\\Controller\\meal\\DefaultController::energyForDishOrFood", { item: item })) }}</span>
+						</div>
+
+						<div class="flex items-center gap-2">
+
+							<button 
+								data-action="sidebar-list-dishes#toggleSlideover reload-content#openSidebarList"
+								class="update-dish g-white rounded-lg flex items-center gap-2 font-bold text-sm pr-2 mr-4" 
+					
+								data-rank-meal="{{ rankMeal }}" 
+								data-rank-dish="{{ loop.index0 }}"
+								data-update-dish="{{ loop.index0 }}"
+								data-type-dish="{{ app.session.get('_meal_day_' ~ rankMeal)['type']|trans({}, 'meal') }}"
+							>
+								{{ include('partials/svg/edit.html.twig') }}
+							</button>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		{% endfor %}
+
+	{# </div> #}
+

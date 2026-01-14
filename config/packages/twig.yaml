@@ -1,0 +1,24 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    # globals:
+    #     username: Florent
+    # form_theme : ['tailwind_2_layout.html.twig', 'form/_custom_form.html.twig']
+    # form_theme: ['form/_custom_form.html.twig']
+    # form_theme: ['tailwind_2_layout.html.twig', 'form/_custom_themes.html.twig']
+    globals:
+        routes_without_header_nav: '%routes_without_header_nav%'
+
+when@test:
+    twig:
+        strict_variables: true
+
+when@dev:
+    twig:
+        globals:
+            username: Florent from when@dev
+        
+
+
+
+
+

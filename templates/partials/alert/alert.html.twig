@@ -1,0 +1,12 @@
+{% for key, messages in app.flashes() %}
+
+    {% for message in messages %}
+
+        {{ include('partials/alert/_alert.html.twig') }}
+
+    {% endfor %}
+
+{% endfor %}
+
+ <div id="alert-ajax" class="hidden"></div>
+

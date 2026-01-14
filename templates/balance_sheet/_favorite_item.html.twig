@@ -1,0 +1,14 @@
+<div>
+    {% if item is not null %}
+        <div class="flex text-sm gap-2 items-center mb-2">
+            {% if item.picture is not null and item.picturePath is not null %}
+                <img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ item.picturePath|imagine_filter('squared_thumbnail_small') }}">
+            {% else %}
+                <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
+            {% endif %}
+            <a href="" class="text-sky-600 text-sm">{{ item.name }}</a>
+        </div>
+    {% else %}
+        <span class="text-sm text-gray-500">Aucun {{ type == 'food' ? 'aliments' : 'plats' }} trouvés pour cette période</span>
+    {% endif %}
+</div>

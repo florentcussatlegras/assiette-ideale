@@ -1,0 +1,115 @@
+ 
+ <table class="dish-nutritional-value mt-2 w-full text-base">
+  <thead>
+    <tr>
+      <th colspan="2" align="left"><h1 class="text-xl font-bold mt-5 mb-2">Valeurs nutritionnelles</h1></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Protéines</td>
+      <td>{{ dish.nutritionalTable.protein is not null ? "#{dish.nutritionalTable.protein} g" : null }}</td>
+    </tr>
+    <tr>
+      <td>Lipides</td>
+      <td>{{ dish.nutritionalTable.lipid is not null ? "#{dish.nutritionalTable.lipid} g" : null }}</td>
+    </tr>
+    <tr>
+      <td class="pl-4">dont acides gras saturés</td>
+      <td>{{ dish.nutritionalTable.saturatedFattyAcid is not null ? "#{dish.nutritionalTable.saturatedFattyAcid} g" : null }}</td>
+    </tr>
+    <tr>
+      <td>Glucides</td>
+      <td>{{ dish.nutritionalTable.carbohydrate is not null ? "#{dish.nutritionalTable.carbohydrate} g" : null }}</td>
+    </tr>
+    <tr>
+      <td class="pl-4">dont sucres</td>
+      <td>{{ dish.nutritionalTable.sugar is not null ? "#{dish.nutritionalTable.sugar} g" : null }}</td>
+    </tr>
+    <tr>
+      <td>Sel</td>
+      <td>{{ dish.nutritionalTable.salt is not null ? "#{dish.nutritionalTable.salt} g" : null }}</td>
+    </tr>
+    <tr>
+      <td>Fibres</td>
+      <td>{{ dish.nutritionalTable.fiber is not null ? "#{dish.nutritionalTable.fiber} g" : null }}</td>
+    </tr>
+    <tr>
+      <td>Energie (pour 100g de plat)</td>
+      <td>{{ dish.nutritionalTable.energy is not null ? "#{dish.nutritionalTable.energy} Kcal" : null }}</td>
+
+    </tr>
+    <tr>
+      <td colspan="2" align="center" class="pt-6"><img src='{{ asset("svg/nutriscore/Nutri-score-#{dish.nutritionalTable.nutriscore}.svg") }}' width="120px" /></td>
+    </tr>
+  </tbody>
+</table>
+ 
+ {# <div class="flex flex-col w-full mt-2 gap-2">
+
+    <div class="flex flex-row">
+
+        <div class="flex flex-col">
+            <label>Protéines</label>
+            {{ dish.nutritionalTable.protein }}
+        </div>
+
+    </div>
+
+    <div class="flex flex-row gap-12">
+
+        <div class="flex flex-col">
+            <label>Lipides</label>
+            <span>{{ dish.nutritionalTable.lipid }}</span>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Acide gras saturés</label>
+            <span>{{ dish.nutritionalTable.saturatedFattyAcid }}</span>
+        </div>
+
+    </div>
+
+    <div class="flex flex-row gap-12">
+
+        <div class="flex flex-col">
+            <label>Glucides</label>
+            <span>{{ dish.nutritionalTable.carbohydrate }}</span>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Sucre</label>
+            <span>{{ dish.nutritionalTable.sugar }}</span>
+        </div>
+
+    </div>
+
+    <div class="flex flex-row gap-2">
+
+        <div class="flex flex-col">
+            <label>Sel</label>
+            <span>{{ dish.nutritionalTable.salt }}</span>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Fibre</label>
+            <span>{{ dish.nutritionalTable.fiber }}</span>
+        </div>
+
+    </div>
+
+    <div class="flex flex-row gap-2">
+
+        <div class="flex flex-col">
+            <label>Energie</label>
+            <span>{{ dish.nutritionalTable.energy }}</span>
+        </div>
+
+        <div class="flex flex-col">
+            <label>Nutriscore</label>
+            <span>{{ dish.nutritionalTable.nutriscore }}</span>
+        </div>
+
+    </div>
+
+</div> #}

@@ -1,0 +1,16 @@
+{# templates/task/new.html.twig #}
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    <div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.task) }}
+        </div>
+        <div class="col" id="some-custom-id">
+            {{ form_row(form.dueDate) }}
+        </div>
+    </div>
+{{ form_end(form) }}

@@ -1,0 +1,226 @@
+
+
+<div 
+    {{ stimulus_controller('meal', { 
+			urlReload: path('meal_day', { 'ajax': 1 }),
+			urlAddMeal: path('meal_day_add'),
+			urlRemoveMeal: path('meal_day_remove'),
+			lastRankMeal: app.session.get('_meal_day_range')|default("none") }) 
+		| stimulus_controller('alert-meal-modal')
+	}}
+>
+		{{ include('meals/day/modals/_modal_messages_alerts.html.twig') }}
+
+		{# {{ dump(app.session.all()) }} #}
+		<input 
+			data-meal-target="alertCount"
+			type="hidden" 
+			value="{{ app.session.get('_meal_day_alerts/_final_list')|length|default(0) }}" 
+		/>
+
+		{% for fgpRemaining in listFgpRemainingAbsent %}
+			<input 
+				data-meal-target="fgpRemaining"
+				type="hidden" 
+				value="{{ fgpRemaining }}" 
+			/> 
+		{% endfor %}
+
+		{% if app.session.get('_meal_day_date') == 'model' %}
+			{% set h1_content = "Nouveau repas" %}
+		{% else %}
+			{% set h1_content = "meal.page.title"|trans({"date_meal": date(app.session.get('_meal_day_date'))}, "meal") %}
+		{% endif %}
+		{{ include("partials/_header.html.twig", { h1_content: h1_content }) }}
+		
+		{{ include("meals/day/save-meals.html.twig", { lastRankMeal: app.session.get('_meal_day_range') }, with_context = false) }}
+
+		{% if app.session.get('_meal_day_date') != 'model' %}
+
+			<div class="flex w-full">
+
+				<div class="flex items-center" style="width: 2%"></div>
+
+				<div class="flex flex-col lg:flex-row items-start lg:items-center pb-4 relative gap-2 lg:gap-0" style="width: 98%">
+
+					{# <div class="dish flex w-3/4 lg:w-2/3 xl:w-1/2 items-center relative border"> #}
+					<div class ="my-hidden md:flex relative mb-2" style="width: 50%">
+
+						{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
+							<button 
+								type="button"
+								data-toggle="modal" 
+								data-target="#finalAlertModal"
+								class="show-final-alerts flex items-center gap-2 cursor-pointer w-full text-lg md:text-xl text-left leading-snug"
+								type="button"
+							>
+								<svg viewBox="0 0 24 24" class="w-8 h-8 text-red-900" xmlns="http://www.w3.org/2000/svg" fill="none">
+									<circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" fill="transparent"/>
+									<text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="12" font-family="Arial, sans-serif" font-weight="bold">i</text>
+								</svg>
+								<span class="text-red-900 cursor-pointer">Voir les alertes nutritionnelles</span>
+							</button>
+						{% endif %}
+
+					</div>
+
+					<div class ="flex md:my-hidden relative" style="width: 100%">
+
+						{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
+							<button 
+								type="button"
+								data-toggle="modal" 
+								data-target="#finalAlertModal"
+								{# data-modal-target="modal-final-alerts" #}
+								class="show-final-alerts flex items-center gap-4 cursor-pointer w-full text-lg md:text-xl text-left leading-snug"
+								{# data-action="modal-final-alerts#showAlerts" #}
+								type="button"
+							>
+								<svg viewBox="0 0 24 24" class="w-8 h-8 text-red-900" xmlns="http://www.w3.org/2000/svg" fill="none">
+									<!-- Cercle rouge -->
+									<circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" fill="transparent"/>
+
+									<!-- Lettre i blanche -->
+									<text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="12" font-family="Arial, sans-serif" font-weight="bold">i</text>
+								</svg>
+								<span class="text-red-900 cursor-pointer">Voir les alertes nutritionnelles</span>
+							</button>
+						{% endif %}
+
+					</div>
+			
+
+					{# <div class="flex flex-col items-start md:items-center md:flex-row w-1/4 lg:w-1/3 xl:w-1/2 relative"> #}
+					<div class="my-hidden md:flex relative" style="width: 50%">
+						
+						<div class="flex md:hidden w-2-3 md:py-2 text-2xl md:text-4xl mb-2 shadow-sm">
+							{{ render(path('meal_day_show_total_energy')) }}
+						</div>
+
+						<div class="justify-center flex">
+							{{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
+						</div>
+
+						<div class="my-hidden md:flex md:py-2 text-2xl ml-auto bg-white rounded-2xl shadow-soft overflow-hidden">
+							{{ render(path('meal_day_show_total_energy')) }}
+						</div>
+
+					</div>
+
+					<div class="flex flex-col md:my-hidden relative items-start gap-6" style="width: 100%">
+						
+						{# <div class="flex md:my-hidden w-2-3 md:py-2 text-lg md:text-4xl mb-2">
+							{{ render(path('meal_day_show_total_energy')) }}
+						</div> #}
+
+						<div class="flex md:py-2 text-xl -ml-5">
+							{{ render(path('meal_day_show_total_energy', {'bg': 'bg-transparent'})) }}
+						</div>
+
+						<div class="justify-center flex -ml-2">
+							{{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		{% endif %}
+
+		{# <div
+				{{ stimulus_controller('reload-content', {
+						url: path('meal_day_list_ajax'),
+						page: 0,
+					})
+				}}
+				data-action="sidebar-list-dishes:async:add-item->reload-content#onAddItem sidebar-list-dishes:async:remove-item->reload-content#onRemoveItem"
+			>
+
+			<div
+				{{ stimulus_controller('sidebar-list-dishes', {
+						urlReloadMeals: path('meal_day'),
+						urlAddItem: path('meal_day_add_dish_or_food'),
+						urlRemoveItem: path('meal_day_remove_dish'),
+						urlRemovePreselectedItems: path('meal_sidebar_remove_preselect_items'),
+						urlReloadEnergyLabel: path('meal_day_show_total_energy')
+					}) }}
+			>
+				TEST CONTROLLER
+			</div>
+
+		</div> #}
+		
+		{% if app.session.has('_meal_day_range') %}
+
+			<div
+				{{ stimulus_controller('reload-content', {
+						url: path('meal_day_list_ajax'),
+						page: 0,
+					})
+				}}
+				data-action="sidebar-list-dishes:async:add-item->reload-content#onAddItem sidebar-list-dishes:async:remove-item->reload-content#onRemoveItem"
+			>
+				<div
+					{{ stimulus_controller('sidebar-list-dishes', {
+						urlReloadMeals: path('meal_day'),
+						urlAddItem: path('meal_day_add_dish_or_food'),
+						urlRemoveItem: path('meal_day_remove_dish'),
+						urlRemovePreselectedItems: path('meal_sidebar_remove_preselect_items'),
+						urlReloadEnergyLabel: path('meal_day_show_total_energy')
+					}) }}
+				>
+
+					{% for rankMeal in range(0, app.session.get('_meal_day_range')) %}
+						<div id="ve-meal">
+							{{ include("meals/day/meal.html.twig") }}
+						</div>
+					{% endfor %}
+
+					<div id="loader-new-meal" class="flex justify-center items-center h-36 hidden">
+						<div class="loader"></div>
+					</div>
+
+					{{ include('meals/day/_sidebar_list_dishes.html.twig') }}
+
+				</div>
+
+			</div>
+
+		{% endif %}
+
+		<div class="flex w-full items-center">
+
+			<div style="width: 2%"></div>
+
+			<div class="flex items-center justify-start relative" style="width: 98%">
+		
+				{% if app.session.get('_meal_day_date') != 'model' %}
+					<div class="absolute -left-6 md:-left-8 xl:-left-10 w-5 flex items-center">
+						<input type="checkbox" class="cursor-pointer w-full border-gray-600" data-action="meal#selectAllMeals" data-meal-target="selectAllMeals" />
+					</div>
+				{% endif %}
+		
+				{% if app.session.get('_meal_day_date') != 'model' %}
+					<button 
+						data-action="meal#onRemoveMealSelection" 
+						class="p-2 bg-red-600 text-white font-medium rounded-lg hidden"
+						data-url-remove-selection="{{ path('meal_day_remove_selection') }}"
+						data-meal-target="btnRemoveMealSelection"
+					>
+						Supprimer
+					</button>
+				{% endif %}
+				{{ include("meals/day/add-meal.html.twig", { countMeals: app.session.get('_meal_day_range') }) }}
+			</div>
+
+		</div>
+
+		{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
+			{{ include('meals/day/modals/_modal_list_final_alerts.html.twig') }}
+		{% endif %}
+
+</div>
+
+

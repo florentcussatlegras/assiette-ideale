@@ -1,0 +1,21 @@
+
+<div class="button-group mt-7 flex justify-center items-center gap-6">
+    {% if app.user.firstFillProfile is same as (false) %}
+        {# {% if nextElement is not same as (false) %}
+            <a href="{{ path('app_profile_edit', {element: nextElement}) }}" class="text-dark-blue">
+        {% else %}
+            <a href="{{ path('app_profile_edit', {first_fill_profile: true}) }}" class="text-dark-blue">
+        {% endif %}
+            Je les renseignerai plus tard
+        </a> #}
+    {% else %}
+        <a href="{{ path('app_profile_index') }}" class="text-light-blue font-bold text-base">
+            Annuler
+        </a>
+    {% endif %}
+    <button class="bg-light-blue text-white font-bold px-2 py-2 text-base cursor-pointer rounded-lg">
+        Valider
+    </button>
+</div>
+
+

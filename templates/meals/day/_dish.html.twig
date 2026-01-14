@@ -1,0 +1,112 @@
+<div class="flex flex-col w-full py-2 relative">
+
+	{% if instanceOf(item, 'App\\Entity\\Dish') %}
+		{% set type = 'Dish' %}
+	{% else %}
+		{% set type = 'Food' %}
+	{% endif %}
+
+	{% if app.session.get('_meal_day_date') != 'model' %}
+		<div id="alerts-{{ type }}-{{ item.id }}" class="alerts absolute -top-2 -left-2">
+			{{ render(controller("App\\Controller\\meal\\AlertController::show", {'class' : type, 'dishOrFoodId' : item.id, 'isSelected' : false})) }}
+		</div>
+	{% endif %}
+
+	<div class="flex flex-row items-center md:flex-row md:max-w-xl p-2 bg-white">
+
+		{% if item.picture is not null and item.picturePath is not null %}
+			<img alt="Image" class="rounded-lg w-36" src="{{ item.picturePath|imagine_filter('squared_thumbnail_small') }}">
+		{% else %}
+			<img src="https://placehold.co/144x144" alt="Photo plat" width="144px" class="rounded-lg">
+		{% endif %}
+
+		<div class="flex flex-col justify-around px-4 leading-normal gap-2">
+
+			<a class="text-base tracking-tight" {% if instanceOf(item, 'App\\Entity\\Dish') %} href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}" {% else %} href="{{ path('app_food_show', { slug: item.slug }) }}" {% endif %} role="option">
+				{{ showKeyword(item.name, keyword)|raw }}
+			</a>
+
+			{% if instanceOf(item, 'App\\Entity\\Dish') %}
+				{{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
+			{% else %}
+				<div class="list-fgp flex flex-row gap-2">
+					<div class="w-3 h-3 rounded-lg" style="border: 1px solid {{ item.foodGroup.parent.color }}; background-color: {{ item.foodGroup.parent.color }}"></div>
+				</div>
+			{% endif %}
+
+			<div id="containerQuantity-{{ item.id }}" {# class="flex lg:flex-col xl:flex-row items-center mb-2 font-normal text-gray-700 dark:text-gray-400 gap-2 border" #} class="flex flex-col items-start mb-2 font-normal text-gray-700 dark:text-gray-400 gap-2" data-url-get-unitmeasure-alias="{{ path('meal_get_unitmeasure_alias') }}">
+
+				<div>
+					{% if instanceOf(item, 'App\\Entity\\Dish') %}
+
+						<select class="n-portion quantity-{{ item.id }} text-center w-16 h-11 rounded-lg" name="quantity" data-item-type="{{ type }}" data-dish-id="{{ item.id }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}">
+							<option value="Aucune">Aucune</option>
+							{% for i in range(1,20) %}
+								<option>{{ i }}</option>
+							{% endfor %}
+						</select>
+
+						{# <span name="unitMeasure" class="show-quantities">portion(s)</span> #}
+						<span name="unitMeasure" class="w-20 text-sm">portion(s)</span>
+						<input type="hidden" name="unitMeasure" class="unit-measure unitMeasure-{{ item.id }}" value="95"/>
+
+					{% else %}
+
+						<input type="number" class="quantity-food quantity-{{ item.id }} w-16 h-11 rounded-lg" name="quantity" data-item-type="{{ type }}" data-food-id="{{ item.id }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}">
+
+						<select name="unitMeasure" class="unit-measure select2 unitMeasure-{{ item.id }} w-16 h-11 rounded-lg" data-food-id="{{ item.id }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}">
+							{% for unitMeasure in item.unitMeasures %}
+								<option value="{{ unitMeasure.id }}" name="optionUnitMeasure">
+									{{ unitMeasure.alias|lower }}
+								</option>
+							{% endfor %}
+						</select>
+
+					{% endif %}
+
+				</div>
+
+                <div class="flex items-center gap-2 mt-2">
+
+                    <button type="button" style="z-index: 0" class="rounded-lg text-white bg-light-blue px-4 py-2" {% if update is same as(false) %} data-action="sidebar-list-dishes#addItem" {% else %} data-action="sidebar-list-dishes#updateItem" {% endif %} data-item-id="{{ item.id }}" data-item-type="{{ type }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}" {# data-url-add-item="{{ path('meal_day_add_dish_or_food', { id: item.id, type: type }) }}" data-url-reload-meals="{{ path('meal_day') }}" #} data-url-add-preselect-item="{{ path('meal_sidebar_preselect_item', { id: item.id, type: type }) }}" {# data-url-reload-list="{{ path('meal_day_list_ajax') }}" #}>
+                     
+					 	Ajouter
+						{# <svg
+                            viewbox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg"> <!-- Fond gris clair -->
+                            <circle
+                            cx="12" cy="12" r="10" fill="#EFEFEF"/>
+
+                            <!-- Icône + noir doux -->
+                            <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17" fill="#1A1A1A"/>
+                        </svg> #}
+
+                    </button>
+
+                    <button type="button" class="text-light-blue" data-action="sidebar-list-dishes#resetSelection" data-item-id="{{ item.id }}" data-item-type="{{ type }}">
+
+						Annuler
+                        {# <svg
+                            viewbox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Annulation">
+                            <!-- Fond gris clair -->
+                            <circle
+                            cx="12" cy="12" r="10" fill="#EFEFEF"/>
+
+                            <!-- Croix rouge -->
+                            <g stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                                <line x1="8" y1="8" x2="16" y2="16"/>
+                                <line x1="16" y1="8" x2="8" y2="16"/>
+                            </g>
+                        </svg> #}
+
+                    </button>
+
+                </div>
+
+
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

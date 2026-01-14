@@ -1,0 +1,15 @@
+{% extends '@email/default/notification/body.html.twig' %}
+
+{% block content %}
+
+    <h2><span class="text-a">{{ message.email }}</span> à envoyé un message</h2>
+
+    <label><strong>Sujet</strong></label><br>
+    <span>{{ message.subject }}</span>
+
+    <br>
+
+    <label><strong>Message</strong></label><br>
+    <span>{{ message.body|raw }}</span>
+
+{% endblock %}

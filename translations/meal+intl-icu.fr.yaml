@@ -1,0 +1,15 @@
+meal:
+    page:
+        title: "Mes repas du {date_meal, date, full}"
+    type:
+        breakfast: Petit déjeuner
+        snack_morning: Collation du matin
+        lunch: Déjeuner
+        snack_afternoon: Collation de l'après-midi
+        dinner: Dîner
+    buttons:
+        import_meal: Importer
+        new_meal: Nouveau
+
+    
+

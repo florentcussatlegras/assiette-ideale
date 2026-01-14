@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ parent() }} - Repas du jour{% endblock %}
+
+{% block body %}
+
+	<main role="main" id="meals-day">
+		
+		{{ include('meals/day/_meals_day.html.twig') }}
+
+	</main>
+
+{% endblock %}

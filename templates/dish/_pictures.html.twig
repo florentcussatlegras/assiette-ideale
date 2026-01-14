@@ -1,0 +1,24 @@
+<div class="flex flex-col sm:flex-row items-center p-5 border-b border-gray-200 dark:border-dark-5">
+    <h2 class="font-medium text-base mr-auto">
+        Photos
+    </h2>
+</div>
+<div id="multiple-file-upload" class="p-5">
+    <div class="preview">
+        <form action="/file-upload" class="dropzone">
+            <div class="fallback">
+                <input name="file" type="file" multiple/>
+            </div>
+            <div class="dz-message" data-dz-message>
+                <div class="text-lg font-medium">Drop files here or click to upload.</div>
+                <div class="text-gray-600"> This is just a demo dropzone. Selected files are <span class="font-medium">not</span> actually uploaded. </div>
+            </div>
+        </form>
+    </div>
+    <div class="source-code hidden">
+        <button data-target="#copy-multiple-file-upload" class="copy-code btn py-1 px-2 btn-outline-secondary"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
+        <div class="overflow-y-auto mt-3 rounded-md">
+            <pre id="copy-multiple-file-upload" class="source-preview"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagform action=&quot;/file-upload&quot; class=&quot;dropzone&quot;HTMLCloseTag HTMLOpenTagdiv class=&quot;fallback&quot;HTMLCloseTag HTMLOpenTaginput name=&quot;file&quot; type=&quot;file&quot; multiple/HTMLCloseTag HTMLOpenTag/divHTMLCloseTag HTMLOpenTagdiv class=&quot;dz-message&quot; data-dz-messageHTMLCloseTag HTMLOpenTagdiv class=&quot;text-lg font-medium&quot;HTMLCloseTagDrop files here or click to upload.HTMLOpenTag/divHTMLCloseTag HTMLOpenTagdiv class=&quot;text-gray-600&quot;HTMLCloseTag This is just a demo dropzone. Selected files are HTMLOpenTagspan class=&quot;font-medium&quot;HTMLCloseTagnotHTMLOpenTag/spanHTMLCloseTag actually uploaded. HTMLOpenTag/divHTMLCloseTag HTMLOpenTag/divHTMLCloseTag HTMLOpenTag/formHTMLCloseTag </code> </pre>
+        </div>
+    </div>
+</div>

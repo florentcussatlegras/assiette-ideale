@@ -1,0 +1,78 @@
+
+{% set element = object(item['id'], 'App\\Entity\\' ~ item['type']) %}
+
+<div id="itemPreselected-{{ item['id'] }}" class="flex flex-col">
+
+    {% if app.session.get('_meal_day_date') != 'model' %}
+        {{ render(controller("App\\Controller\\meal\\AlertController::show", {'class' : item.type, 'dishOrFoodId' : element.id, 'isSelected' : true, 'rankMeal' : item.rankMeal, 'rankDish' : item.rankDish})) }}
+    {% endif %}
+
+    <div class="flex flex-row items-start p-2 bg-gray text-sm font-medium gap-2 shadow-md relative" {% if app.session.has('color_current_alert') %}style="border: 1px solid {{ app.session.get('color_current_alert') }}{% endif %}">
+
+        {% if element.picture is not null and element.picturePath is not null %}
+            <img alt="Image" class="rounded-lg w-12" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+        {% else %}
+            <img src="https://placehold.co/50x50" alt="Photo plat" width="100px" class="rounded-lg">
+        {% endif %}
+
+        <div class="flex flex-col justify-around px-4 leading-normal gap-2">
+
+            <h5 class="text-l font-bold text-sm tracking-tight">
+                {{ item.quantity }}
+                {{ item.unitMeasureAlias }}
+                <span>de</span>
+                {{ element.name }}
+            </h5>
+
+            {% if instanceOf(element, 'App\\Entity\\Dish') %}
+                {{ include('dish/_list_fgp_colors.html.twig', { dish: element }) }}
+            {% else %}
+                <div class="list-fgp flex flex-row gap-2">
+                    <div class="w-3 h-3 rounded-sm" style="border: 1px solid {{ element.foodGroup.parent.color }}; background-color: {{ element.foodGroup.parent.color }}"></div>
+                </div>
+            {% endif %}
+        
+        </div>
+
+        <button 
+            type="button"
+            class="absolute top-2 right-2"
+            data-action="sidebar-list-dishes#removeItem"
+            data-item-id="{{ element.id }}"
+            data-rank-meal="{{ item.rankMeal }}" 
+            data-rank-dish="{{ item.rankDish }}"
+            data-url-remove-preselect-item="{{ path('meal_sidebar_remove_preselect_item', { id: element.id, type: item.type }) }}"
+        >
+            <svg fill="#1D1D1F" class="w-4 h-4" viewBox="-3.5 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M11.383 13.644A1.03 1.03 0 0 1 9.928 15.1L6 11.172 2.072 15.1a1.03 1.03 0 1 1-1.455-1.456l3.928-3.928L.617 5.79a1.03 1.03 0 1 1 1.455-1.456L6 8.261l3.928-3.928a1.03 1.03 0 0 1 1.455 1.456L7.455 9.716z"></path></g></svg>
+        </button>
+
+    </div>
+
+</div>
+
+{# 
+<div class="flex flex-col bg-white items-start md:flex-row md:max-w-xl px-2" >
+
+    {% if item.picture is not null and item.picturePath is not null %}
+        <img alt="Image" class="rounded-lg w-24" src="{{ item.picturePath|imagine_filter('squared_thumbnail_small') }}">
+    {% else %}
+        <img src="https://placehold.co/50x50" alt="Photo plat" width="100px" class="rounded-lg">
+    {% endif %}
+
+    <div class="flex flex-col justify-around px-4 leading-normal gap-2">
+
+        <h5 class="text-l font-bold text-sm tracking-tight">
+            {{ item.name }}
+        </h5>
+
+        {% if instanceOf(item, 'App\\Entity\\Dish') %}
+            {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
+        {% else %}
+            <div class="list-fgp flex flex-row gap-2">
+                <div class="w-3 h-3 rounded-sm" style="border: 1px solid {{ item.foodGroup.parent.color }}; background-color: {{ item.foodGroup.parent.color }}"></div>
+            </div>
+        {% endif %}
+    
+    </div>
+
+</div> #}

@@ -1,0 +1,162 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+
+parameters:
+
+    # app.domain: '%env(SITE_BASE_URL)%'
+    uploads_dir_name: 'uploads'
+    uploads_base_dir: '%kernel.project_dir%/public/%uploads_dir_name%'
+    uploads_base_url: '%env(SITE_BASE_URL)%/%uploads_dir_name%'
+    dir_json: '%kernel.project_dir%/public/json'
+    asset.request_context.base_path: 'http://foo'
+    asset.request_context.secure: false
+    default_admin_email: florent.cussatlegras@gmail.com
+    json_subject_contact: subject-contact.json
+    routes_without_header_nav: '%env(default::csv:ROUTES_WITHOUT_HEADER_NAV)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
+            $uploadedAssetsBaseUrl: '%uploads_base_url%'
+            $adminEmail: '%env(string:default:default_admin_email:ADMIN_EMAIL)%'
+            $dirFileRecipe: '%env(string:resolve:DIR_RECIPE)%'
+            App\Util\TransformerInterface $transformer: '@App\Util\Transformer'
+
+    Symfony\Component\HttpKernel\Profiler\Profiler: '@profiler'
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        # make service public and allow you to inject services in method parameters
+        tags: ['controller.service_arguments']
+
+    App\EventListener\UserProfileListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller }
+
+
+    # Symfony\Component\ExpressionLanguage\ExpressionLanguage:
+    #     alias: '@security.expression_language'
+    #     public: true
+        
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    Symfony\Component\Asset\Context\RequestStackContext: '@assets.context'
+
+    # App\DataFixtures\FoodFixtures:
+    #     arguments:
+    #         $env: '%kernel.environment%'
+    #     lazy: true
+
+    # App\EventListener\UserChangedNotifier:
+    #     tags:
+    #         - name: 'doctrine.orm.entity_listener'
+    #           event : 'postUpdate'
+    #           entity: 'App\Entity\User'
+
+    Twig\Profiler\Profile: ~
+
+    App\Service\CustomUnitMeasureProvider:
+        tags: ['florent_unit_measure_provider']
+        arguments: 
+            $classOrAlias: 'App\Entity\UnitMeasure'
+
+    App\EntityListener\DishEntityListener:
+        tags:
+            - { name: 'doctrine.orm.entity_listener', event: 'prePersist', entity: 'App\Entity\Dish' }
+            - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\Dish' }
+
+    site_update_manager.superadmin:
+        class: App\Util\SiteUpdateManager
+        autowire: false
+        arguments: 
+            - 'florent_admin@example.com'
+            - 'bar_admin'
+
+    site_update_manager.normal_users:
+        class: App\Util\SiteUpdateManager
+        autowire: false
+        arguments:
+            - 'florent_user@example.com'
+            - 'bar_user'
+
+    App\Util\SiteUpdateManager: '@site_update_manager.normal_users'
+
+    App\EventListener\Locale\LocaleSubscriber:
+        arguments: ['%kernel.default_locale%']
+
+    Symfony\Component\Finder\Finder:
+        class: Symfony\Component\Finder\Finder
+        public: true
+
+    # App\Controller\FoodController:
+    #     arguments:
+    #         $foodFinder: '@typesense.finder.foods'
+
+    # App\Components\SearchFoodsComponent:
+    #     arguments:
+    #         $foodFinder: '@typesense.finder.foods'
+
+    # Redis:
+    #     class: Redis
+    #     calls:
+    #         - connect:
+    #             - '%env(REDIS_HOST)%'
+    #             - '%env(int:REDIS_PORT)%'
+
+    # Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler:
+    #     arguments:
+    #         - '@Redis'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+        arguments:
+            - '%env(DATABASE_URL)%'
+            # - { db_table: 'user_session', db_id_col: 'id' }
+
+    App\Service\ContactUtils:
+        arguments:
+            $dirJson: '%dir_json%'
+            $jsonSubjectContact: '%json_subject_contact%'
+
+    Symfony\Component\Security\Core\User\UserProviderInterface:
+        alias: security.user.provider.concrete.app_user_provider
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

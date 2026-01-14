@@ -1,0 +1,8 @@
+
+<div class="flex flex-wrap w-full lg:w-3/4 xl:w-1/2 mt-4 bg-white">
+    {% for chart in charts %}
+        <div class="w-1/2">
+            {{ render_chart(chart) }}
+        </div>
+    {% endfor %}
+</div>

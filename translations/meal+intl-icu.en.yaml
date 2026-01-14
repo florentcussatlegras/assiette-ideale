@@ -1,0 +1,12 @@
+meal:
+    page:
+        title: "My meals of {date_meal, date, full}"
+    type:
+        breakfast: Breakfast
+        snack_morning: Morning snack
+        lunch: Lunch
+        snack_afternoon: Afternoon snack
+        dinner: Dinner
+    buttons:
+        import_meal: Import
+        new_meal: New

@@ -1,0 +1,15 @@
+.profile .ts-input {
+    background-color: #f3f4f6;
+    border: none;
+    font-size: 18px;
+    box-shadow: none;
+}
+
+.profile .ts-input input {
+    font-size: 18px;
+}
+
+.profile .ts-dropdown {
+    font-size: 18px;
+    text-align: left;
+}

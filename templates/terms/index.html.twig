@@ -1,0 +1,149 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+	- Nous contacter
+{% endblock %}
+
+{% block body %}
+
+	<main role="main">
+
+		{{ include("partials/_header.html.twig", { h1_content: 'Termes et conditions d’utilisation' }) }}
+
+		<div class="flex justify-center">
+
+			<div class="bg-white w-full shadow-soft rounded-2xl">
+
+				<div class="p-10">
+
+					<h1>Termes et Conditions d’Utilisation (TCU)</h1>
+					
+					<p>
+						Assiette idéale est un
+						<strong>projet fictif à vocation démonstrative</strong>, destiné à illustrer des compétences techniques, produit, UX et architecture applicative.<br>
+						Il ne constitue pas un service commercial réel, ni une plateforme médicale.<br>
+						Toute ressemblance avec un service existant ou une personne réelle serait purement fortuite.</p>
+
+					<hr>
+
+					<h2 class="my-4">1. Objet du site</h2>
+					<p>Assiette idéale propose des contenus informatifs relatifs à la nutrition, à l’équilibre alimentaire et au bien‑être, fournis à titre
+						<strong>informatif, expérimental et non contractuel</strong>.</p>
+					<p>Le Site ne constitue
+						<strong>ni un service médical</strong>,
+						<strong>ni un dispositif de diagnostic</strong>,
+						<strong>ni une consultation personnalisée</strong>.</p>
+
+
+					<h2 class="my-4">2. Nature des informations fournies</h2>
+
+					<p>Les informations, recommandations, alertes nutritionnelles et simulations présentées sur le Site :</p>
+
+					<ul class="list-disc ml-8 mb-2">
+						<li>sont
+							<strong>génériques</strong>
+						</li>
+						<li>reposent sur des
+							<strong>modèles théoriques ou algorithmiques</strong>
+						</li>
+						<li>ne remplacent
+							<strong>en aucun cas</strong>
+							l’avis d’un professionnel de santé qualifié (médecin, diététicien, nutritionniste)</li>
+					</ul>
+
+					<p>L’utilisateur reconnaît utiliser ces informations
+						<strong>sous sa seule responsabilité</strong>.</p>
+
+
+					<h2 class="my-4">3. Absence de relation médicale</h2>
+
+					<p>L’utilisation du Site n’entraîne :</p>
+
+					<ul class="list-disc ml-8 mb-2">
+						<li>aucune relation médecin‑patient</li>
+						<li>aucune obligation de résultat</li>
+						<li>aucune responsabilité thérapeutique</li>
+					</ul>
+					<p>Toute décision concernant l’alimentation, la santé ou le mode de vie doit être validée par un professionnel habilité.</p>
+
+
+					<h2 class="my-4">4. Accès au site</h2>
+
+					<p>Le Site est accessible gratuitement, sous réserve :</p>
+
+					<ul class="list-disc ml-8 mb-2">
+						<li>de disposer d’un accès internet</li>
+						<li>de respecter les présentes conditions</li>
+						<li>de ne pas compromettre la sécurité ou la stabilité de la plateforme</li>
+					</ul>
+					<p>Assiette idéale se réserve le droit de suspendre ou modifier l’accès au Site
+						<strong>sans préavis</strong>.</p>
+
+
+					<h2 class="my-4">5. Propriété intellectuelle</h2>
+					<p>L’ensemble du contenu du Site (textes, interfaces, composants UI, animations, logos, concepts) est protégé par le droit de la propriété intellectuelle.</p>
+					<p>Toute reproduction, représentation ou exploitation non autorisée est strictement interdite.</p>
+
+
+					<h2 class="my-4">6. Données personnelles</h2>
+					<p>Le Site peut collecter des données à des fins de démonstration technique (formulaires, sessions, préférences utilisateur).</p>
+					<p>Ces données :</p>
+					<ul class="list-disc ml-8 mb-2">
+						<li>ne sont
+							<strong>pas revendues</strong>
+						</li>
+						<li>ne sont utilisées qu’à des fins de test, d’analyse ou d’amélioration UX</li>
+						<li>peuvent être supprimées à tout moment sur simple demande</li>
+					</ul>
+					<p>Aucune donnée de santé réelle n’est requise ni stockée de manière persistante.</p>
+
+
+					<h2 class="my-4">7. Responsabilité</h2>
+
+					<p>NutriWise Conseil ne pourra être tenu responsable :</p>
+
+					<ul class="list-disc ml-8 mb-2">
+						<li>d’une mauvaise interprétation des contenus</li>
+						<li>de l’usage qui en est fait par l’utilisateur</li>
+						<li>de dommages directs ou indirects liés à l’utilisation du Site</li>
+					</ul>
+
+					<p>Le Site est fourni
+						<strong>« en l’état »</strong>, sans garantie expresse ou implicite.</p>
+
+
+					<h2 class="my-4">8. Évolution des conditions</h2>
+                    
+					<p>Les présentes Conditions peuvent être modifiées à tout moment afin de refléter :</p>
+
+					<ul class="list-disc ml-8 mb-2">
+						<li>l’évolution du projet</li>
+						<li>les améliorations techniques</li>
+						<li>les exigences légales ou professionnelles</li>
+					</ul>
+					<p>Il appartient à l’utilisateur de consulter régulièrement cette page.</p>
+
+					<h2 class="my-4">9. Droit applicable</h2>
+
+					<p>Les présentes Conditions sont régies par le
+						<strong>droit français</strong>.</p>
+					<p>En cas de litige, une solution amiable sera privilégiée avant toute action judiciaire.</p>
+
+
+					<hr>
+					<p>📩 Pour toute question :
+						<strong>contact@fc-nutrition.com</strong>
+					</p>
+					<p>Merci de votre confiance.</p>
+
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</main>
+
+{% endblock %}

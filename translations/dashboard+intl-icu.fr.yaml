@@ -1,0 +1,15 @@
+dashboard:
+    welcome: 'Bienvenue {username}'
+    search_menu_week: Retrouver vos plats par semaine
+    category:
+        meal_day: Repas du jour
+        meal_week: Repas de la semaine
+        energy_needs: Besoins énergétiques
+        nutritional_recommendations: Recommandations
+        model_meals: Repas
+        dishes: Recettes
+        foods: Aliments
+        balance_sheet: Bilans
+        diet_evolution: Evolution
+    buttons:
+        see_profile: Voir mon profil

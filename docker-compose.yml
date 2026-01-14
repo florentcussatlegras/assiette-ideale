@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+    ###> doctrine/doctrine-bundle ###
+    # database:
+    #     image: postgres:${POSTGRES_VERSION:-16}-alpine
+    #     environment:
+    #         POSTGRES_DB: ${POSTGRES_DB:-db_live_for_eat}
+    #         # You should definitely change the password in production
+    #         POSTGRES_USER: ${POSTGRES_USER:-florent}
+    #         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+
+    database:
+        image: mysql:8.0
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+          MYSQl_ROOT_PASSWORD: lenJnEKgdldsiABu
+          MYSQL_DATABASE: live_for_eat
+          MYSQL_USER: debian-sys-maint
+          MYSQL_PASSWORD: lenJnEKgdldsiABu
+        ports: [4306, 3306]
+        volumes:
+          - ./mysql:/var/lib/mysql
+
+    
+    # volumes: 
+    #     - db-data:/var/lib/postgresql/data:rw
+        # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+        # - ./docker/db/data:/var/lib/postgresql/data:rw
+    ###< doctrine/doctrine-bundle ###
+
+
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+  #database:
+    # image: mysql:8.0
+    # command: --default-authentication-plugin=mysql_native_password
+    # environment:
+    #   MYSQl_ROOT_PASSWORD: lenJnEKgdldsiABu
+    #   MYSQL_DATABASE: live_for_eat2
+    #   MYSQL_USER: debian-sys-maint
+    #   MYSQL_PASSWORD: lenJnEKgdldsiABu
+    # ports: [4306, 3306]
+    # volumes:
+    #   - ./mysql:/var/lib/mysql
+
+    #DATABASE_URL=mysql://debian-sys-maint:lenJnEKgdldsiABu@127.0.0.1:3306/live_for_eat
+  # database:
+  #   image: mysql:8.0
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   environment:
+  #     MYSQl_ROOT_PASSWORD: lenJnEKgdldsiABu
+  #     MYSQL_DATABASE: live_for_eat
+  #     MYSQL_USER: debian-sys-maint
+  #     MYSQL_PASSWORD: lenJnEKgdldsiABu
+  #   ports: [4306, 3306]
+  #   volumes:
+  #     - ./mysql:/var/lib/mysql
+
+    # DATABASE_URL=mysql://debian-sys-maint:lenJnEKgdldsiABu@127.0.0.1:3306/live_for_eat
+  
+  # mailer:
+  #   image: schickling/mailcatcher
+  #   ports: [1025, 1080]
+  
+  # rabbitmq:
+  #   image: rabbitmq:3.7-management
+  #   ports: [5672, 15672]
+###< doctrine/doctrine-bundle ###

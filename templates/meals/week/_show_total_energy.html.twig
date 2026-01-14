@@ -1,0 +1,55 @@
+
+<div class="flex flex-row items-center gap-4 px-6 py-2 bg-{{ bgColor|default('light-blue') }}">
+
+    {% if alert is defined and app.session.get('_meal_day_date') != 'model' %}
+
+        <div 
+            {{ stimulus_controller('popover-info', {
+                url: path('meal_popover_energy')
+            }) }}
+            data-action="click->popover-info#showMessages"
+            data-energy="{{ mealDayEnergy }}"
+            class="flex items-center cursor-pointer gap-2"
+        >
+
+            {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(42), opacity: 1 }) }}
+
+            <div class="flex items-end gap-2">
+                <span class="text-3xl font-semibold leading-none" style="color: {{ alert.color  }}">{{ mealDayEnergy|round }}</span>
+                <span class="text-base" style="color: {{ alert.color  }}">Kcal</span>
+            </div>
+
+        </div>
+
+    {% else %}
+            
+        <div class="flex items-end gap-2">
+            <span class="text-3xl font-semibold leading-none text-white">{{ mealDayEnergy|round }}</span>
+            <span class="text-base text-gray-500">Kcal</span>
+        </div>
+       
+    {% endif %}
+
+
+    <input 
+        type="hidden" 
+        data-meal-target="alertEnergy"
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_LACK') or
+            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_LACK') or 
+            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_LACK')
+        %}
+            value="-1"
+        {% endif %}
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') or
+            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') or 
+            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS')
+        %}
+            value="1"
+        {% endif %}
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL') %}
+            value="0"
+        {% endif %}
+    />
+
+</div> 
+

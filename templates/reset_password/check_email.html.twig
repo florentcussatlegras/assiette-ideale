@@ -1,0 +1,22 @@
+
+{% extends "security/_layout.html.twig" %}
+
+{% block content %}
+
+    <div class="flex flex-col gap-2">
+
+        <h1 class="text-xl font-bold">
+            Réinitialisation de votre mot de passe
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500 text-left">
+            Si un compte correspondant à votre adresse e-mail existe, un e-mail vient de vous être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
+            <br />
+            Ce lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+        </p>
+
+        <a href="{{ path('app_login') }}" class="text-light-blue font-bold">Revenir à la connexion</a>
+
+    </div>
+
+{% endblock %}

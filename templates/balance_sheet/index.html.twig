@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Mes bilans{% endblock %}
+
+{% block body %}
+
+	<main role="main">
+
+		{{ include('partials/_header.html.twig', { h1_content: 'Mes bilans' }) }}
+
+		<div class="my-4">
+
+			<div {{ stimulus_controller('balance-sheet', { urlLoadContent: path('app_balance_sheet_show_average_data'), urlLoadFavoriteDish: path('app_balance_sheet_favorite_dish'), urlLoadFavoriteFood: path('app_balance_sheet_favorite_food'), urlLoadMostCaloricMeal: path('app_balance_sheet_most_caloric_meal') } )| stimulus_controller('alert-imc-weight-modal') }} class="flex flex-col">
+
+				{{ include('balance_sheet/_datepicker_range.html.twig') }}
+
+				<div class="flex flex-row mt-4 gap-4">
+
+					<div
+						class="my-hidden lg:flex flex-col gap-4 w-2-12">
+						{# {{ render(path('app_balance_sheet_show_imc_alert')) }} #}
+						{{ include('balance_sheet/_weight_imc_energy.html.twig') }}
+					</div>
+
+					<div class="flex flex-col 2xl:flex-row w-full lg:w-10-12 gap-2 2xl:gap-4">
+
+						<div class="w-full 2xl:w-4/5">
+							<div class="content bg-white px-6 rounded-2xl shadow-soft" data-balance-sheet-target="content"></div>
+							<div class="flex my-2 h-[200px] items-center justify-center hidden" data-balance-sheet-target="loader">
+								<div class="loader"></div>
+							</div>
+						</div>
+
+						<div class="w-full 2xl:w-1/5 ">
+							<div class="flex flex-col gap-2 items-start font-medium bg-white p-4 rounded-2xl shadow-soft" data-balance-sheet-target="contentFavorite">
+
+								<span class="text-base">Votre plat favori</span>
+
+								<div data-balance-sheet-target="favoriteDish">
+									{{ render(path('app_balance_sheet_favorite_dish')) }}
+								</div>
+
+								<span class="text-base">Votre aliment favori</span>
+
+								<div data-balance-sheet-target="favoriteFood">
+									{{ render(path('app_balance_sheet_favorite_food')) }}
+								</div>
+
+								<span class="text-base">Votre repas le plus calorique</span>
+
+								<div data-balance-sheet-target="mostCaloricMeal">
+									{{ render(path('app_balance_sheet_most_caloric_meal')) }}
+								</div>
+
+							</div>
+							<div class="flex my-2 h-[200px] items-center justify-center hidden" data-balance-sheet-target="loaderFavorite">
+								<div class="loader"></div>
+							</div>
+						</div>
+
+						<div
+							class="flex lg:hidden flex-col gap-4 mt-2">
+							{# {{ render(path('app_balance_sheet_show_imc_alert')) }} #}
+							{{ include('balance_sheet/_weight_imc_energy.html.twig') }}
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</main>
+
+{% endblock %}

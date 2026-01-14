@@ -1,0 +1,57 @@
+
+
+<div 
+    id="wrapper" 
+    class="wrapper wrapper-search__header mt-6 mx-auto" 
+    data-loading="addClass(opacity-50)"
+    data-reload-content-target="content"
+>
+
+	{% for item in results %}
+
+            <a 
+                class="card card-wrapper rounded-lg current-shadow" 
+                {% if instanceOf(item, 'App\\Entity\\Dish') %}
+                    href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}"
+                {% else %}
+                    href="{{ path('app_food_show', { slug: item.slug }) }}"
+                {% endif %}
+                role="option"
+            >
+
+                <div class="flex flex-row">
+                {% if item.picture is not null and item.picturePath is not null %}
+                    <img alt="Image" class="rounded-lg w-24" src="{{ item.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                {% else %}
+                    <img src="https://placehold.co/50x50" alt="Photo plat" width="100px" class="rounded-lg">
+                {% endif %}
+    
+                    <div class="px-5">
+                        <div class="mb-1 font-bold text-light-blue text-base leading-4">
+                            {{ showKeyword(item.name, keyword)|raw }}
+                        </div>
+                        {% if instanceOf(item, 'App\\Entity\\Dish') %}
+                            {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
+                        {% else %}
+                            <div class="list-fgp flex flex-row gap-2">
+                                <div class="w-3 h-3 rounded-full" style="border: 1px solid {{ item.foodGroup.parent.color }}; background-color: {{ item.foodGroup.parent.color }}"></div>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+
+            </a>
+
+    {% else %}
+
+        <div class="list-group-item p-8" role="option" aria-disabled="true">{% trans %}Aucun résultat{% endtrans %}</div>
+
+    {% endfor %}
+
+</div>
+
+
+
+
+

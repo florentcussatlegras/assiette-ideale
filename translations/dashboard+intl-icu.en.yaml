@@ -1,0 +1,15 @@
+dashboard:
+    welcome: 'Welcome {username}'
+    search_menu_week: Find your dishes per week
+    category:
+        meal_day: Meal of the day
+        meal_week: Meals of the week
+        energy_needs: Energy needs
+        nutritional_recommendations: nutritional recommendations
+        model_meals: Your meals
+        dishes: Dishes
+        foods: Foods
+        balance_sheet: Balance sheet
+        diet_evolution: Evolution of your diet
+    buttons:
+        see_profile: See my profil

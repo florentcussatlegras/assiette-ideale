@@ -1,0 +1,574 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+	<div class="grid grid-cols-12">
+
+		{% if app.session.get('_meal_day_date') == 'model-meal' %}
+			{% set h1Header = "Nouveau repas type" %}
+		{% else %}
+			{% set h1Header = "Mes repas du " ~ app.session.get('_meal_day_date')|detailedDate %}
+		{% endif %}
+
+
+		<div class="col-span-12 p-4">
+
+			<div class="flex items-end justify-between mt-4 mb-1">
+				{{ include("partials/_header.html.twig", {}) }}
+			</div>
+
+			<div class="box">
+
+				<div class="p-2">
+			{# {{ include("navigation/bread_crumb.html.twig", {'links' : {}, 'current' : 'Mon repas du jour'}) }} #}
+
+					<div>
+
+						<div class="flex border-2 border-blue-500 justify-end pr-20 gap-6">
+
+							{# {% if app.session.get('_meal_day_date') != 'model-meal' %}
+
+								<div style="width:2%"></div>
+
+							{% endif %} #}
+
+							{# <div class="ml-auto flex"> #}
+
+								{% for foodGroupParent in foodGroupParents %}
+
+									<a href="#" class="fgp" title="{{ foodGroupParent.name }}">
+
+										<span class="picto" style="width:50px; height:50px; background-color:{{ foodGroupParent.degradedColor }}">
+											{{ include('meal/pictos/foodgroupparent/' ~ foodGroupParent.alias ~ '.xml.twig', {'color' : foodGroupParent.color }) }}
+										</span>
+									
+									</a>
+
+								{% endfor %}
+
+							{# </div> #}
+
+						</div>
+
+						{% for rankMeal in range(0, app.session.get('_meal_day_range')) %}
+
+							{{ include("meal/day/meal.html.twig") }}
+
+						{% endfor %}
+
+					</div>
+
+					<div class="meal border-2 border-blue-500">
+
+						<div class="container-list-meal-model">
+
+						</div>
+
+						{% set rankMeal = app.session.get('_meal_day_range') %}
+						{% set rankMealNew = rankMeal + 1 %}
+
+						{% if app.session.get('_meal_day_date') != 'model-meal' %}
+
+							{% if 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty %}
+
+								<a href="#" class="add-meal">
+					
+									<span class="picto-feature">
+
+											{{ include("meal/pictos/add-meal.xml.twig") }}
+
+									</span>
+					
+									<span style="text-align: center">Ajouter un nouveau repas</span>
+
+								</a>
+								
+							{% endif %}
+							
+							<a href="#" class="list-meal-type" data-rank-meal="{{ rankMealNew }}" data-toggle="modal" data-target="#listMealTypeModal">
+								
+								<span class="picto">
+
+									{{ include("meal/pictos/import.xml.twig", {'color' : '#626770'}) }}
+
+								</span>
+
+								<span>Importer un nouveau repas depuis ma liste</span>
+
+							</a>
+
+						{% endif %}
+
+						{{ render(controller('App\\Controller\\meal\\ModelController::listModalMealType', {'rankMeal' : rankMeal})) }}
+
+					</div>
+
+					{% if app.session.get('_meal_day_date') != 'model-meal' and (rankMeal > 0 or (rankMeal == 0 and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty)) %}
+
+						<form method="POST" action="{{ path('menu_add') }}">
+
+							<button type="submit" class="btn waves-effect waves-light" data-toggle="modal">
+
+								<span style="margin-right: 5px">{{ include("meal/pictos/save.xml.twig") }}</span>
+
+								<span>Enregistrer les repas</span>
+
+							</button>
+
+						</form>
+
+					{% elseif app.session.get('_meal_day_date') == 'model-meal' and 'dishAndFoods' in app.session.get('_meal_day_0')|keys and app.session.get('_meal_day_0')['dishAndFoods'] is not empty %}
+
+						<form action="{{ path('model_meal_add', {'meal_list' : true}) }}" method="POST" style="display: flex; align-items: center; grid-column-gap: 10px">
+
+							<input type="hidden" id="typeModelMeal" name="type">
+
+							<input type="hidden" class="rank" name="rankMeal" value="0">
+
+							<div class="input-group" style="width: 200">
+
+								<input type="text" class="name-model-meal form-control" style="background-color: #fff" name="name" placeholder="Nom" required="required">
+
+							</div>
+
+							<button type="submit" class="btn add-model-meal">SAUVEGARDER LE REPAS DANS MA LISTE</button>
+
+						</form>
+
+					{% endif %}
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+	
+	<div data-controller="modal" data-action="keydown@window->modal#closeWithKeyboard">
+      <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded" data-action="click->modal#open">Open Modal</button>
+
+      {{ include('meal/day/_modal.html.twig') }}
+    </div>
+
+
+
+	<script type="text/javascript">
+
+		$(function(){
+
+			$(document).on('click', '.show-list', function(e){
+	        	e.preventDefault();
+	        	$(this).closest('.meal').attr('data-rank-dish', 'all');
+	        	callAjaxSearchDishes($(this), 0);
+	        });
+
+
+			callAjaxSearchDishes = function(obj, page, src = null) {
+
+            	meal = obj.closest('.meal');
+            	rankMeal = meal.data('rank-meal');
+            	keyword = meal.find('.input-search').val();
+
+            	if (src == 'crit-fgp')
+            	{
+	            	check = "#checkbox_" + rankMeal + "_" + obj.attr('data-id');
+	            	color = obj.attr('data-color');
+
+					if($(check).is(':checked') == true)
+	    			{
+	    				$(check).prop("checked", false);
+	    				obj.attr('style', 'background-color:' + color);
+	    				obj.siblings('.tick').hide();
+	    			}else{
+	    				$(check).prop("checked", true);
+	    				obj.attr('style', 'border: 2px solid #56c5a0; background-color:' + color);
+	    				obj.siblings('.tick').show();
+	    			}
+            	}
+
+	            fgp = [];
+	        	meal.find('.select-fgp').each(function(index){
+	              	if($(this).is(':checked'))
+	              	{
+        				console.log($(this).val() + ' est coché');
+	                	fgp.push($(this).val());
+	              	}
+	            });
+	            console.log(fgp);
+
+	            url = Routing.generate('meal_day_list_ajax', {'keyword' : keyword, 'fgp' : fgp, 'rankMeal' : rankMeal, 'page' : page, 'rankDish' : meal.attr('data-rank-dish')});
+	            console.log(url);
+
+	            $containerList = $('#container-list-' + rankMeal);
+
+	            $.ajax({
+	              url : url,
+	              beforeSend: function( xhr ) {
+	              	meal.find('.container-load-more').show();
+	              	if(src != 'load-more') {
+		            	meal.find('.list').empty();
+		            	meal.find('.loading').show();
+		            	meal.find('.no-result').hide();
+		            	$('.load-more').hide();
+	              	}else{
+	              		$('.load-more').html(showMoreLoading);
+	              	}
+	              }
+	            }).done(function( data) {
+	            	if(data.response == "no-results"){
+	            		meal.find('.container-load-more').hide();
+	            		meal.find('.no-result').show();
+	            	}else{
+	            		meal.find('.no-result').hide();
+		            	meal.find('.loading').hide();
+		        		meal.find('.load-more').show().attr('data-page', page);
+		            	if(src != 'load-more') {
+			            	$containerList.show().find('.list').show().html(data);
+			        	}else{
+			        		meal.find('.load-more-gif').hide();
+			        		$containerList.find('.list').append(data);
+			        	}
+			            $('.load-more').html(showMoreContent);
+			            if (meal.find('.last-block').last().val() == 'true')
+			            {
+			            	meal.find('.container-load-more').hide();
+			            }
+	            	}
+	            });
+
+	        }
+
+			var showMoreButton = '.load-more';
+			var showMoreContent;
+			var showMoreLoading;
+	
+			showMoreContent = jQuery(showMoreButton).html();
+			showMoreLoading = '<span id="loading"><span>&bull;</span><span>&bull;</span><span>&bull;</span></span>';
+
+			$(document).on('click', '.remove-dish', function(){
+				url = Routing.generate('meal_day_remove_dish', {'rankMeal' : $(this).data('rank-meal'), 'rankDish' : $(this).data('rank-dish')});
+				window.location.href = url;
+			});
+
+			$('.search').bind('click', function(){
+				$('.inputSearch').hide();
+				$(this).siblings('.inputSearch').show().focus();
+			});
+
+			$( ".sortable" ).sortable({
+
+				update: function() {
+
+					rankMeal = $(this).data('rank-meal');
+					orderlist = [];
+					$(this).children('li').each(function(){
+						orderlist.push($(this).data('rank-dish'));
+					});
+
+					console.log(orderlist);
+
+					url = Routing.generate('meal_day_reorder_list_ajax', {'rankMeal' : rankMeal, 'orderlist' : orderlist});
+					console.log(url);
+
+	                $.ajax({
+	                  url : url,
+	                  beforeSend: function( xhr ) {
+	                    
+	                  }
+	                }).done(function( data) {
+	                	
+	                	$('.meal').each(function(index){
+	                		if(index == rankMeal){
+	                			$(this).children('ul').children('li').each(function(index){
+	                				$(this).attr('data-rank-dish', index);
+	                				$(this).find('.update-dish').attr('data-rank-dish', index);
+	                				$(this).find('.remove-dish').attr('data-rank-dish', index);
+	                			});
+	                		}
+	                	})
+
+	                });
+
+				}
+
+			});
+
+    		$( ".sortable" ).disableSelection();
+
+    		var delay = (function(){
+                var timer = 0;
+                return function(callback, ms){
+                  clearTimeout (timer);
+                  timer = setTimeout(callback, ms);
+                };
+            })(); 
+
+            var duplicateFilter=(function(){
+              var lastContent;
+              return function(content,callback){
+                content=$.trim(content);
+                if(content!=lastContent){
+                  callback(content);
+                }
+                lastContent=content;
+              };
+            })();
+
+            
+
+	        $(document).on('keyup', '.input-search', function(e){
+            	obj = this;
+	            delay(function(){
+	                duplicateFilter($(obj).val(),callAjaxSearchDishes($(obj), 0));
+	            }, 500 );
+            });
+
+
+	        $(document).on('click', '.update-dish', function(e){
+	        	e.preventDefault();
+	        	$(this).closest('.meal').find('.select-fgp').each(function(){
+	              	$(this).attr('checked', false);
+	            });
+	            $(this).closest('.meal').find('.crit-fgp').each(function(){
+	              	$(this).attr('style', 'background-color: #fff; border: 1px solid ' + $(this).attr('data-color') + '; color:' + $(this).attr('data-color'));
+	            });
+	        	$(this).closest('.meal').attr('data-rank-dish', $(this).data('rank-dish'));
+	        	callAjaxSearchDishes($(this), 0, null);
+	        });
+
+	        $(document).on('click', '.crit-fgp > .picto', function(e){
+				e.preventDefault();
+				
+				callAjaxSearchDishes($(this), 0, 'crit-fgp');	
+	        });
+
+	        $(document).on('click', '.load-more', function(e){
+	        	page = parseInt($(this).attr('data-page')) + 1;
+	        	callAjaxSearchDishes($(this), page, 'load-more');
+	        });
+
+            $('.add-meal').bind('click', function(e){
+
+            	e.preventDefault();
+
+            	url = Routing.generate('meal_day_add');
+            	
+            	window.location.href = url;
+
+            	// $.ajax({
+	            //   url : url,
+	            //   beforeSend: function( xhr ) {
+
+	            //   }
+	            // }).done(function( data) {
+	            	
+	            // 	$('.container-meal').append(data).find('.meal').last().hide().fadeIn(300);
+	            // 	selectTypeMeal();
+
+	            // });
+
+            });
+
+            $(document).on('click', '.remove-meal', function(e){
+
+            	e.preventDefault();
+            
+            	url = Routing.generate('meal_day_remove', {'rankMeal' : $(this).data('rank-meal')});
+            	console.log(url);
+            	window.location.href = url;
+            
+            });
+
+            /*$(document).on('click', '.add-model-meal', function(e){
+
+            	e.preventDefault();
+            	alert('foo');
+
+            	rankMeal = $(this).data('rank-meal');
+            	src = $(this).data('src');
+            	name = $('#name-model-meal-' + rankMeal).val();
+
+            	$('.type').each(function(){
+            		if($(this).is(':checked'))
+            		{
+            			type = $(this).val();
+            		}
+            	});
+            	url = Routing.generate('model_meal_add', {'rankMeal' : rankMeal, 'name' : name, 'type' : type});
+
+            	$.ajax({
+	              url : url,
+	              beforeSend: function( xhr ) {
+
+	              }
+	            }).done(function( data ) {
+	            	console.log(data);
+		            if(src == 'list-model-meal')
+		            {
+		            	window.location.href = Routing.generate('model_meal_list');
+		            }
+	            });
+	      
+            });*/
+            
+            /*$(document).on('click', '.list-ajax-model-meal', function(e){
+
+            	e.preventDefault();
+
+            	url = Routing.generate('model_meal_list_ajax', {'rankMeal' : $(this).data('rank-meal')});
+            	$listMealTypeModal = $('#listMealTypeModal');
+            	console.log(url);
+            	$.ajax({
+	              url : url,
+	              beforeSend: function( xhr ) {
+
+	              }
+	            }).done(function( data ) {
+	            	$listMealTypeModal.append(data).fadeIn(300);
+	            });
+
+            });*/
+
+            $(document).on('click', '.toggle-list-model-meal', function(e){
+            	$(this).siblings('ul').fadeIn(300);
+            });
+
+            $(document).on('click', '.expend-down', function(e){
+            	e.preventDefault();
+            	$(this).hide().siblings('.expend-up').show();
+            	$('#list-model-meal-' + $(this).data('rank')).fadeIn(300);
+            });
+
+            $(document).on('click', '.expend-up', function(e){
+            	e.preventDefault();
+            	$(this).hide().siblings('.expend-down').show();
+            	$('#list-model-meal-' + $(this).data('rank')).fadeOut(300);
+            });
+
+            $(document).on('click', '.close-list-model-meal', function(e){
+            	$('.container-list-meal-model').empty().hide();
+            });
+
+           $(document).on('change', '.type', function(e){
+
+            	e.preventDefault();
+
+            	$(this).attr('checked', true);
+           		url = Routing.generate('meal_day_update_type_meal', {'rankMeal' : $(this).data('rank-meal'), 'type' : $(this).val()});
+
+           		//$('#modalAddModelMeal' + $(this).data('rank-meal')).find('.type', $(this).val());
+           		
+           		window.location.href = url;
+           		// $.ajax({
+	            //   url : url,
+	            //   beforeSend: function( xhr ) {
+
+	            //   }
+	            // }).done(function( data ) {
+	            // 	console.log('OK');
+	            // });
+            });
+
+            selectTypeMeal = function()
+            {
+
+	            $('.type').each(function(){
+	            	if($(this).val() == $(this).data('type') && $(this).data('disabled') == "0")
+	            	{
+		            	rank = $(this).attr('data-rank-meal');
+	            		$(this).attr('checked', true);
+	            		$('#modalAddModelMeal-' + rank).find('.type').val($(this).val());
+	            		$('#typeModelMeal').val($(this).val());
+	            	}else{
+	            		$(this).attr('checked', false);
+	            	}
+	            });
+	        }
+
+	        selectTypeMeal();
+
+	        $(document).on('click', '.show-details-alerts', function(){
+	        	$(this).hide().siblings('.hide-details-alerts').show();
+	        	$(this).parent().siblings('.details-alerts').fadeIn();
+	        });
+
+	        $(document).on('click', '.hide-details-alerts', function(){
+	        	$(this).hide().siblings('.show-details-alerts').show();
+	        	$(this).parent().siblings('.details-alerts').fadeOut();
+	        });
+
+	        $(document).on('change', '.n-portion', function(){
+
+	        	$containerAlerts = $(this).closest('.row-element').find('.alerts');
+
+	        	url = Routing.generate('meal_day_update_alert_on_dish_on_update_portion', {'id' : $(this).data('dish-id'), 'nPortion' : $(this).val(), 'rankDish' : $(this).data('rank-dish'), 'rankMeal' : $(this).data('rank-meal')});
+           		console.log(url);
+
+           		$.ajax({
+	              url : url,
+	              beforeSend: function( xhr ) {
+
+	              }
+	            }).done(function( data ) {
+	            	$containerAlerts.empty().html(data);
+	            });
+
+	        });
+
+	        $(document).on('keyup', '.quantity-food', function(){
+	        	if($(this).val() != '' && $(this).val() > 0)
+	        	{
+	        		quantity = parseInt($(this).val());
+		        	unitMeasure = $(this).parent().siblings().children('.measureUnit').val();
+		        	console.log(unitMeasure);
+		        	obj = this;
+		            delay(function(){
+		                duplicateFilter($(obj).val(), updateAlertFoods($(obj), quantity, unitMeasure));
+		            }, 500 );
+	        	}
+	        });
+
+	        $(document).on('change', '.measureUnit', function(){
+	        	quantity = parseInt($(this).siblings('.quantity-food').val());
+	        	if(quantity != '' && quantity > 0)
+	        	{
+	        		unitMeasure = $(this).val();
+	        		obj = this;
+		            delay(function(){
+		                duplicateFilter($(obj).val(), updateAlertFoods($(obj), quantity, unitMeasure));
+		            }, 500 );
+	        	}
+	        });
+
+	        updateAlertFoods = function($this, quantity, unitMeasure)
+	        {
+	        	$containerAlerts = $this.closest('.row-element').find('.alerts');
+	        	
+	        	url = Routing.generate('meal_day_update_alert_on_food_on_update_quantity', {'id' : $this.data('food-id'), 'quantity' : quantity, 'unitMeasure' : unitMeasure, 'rankDish' : $this.data('rank-dish'), 'rankMeal' : $this.data('rank-meal')});
+
+           		console.log(url);
+
+           		$.ajax({
+	              url : url,
+	              beforeSend: function( xhr ) {
+
+	              }
+	            }).done(function( data ) {
+	            	$containerAlerts.empty().html(data);
+	            });
+	        }
+
+	        $(document).on('click', '.advice', function(){
+
+	        	$('#titleAdvice').html($(this).data('title'));
+	        	$('#detailsAdviceAlreadyNotRecommended').html($(this).data('content-alreadynotrecommended'));
+	        	$('#detailsAdviceNotAlreadyNotRecommended').html($(this).data('content-notalreadynotrecommended'));
+
+	        });
+
+		});
+
+	</script>
+
+{% endblock %}

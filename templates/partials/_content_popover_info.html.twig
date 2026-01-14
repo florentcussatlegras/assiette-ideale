@@ -1,0 +1,8 @@
+
+    <div class="font-bold text-3xl mb-2 flex flex-col gap-3 items-center justify-center">
+        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(20), sizeCircle: "100px", widthBorder: 3, opacity: 1 }) }}
+        {{ title }} 
+    </div>
+    <div class="font-normal text-center text-base">
+        {{ message|default("") }}
+    </div>

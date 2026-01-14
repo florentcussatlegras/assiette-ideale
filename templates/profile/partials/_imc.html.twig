@@ -1,0 +1,31 @@
+<div class="bg-green-100 rounded-2xl p-4 shadow-soft">
+    <span class="pb-2 flex items-center justify-center text-base font-medium text-green-700 border-b border-green-700 w-full">
+        {% trans from 'profile' %}profile.imc.title{% endtrans %}
+    </span>
+    <div class="pt-4 flex items-center justify-center my-2 text-xl text-green-700 font-bold relative">
+        {% if app.user.imc %}
+            {{ app.user.imc|round(0, 'floor') }}
+        {% else %}
+            <span class="text-sm">Il nous manque des informations afin que nous puissions calculer votre IMC. 
+                <a href="#" class="text-sm text-dark-blue">En savoir plus</a>
+            </span>
+        {% endif %}
+        <div class="absolute left-0">
+            <div 
+                {# data-modal-target="alert-imc-weight-modal" 
+                data-modal-toggle="alert-imc-weight-modal"  #}
+                class="flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
+                data-action="click->alert-imc-weight-modal#showMessages"
+                data-item="imc"
+                type="button"
+                {# data-alert-color="{{ alerts.higher_level.color }}"
+                data-alert-text="{{ alerts.higher_level.text }}" #}
+            >
+                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceImcAlerts, size: 5, opacity: 0.2 }) }}
+            </div>
+        </div>
+    </div>
+
+    {{ include('profile/partials/modals/_alert_modal_imc.html.twig') }}
+
+</div>

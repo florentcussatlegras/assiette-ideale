@@ -1,0 +1,25 @@
+<div class="flex items-center">
+
+    <div class="w-2/5 flex justify-center">
+        <div class="flex flex-col justify-center">
+            <div class="w-20 h-20 sm:w-24 sm:h-24 flex-none lg:w-32 lg:h-32 image-fit relative">
+                {% if profileForm.pictureFile.vars.value is not empty %}
+                    <img id="user_profil_picture_preview" class="rounded-full" alt="Photo de l'utilisateur {{ app.user.username }}" src="{{ app.user.picturePath|imagine_filter('squared_thumbnail_medium') }}">
+                {% else %}
+                    <img id="user_profil_picture_preview" class="rounded-full" src="{{ asset('svg/user.svg') }}"></img>
+                {% endif %}
+                <div class="absolute mb-1 mr-1 flex items-center justify-center bottom-0 right-0 bg-theme-17 rounded-full p-2 cursor-pointer"> <i class="w-4 h-4 text-white" data-feather="camera"></i> </div>
+                {{ form_widget(profileForm.pictureFile, {'attr' : {'class' : 'absolute bottom-0 right-0 h-12 w-10 opacity-0 rounded-full'}}) }}
+            </div>
+            {{ form_errors(profileForm.pictureFile) }}
+        </div>
+    </div>
+
+    <div class="w-3/5 flex flex-col gap-4 pr-10">
+        {{ form_row(profileForm.username) }}
+        {{ form_row(profileForm.email) }}
+    </div>
+
+    {{ form_widget(profileForm._token_profile) }}
+
+</div>

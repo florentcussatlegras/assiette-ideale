@@ -1,0 +1,79 @@
+<div class="flex flex-col xl:flex-row gap-4 items-start justify-start">
+
+    <div class="w-full xl:w-[500px] min-w-0">
+
+        {% for nutrient, quantity in average_nutrient %}
+
+            <div class="flex flex-col items-start py-1 w-full">
+            
+                {% set levelAlert = attribute(balance_sheet_alerts, nutrient) %}
+                
+                <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
+
+                    {# <div class="flex items-center">
+                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ nutrient|nutrient.color }}"></div>
+                        <label class="w-48 mb-0">{{ nutrient|trans({}, 'recommendations')|capitalize }}:</label>
+                    </div>
+
+                    <div class="flex gap-2 items-center justify-between w-full" style="color: {{ levelAlert.color }}">
+                    
+                        <div class="flex justify-start md:justify-center w-32 text-sm md:text-xl">
+                            <span class="bg-gray rounded-full px-2 py-1 font-semibold">{{ quantity }} g</span>
+                        </div>
+                    
+                        <div class="flex flex-row items-center">
+                            <a href="#" class="relative" data-action="click->popover-info#show">
+                                {{ include('balance_sheet/_icon_warning.html.twig', { size: 18 }) }}
+                            </a>
+                            <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+            
+                    </div> #}
+
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ nutrient|nutrient.color }}"></div>
+                        <label class="w-48 mb-0">{{ nutrient|trans({}, 'recommendations')|capitalize }}</label>
+                        <div class="flex justify-center w-32 text-sm md:text-xl">
+                            <span class="bg-gray rounded-full px-2 py-1 font-semibold" style="color: {{ levelAlert.color }}">{{ quantity }} g</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 items-center ml-auto" style="color: {{ levelAlert.color }}">
+
+                        <a href="#" class="relative" data-action="click->popover-info#show" style="color: {{ levelAlert.color }}">
+                            {{ include('balance_sheet/_icon_warning.html.twig', { size: 7 }) }}
+                        </a>
+
+                        <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+
+                    </div>
+
+                </div>
+
+                <div data-balance-sheet-target="detailsAlert" class="details-alert hidden text-sm" style="color: {{ levelAlert.color }}">
+                    {{ render(path('app_balance_sheet_message_details_alert_nutrient', { 'nutrient': nutrient, 'quantity': quantity, 'alertCode': levelAlert.code })) }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <div class="flex flex-row justify-center w-full flex-1 charts-container">
+        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
+                'averageNutrient': average_nutrient|serialize,
+                'title': 'Votre consommation',
+                'displayLabel': true
+            })) }}
+        </div>
+        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
+                'averageNutrient': average_nutrient_recommended|serialize,
+                'title': 'Nos recommandations',
+                'displayLabel': false
+            })) }}
+        </div>
+    </div>
+</div>

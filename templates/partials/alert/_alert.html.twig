@@ -1,0 +1,28 @@
+<div
+    data-controller="notification"
+    data-notification-delay-value="2000"
+    class="transition transform duration-1000 hidden {% if key == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} pointer-events-none fixed 
+    right-0 top-7 z-50 shadow-lg rounded px-4 py-3 w-full max-w-xs sm:w-1/4"
+    data-transition-enter-from="opacity-0 translate-x-6"
+    data-transition-enter-to="opacity-100 translate-x-0"
+    data-transition-leave-from="opacity-100 translate-x-0"
+    data-transition-leave-to="opacity-0 translate-x-6"
+>
+    <div class="flex items-center">
+        <div class="flex items-center gap-2 mr-2">
+            <div style="width: 40px">
+                {{ include('partials/svg/alert-' ~ key ~ '.svg') }}
+            </div>
+            <div class="text-sm text-left leading-5 ml-2">
+                {{ message }}
+            </div>
+        </div>
+        <div class="ml-auto flex">
+            <button data-action="alert-message#close" class="inline-flex text-green-700 focus:outline-none focus:text-gray-300 transition ease-in-out duration-150">
+                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

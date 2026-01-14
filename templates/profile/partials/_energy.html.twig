@@ -1,0 +1,68 @@
+   <div class="bg-red-100 rounded-2xl w-full p-4 relative shadow-soft">
+                        
+    <div class="pb-2 flex items-center justify-center text-base font-medium text-red-700 border-b border-red-700 w-full">
+        <center>{% trans from 'profile' %}profile.energy.title{% endtrans %}</center>
+    </div>
+    
+    <div class="pt-4 flex items-center justify-center my-2 text-xl text-red-700 font-bold">
+
+        <div class="flex flex-col gap-3">
+        
+            {% if app.user.energy %}
+
+                    <center>
+                        {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
+                    </center>
+
+                    {# {% if app.user.automaticCalculateEnergy is same as(true) %}
+                        <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
+                    {% else %}
+                        <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
+                    {% endif %} #}
+
+            {% else %}
+            
+                <div class="text-base flex flex-col items-center gap-4">
+
+                    {% if app.user.automaticCalculateEnergy is same as(false) %}
+
+                        <span>Vous n'avez pas indiqué votre besoin énergétique quotitien</span>
+
+                    {% endif %}
+
+                    {% if missingElements|length > 0 %}
+
+                        <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
+                            {{ missingElements|join(',', ' et ') }}
+                            <br/>Merci de compléter ces informations ou 
+                        </p>
+
+                    {% else %}
+
+                        <a href="{{ path('app_energy_estimate') }}" 
+                                class="text-dark-blue text-black p-2 rounded-full">
+                            Laissez l'application estimer mon besoin énergétique
+                        </a>
+
+                    {% endif %}   
+
+                    <div class="flex flex-row text-sm gap-2">
+                        <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
+                                    class="text-white bg-dark-blue p-2 rounded-full">
+                            Saisir votre besoin
+                        </a> 
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {# <div class="absolute" style="top: 40px; left: 10px">
+        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceEnergyAlerts, size: 16, opacity: 0.3 }) }}
+    </div> #}
+    
+</div>

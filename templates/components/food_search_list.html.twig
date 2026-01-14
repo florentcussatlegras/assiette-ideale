@@ -1,0 +1,220 @@
+
+{# <div{{ attributes.add(stimulus_controller('search_foods')) }}>
+    <input
+        type="search"
+        data-model="query"
+        {# data-action="live#update" #}
+    {# >
+
+    {% if this.foods|length > 0 %}   
+        <div data-loading="addClass(opacity-50)">
+            {% for food in this.foods %}
+                {{ include("food/_food.html.twig", {unitMeasures: this.unitMeasures, foodGroupAlias: this.foodGroupAlias}) }}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div>No food found matching "{{ query }}"</div>
+    {% endif %} #}
+{# </div> #}
+
+<div {{attributes}}>
+
+    {# {{ dump(app.session.all()) }} #}
+
+    <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
+
+    <input name="food_group_code" type="hidden" value="{{ foodGroupAlias }}" /> 
+    <input name="food_group_slug" type="hidden" value="{{ foodGroupSlug }}" />
+
+    <div class="flex gap-2 flex-wrap">
+        {% for foodGroup in fgs|default(null) %}
+            {{ foodGroup }}
+        {% endfor %}
+        {# {% for foodGroup in foodGroups %}
+                <div class="font-bold p-1" style="border:2px solid {{ foodGroup.parent.degradedColor }}; color: {{ foodGroup.parent.color }}; background-color: {{ foodGroup.parent.degradedColor }}">
+                {{ foodGroup.name|upper }}
+            </div>
+        {% endfor %} #}
+    </div>
+
+    <div class="flex flex-col items-start lg:flex-row mt-4 md:items-center md:justify-between">
+
+        <div class="flex relative search_food_list mb-2 w-1/4">
+            <input
+                id="input_search_food_list"
+                type="search"
+                data-model="query"
+                class="block p-6 rounded-full border border-slate-800 w-full"
+                placeholder="Saisissez le nom d'un aliment..."
+                {# data-action="live#update" #}
+            >
+        </div>
+
+        <div class="flex lg:ml-auto h-11">
+
+            {{ include('partials/_view_mode_list.html.twig') }}
+
+            <div class="flex items-center gap-6 ml-6">
+
+                {# {% set count_food = 26 %}
+                <span class="text-right">
+                    {% trans with {'count_food' : count_food, 'foodgroup' : foodGroup.name} from 'app' into 'fr' %}food.list.count{% endtrans %}
+                </span> #}
+                {# {{ food.list.count|trans({'count_food' : count_food}, 'app') }} #}
+
+                <select>
+                    <option><span class="font-bold">TRIER</span>: Pertinence</option>
+                    <option>Ordre alphabétique</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="flex flex-wrap py-2 gap-4">
+        {{ render(controller('App\\Controller\\FoodController::getFoodGroupList')) }}
+    </div>
+
+    {# <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-3 gap-2" data-loading="addClass(opacity-50)">  #}
+    <div id="wrapper" class="wrapper mt-3 gap-4" data-loading="addClass(opacity-50)">       
+
+        {# {% for food in foods %}
+
+            {{ include("food/_food.html.twig") }}
+
+        {% endfor %} #}
+
+        {% if this.foods|length > 0 %}   
+            {% for food in this.foods %}
+                {{ include("food/_food.html.twig", {unitMeasures: this.unitMeasures}) }}
+            {% endfor %}
+        {% else %}
+            <div>No foods found</div>
+        {% endif %}
+
+    </div>
+
+    <script> 
+        const wrapper = document.getElementById("wrapper");
+        const btnModeList = document.getElementById("view-mode-list");
+        const btnModeGrid = document.getElementById("view-mode-grid");
+        // const cards = document.querySelectorAll(".card");
+        // const cardsColLeft = document.querySelectorAll(".card-col-left");
+        // const cardsColRight = document.querySelectorAll(".card-col-right");
+        // const selectQuantity = document.querySelectorAll(".select-quantity");
+        // const foodNutritionValues = document.querySelectorAll(".food-nutrition-values");
+
+        // const inputSearch = document.getElementById("input_search_food_list");
+
+        // inputSearch.addEventListener("keyup", (e) => {
+        //     e.preventDefault();
+
+        //     const viewModeSelector = document.querySelector(".view-mode-switch__display--selected");
+
+        //     switch (viewModeSelector.id) {
+        //         case "view-mode-grid":
+        //             cards.forEach((el) => {
+        //                 if(el.classList.contains("card-wrapper-list")) {
+        //                     el.classList.remove("card-wrapper-list");
+        //                     el;classList.add("card-wrapper-grid");
+        //                 }
+        //             })
+        //             break;
+        //         case "view-mode-list":
+        //             cards.forEach((el) => {
+        //                 alert(el.classList.contains("card-wrapper-grid"));
+        //                 if(el.classList.contains("card-wrapper-grid")) {
+        //                     el.classList.remove("card-wrapper-grid");
+        //                     el;classList.add("card-wrapper-list");
+        //                 }
+        //             })
+        //             break;
+        //     }
+        // })
+
+        btnModeList.addEventListener("click", function (event) {
+            // List view
+            event.preventDefault();
+            wrapper.classList.add("list");
+            btnModeGrid.classList.remove("view-mode-switch__display--selected")
+            this.classList.add("view-mode-switch__display--selected");
+            // cards.forEach((el) => {
+            //     el.classList.add("card-wrapper-list");
+            //     el.classList.remove("card-wrapper-grid");
+            //     // el.classList.remove("flex-col");
+            //     // el.classList.remove("justify-between");
+            //     // el.classList.add("flex-row");
+            //     // el.classList.add("items-center");
+            //     // el.classList.add("justify-start");
+            //     // el.classList.add("gap-8");
+            // });
+            // cardsColLeft.forEach((el) => {
+            //     el.classList.remove("flex-col");
+            //     // el.classList.remove("gap-4");
+            //     el.classList.add("w-1/3");
+            //     el.classList.add("flex-row");
+            //     el.classList.add("items-center");
+            // });
+            // cardsColRight.forEach((el) => {
+            //     el.classList.add("flex");
+            //     el.classList.add("flex-row");
+            //     el.classList.add("items-center");
+            //     el.classList.add("w-2/3");
+            //     el.classList.add("ml-12");
+            //     el.classList.add("justify-center");
+            // });
+            // foodNutritionValues.forEach((el) => {
+            //     el.classList.add("mr-4");
+            //     el.classList.remove("hidden");
+            // });
+            // selectQuantity.forEach((el) => {
+            //     el.classList.add("ml-auto");
+            //     el.classList.remove("mt-4");
+            // });
+        });
+
+        btnModeGrid.addEventListener("click", function (event) {
+            // Grid view
+            event.preventDefault();
+            wrapper.classList.remove("list");
+            btnModeList.classList.remove("view-mode-switch__display--selected");
+            this.classList.add("view-mode-switch__display--selected");
+            // cards.forEach((el) => {
+            //     el.classList.add("card-wrapper-grid");
+            //     el.classList.remove("card-wrapper-list");
+            //     // el.classList.remove("card-wrapper-list");
+            //     // el.classList.remove("flex-row");
+            //     // el.classList.add("justify-between");
+            //     // el.classList.add("flex-col");
+            //     // el.classList.remove("justify-start");
+            //     // el.classList.remove("gap-8");
+            //     // el.classList.remove("items-center");
+            // });
+            // cardsColLeft.forEach((el) => {
+            //     el.classList.add("flex-col");
+            //     // el.classList.remove("gap-4");
+            //     el.classList.remove("flex-row");
+            //     el.classList.remove("items-center");
+            //     el.classList.remove("w-1/3");
+            // });
+            // cardsColRight.forEach((el) => {
+            //     el.classList.remove("flex");
+            //     el.classList.remove("flex-row");
+            //     el.classList.remove("items-center");
+            //     el.classList.remove("w-2/3");
+            //     el.classList.remove("ml-12");
+            //     el.classList.remove("justify-center");
+            // });
+            // foodNutritionValues.forEach((el) => {
+            //     el.classList.add("hidden");
+            // });
+            // selectQuantity.forEach((el) => {
+            //     el.classList.remove("ml-auto");
+            //     el.classList.add("mt-4");
+            // });
+        });
+    </script>
+
+</div>

@@ -1,0 +1,30 @@
+
+
+{% extends "security/_layout.html.twig" %}
+
+{% block content %}
+
+    <div class="flex flex-col gap-2">
+
+        <h1 class="text-xl font-bold">
+            Renvoyer l'email d'activation
+        </h1>
+
+        <p class="mt-2 text-sm text-gray-500 text-left">
+            Votre compte n'est pas activé.<br />
+            Voulez-vous recevoir à nouveau un email contenant un lien pour confirmer votre inscription?
+        </p>
+
+        {{ form_start(form) }}
+
+            <button class="bg-light-blue text-white w-full font-bold p-2 text-base cursor-pointer rounded-lg mt-8">Renvoyer l'email</button>
+
+        {{ form_end(form) }}
+
+        <br />
+
+        <a class="text-light-blue text-sm" href="{{ path('app_login') }}">Revenir au formulaire de connexion</a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ parent() }} - Nous contacter{% endblock %}
+
+{% block body %}
+
+<main role="main">
+
+    {{ include("partials/_header.html.twig", { h1_content: 'Nous écrire' }) }}
+
+    <div class="flex justify-center">
+
+        <div class="bg-white w-full lg:w-1/2 current-shadow rounded-lg">
+
+            <div class="p-10">
+            
+                {{ form_start(formContact, {'attr' : {'novalidate' : 'novalidate'}}) }}
+
+                    <div class="flex flex-col gap-6">
+
+                        <div>
+                            {{ form_label(formContact.email) }}
+                            {{ form_widget(formContact.email) }}
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form_errors(formContact.email) }}
+                            </div>
+                        </div>
+
+                        <div>
+                            {{ form_row(formContact.subject) }}
+                        </div>
+
+                        <div>
+                            {{ form_label(formContact.body) }}
+                            {{ form_widget(formContact.body) }}
+                            <div class="text-red-600 text-sm mt-1">
+                                {{ form_errors(formContact.body) }}
+                            </div>
+                        </div>
+
+                        <button class="px-4 py-2 rounded-lg bg-light-blue text-white font-semibold">Envoyer</button>
+
+                    </div>
+
+                {{ form_end(formContact) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

@@ -1,0 +1,101 @@
+<div class="flex gap-1 items-center {% if app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty %}pt-4{% endif %}">
+
+	<div class="flex gap-2 items-center p-2">
+	
+		{% if app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty %}
+			<input 
+				type="checkbox" 
+				class="cursor-pointer w-6 ml-2" 
+				data-action="meal#selectAllDishes" 
+				data-meal-target="selectAllDishes" 
+				data-rank-meal="{{ rankMeal }}"
+			/>
+		{% endif %}
+		
+		<button 
+			data-action="meal#onRemoveSelection" 
+			class="p-2 bg-red-600 text-white font-medium rounded-lg hidden ml-2"
+			data-url-remove-selection="{{ path('meal_day_remove_dish_selection', { rankMeal: rankMeal }) }}"
+			data-meal-target="btnRemoveSelection"
+			data-rank-meal="{{ rankMeal }}"
+		>
+			Supprimer
+		</button>
+
+	</div>
+
+	<div class="flex ml-auto">
+
+		{% if app.session.get('_meal_day_date') != 'model' %}
+
+			<div class="flex flex-row">
+
+				{# {% if 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty %}
+
+					{# {{ include('meal/model/modal-add-model-meal.html.twig') }} #}
+
+					{# <a href="#" class="toggle-name-model flex text-white bg-sky-400 rounded gap-2 py-2 px-6 items-center font-bold" data-rank-meal="{{ rankMeal }}" data-toggle="modal" data-target="#modalAddModelMeal-{{ rankMeal }}"> #}
+
+						{# <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="plus" class="w-6 h-6 text-cool-gray-800 dark:text-cool-gray-200 group-hover:text-purple-600 group-focus:text-purple-600 dark:group-hover:text-purple-50 dark:group-focus:text-purple-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg> #}
+
+						{# <span>Valider</span> #}
+
+					{# </a> #}
+					
+				{# {% endif %} #}
+
+					<!--<a href="#" class="list-ajax-model-meal" data-rank-meal="{{ rankMeal }}">
+
+						<span class="picto-feature">
+
+							{{ include("meals/pictos/import.xml.twig", {'color' : 'var(--main-content-color)'}) }}
+					
+						</span>
+
+						<span>Importer le repas depuis ma liste</span>
+
+					</a>-->
+
+			</div>
+
+		{% endif %}
+
+		<button 
+			data-action="sidebar-list-dishes#toggleSlideover reload-content#openSidebarList"
+			data-type-meal-target="btnOpenSlidebar"
+			{# class="add-dish border-2 border-dark-blue p-4 flex items-center gap-2 font-bold mr-4 rounded-lg text-sm md:text-base"  #}
+			class="add-dish p-2 md:p-4 flex items-center gap-2 font-bold text-sm md:text-base cursor-pointer mr-2" 
+			{# style="box-shadow: 0 1px 1px 0 rgba(0,0,0,.1); border: 1px solid #f1f1f1" #}
+			data-rank-meal="{{ rankMeal }}" 
+			data-rank-dish="{{ rankDish }}"
+			data-update-dish="none"
+			data-type-dish="{{ app.session.get('_meal_day_' ~ rankMeal)['type']|trans({}, 'meal') }}"
+		>
+			<div class="inline-block rounded-sm group">
+				{# <svg viewBox="0 0 24 24" class="w-10 h-10 transition duration-300" xmlns="http://www.w3.org/2000/svg">
+					<rect x="0" y="0" width="24" height="24" rx="2" fill="#EFEFEF" />
+					<path d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z" fill="#1A1A1A"/>
+				</svg> #}
+				<svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
+					<rect
+					x="0"
+					y="0"
+					width="24"
+					height="24"
+					rx="2"
+					class="fill-gray-400 group-hover:fill-gray-500 transition-colors duration-300"
+					/>
+					<path
+					d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
+					fill="white"
+					/>
+				</svg>
+			</div>
+
+			{# <span>Aliment / plat</span> #}
+			{# <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="external-link" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> #}
+		</button>
+
+	</div>
+
+</div>

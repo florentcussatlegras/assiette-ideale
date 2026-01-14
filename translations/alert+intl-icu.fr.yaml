@@ -1,0 +1,18 @@
+alert:
+    imc:
+        balance_well: "Votre IMC est parfait!"
+        balance_lack: "Votre IMC est bas, augmentez vos apports caloriques afin d'atteindre notre recommandation de {imc_ideal}"
+        balance_very_lack: "Votre IMC est beaucoup trop bas, augmentez vos apports caloriques afin d'atteindre notre recommandation de {imc_ideal}"
+        balance_excess: "Votre IMC est élevé, diminuez vos apports caloriques afin d'atteindre notre recommandation de {imc_ideal}"
+        balance_very_excess: "Votre IMC est beaucoup trop élevé, diminuez vos apports caloriques afin d'atteindre notre recommandation de {imc_ideal}"
+        balance_critical_excess: "Votre IMC est critiquement élevé, il faut manger beaucoup moins afin d'atteindre notre recommandation de {imc_ideal}!!"
+    weight:
+        balance_well: "Vous avez un poids idéal!"
+        balance_lack: "Votre poids est tros bas, prenez quelques kilos afin d'atteindre notre recommandation de {weight_ideal} kg"
+        balance_very_lack: "Votre poids est beaucoup trop bas, vous devez prendre quelques kilos afin d'atteindre notre recommandation de {weight_ideal} kg"
+        balance_excess: "Votre poids est élevé, perdez quelques kilos afin d'atteindre notre recommandation de {weight_ideal} kg"
+        balance_very_excess: "Votre poids est beaucoup trop élevé, vous devez perdre quelques kilos afin d'atteindre notre recommandation de {weight_ideal} kg"
+        balance_critical_excess: "Votre poids est critiquement trop grand, vous devez perdre beaucoup de kilos afin d'atteindre notre recommandation de {weight_ideal} kg!!"
+
+
+          

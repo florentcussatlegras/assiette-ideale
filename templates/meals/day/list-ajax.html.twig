@@ -1,0 +1,24 @@
+{# <div 
+	class="block-result flex grid grid-cols-4 mx-4 gap-4"
+> #}
+
+	{% for item in results %}
+		{{ include("meals/day/_dish.html.twig") }}	
+	{% else %}
+		<h1 class="mt-32 text-gray-400 text-xl">Aucun plats trouvés</h1>
+	{% endfor %}
+
+{# </div> #}
+
+<input 
+    type="hidden"
+    data-reload-content-target="lastResults"
+    value="{{ lastResults|default(false) }}"
+/>
+
+{# {% if lastBlock is defined and lastBlock == true %}
+	<input type="hidden" class="last-block" value="true" />
+{% else %}
+	<input type="hidden" class="last-block" value="false" />
+{% endif %}	 #}
+

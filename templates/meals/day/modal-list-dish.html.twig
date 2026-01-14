@@ -1,0 +1,81 @@
+<div class="list-dish-aj modal fade right bg-gray-900 bg-opacity-60" id="sideModalTR{{ rankMeal }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+  	<div class="modal-dialog modal-full-height modal-right modal-xl" role="document">
+
+	    <div class="modal-content">
+
+	      	<div class="modal-header">
+
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+		          <span aria-hidden="true">&times;</span>
+
+		        </button>
+
+	      	</div>
+
+		    <div id="container-list-{{ rankMeal }}" class="container-list">
+
+				<div class="container-crit-fgp">
+
+					{% for foodGroupParent in foodGroupParents %}
+
+						<a class="crit-fgp fgp" title="{{ foodGroupParent.name }}" style="position:relative">
+      
+			              	<span class="picto" data-id="{{ foodGroupParent.id }}" data-color="{{ foodGroupParent.color }}" style="width:55px; width:55px; background-color:{{ foodGroupParent.degradedColor }}">
+
+			                	{# {{ include('dish/pictos/foodgroupparent/' ~ foodGroupParent.alias  ~ '.xml.twig', {'color' : foodGroupParent.color}) }} #}
+			              	
+			              	</span>
+
+			              	<input type="checkbox" id="checkbox_{{ rankMeal }}_{{ foodGroupParent.id }}" value="{{ foodGroupParent.id }}" class="select-fgp" style="display:none">
+
+			              	<div class="tick" style="position:absolute; border-radius: 50%; width: 20px; height: 20px; right:-5px; top: -10px; display: none">
+
+			              		{{ include('meal/pictos/tick.xml.twig') }}
+
+			              	</div> 
+
+			            </a>
+
+					{% endfor %}
+
+					<div class="container-search">
+
+				        <div class="input-group">
+		                  <div class="input-group-prepend">
+		                        <span class="input-group-text">
+		                            <i class="fas fa-search" style="font-size: 16px"></i>
+		                        </span>
+		                    </div>
+		                    <input type="text" class="input-search form-control" placeholder="Aliment, plat..." data-rank-meal="{{ rankMeal }}">
+		                </div>
+				        
+				    </div>
+
+				</div>
+
+				<div class="list">
+
+				</div>
+
+				<div class="container-load-more">
+					<button class="load-more btn" data-page="{{ page }}">
+						Voir plus de plat
+					</button>
+					<div class="loading">
+						Recherche
+					</div>
+				</div>
+
+				<div class="no-result">
+					Aucun résultat
+				</div>
+
+    		</div>
+
+	    </div>
+
+ 	</div>
+
+</div>

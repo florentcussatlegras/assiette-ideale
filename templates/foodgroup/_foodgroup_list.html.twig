@@ -1,0 +1,48 @@
+{% for foodGroup in foodGroups %}
+	{# <div class="relative"> #}
+		<button type="button" class="btn-foodgroup font-bold px-4 py-3 rounded uppercase text-sm
+							 {% if foodGroup.id in foodGroupsSelected|default('') or foodGroupsSelected|default('') is empty %} selected{% endif %}" {# class="btn-foodgroup text-xs md:text-sm px-4 py-2 font-bold bg-cyan-800 flex items-center cursor-pointer leading-4 rounded-lg" #} style="background-color: {{ foodGroup.parent.degradedColor }}; color: {{ foodGroup.parent.color }}" data-action="reload-content#onSelectFoodGroup" data-food-group-id="{{ foodGroup.id }}" data-reload-content-target="foodGroup">
+			<div class="my-hidden md:flex">
+				{{ foodGroup.semiShortName|upper }}
+			</div>
+
+			<div class="flex md:my-hidden">
+				{% set text = foodGroup.name %}
+				{% set words = text|split(' ') %}
+
+				{% if words|length == 1 %}
+					{{ words[0]|first }}
+				{% else %}
+					{% set initials = words[0:-1]|map(word => word|first)|join('') %}
+					{% set lastWord = words|last %}
+					{{ ' ' ~ initials ~ lastWord|slice(0,1)|upper ~ lastWord|slice(1,2) }}
+				{% endif %}
+			</div>
+
+			{# <div class="absolute flex items-center top-0 left-2 h-full checkmark bottom-0"> #}
+		{# <div class="h-5">
+								                        <input type="checkbox" 
+								                            class="w-5 h-full cursor-pointer" 
+								                            {% if foodGroup.id in foodGroupsSelected|default('') or foodGroupsSelected|default('') is empty %}
+								                                checked="checked"
+								                            {% endif %}
+								                            data-food-group-id="{{ foodGroup.id }}"
+								                            data-action="reload-content#onSelectFoodGroup"
+								                            data-action="reload-content#onSelectFoodGroup2"
+								                            data-reload-content-target="foodGroup"
+								                        />
+								                    </div> #}
+			{# <input 
+												                        type="checkbox"
+												                        {% if foodGroup.id in foodGroupsSelected|default('') or foodGroupsSelected|default('') is empty %}
+												                            checked="checked"
+												                        {% endif %}
+												                        class="cursor-pointer m-0 p-0"
+												                        data-food-group-id="{{ foodGroup.id }}"
+												                        data-action="reload-content#onSelectFoodGroup"
+												                        data-reload-content-target="foodGroup"
+												                    /> #}
+			{# </div> #}
+		</button>
+	{# </div> #}
+{% endfor %}

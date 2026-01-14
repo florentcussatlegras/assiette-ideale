@@ -1,0 +1,16 @@
+
+<div class="wizard flex flex-col lg:flex-row justify-center text-white">
+    <div class="lg:text-center flex items-center lg:block flex-1 z-10 {% if step == 'parameter' %}wizard-active{% endif %}">
+        <button class="w-10 h-10 rounded-full text-gray-600 bg-gray-200">1</button>
+        <div class="lg:w-32 font-medium text-base lg:mt-3 ml-3 lg:mx-auto">Vos identifiants</div>
+    </div>
+    <div class="lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10 {% if step == 'profil' %}wizard-active{% endif %}">
+        <button class="w-10 h-10 rounded-full text-gray-600 bg-gray-200">2</button>
+        <div class="lg:w-32 text-base lg:mt-3 ml-3 lg:mx-auto dark:text-gray-600">Votre profil</div>
+    </div>
+    <div class="lg:text-center flex items-center mt-5 lg:mt-0 lg:block flex-1 z-10 {% if step == 'energy' %}wizard-active{% endif %}">
+        <button class="w-10 h-10 rounded-full text-gray-600 bg-gray-200">5</button>
+        <div class="lg:w-32 text-base lg:mt-3 ml-3 lg:mx-auto dark:text-gray-600">Vos besoins énergétiques</div>
+    </div>
+    <div class="wizard__line hidden lg:block w-3/5 bg-gray-200 absolute mt-5"></div>
+</div>

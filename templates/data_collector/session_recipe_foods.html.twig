@@ -1,0 +1,73 @@
+{% extends "@WebProfiler/Profiler/layout.html.twig" %}
+
+{% block toolbar %}
+
+    {% set icon %}
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools-kitchen-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+            <path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3"></path>
+        </svg>
+        <span class="sf-toolbar-value">Food list recipe</span>
+
+    {% endset %}
+
+    {% set text %}
+
+        <div class="sf-toolbar-info-piece">
+            {% if collector.listfoods is empty %}
+                <span>Aucun plat actuellement en cours d'ajout en session</span>
+            {% else %}
+                <span>{{ collector.countfoods }} aliments dans le plat</span>
+            {% endif %}
+        </div>
+
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: true }) }}
+
+{% endblock %}
+
+{% block menu %}
+
+    <span class="label">
+        <span class="icon"><img src="" alt=""></span>
+        <strong>Food list recipe</strong>
+    </span>
+
+{% endblock %}
+
+{% block panel %}
+
+    <h2>Food list recipe</h2>
+
+    {% for food_group_code, list in collector.listfoods %}
+        <table>
+            <tr>
+                <th>{{ food_group_code }}</th>
+            </tr>
+            {% for id, food_elements in list %}
+                <tr>
+                    <th>
+                        <span>{{ food_elements['food'] }}</span> 
+                        <span>
+                                {{ "%quantity% %unit_measure% (%quantity_gr% gr)"|replace({"%quantity%": food_elements['quantity'], 
+                                                                                        "%unit_measure%": food_elements['unit_measure'], 
+                                                                                        "%quantity_gr%": food_elements['quantity_g'] 
+                                                                                    }) }}
+                        </span>
+                    </th>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endfor %}
+
+
+    {% if collector.picture is not null %}
+        <hr>
+        <h2>Dish picture</h2>
+
+        {{ collector.picture }}
+    {% endif %}
+
+{% endblock %}

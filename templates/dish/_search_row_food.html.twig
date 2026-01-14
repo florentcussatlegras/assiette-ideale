@@ -1,0 +1,64 @@
+
+<div class="flex my-2 px-4 pb-4 items-center w-full md:w-1/2 lg:w-full xl:w-1/2 bg-white"> 
+    
+    <a href="#" class="mt-4">
+        <img class="rounded-md" alt="Photo de l'aliment {{ food.name }}" src="{{ food.picturePath|imagine_filter('squared_thumbnail_xsmall') }}">
+    </a>
+
+    <div class="px-4 w-4/5">
+
+        <a href="#" class="block text-sm font-bold mt-4 truncate">{{ food.name }}</a>
+
+        <form></form>
+
+        <form method="POST" class="flex flex-row gap-2">
+
+            <input type="hidden" class="token" name="_token" value="{{ csrf_token('select_foods') }}" />
+
+            <input type="hidden" class="id-dish" name="idDish" value="{{ idDish ?? null }}" />
+
+            {% set foodGroupAlias = food.foodGroup.alias %}
+
+            <input name="food_group_alias" class="food-group-alias" type="hidden" value="{{ foodGroupAlias }}" /> 
+            <input name="food_group_slug" class="food-group-slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
+
+            <input name="foods[{{ food.id }}][quantity]" required="required" type="text" class="food-quantity w-24 rounded-lg" placeholder="Quantité" aria-label="default input inline 1"
+                {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                        and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
+                            value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
+                {% endif %} />
+            
+            <select name="foods[{{ food.id }}][unit_measure]" class="food-unit-measure rounded-lg" aria-label="Default select example">
+            
+                {% for unitMeasure in unitMeasures %}
+
+                    {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
+            
+                        <option value="{{ unitMeasure.alias }}"
+                        
+                            {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                            and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+            and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                selected="selected"
+                            {% endif %}>
+
+                            {{ unitMeasure.alias }}
+                            
+                        </option>
+
+                    {% endif %}
+
+                {% endfor %}
+            
+            </select>
+
+            <button type="button" class="add-food text-sky-600 py-1 px-4 items-center rounded-lg">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" data-v-563d9226="" fill="#0EA5E9"><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
+                {# <svg viewBox="0 0 24 24" class="w-7 h-7" data-v-563d9226="" fill="#FFF"><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg> #}
+            </button>
+    
+        </form>
+    
+    </div>
+
+</div>

@@ -1,0 +1,11 @@
+{{ form_start(energyForm) }}
+
+    {{ include('profile/partials/_form_widgets_energy.html.twig', {form : energyForm}) }}
+
+    <div class="button-group">
+        <button type="submit" class="btn btn-outline-secondary inline-block mr-2 flex items-center box text-a">
+            <i data-feather="save" class="w-4 h-4 mr-2"></i> Valider mes besoins énergétiques
+        </button>
+    </div>
+
+{{ form_end(energyForm) }}

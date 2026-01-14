@@ -1,0 +1,86 @@
+profile:
+    stepper_registration:
+        gender: Genre
+        ageRange: Age
+        height: Taille
+        weight: Poids
+        hour: Horaires
+        workingType: Travail
+        sportingTime: Activité physique
+        forbiddenFoods: Aliments interdits
+        diets: Régimes
+        energy: Energie
+    title: Mon profil
+    change_password: 'Modifier le mot de passe'
+    physical_activities:
+        label: 'Vos activités physiques'
+        value:
+            no_sport: "Vous ne pratiquez aucun sport"
+            less_than_5: 'Vous pratiquez moins de 5h de sport par semaine'
+            more_than_5: 'Vous pratiquez plus de 5h de sport par semaine'
+    physical_foods: 'Vos habitudes alimentaires'
+    energy_needs:
+        label1: 'Besoin énergétique journalier'
+        label2: 'Mes besoins énergétiques quotidiens'
+        value:
+            automatic: Laissez le programme les calculer automatiquement
+            personal: Je connais mes besoins
+    gender:
+        label1: Genre
+        label2: Vous êtes
+        value:
+            man: Homme
+            woman: Femme
+            others: Autres
+    age:
+        label1: Age
+        label2: Vous avez
+        value:
+            less_18: "Moins de 18 ans"
+            between_18_33: "Entre 18 et 33 ans"
+            between_34_43: "Entre 34 et 43 ans"
+            between_44_53: "Entre 44 et 53 ans"
+            between_54_63: "Entre 54 et 63 ans"
+            between_64_73: "Entre 64 et 73 ans"
+            between_74_83: "Entre 74 et 83 ans"
+            between_84_93: "Entre 84 et 93 ans"
+            more_94: "Plus de 94 ans"
+    height:
+        label1: Taille
+        label2: Vous mesurez (en cm)
+        value: '{value} cm'
+    weight:
+        label1: Poids
+        label2: Vous pesez (en kg)
+        value: '{value} kg'
+    hour:
+        label: Horaires
+        value:
+            normal: "Horaires normaux"
+            shift: "Horaires décalés"
+            half: "Horaires mi-temps"
+            none: "Aucun horaire"
+    working_type:
+        label: Métier
+        value:
+            no_physical: Vous n'exercez pas un métier physique
+            physical: Vous exercez un métier physique
+    sporting_time: Sport
+    forbidden_foods:
+        label1: Les aliments que vous ne consommez pas
+        label2: Aliments que vous ne consommez pas (allergies, interdits alimentaires, préférences etc)
+        none: "Vous n'avez aucun aliment interdit"
+    diets:
+        label1: Vos régimes alimentaires
+        label2: Suivez-vous un ou plusieurs régimes restrictifs?
+        none: "Vous n'avez aucun régime alimentaire"
+    imc:
+        title: IMC
+    energy:
+        title: Besoin énergétique journalier
+        
+
+
+
+
+

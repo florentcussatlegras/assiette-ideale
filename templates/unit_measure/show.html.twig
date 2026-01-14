@@ -1,0 +1,32 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<main class="bg-slate-50 p-14" role="main">
+
+        {% set spanHeader, h1Header = "Recherche", "Les unités de mesures" %}
+
+        <div class="flex items-end justify-between mb-2">
+            {{ include("partials/_header.html.twig", {}) }}
+        </div>
+
+        {{ include("partials/_alert.html.twig") }}
+
+        <div class="flex box w-1/2 p-20">
+    
+            {{ form_start(form) }}
+
+                {{ form_errors(form.alias) }}
+                {{ form_widget(form.alias) }}
+
+                <div class="button-group">
+                    <button class="btn btn-primary mt-5">Rechercher</button>
+                </div>
+
+            {{ form_end(form) }}
+
+        </div>
+
+</main>
+
+{% endblock %}

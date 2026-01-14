@@ -1,0 +1,14 @@
+
+{% for food in foods %}
+    {{ include("food/_food.html.twig") }}
+{% else %}
+    <div class="flex items-center h-64 text-lg text-gray-400">
+        <span>Aucun aliment ne correspond à votre recherche</span>
+    </div>
+{% endfor %}
+
+<input 
+    type="hidden"
+    data-reload-content-target="lastResults"
+    value="{{ lastResults|default(false) }}"
+/>

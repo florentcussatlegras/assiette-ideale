@@ -1,0 +1,9 @@
+{% if element.picture is not null and element.picturePath is not null %}
+    {# {% if item['type'] == 'Dish' %} #}
+    <img src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ element.slug }}" class="rounded-lg w-6">
+    {# {% else %}
+        <img src="{{ asset('upload/pic/food/') ~ element.picture }}" alt="pic-{{ element.slug }}" class="rounded-lg w-12">
+    {% endif %} #}
+{% else %}
+    <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
+{% endif %}

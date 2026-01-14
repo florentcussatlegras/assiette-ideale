@@ -1,0 +1,14 @@
+
+<div class="content bg-white p-6 rounded-2xl shadow-soft">
+
+    <h1 class="text-xl md:text-2xl xl:text-3xl mb-4">Votre évolution sur la période du {{ start|date('d/m/Y') }} au {{ end|date('d/m/Y') }}</h1>
+
+    <div class="flex flex-wrap w-full mt-8 bg-white">
+        {% for chart in charts %}
+            <div class="w-full lg:w-1/2">
+                {{ render_chart(chart) }}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>

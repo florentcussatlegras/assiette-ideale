@@ -1,0 +1,74 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+
+    {% set icon %}
+        <svg></svg>
+        <span class="sf-toolbar-value">Accept Headers</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Accept</b>
+            <span>{{ collector.accept }}</span>
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link : true }) }}
+
+{% endblock %}
+
+{% block head %}
+
+    {{ parent() }}
+
+{% endblock %}
+
+{% block menu %}
+    
+    <span class"label">
+        <span class="icon"><img src="" alt=""/></span>
+        <strong>Accept Headers</strong>
+    </span>
+
+{% endblock %}
+
+{% block panel %}
+    
+    <h1>Accept Headers</h1>
+
+    <h2>Accept</h2>
+
+    {# {{ dump(collector.accept.all()) }} #}
+
+    <table>
+
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>Value</th>
+                <th>Quality</th>
+                <th>Attributes</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for value, item in collector.accept.all() %}
+                <tr>
+                    <td>{{ item.index }}</td>
+                    <td><strong>{{ item.value }}</strong></td>
+                    <td>{{ item.quality }}</td>
+                    <td>
+                        {% if item.attributes is not empty %}
+                            {% for key, attribute in item.attributes %}
+                                {{ "#{key} : #{attribute}" }}
+                            {% endfor %}
+                        {% endif %} 
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<div class="bg-sky-100 rounded-2xl p-4 relative shadow-soft">
+    <span class="pb-2 flex items-center justify-center text-lg font-medium text-sky-700 border-b border-sky-700 w-full">Poids</span>
+    <div class="pt-4 flex items-center justify-center my-2 text-2xl text-sky-700 font-bold relative">
+        {% if app.user.weight %}
+            {{ app.user.weight|round(0, 'floor') }} kg
+        {% else %}
+            <span class="text-sm">Votre poids n'est pas renseigné.</span>
+        {% endif %}
+        <div class="absolute left-0">
+            <div 
+                {# data-modal-target="alert-imc-weight-modal" 
+                data-modal-toggle="alert-imc-weight-modal"  #}
+                class="flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
+                data-action="click->alert-imc-weight-modal#showMessages"
+                type="button"
+                data-item="weight"
+                {# data-alert-color="{{ alerts.higher_level.color }}"
+                data-alert-text="{{ alerts.higher_level.text }}" #}
+            >
+                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceWeightAlerts, size: 5, opacity: 0.2 }) }}
+            </div>
+        </div>
+    </div>
+
+    {{ include('profile/partials/modals/_alert_modal_weight.html.twig') }}
+
+</div>

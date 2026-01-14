@@ -1,0 +1,53 @@
+<div class="modal fade" id="modalAddModelMeal-{{ rankMeal }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+  <div class="modal-dialog modal-dialog-centered" role="document">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title" id="exampleModalCenterTitle">Nouveau repas</h5>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+
+          <span aria-hidden="true">&times;</span>
+
+        </button>
+
+      </div>
+
+      <form action="{{ path('model_meal_add') }}" method="POST">
+
+        <div class="modal-body">
+
+            <div class="input-group">
+
+              <input type="hidden" class="typeMeal" name="typeMeal">
+
+              <input type="hidden" class="rank" name="rankMeal" value="{{ rankMeal }}">
+
+              <div class="input-group">
+
+                <input type="text" class="name-model-meal form-control" name="name" placeholder="Nom" required="required">
+
+              </div>
+            
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+      
+          <button type="button" class="btn btn-alt" data-dismiss="modal">ANNULER</button>
+
+          <button type="submit" class="btn add-model-meal">SAUVEGARDER</button>
+      
+        </div>
+
+      </form>
+    
+    </div>
+
+  </div>
+
+</div>

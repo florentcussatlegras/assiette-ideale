@@ -1,0 +1,8 @@
+alert:
+    imc_and_weight:
+        balance_well: "Your BMI and weight are at their best!"
+        balance_lack: "Your BMI and weight are low, increase your caloric intake"
+        balance_very_lack: "Your BMI and weight are much too low, increase your caloric intake"
+        balance_excess: "Your BMI and weight are high, reduce your caloric intake"
+        balance_very_excess: "Your BMI and weight are much too high, reduce your caloric intake"
+        balance_critical_excess: "Your BMI and weight are critically high, you need to eat less!!"

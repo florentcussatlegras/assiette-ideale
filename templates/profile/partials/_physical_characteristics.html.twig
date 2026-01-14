@@ -1,0 +1,53 @@
+<div class="flex flex-col w-2/3">
+
+    {% if subStep is not null %}
+
+        {{ form_widget(profileForm) }}
+
+    {% else %}
+
+        <div class="flex flex-row mb-5 justify-around">
+
+            <div class="form-group flex flex-col items-left w-1/3">
+                {{ form_label(profileForm.gender, 'Vous êtes') }}
+                <div class="flex flex-col sm:flex-row items-center mt-2">
+                    {{ form_widget(profileForm.gender) }}
+                </div>
+            </div>
+
+            <div class="form-group flex flex-col items-left w-1/3">
+                {{ form_label(profileForm.birthday) }}
+                {{ form_errors(profileForm.birthday) }}
+                <div class="input-group">
+                    {{ form_widget(profileForm.birthday) }}
+                </div>
+            </div>
+
+        </div>
+
+        <div class="flex flex-row justify-around">
+
+            <div class="form-group flex flex-col items-left w-1/3">
+                {{ form_label(profileForm.height, 'Votre taille') }}
+                {{ form_errors(profileForm.height) }}
+                <div class="input-group w-48">
+                    {{ form_widget(profileForm.height) }}<div id="input-group-price" class="input-group-text">cm</div>
+                </div>
+            </div>
+
+            <div class="form-group flex flex-col items-left w-1/3">
+                {{ form_label(profileForm.weight, 'Votre poids') }}
+                {{ form_errors(profileForm.weight) }}
+                <div class="input-group w-48">
+                    {{ form_widget(profileForm.weight) }}<div id="input-group-price" class="input-group-text">kg</div>
+                </div>
+            </div>
+
+        </div>
+
+        {{ form_widget(profileForm._token_profile) }} 
+
+    {% endif %}
+
+
+</div>

@@ -1,0 +1,90 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<body>
+
+    <div class="content bg-sky-400">
+
+        <div class="flex h-screen flex-col">
+
+            <div class="py-10">
+                {% set step = "profil" %}
+                {{ include('registration/_wizard_layout.html.twig') }}
+            </div>
+
+            <div class="flex items-center w-full">
+        
+                <div class="flex-1 flex text-center flex-col">
+
+                    <img alt="Icewall Tailwind HTML Admin Template" class="m-auto w-1/2" src="{{ asset('/images/illustration.svg') }}">
+                    
+                    <div class="m-auto pt-10">{{ include('partials/logo.html.twig', {color : 'white'}) }}</div>
+
+                    <div class="mt-5 text-2xl text-white text-opacity-70">
+                        Manage your meals and balance your life
+                    </div>
+
+                </div>
+        
+                <div class="flex ml-100 flex-1">
+            
+                    <div class="w-3/4">
+
+                        <div class="input-groups my-auto mx-auto xl:ml-20 bg-white dark:bg-dark-1 px-5 sm:py-12 sm:px-16 py-8 rounded-md shadow-2xl w-4/5">
+                            
+                            {{ form_start(registerProfilForm, {'attr' : {'novalidate' : 'novalidate'}}) }}
+
+                                <h2 class="font-bold text-2xl xl:text-3xl text-center xl:text-left">
+                                    Registration profil
+                                </h2>
+                                <div class="mt-8 form-group">
+                                    {{ form_label(registerProfilForm.gender) }}
+                                    {{ form_widget(registerProfilForm.gender) }}
+                                </div>
+                                <div class="mt-8 form-group">
+                                    {{ form_label(registerProfilForm.birthday) }}
+                                    {{ form_widget(registerProfilForm.birthday) }}
+                                </div>
+                                <div class="mt-8 form-group flex flex-row">
+                                    <div class="mr-12">
+                                        {{ form_label(registerProfilForm.height) }}
+                                        <div class="input-group">
+                                            {{ form_widget(registerProfilForm.height) }}
+                                            <div class="input-group-text mb-4">cm</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {{ form_label(registerProfilForm.weight) }}
+                                        <div class="input-group">
+                                            {{ form_widget(registerProfilForm.weight) }}
+                                            <div class="input-group-text mb-4">kg</div>
+                                        </div>
+                                    </div>
+                                </div>
+                              
+                                <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                                    <button type="submit" class="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top">Etape suivante</button>
+                                </div>
+                            
+                            {{ form_end(registerProfilForm) }}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    
+        <!-- BEGIN: JS Assets-->
+        <script src="{{ asset('js/app.js') }}"></script>
+        <!-- END: JS Assets-->
+
+    </div>
+
+</body>
+
+{% endblock %}

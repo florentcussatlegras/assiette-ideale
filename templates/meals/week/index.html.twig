@@ -1,0 +1,124 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ parent() }} - Mes repas de la semaine{% endblock %}
+
+{% block body %}
+
+    {# <div id="ve-meal"> #}
+
+      {# {{ include("navigation/bread_crumb.html.twig", {'links' : {}, 'current' : 'Mon repas du jour'}) }} #}
+            
+      {# {{ include("include/_alert.html.twig") }} #}
+      
+      {# <div class="ve-container"> #}
+
+      	{# <div style="display:flex; justify-content: center; box-shadow: 2px 2px 11px 0 rgba(0,0,0,.1)">
+
+			{% for date, day in days %}
+
+				<div style="display:flex; flex:1; flex-direction:column; background-color:#fff; align-items:center; {% if not loop.last %}; border-right:1px solid #ccd4dc{% endif %}">
+
+					<a href="#" style="width:100%; color: #333; font-weight: 300; font-size: 16px; text-transform:uppercase; font-family: Roboto; text-align: center; font-weight: 600; background-color:#eff0f2; padding:10px">
+			    		{{ day|dayTrans }}
+		    		</a>
+
+					<form action="{{ path('menu_week_get_meals', {'date' : date}) }}" style="display:flex; width:100%">
+		    		
+			    		{% if meals[day] is not empty %}
+
+							<div style="display:flex; width: 100%; font-size:0.9em; flex-direction: column">
+
+			    				{{ include("meals/week/_menu.html.twig", {'meals' : meals[day]}) }}
+
+								{{ render(controller('App\\Controller\\meal\\MenuController::getListFgp', {'meals' : meals[day]})) }}
+
+								<div class="flex justify-center items-center m-6 gap-2">
+									<a href="{{ path('menu_week_get_meals', {'date' : date}) }}" class="bg-sky-400 text-white font-bold px-5 py-2 rounded">Modifier</a>
+									<a href="{{ path('menu_week_remove_meals', {'date' : date}) }}" class="border border-sky-400 text-sky-400 font-bold px-5 py-2 rounded">Supprimer</a>
+								</div>
+
+							</div>
+
+						{% elseif app.session.has('_meal_' ~ date) %}
+
+							<div style="display:flex; width: 100%; font-size:0.9em; flex-direction: column">
+
+								{{ include("meals/week/_menu.html.twig", {'meals' : app.session.get('_meal_' ~ date)}) }}
+
+								{{ render(controller('App\\Controller\\meal\\MenuController::getListFgp', {'meals' : app.session.get('_meal_' ~ date)})) }}
+
+								<div style="display: flex; padding:10px 20px; font-weight: 500">
+									<a href="{{ path('menu_week_adviced_menu_save', {'date' : date}) }}" style="flex:1; border:1px solid; text-align: center">Valider</a>
+									<a href="{{ path('menu_week_adviced_menu_cancel', {'date' : date}) }}" style="flex:1; text-align: center">Annuler</a>
+								</div>
+									
+								<div style="display: flex; padding:0 20px; justify-content: center; font-weight: 500; align-items:center">
+									<span>{{ include("meals/pictos/refresh.xml.twig") }}</span>
+									<a href="{{ path('menu_week_adviced_menu', {'date' : date}) }}" style="padding-top:3px; padding-left: 10px; text-transform:uppercase; line-height: 16px">
+										Suggérer un autre menu
+									</a>
+								</div>
+
+							</div>
+
+			    		{% else %}
+
+			    			<div style="display: flex; flex-direction: column; width:100%; font-size:0.9em; padding:30px; font-weight: 500">
+			    		
+			    				<div style="display:flex; flex:1; align-items: center; padding-bottom: 10px">
+				    				<span>{{ include("meals/pictos/add-menu.xml.twig") }}</span>
+					    			<a href="{{ path('menu_week_get_meals', {'date' : date}) }}" style="padding-left:10px; text-transform:uppercase">
+					    				Ajouter
+					    			</a>
+					    		</div>
+
+				    			<div style="display:flex; flex:1; align-items: center">
+									<span>{{ include("meals/pictos/help.xml.twig") }}</span>
+									<a href="{{ path('menu_week_adviced_menu', {'date' : date}) }}" style="padding-top:3px; padding-left: 10px; text-transform:uppercase">
+										Suggestion de menu
+									</a>
+								</div>
+
+				    		</div>
+			    		
+			    		{% endif %}
+
+	    			</form>
+
+		    	</div>
+
+		    {% endfor %}
+
+		</div> #}
+
+		{# {{ render(controller('App\\Controller\\meal\\AlertController::showOnWeek', {'quantitiesConsumed' : quantitiesConsumed})) }} #}
+
+    {# </div> #}
+
+	<main role="main">
+
+		<div
+			{{ stimulus_controller('menu-week', {
+				url: path('menu_week_menu')
+			}) }}
+		>
+
+			{{ include('partials/_header.html.twig', { h1_content: 'Les menus par semaine' }) }}
+
+			<div id="wrapperMenuWeekDesktop" class="my-hidden lg:block">
+
+				{{ include('meals/week/_wrapper_menu_week.html.twig') }}
+
+			</div>
+
+			<div id="wrapperMenuWeekMobile" class="block lg:hidden">
+
+				{{ include('meals/week/mobile/_wrapper_menu_week.html.twig') }}
+
+			</div>
+
+		</div>
+
+	</main>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+
+    {% set icon %}
+        <svg></svg>
+        <b>Vue</b>
+    {% endset %}
+
+    {% set text %}
+        <span class="sf-toolbar-info-piece">
+            {{ collector.templatePaths|join(', ') }}
+        </span>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link : false }) }}
+
+{% endblock %}

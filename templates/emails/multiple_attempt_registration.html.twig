@@ -1,0 +1,12 @@
+{% extends '@email/default/notification/body.html.twig' %}
+
+{% block content %}
+    Un utilisateur s'étant déja inscrit sur liveforeat avec les adresses 
+    <span class="text-a">{{ previous_register_emails }}</span>
+    il y a moins de 7 jours,
+    tente à nouveau de s'inscrire avec l'adresse <span class="text-a">{{ new_attempt_email }}</span>
+{% endblock %}
+
+{% block action %}
+
+{% endblock %}

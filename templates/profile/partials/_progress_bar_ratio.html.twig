@@ -1,0 +1,19 @@
+<div class="flex h-full justify-center items-center">
+
+    {# <label><small class="mt-10">Votre profil est complété à {{ ratio|format_number(style='percent') }}</small></label>
+    <div class="progress rounded mb-5 w-full">
+        <div class="progress-bar bg-sky-200 rounded" style="width:{{ ratio*100 }}%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div> #}
+    {# {{ ratio|format_number(style='percent') }} #}
+    {# <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div class="bg-white h-2.5 rounded-full" style="width: 75%"></div>
+    </div> #}
+
+        <div class="progressbar-wrapper">
+            <div title="downloaded" class="progressbar" style="width: {{ratio * 100}}%">
+                {{ ratio|format_number(style='percent') }}
+            </div>
+        </div>
+
+
+</div>

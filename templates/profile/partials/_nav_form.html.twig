@@ -1,0 +1,22 @@
+
+<div class="nav nav-tabs flex-col sm:flex-row justify-center bg-gray lg:justify-start text-md px-6 tracking-tight m-6 uppercase rounded-lg" role="tablist">
+
+    <a id="profile-tab" href="{{ path('app_profile_edit', {step : 'parameter'}) }}" class="py-3 sm:mr-8 flex items-center {% if step == 'parameter' %}active{% endif %}" role="tab" aria-controls="profile" aria-selected="true"> 
+        {# <i class="h-7 mr-2 fill-gray-500 font-bold" data-feather="user"></i> #}
+        <span>Vos paramètres</span>
+    </a>   
+
+    <a id="profile-tab" href="{{ path('app_profile_edit', {step : 'user'}) }}" class="py-3 sm:mr-8 flex items-center {% if step == 'user' %}active{% endif %}" role="tab" aria-controls="profile" aria-selected="true"> 
+        {# <i class="w-4 h-4 mr-2" data-feather="user"></i>  #}
+        <span>Vous</span> 
+    </a>
+
+    <a id="change-password-tab" href="{{ path('app_profile_edit', {step : 'life'}) }}" class="py-3 sm:mr-8 flex items-center {% if step == 'life' %}active{% endif %}" role="tab" aria-selected="false"> 
+        {# <i class="fas fa-running mr-2"></i>  #}
+        <span>Style de vie</span>
+    </a>
+    
+    <a id="settings-tab" href="{{ path('app_profile_edit', {step : 'food'}) }}" class="py-3 sm:mr-8 flex items-center {% if step == 'food' %}active{% endif %}" role="tab" aria-selected="false"> <i class="fas fa-utensils mr-2"></i></i> Habitudes alimentaires </a>
+    <a id="settings-tab" href="{{ path('app_profile_edit', {step : 'energy'}) }}" class="py-3 sm:mr-8 flex items-center {% if step == 'energy' %}active{% endif %}" role="tab" aria-selected="false"> <i class="fas fa-utensils mr-2"></i></i> Votre energie quotidienne </a>
+
+</div>

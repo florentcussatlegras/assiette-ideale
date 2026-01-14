@@ -1,0 +1,33 @@
+<div class="list-fgp flex items-center justify-end w-1/2 gap-6">
+
+	{# {% for foodGroupParent in foodGroupParents %}
+
+		<div class="flex w-12 h-12 justify-center items-center">
+
+			{% if foodGroupParent.id in listfgp %} #}
+
+				{# {{ include("meals/pictos/check-min.xml.twig", {"color" : foodGroupParent.color}) }} #}
+
+				{# <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="check" style="color: {{ foodGroupParent.color }}" class="w-8 h-8 dark:text-cool-gray-200 group-hover:text-purple-600 group-focus:text-purple-600 dark:group-hover:text-purple-50 dark:group-focus:text-purple-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+				
+			{% endif %}
+
+		</div>
+
+	{% endfor %} #}
+
+	{% for foodGroupParent in foodGroupParents %}
+
+		<a href="#" class="fgp" title="{{ foodGroupParent.name }}">
+
+			<div class="picto w-12 rounded-full flex items-center justify-center">
+					{# <div class="picto w-12 h-12 rounded-full flex items-center justify-center" style="background-color:{{ foodGroupParent.degradedColor }}"> #}
+				{{ include('meals/pictos/foodgroupparent/' ~ foodGroupParent.alias ~ '.xml.twig', {'color': foodGroupParent.color }) }}
+			</div>
+		
+		</a>
+
+	{% endfor %}
+
+</div>
+

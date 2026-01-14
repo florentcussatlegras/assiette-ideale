@@ -1,0 +1,67 @@
+{% use 'tailwind_2_layout.html.twig' %}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({ class: label_attr.class|default(label_class|default('block')) }) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="w-full list-none">
+            {%- for error in errors -%}
+                <li class="{{ error_item_class|default('flex items-start text-left text-red-700 my-1') }}">
+                    {# <i class="w-4 h-4 mr-2" data-feather="alert-circle"></i> #}
+                    <span>{{ error.message }}</span>
+                </li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{# {%- block widget_attributes -%}
+    {%- set attr = attr|merge({ class: attr.class|default(widget_class|default('mt-1 w-full form-control')) ~ (disabled ? ' ' ~ widget_disabled_class|default('border-gray-300 text-gray-500')) ~ (errors|length ? ' ' ~ widget_errors_class|default('border-2')) }) -%}
+    {{- parent() -}}
+{%- endblock widget_attributes -%} #}
+
+{%- block choice_widget_expanded -%}
+    {%- set attr = attr|merge({ class: attr.class|default('mt-2') }) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            <div class="flex items-center">
+                {{- form_widget(child) -}}
+                {{- form_label(child, null, { translation_domain: choice_translation_domain, 'label_attr': {'class': 'font-normal'} }) -}}
+            </div>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+
+{%- block custom_datepicker_week_widget -%}
+  
+        {%- set type = type|default('text') -%}
+        {%- if type == 'range' or type == 'color' -%}
+            {# Attribute "required" is not supported #}
+            {%- set required = false -%}
+        {%- endif -%}
+
+        <div class="relative">
+            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none px-3">
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                </svg>
+            </div>
+            <input 
+                type="{{ type }}" 
+                {{ block('widget_attributes') }} 
+                {% if value is not empty %}value="{{ value }}" {% endif %} 
+            />
+        </div>
+        
+{%- endblock custom_datepicker_week_widget -%}
+
+
+
+
+
+
+

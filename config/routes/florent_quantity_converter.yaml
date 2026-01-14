@@ -1,0 +1,4 @@
+# _quantity_converter:
+#     resource: '@FlorentQuantityConverterBundle/Resources/config/routes.xml'
+#     prefix: '/quantity-converter'
+#     name_prefix: 'quantity_converter_'

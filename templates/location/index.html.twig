@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BlogController!{% endblock %}
+
+{% block body %}
+
+    <div class="flex">
+
+        <div class="box w-1/3 p-20">
+
+            {{ form_start(formCompany) }}
+
+                {{ form_row(formCompany.name) }}
+    
+                {{ form_row(formCompany.website) }}
+
+                {{ form_row(formCompany.location) }}
+
+                <button type="submit">Valider</button>
+
+            {{ form_end(formCompany) }}
+
+        </div>
+
+        <div class="box w-1/3 p-20">
+
+            {{ form_start(formCustomer) }}
+
+                {{ form_row(formCustomer.firstName) }}
+    
+                {{ form_row(formCustomer.lastName) }}
+
+                {{ form_row(formCustomer.location) }}
+
+                <button type="submit">Valider</button>
+
+            {{ form_end(formCustomer) }}
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends "security/_layout.html.twig" %}
+
+{% form_theme registerForm _self %}
+
+{% block title %}S'inscrire{% endblock %}
+
+{% block content %}
+
+    {# <div class="container">
+
+        <form class="form-horizontal" id="validateForm">
+
+            <h1>Welcome</h1>
+
+            <fieldset>
+
+                <!-- Email input-->
+                <div class="form-group">
+
+                    <label class="col-md-12 control-label" for="textinput">
+                        Email
+                    </label>
+
+                    <div class="col-md-12">
+                        <input id="email" name="textinput" 
+                        type="email" autocomplete="off" 
+                        placeholder="Enter your email address" 
+                        class="form-control input-md">
+                    </div>
+
+                </div>
+                
+                <!-- Password input-->
+                <div class="form-group">
+
+                    <label class="col-md-12 control-label" for="passwordinput">
+                        Password
+                    </label>
+
+                    <div class="col-md-12">
+
+                        <div class="relative inline">
+                            <input id="password" class="form-control input-md"
+                            name="password" type="password" 
+                            placeholder="Enter your password" >
+
+                            <span class="show-pass">
+                                <i class="far fa-eye"></i>
+                            </span>
+                        </div>
+
+                        <div id="popover-password">
+                            <p><span id="result"></span></p>
+                            <div class="progress">
+                                <div id="password-strength" 
+                                    class="progress-bar" 
+                                    role="progressbar" 
+                                    aria-valuenow="40" 
+                                    aria-valuemin="0" 
+                                    aria-valuemax="100" 
+                                    style="width:0%">
+                                </div>
+                            </div>
+                            <ul class="list-unstyled">
+                                <li class="">
+                                    <span class="low-upper-case">
+                                        <i class="fas fa-circle" aria-hidden="true"></i>
+                                        &nbsp;Lowercase &amp; Uppercase
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span class="one-number">
+                                        <i class="fas fa-circle" aria-hidden="true"></i>
+                                        &nbsp;Number (0-9)
+                                    </span> 
+                                </li>
+                                <li class="">
+                                    <span class="one-special-char">
+                                        <i class="fas fa-circle" aria-hidden="true"></i>
+                                        &nbsp;Special Character (!@#$%^&*)
+                                    </span>
+                                </li>
+                                <li class="">
+                                    <span class="eight-character">
+                                        <i class="fas fa-circle" aria-hidden="true"></i>
+                                        &nbsp;Atleast 8 Character
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Button -->
+                
+                <div class="form-group">
+                    <a href="#" class="btn login-btn btn-block">
+                        Create Account
+                    </a>    
+                </div>
+                <div class="ex-account text-center">
+                    <p>Already have an account? Signin 
+                        <a href="/">here</a>
+                    </p>
+                    <div class="divider"></div>
+                </div>
+            </fieldset>
+        </form>   
+    </div> #}
+
+    {{ form_start(registerForm, {'attr' : {'novalidate' : 'novalidate'}}) }}
+
+        {{ form_errors(registerForm) }}
+
+        <h1 class="font-bold text-xl">
+            S'inscrire
+        </h1>
+        <div class="mt-2 text-gray-500 text-sm">
+            {# A few more clicks to sign in to your account! #}
+            Encore quelques clics pour vous connecter à votre compte !
+        </div>
+        
+        <div class="mt-8 form-group text-sm">
+
+            <div class="mb-2">
+                {{ form_label(registerForm.email) }}
+                <span class="text-red-500">{{ form_errors(registerForm.email) }}</span>
+                {{ form_widget(registerForm.email) }}
+            </div>
+
+            <div class="mb-2">
+                {{ form_label(registerForm.username) }}
+                <span class="text-red-500">{{ form_errors(registerForm.username) }}</span>
+                {{ form_widget(registerForm.username) }}
+            </div>
+
+            <div class="mb-2">
+                {{ form_label(registerForm.country) }}
+                <span class="text-red-500">{{ form_errors(registerForm.country) }}</span>
+                {{ form_widget(registerForm.country) }}
+            </div>
+
+            <div 
+                class="mt-6"
+                {# {{ stimulus_controller('password-validation') }} #}
+            >
+                {{ form_label(registerForm.plainPassword) }}
+                <span class="text-red-500">{{ form_errors(registerForm.plainPassword) }}</span>
+       
+                <div data-controller="password-visibility" class="relative flex items-center">
+                    {{ form_widget(registerForm.plainPassword, {'id': 'psw'}) }}
+                    {{ include('partials/_button_visibility_pwd.html.twig') }}
+                </div>
+
+                {# <div id="message" class="flex flex-col gap-1">
+                    <label class="text-sm">Le mot de passe doit contenir:</label>
+                    <div id="letter" class="invalid-password text-xs pl-6 flex items-center">Une lettre minuscule</div>
+                    <div id="capital" class="invalid-password text-xs pl-6 flex items-center">Une lettre majuscule</div>
+                    <div id="number" class="invalid-password text-xs pl-6 flex items-center">Un nombre</div>
+                    <div id="length" class="invalid-password text-xs pl-6 flex items-center">8 caractères minimums</div>
+                </div> #}
+
+            </div>
+
+        </div>
+
+        <div class="flex flex-col mt-6 text-sm">
+            <span class="text-red-500">{{ form_errors(registerForm.terms) }}</span>
+            <div class="flex flex-row gap-1">
+                <div>
+                    {{ form_widget(registerForm.terms) }}
+                </div>
+                <div class="mt-1">
+                    {{ form_label(registerForm.terms) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group text-center mt-4">
+            <button type="submit" class="bg-sky-600 hover:bg-sky-700 text-white w-full font-bold p-2 text-base cursor-pointer rounded-lg transition duration-300">Valider</button>
+            <div class="mt-5 text-sm">Déja inscrit? <br><a href="{{ path('app_login') }}" class="text-sky-600 hover:text-sky-700 text-sm">Identifiez-vous</a></div>
+        </div>
+
+        <div class="mt-7 text-gray-700 dark:text-gray-600 text-center text-sm">
+			En vous inscrivant, vous acceptez nos
+			<br>
+			<a class="text-sky-600 hover:text-sky-700" href="{{ path('app_terms') }}">Termes et Conditions</a>
+		</div>
+
+    {{ form_end(registerForm) }}
+
+{% endblock %}

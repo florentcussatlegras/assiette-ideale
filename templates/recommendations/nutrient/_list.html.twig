@@ -1,0 +1,61 @@
+
+
+  
+
+
+ <ul class="flex flex-col py-4">
+
+    {% for nutrient in nutrients %}
+
+        <li class="px-6 py-2 font-medium flex flex-row gap-2 items-start">
+            <div class="flex rounded-full w-4 h-4 mt-1" style="background-color: {{ nutrient.color }}"></div>
+            <div class="flex flex-col">
+                <span>
+                    {{ nutrient.name|capitalize }}
+                </span>
+                <span class="text-neutral-500 text-sm">
+                    {{ "%s g"|format(attribute(app.user, nutrient.code)) }}
+                </span>
+            </div>
+        </li>
+
+    {% endfor %}
+
+    {# <li class="px-6 pb-4 font-medium flex flex-col">
+        <span>
+            Protéines
+        </span>
+        <span class="text-gray-500">
+            {{ "%s g"|format(app.user.protein) }}
+        </span>
+    </li>
+
+    <li class="px-6 pb-4 font-medium flex flex-col">
+        <span>
+            Lipides
+        </span>
+        <span class="text-gray-500">
+            {{ "%s g"|format(app.user.lipid) }}
+        </span>
+    </li>
+
+    <li class="px-6 pb-4 font-medium flex flex-col">
+        <span>
+            Glucides
+        </span>
+        <span class="text-gray-500">
+            {{ "%s g"|format(app.user.carbohydrate) }}
+        </span>
+    </li>
+
+    <li class="px-6 pb-4 font-medium flex flex-col">
+        <span>
+            Sodium
+        </span>
+        <span class="text-gray-500">
+            {{ "%s g"|format(app.user.sodium) }}
+        </span>
+    </li> #}
+        
+</ul>
+

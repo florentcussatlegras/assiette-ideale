@@ -1,0 +1,79 @@
+profile:
+    stepper_registration:
+        gender: Gender
+        ageRange: Age
+        height: Height
+        weight: Weight
+        hour: Hour
+        workingType: Work
+        sportingTime: Physical activities
+        forbiddenFoods: Forbidden foods
+        diets: Diets
+        energy: Energy
+    title: My profil
+    change_password: 'Change your password'
+    physical_activities:
+        label: 'Your physical activities'
+        value:
+            no_sport: "You don't do sports"
+            less_than_5: 'You practice less than 5 hours of sport per week'
+            more_than_5: 'You practice more than 5 hours of sport per week'
+    physical_foods: 'Your foods habits'
+    energy_needs:
+        label1: 'Your daily energy requirement'
+        label2: 'My daily energy needs'
+        value:
+            automatic: Let the program calculate them automatically
+            personal: I know my needs
+    gender:
+        label1: Genre
+        label2: You are
+        value:
+            man: Man
+            woman: Woman
+            others: Autres
+    age:
+        label1: Age
+        label2: You have
+        value:
+            less_18: "Under 18 years old"
+            between_18_33: "Between 18 and 33 years old"
+            between_34_43: "Between 34 and 43 years old"
+            between_44_53: "Between 44 and 53 years old"
+            between_54_63: "Between 54 and 63 years old"
+            between_64_73: "Between 64 and 73 years old"
+            between_74_83: "Between 74 and 83 years old"
+            between_84_93: "Between 84 and 93 years old"
+            more_94: "Plus de 94 ans"
+    height:
+        label1: Height
+        label2: You measure (cm)
+        value: '{value} cm'
+    weight:
+        label1: Weight
+        label2: You weigh (lbs)
+        value: '{value} lbs'
+    hour:
+        label: Hours
+        value:
+            normal: "Normal hours"
+            shift: "Staggered hours"
+            half: "Half-time hours"
+            none: "No schedule"
+    working_type:
+        label: Work
+        value:
+            no_physical: You do not have a physical job
+            physical: You have a physical job
+    forbidden_foods:
+        label1: Foods that you don't eat
+        label2: Foods that you do not eat (allergies, dietary restrictions, preferences, etc.)
+        none: "You have no forbidden foods"
+    diets:
+        label1: Your diets
+        label2: Are you following one or more restrictive diets?
+        none: You have no diet
+    imc:
+        title: Your BMI
+    energy:
+        title: Your daily energy requirement

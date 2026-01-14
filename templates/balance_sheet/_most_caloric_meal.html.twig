@@ -1,0 +1,59 @@
+
+{% if meal is not null %}
+
+    <div class="flex text-xs rounded-lg bg-gray-200 text-sky-600 p-2 mb-2 justify-center text-center">
+        <center>{{ meal.type.frontName }} du {{ meal.eatedAt|format_date('short', locale='fr') }}</center>
+    </div>
+    
+    {% for dishAndFood in meal.dishAndFoods %}
+
+        {% set element = object(dishAndFood['id'], 'App\\Entity\\' ~ dishAndFood['type']) %}
+
+        {% if dishAndFood['type'] == 'Dish' %}
+
+            <div class="flex flex-row items-start m-b gap-2">
+ 
+                {% if element.picture is not null and element.picturePath is not null %}
+                    <img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
+                {% endif %}
+                <div class="flex flex-col leading-4">
+                    <a href="" class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm">{{ element.name }}</a>
+                    <div class="text-neutral-500 text-xs">
+                        {{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}
+                    </div>
+                </div>
+            
+            </div>
+
+        {% else %}
+
+            <div class="flex flex-row items-center">
+                <div class="flex text-base gap-2 items-center mb-2">
+                    {% if element.picture is not null and element.picturePath is not null %}
+                        <img alt="Photo plat" class="rounded-lg w-8" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                    {% else %}
+                        <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
+                    {% endif %}
+                    <div class="flex flex-col leading-4 mt-1">
+                        <a href="" class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm">{{ element.name }}</a>
+                        <span class="text-xs text-neutral-500">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}</span>
+                    </div>
+                </div>
+                {# <div class="ml-auto">
+                    {% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnFoods|keys %}
+                        {{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnFoods[index].higher_level.color}) }}
+                    {% endif %}
+                </div> #}
+            </div>
+
+        {% endif %}
+
+    {% endfor %}
+
+{% else %}
+
+    <span class="text-sm text-gray-500">Aucun repas trouvés pour cette période</span>
+
+{% endif %}

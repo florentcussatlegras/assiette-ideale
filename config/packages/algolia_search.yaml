@@ -1,0 +1,12 @@
+# All available configuration can be found here:
+# https://www.algolia.com/doc/api-client/symfony/configuration/
+algolia_search:
+    settingsDirectory: /config/settings/algolia_search/
+    prefix: '%env(SEARCH_PREFIX)%'
+    indices:
+        - name: dishes
+          class: App\Entity\Dish
+        - name: foods
+          class: App\Entity\Food
+          enable_serializer_groups: true
+    batchSize: 10

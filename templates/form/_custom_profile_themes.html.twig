@@ -1,0 +1,45 @@
+{% use 'form/_custom_themes.html.twig' %}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({ class: label_attr.class|default(label_class|default('block text-sm md:text-base uppercase mb-6')) }) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_row -%}
+    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('mb-6 text-center')) }) -%}
+    {{- parent() -}}
+{%- endblock form_row -%}
+
+{%- block unit_energy_widget -%}
+    <div class="flex">
+        {%- for child in form %}
+            <div class="flex items-center mr-4">
+                {{- form_widget(child, {'attr' : {'class' : 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'}}) -}}
+                {{- form_label(child, null, {translation_domain: choice_translation_domain, 'label_attr' : {'class' : 'ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'}}) -}}
+            </div>
+        {% endfor -%}
+    </div>
+{%- endblock unit_energy_widget -%}
+
+{%- block profile_weight_height_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="w-full list-none">
+            {%- for error in errors -%}
+                <li class="{{ error_item_class|default('flex justify-center text-red-700 my-1') }}">
+                    {# <i class="w-4 h-4 mr-2" data-feather="alert-circle"></i> #}
+                    <span>{{ error.message }}</span>
+                </li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock profile_weight_height_errors -%}
+
+{% block user_profile_image_widget %}
+    {% if image_url is defined and image_url is not null %}
+        <div class="flex gap-2 items-end">
+            <img src="{{ image_url|imagine_filter('squared_thumbnail_medium') }}" width="100px" />
+            <a href="{{ path('app_users_remove_pic') }}">Supprimer</a>
+        </div>
+    {% endif %}
+    {{ block('form_widget') }}
+{% endblock user_profile_image_widget %}

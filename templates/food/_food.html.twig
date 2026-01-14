@@ -1,0 +1,80 @@
+
+    {# <div class="card flex flex-col justify-between bg-white pb-5 relative overflow-hidden p-6 hover:bg-grey-100 border"> #}
+    <div class="card card-wrapper shadow-soft rounded-2xl">
+    
+        <div class="card-col-left">
+
+            <a href="{{ path('app_food_show', {'slug': food.slug}) }}" class="flex items-center justify-center h-full">
+
+                {% if food.picture is not null and food.picturePath is defined %}
+                    <img class="rounded-md" alt="Photo de l'aliment {{ food.name }}" src="{{ food.picturePath|imagine_filter('squared_thumbnail_medium') }}" width="250px">
+                {% else %}
+                    <img class="rounded-md" alt="Photo de l'aliment {{ food.name }}" src="https://via.placeholder.com/500">
+                {% endif %}
+                
+            </a>
+
+            <div class="flex flex-col gap-2">
+
+                <a href="{{ path('app_food_show', {'slug': food.slug}) }}" class="block text-base font-bold truncate">
+                    {{ food.name }}
+                </a>
+
+                {{ include('food/_miscellaneous_informations.html.twig') }}
+
+            </div>
+
+        </div>
+
+        <div class="card-col-right">
+
+            <div>{{ include('food/_nutritional_informations.html.twig') }}</div> 
+
+            {% if app.session.has('recipe_dish') %}
+ 
+                <div class="select-quantity">
+    
+                    <input name="foods[{{ food.id }}][quantity]" type="number" step="0.01" class="form-control col-span-6 w-1/2" placeholder="Quantité" aria-label="default input inline 1"> 
+                
+                    <select name="foods[{{ food.id }}][unit_measure]" class="form-select sm:mr-2 col-span-6" aria-label="Default select example">
+                    
+                        {% for unitMeasure in food.unitMeasures %}
+
+                            {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
+                    
+                                <option value="{{ unitMeasure.alias }}" 
+                                
+                                    {% if food.foodGroup.alias in app.session.get('recipe_foods')|keys 
+                                    and food.id in app.session.get('recipe_foods')[food.foodGroup.alias]|keys
+                    and app.session.get('recipe_foods')[food.foodGroup.alias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                        selected="selected"
+                                    {% endif %}>
+
+                                    {{ unitMeasure.alias }}
+                                    
+                                </option>
+
+                            {% endif %}
+
+                        {% endfor %}
+                    
+                    </select>
+                
+                </div>
+
+            {% endif %}
+        
+        </div>
+
+        {# <div class="absolute top-0 right-0 mr-2 mt-2 dropdown ml-auto">
+            <a class="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false"> <i data-feather="more-vertical" class="w-5 h-5 text-gray-600"></i> </a>
+            <div class="dropdown-menu w-40">
+                <div class="dropdown-menu__content box dark:bg-dark-1 p-2">
+                    <a href="" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"> <i data-feather="users" class="w-4 h-4 mr-2"></i> Share File </a>
+                    <a href="" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"> <i data-feather="trash" class="w-4 h-4 mr-2"></i> Delete </a>
+                </div>
+            </div>
+        </div> #}
+    </div>
+
+

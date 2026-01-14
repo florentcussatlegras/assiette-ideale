@@ -1,0 +1,69 @@
+<!-- Modal Container -->
+<div data-modal-target="container" data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard" class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center" style="z-index: 9999;">
+  
+    <div class="max-h-screen bg-white w-full max-w-lg relative">
+
+        <div class="flex flex-col p-8">
+            
+            <h1 class="text-2xl font-bold mb-3">Modifier un aliment</h1>
+
+            <p class="my-4">Veuillez indiquer la quantité de 
+                <span class="text-dark-blue">{{ food.name }}</span> 
+                que vous souhaitez ajouter au plat :
+            </p>
+    
+            {# <form action="{{ path('app_dish_food_edit', {idFood: food.id, idDish: idDish}) }}" method="POST" #}
+            <form method="POST" class="flex flex-row gap-2">
+
+                <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
+
+                {% set foodGroupAlias = food.foodGroup.alias %}
+
+                <input name="food_group_code" type="hidden" value="{{ foodGroupAlias }}" /> 
+                <input name="food_group_slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
+
+                <input name="foods[{{ food.id }}][quantity]" 
+                            type="text" 
+                            class="w-24" 
+                            placeholder="Quantité" 
+                            aria-label="default input inline 1" 
+                            {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                                    and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
+                                        value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
+                            {% endif %}>
+                
+                <select name="foods[{{ food.id }}][unit_measure]" aria-label="Default select example">
+                
+                    {% for unitMeasure in unitMeasures %}
+
+                        {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
+                
+                            <option value="{{ unitMeasure.alias }}"
+                            
+                                {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                                and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+                        and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                            selected="selected"
+                                        {% endif %}>
+
+                                        {{ unitMeasure.alias }}
+                                        
+                                    </option>
+
+                                {% endif %}
+
+                            {% endfor %}
+                
+                </select>
+
+                <button type="button" class="modify-food flex flex-row bg-dark-blue text-white font-bold py-1 px-4 rounded-full items-center ">Modifier</button>
+                
+                <button class="text-dark-blue font-bold py-2" data-action="click->modal#close">Annuler</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

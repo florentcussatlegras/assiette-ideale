@@ -1,0 +1,59 @@
+<!-- MODAL ENERGY ALERT -->
+<div 
+    id="alert-energy-modal"
+    data-popover-info-target="background"
+    class="fixed inset-0 z-50 hidden bg-black/80 flex items-start justify-center transition-opacity duration-200 pt-4"
+>
+    <!-- Modal container -->
+    <div class="w-full max-w-xl p-4">
+        <div 
+            data-popover-info-target="container"
+            class="bg-white shadow-lg overflow-hidden hidden transform transition-all duration-300 scale-95 opacity-0 rounded-lg"
+        >
+            <!-- Header -->
+            <div class="flex items-center justify-end text-light-blue p-4">
+                {# <h3 class="text-base font-semibold flex items-center gap-3">
+                    Apport calorique trop élevé
+                </h3> #}
+
+                <button 
+                    type="button"
+                    data-action="click->popover-info#hide"
+                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition"
+                >
+                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-5 min-h-32">
+                <!-- Loader -->
+                <div 
+                    data-popover-info-target="loader"
+                    class="hidden w-full h-24 flex items-center justify-center"
+                >
+                    <div class="loader"></div>
+                </div>
+
+                <!-- Ajax content -->
+                <div 
+                    data-popover-info-target="content"
+                    class="hidden text-base px-4"
+                ></div>
+            </div>
+
+            <!-- Footer -->
+            <div class="p-5 rounded-b-3xl flex justify-end">
+                <button 
+                    data-action="click->popover-info#hide"
+                    class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition"
+                >
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

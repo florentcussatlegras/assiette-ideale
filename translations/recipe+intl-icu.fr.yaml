@@ -1,0 +1,26 @@
+recipe:
+    person: >-
+      {length, plural, 
+        one {# personne}
+        other {# personnes}
+      }
+    time:
+        label:
+            preparation: Temps de préparation
+            cooking: Temps de cuisson
+        value: >-
+            {unit_time, select,
+                h   {{duration, plural,
+                      one {# heure}
+                      other {# heures}
+                }}
+                min {{duration, plural,
+                      one {# minute}
+                      other {# minutes}
+                }}
+                other {heure}
+            }
+    level:
+        easy: Facile
+        average: Moyen
+        hard: Difficile

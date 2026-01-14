@@ -1,0 +1,51 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(APP_SECRET)%'
+    csrf_protection: true
+    
+    http_method_override: false
+
+    # error_controller: App\Controller\ErrorController::show2
+
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session:
+        # use native PHP session mechanism, session metadata files be stored outside of the symfony application
+        # in a directory controlled by PHP
+        handler_id: null
+
+        # let symfony to manage the session itself
+        handler_id: session.handler.native_file
+        save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
+
+        #stockage session in database
+        #handler_id: Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler
+
+        cookie_secure: auto
+        cookie_samesite: lax
+        storage_factory_id: session.storage.factory.native        
+
+    esi: true
+    fragments: { path: /_fragment }
+
+    php_errors:
+        log: true
+    
+    ide: vscode
+
+    router:
+        # default_uri: 'https://www.monsite.fr'
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file
+
+when@prod:
+    framework:
+        http_cache: 
+            enabled: true
+            debug: true
+            trace_level: full
+            

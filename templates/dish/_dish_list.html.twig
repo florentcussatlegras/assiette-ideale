@@ -1,0 +1,18 @@
+
+{% for dish in dishes %}
+    {{ include("dish/_dish.html.twig") }}
+{% else %}
+    <div class="absolute flex items-center justify-center text-center h-64 text-lg text-gray-400 w-full">
+        {% if favoriteDishesId is defined %}
+            Aucun plat ne correspond à votre recherche
+        {% else %}
+            Vous n'avez aucun plat préféré
+        {% endif %}
+    </div>
+{% endfor %}
+
+<input 
+    type="hidden"
+    data-reload-content-target="lastResults"
+    value="{{ lastResults|default(false) }}"
+/>

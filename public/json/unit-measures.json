@@ -1,0 +1,28 @@
+
+
+
+[
+    {
+        "name": "litre",
+        "alias": "l",
+        "gram_ratio": 1000
+    },
+    {
+        "name": "décilitre",
+        "alias": "dl",
+        "gram_ratio": 100
+    },
+    {
+        "name": "centilitre",
+        "alias": "cl",
+        "gram_ratio": 10
+    },
+    {
+        "name": "millilitre",
+        "alias": "ml",
+        "gram_ratio": 1
+    }
+]
+
+
+

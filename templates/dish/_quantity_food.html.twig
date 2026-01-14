@@ -1,0 +1,3 @@
+<div class="quantity-food">{{ quantity }} {{ unitMeasure }}</div>
+
+{{ render(controller("App\\Controller\\DishController::editFood", { idFood: idFood, idDish: idDish})) }}

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Twig</title>
+</head>
+<body>
+    
+    {# BATCH list of lists #}
+
+        {% set items = ['a', 'b', 'c', 'd'] %}
+        {# {{ dump(items|batch(3, 'No item'))}} #}
+
+    
+
+
+    {# COLUMN #}
+
+        {% set items = [{'fruit': 'apple'}, 
+                    {'fruit': 'orange', 'vegetable': 'concombre'}] %}
+        {% set fruits = items|column('fruit') %}
+        {# {{ dump(fruits) }} #}
+
+
+
+
+    {# FIRST/LAST #}
+    
+        {# {{ dump([1,2,3,4]|first) }}
+        {{ dump([1,2,3,4]|last) }}
+
+        {{ {a: 1, b: 2, c: 3}|last }}  #}
+        {# 3 #}
+    
+
+
+
+    {# 
+        SPLIT - php explode or str_split (if delimiter is empty)
+        string to array
+     #}
+    
+        {% set strHello = "1,2,3,4,5,6" %}
+
+        {# EXPLODE #}
+
+        {# ['1'','2','3','456'] ? #}
+        {# {{ dump(strHello|split(',', 4)) }} #}
+
+        {# ['1','2','3'] } #}
+        {# {{ dump(strHello|split(',', -3)) }} #}
+
+        
+        {# STR_SPLIT #}
+
+        {% set strHello = "Hello world" %}
+
+        {# output ["H", "e", "l", "l", "o", " ", "w", "o", "r", "l", "d"] #}
+        {# {{ dump(strHello|split('')) }} #}
+     
+        {# output ["He", "ll", "o", "wo", "rl, "d"] #}
+        {# {{ dump(strHello|split('', 2)) }} #}
+
+
+
+
+
+    {# FILTER(callback) #}
+    
+        {% set sizes = [34, 36, 38, 40, 42] %}
+
+        {# tableau contenant toutes les valeurs superieures à 38 #}
+        {# {{ dump(sizes|filter(v => v >38)) }} #}
+    
+
+
+
+
+
+    {# REDUCE(callback, initial) #}
+
+        {% set numbers = [1,2,9] %}
+        {# set sum of each element with initial value 3 #}
+        {% set sum = numbers|reduce((carry, v) => carry + v, 3) %}
+
+
+
+
+
+    {# SLICE(start, length, preserve_keys) #}
+
+        {% set numbers = [1,2,3,4] %}
+        {# [2,3] ? #}
+        {# {{ dump(numbers|slice(1,2)) }} #}
+
+        {# start negative, part de la fin #}
+        {% set strings = {2: 'Hello', foo: 'bar', baz: 'toto', 6: 'Floucs'} %}
+        {# ["baz" => "toto", 6 => Floucs] ? #}
+        {# {{ dump(strings|slice(-2, preserve_keys=true)) }} #}
+
+        
+        {# {% for i in [1,2,3,4,5][start:length] %}
+
+        {% endfor %} #}
+
+        {# SYNTAXE SUCRE #}
+
+        {# [2,3] ? #}
+        {# {{ dump(numbers[1:2]) }} #}
+
+        {# [1,2] with omitting first argument ? #}
+        {# {{ dump(numbers[:2]) }} #}
+
+        {# [3,4,5] with omitting last argument #}
+        {# {{ dump(numbers[2:]) }} #}
+
+
+
+
+
+    {# SORT(arrow) - use php asort, trie un tableau en ordre croissant 
+    en conservant l'association des index #}
+    
+        {% set numbers = {0: 5, 1: 6, "foo": 9, 9: 12, 7: 3} %}
+        {# tri croissant en conservant les clés, équivalent asort en php #}
+        {# {{ dump(numbers|sort) }} #}
+
+        {% set fruits = [
+            { name: 'Apples', quantity: 5 },
+            { name: 'Oranges', quantity: 2 },
+            { name: 'Grapes', quantity: 4 }
+        ] %}
+        {# tri croissant conservant les clés avec une fonction de compraison = uasort en php #}
+        {# {{ dump(fruits|sort((a, b) => a.name <=> b.name)|column('name')) }} #}
+
+
+
+
+
+
+    {# MERGE - php array_merge #}
+    
+        {% set values = [1,2] %}
+        {# [1,2, 'apple', 'orange'] ? #}
+        {# {{ dump(values|merge(['apple', 'orange'])) }} #}
+
+        {# on hashes, if key exists, its value is overriden #}
+
+        {% set items = {'apple': 'fruit', 'orange': 'fruit', 
+                    'peugeot': 'unknown'} %}
+
+        {% set items = items|merge({'peugeot': 'car', 'renault': 'car'}) %}
+
+        {# {{ dump(items) }} #}
+
+        {% set items = {'apple': 'fruit', 'orange': 'fruit'} %}
+        {% set items = {'apple': 'unknown'}|merge(items) %}
+
+
+
+
+
+    {# KEYS #}
+    
+        {% set numbers = {1: "a", 2: "b", 3: "c"} %}
+        {# [1,2,3] ? #}
+        {# {{ dump(numbers|keys) }} #}
+
+
+
+
+
+    {# REVERSE(preserve_keys) #}
+    
+        {# string key are always preserved #}
+        {# if "preserve_key" true, index key are preserved too #}
+
+        {# reverse a sequence, a mapping or a string #}
+
+        {% set str = '1234' %}
+        {# '4321' ? #}
+        {# {{ dump(str|reverse) }} #}
+
+        {% set characters = {1: "a", 2: "b", 3: "c", "foo": "bar"} %}
+
+        {# {"foo": "bar", 0: "c", 1: "b", 1: "a"} #}
+        {# {{ dump(characters|reverse()) }} #}
+
+        {# {"foo": "bar", 3: "c", 2: "b", 1: "a"} #}
+        {# {{ dump(characters|reverse(preserve_keys=true)) }} #}
+
+
+
+    
+    {# MAP #}
+    
+        {# applies an arrow function to the elements of a sequence
+            or mapping #}
+        {# the arrow function the value of the sequence or mapping #}
+
+        {%
+            set people = [
+                {first: "Bob", last: "Smith"},
+                {first: "Alice", last: "Dupond"}
+            ]
+        %}
+
+        {# Smith - Bob and Dupond - Alice ? #}
+        {% set peopleMap = people|map((p) => "#{p.last} - #{p.first}" ) %}
+        {# {{ dump(peopleMap|join(',', ' and ')) }} #}
+
+
+    
+
+    {# JOIN(glue, and) #}
+
+        {% set numbers = [1,2,3,4] %}
+        {# '1234' ? #}
+        {# {{ numbers|join }} #}
+        {# '1,2,3 and 4' #}
+        {# {{ numbers|join(',', ' and ') }} #}
+
+
+
+
+    {# filter |DATE #}
+
+        {# render a FORMATTED STRING #}
+
+        {#
+            The date filter accept:
+                - string format supported by strtotime
+                - DateTime instance
+                - DateInterval instance
+        #}
+
+        {# {{ "now"|date('d-m-Y') }}
+        {{ "now"|date() }}
+        {{ the_date|date("F jS \\a\\t g:ia") }} #}
+
+
+        {# {{ "now"|date('d-m-Y') }}<br>
+        {{ "now"|date() }}<br>
+        {{ ''|date() }} #}
+
+        {# {{ post.published_at(date("F jS \\a\\t g:ia")) }} #}
+
+        {# overidde timezone #}
+
+        {# {{ post.published_at|date("m/d/y", "Europe/aParis") }} #}
+
+        {# if date is DateTime and you want to keep its current #}
+
+        {# {{ post.published_at|date("m/d/Y", false) }} #}
+
+
+
+
+
+    {# DATE_MODIFY(modifier_string) #}
+
+        {# render a DATETIME OBJECT #}
+
+        {#
+            The date_modify filter accepts
+                - strings format accepted by strtotime
+                - DateTime instances
+
+            Render a DateTime object
+        #}
+
+
+        {# set a datetime object d'un jour de plus que aujourd'hui #}
+        {% set dateModify = "now"|date_modify("+1 day") %} 
+
+        {# formatte en string #}
+        {# {{ dateModify|date("m/d/Y") }} #}
+
+
+
+
+    {# function date(string) for comparing date #}
+
+        {# render a DATETIME OBJECT #}
+
+        {# current date #}
+        {# {{ dump(date()) }} #}
+
+        {# compare une date d'il y a 2 ans avec une date dans 3 semaines #}
+        {# {{ date('-2 years') < date('+3 weeks') }} #}
+
+
+
+
+
+    {# FORMAT_DATETIME, FORMAT_DATE, FORMAT_TIME #}
+
+        {# composer require twig/intl-extra #}
+        
+        {# {{ 'now'|format_datetime('short', 'full', locale='fr') }}
+        <br>
+        {{ date()|format_datetime('full', 'full', locale='en') }} #}
+
+
+
+
+    {# ROUND(precision, method) #}
+
+        {# precision par défaut: 0
+        common (default) == \NumberFormatter::HALF_UP
+            neariest neightbors with round up equidistant 
+                floor == \NumberFormatter::ROUND_DOWN
+                ceil == \NumberFormatter::ROUND_UP #}
+
+
+        <!--{{ 4.644|round(2) }} {# 4.64 #}
+        <br>
+        {{ -4.644|round(2) }} {# -4.64 #}
+        <br>
+        <br>
+        {{ 4.645|round(2) }} {# 4.65 #}
+        <br>
+        {{ -4.645|round(2) }} {# -4.65 #}
+        <br>
+        <br>
+        {{ 4.646|round(2) }} {# 4.65 #}
+        <br>
+        {{ -4.646|round(2) }} {# -4.65 #}
+        <br>
+        <br>
+
+        {{ 4.644|round(2, 'floor') }} {# 4.64 #}
+        <br>
+        {{ -4.644|round(2, 'floor') }} {# -4.64 #}
+        <br>
+        <br>
+        {{ 4.645|round(2, 'floor') }} {# 4.64 #}
+        <br>
+        {{ -4.645|round(2, 'floor') }} {# -4.64 #}
+        <br><br>
+        {{ 4.646|round(2, 'floor') }} {# 4.64 #}
+        <br>
+        {{ -4.646|round(2, 'floor') }} {# -4.64 #}
+        <br>
+        <br>
+
+
+        {{ 4.644|round(2, 'ceil') }} {# 4.65 #}
+        <br>
+        {{ -4.644|round(2, 'ceil') }} {# -4.65 #}
+        <br><br>
+        {{ 4.645|round(2, 'ceil') }} {# 4.65 #}
+        <br>
+        {{ -4.645|round(2, 'ceil') }} {# -4.65 #}
+        <br><br>
+        {{ 4.646|round(2, 'ceil') }} {# 4.65 #}
+        <br>
+        {{ -4.646|round(2, 'ceil') }} {# -4.65 #}-->
+        
+
+
+
+
+    {# NUMBER_FORMAT(decimal, decimal_point(.), thousand_sep(,)) #}
+
+        {#
+            arrondit au voisin le plus proche
+                superieur si equidistant \NumberFormatter::HALF_UP
+        #}
+        {#
+            par défaut précision: 0
+        #}
+
+        <!--{{ 200.35|number_format }} {# 200 #}
+        <br><br>
+        {{ 9800.333|number_format(2, '.', ',') }} {# 9,800.33 #}
+        <br><br>
+        {{ 9800.337|number_format(2, '.', ',') }} {# 9,800.34 #}
+        <br><br>
+        {# {{ -9800.336|number_format(2, '.', ',') }} -9,800 #}
+        <br><br>
+        {{ (-9800.333)|number_format(2, '.', ',') }} {# -9,800.33 #}
+        <br><br>
+        {{ 1 + 0.2|number_format(2) }} {# 1.2 #}
+        <br><br>
+        {{ (1 + 0.2)|number_format(2) }} {# 1.20 #}-->
+
+
+
+
+    {# FORMAT_CURRENCY #}
+
+
+        {# {{ '1000000'|format_currency('EUR', {rounding_mode:"floor", fraction_digit:2}, locale="fr") }} {# 1 000 000.00 € #}
+        <br>
+        {# {{ '1000000'|format_currency('EUR', {rounding_mode:"ceiling", fraction_digit:2}, locale="en") }} €,1000,000.00 #}
+
+
+
+
+    {# FORMAT_NUMBER(locale, attrs, style) #}
+
+       {# {{ '12.3459'|format_number({'rounding_mode': 'floor'}) }}
+       {{ '1000000'|format_number({'fraction_digit': 4}) }}
+       {{ '12.345'|format_number(style="percent") }}
+       {{ '12.345'|format_number(style="spellout") }} #}
+
+       {# format_*_number #}
+
+       {# 
+            format_*_number
+                format_duration_number
+                format_percent_number
+                format_spellout_number 
+       #}
+
+       {# {{ '0.12345'|format_percent_number({rounding_mode: 'floor', fraction_digit: 1}) }}
+
+       {{ '12.45'|format_number(locale='fr') }} #}
+
+
+
+
+    {# CONSTANT #}
+
+        {# value for given string #}
+        {# constant dateTime php #}
+        {# {{ constant('DATE_W3C') }} #}
+
+        {# path constant from class #}
+        {# {{ constant('Namespace\\ClassName::NAME_CONSTANT') }} #}
+        {# from an object as well #}
+        {# {{ constant('NAME_CONSTANT', object) }} #}
+        {# retrieve the fully qualified class name of an object #}
+        {# {{ constant('classname', object) }} #}
+
+
+
+    {# INCLUDE(template, variables, with_context, ignore_missing, sandboxes) #}
+
+        {# include function returns the rendered content of a template #}
+        {# have access to the variables of the active context #}
+        {# {{ include('template1.html.twig') }} #}
+        {# {{ include(some_var) }} #}
+
+        {# can also pass additional variables #}
+        {# {{ include('template1.html.twig', {foo: "bar"}) }} #}
+
+        {# only the foo variable will be accessible #}
+        {# {{ include('template1.html.twig', {foo: "bar"}, with_context = false) }} #}
+
+        {# return empty string if the template does not exist #}
+        {# {{ include('template1.html.twig', ignore_missing = true) }} #}
+        
+        {# can also provide a list of templates, the first template
+            that exits will be rendered #}
+        {# {{ include(['template1.html.twig', 'template2.html.twig']) }} #}
+        
+        {# if ignore_missing is set, it will fall back
+            to rendering nothing if none of the templates exist,
+            otherwise it will throw an exception    
+         #}
+         {#
+            when including a template created by an end user,you should condider sandboxing it
+         #}
+        {# {{ include('template1.html.twig', sandboxed = true) }} #}
+
+
+
+
+    {# BLOCK #}
+
+        {# when a template uses inheritance and for printing a block, multiple times #}
+        {# <title>{% block title %}Mon titre{% endblock %}</title>
+        <title>{{ block('title') }}</title> #}
+
+        {# display one block from another template #}
+        {# {{ block('title', 'template1.html.twig') }} #}
+
+        {# check if a block footer exist #}
+        {# {% if block('title') is defined %} #}
+
+        {# check if a block footer from an other template exist #}
+        {# {% if block('title', 'template1.html.twig') is defined %} #}
+       
+
+
+
+    {# PARENT #}
+
+        {# {% extends "base.html.twig" %}
+
+        {% block sidebar %}
+            {{ parent() }}
+        {% endblock %} #}
+
+
+
+    
+    {# HTML_CLASSES #}
+
+    {# <p class="{{ html_classes('a-class', 'another-class', {
+        'foo': object.foo,
+        'bar': object.bar,
+        'baz': object.baz
+    }) }}">How are you doing?</p> #}
+    
+
+    {# ATTRIBUTE #}
+
+        {# method from object #}
+        {# {{ attribute(object, method) }} #}
+
+        {# mthod with arguments from object #}
+        {# {{ attribute(object, method, arguments) }} #}
+
+        {# item of array #}
+        {# {{ attribute(array, item) }} #}
+
+        {# check if method of object exist #}
+        {# {{ attribute(object, method) is defined }} #}
+
+
+    {# CYCLE #}
+
+        {# output ['odd', 'even', 'odd', 'even', 'odd'] from ['odd', 'even'] #}
+
+        {# {% for i in 0..4 %} {
+            {{ cycle(['odd', 'even'], loop.index0) }}
+        } #}
+
+        {# output ["apple", "orange", "citrus", "apple", "orange"]
+            from fruits = ['apple', 'orange', 'citrus'] #}
+        {# {% for i in 0..2 %}
+            {{ cycle(fruits, i) }}
+        {% endfor %} #}
+
+
+    {# SOURCE(name, ignore_missing) #}
+
+        {# return the content of template without rendering it #}
+
+        {# ignore if missing #}
+        {# {{ source('template1.html.twig', ignore_missing = true) }} #}
+        
+        {# from a var #}
+        {# {{ source(some_var) }} #}
+
+    
+
+
+
+
+    {# RANGE(low, high, step) #}
+
+        {# PHP RANGE FUNCTION #}
+
+        {# 0,1,2,3 #}
+        {# {% for i in range(0,3) %}
+            {{ i }}
+        {% endfor %} #}
+
+        {# 0,2,4,6 #}
+        {# {% for i in range(0, 6, 2) %} #}
+        {# {% endfor %} #}
+
+        {# 3,2,1,0 #}
+        {# {% for i in range(3,0) %} #}
+        {# {% endfor %} #}
+
+        {# 0,1,2,3 with range sugar #}
+        {# {% for i in 0..3 %} #}
+        {# {% endfor %} #}
+
+        {# 4,3,2,1 with range sugar #}
+        {# {% for i in 4..1 %} #}
+        {# {% endfor %} #}
+
+
+
+
+
+
+    {# RANDOM(values, max) #}
+
+        {# random array item #}
+        {# {{ random([0,2,3,4]) }} #}
+
+        {# random caracter from string #}
+        {# {{ random('ABC') }} #}
+
+        {# random number without range #}
+        {# {{ random() }} #}
+
+        {# random number between 0 and 5  #}
+        {# {{ random(5) }} #}
+
+        {# random number between -5 and 0 #}
+        {# {{ random(-5) }} #}
+
+        {# random number between 50 and 100 #}
+        {# {{ random(50, 100) }} #}
+
+
+
+
+
+
+    {#MIN/MAX #}
+
+        {# sequence #}
+        {# {{ min(1,3,2) }} #}
+        {# values #}
+        {# {{ min([1,2,3,4]) }} #}
+        {# mapping - ignore keys #}
+        {# {{ min({2: "e", 3:"a", 1: "b", 5: "d", 4: "c"}) }} #}
+
+
+
+
+
+
+    {# DUMP #}
+
+        {# {{ dump(user) }} #}
+
+        {# {{ dump(user, categories) }} #}
+
+        {# dumped all variables if the current context #}
+        {# {{ dump() }} #}
+
+        {# dump attribut object #}
+        {# {{ dump foo.bar }} #}
+
+
+
+
+
+
+    {# APPLY #}
+
+        {# allow to apply twig filters on a block of template data #}
+
+        {# {% apply upper %}
+            This text becomes uppercase
+        {% endapply %}
+
+        {% apply lower|escape('html') %}
+            <strong> SOME TEXT</strong>
+        {% endapply %} #}
+
+
+
+
+
+
+    {# CAPITALIZE #}
+
+        {# My first car #}
+        {# {{ 'my first car'|capitalize }} #}
+
+
+
+
+
+    {# TITLE #}
+
+        {# My First Car #}
+        {# {{ 'My first car'|title }} #}
+
+
+
+
+
+    {# LOWER #}
+
+        {# 'welcome" #}
+        {# {{ 'WELCOME'|lower }} #}
+
+
+
+
+
+    {# UPPER #}
+
+        {# 'WELCOME' #}
+        {# {{ 'welcome'|upper }} #}
+
+
+
+
+
+    {# URL_ENCODE #}
+
+        {# "path-seg%2Ament" #}
+        {# {{ "path-seg*ment"|url_encode }} #}
+
+        {# "param=value&foo=bar #}
+        {# {{ {'param': 'value', 'foo': 'bar'}|url_encode }} #}
+        
+
+
+
+
+    {# TRIM #}
+
+        {# 'I like Twig.' #}
+        {# {{ '   I like Twig    '|trim }} #}
+
+        {# '   I like Twig.' #}
+        {# {{ '   I like Twig'|trim('.') }} #}
+        
+        {# 'I like Twig.   ' #}
+        {# {{ '   I like Twig.   '|trim(side="left") }} #}
+        
+
+
+
+
+
+    {# CONVERT_ENCODING(to, from) #}
+
+        {# {{ data|convert_encoding('UTF-8', 'iso-2022-jp') }} #}
+
+
+
+
+
+    
+    {# COUNTRY_NAME #}
+
+        {# {{ 'FR'|country_name }} #}
+
+
+
+
+
+    
+    {# CURRENCY_NAME #}
+
+        {# {{ 'EUR'|currency_name }}
+
+        {{ 'JPY'|currency_name }}
+
+        {{ 'JPY'|currency_name('fr_FR') }} #}
+
+
+
+
+
+
+
+    {# CURRENCY_SYMBOL #}
+
+        {# {{ 'EUR'|currency_symbol('fr') }} #}
+
+
+
+
+
+    
+    {# DATA_URI #}
+
+        {# var #}
+        {# {{ image_date|data_uri }}
+        {{ source('path_to_image')|data_uri }}
+        {{ image_data[data_uri(mime="image/svg")] }} #}
+
+        {# plain text #}
+        {# {{ 'foobar'|data_uri }}
+        {{ 'foobar'|data_uri(mime="text/html") }} #}
+        {# {{ 'foobar'|data_uri(mime="text/html", parameters={charset: "ascii"}) }} #}
+
+
+
+
+
+
+    {# DEFAULT #}
+
+        {# {{ var|default('var is not defined') }}
+        {{ var.foo|deaults('lorem ipsum') }}
+        {{ var['foo']|default() }}
+        {{ ''|default('passed var is empty') }} #}
+
+
+
+
+
+
+    {# LOCALE_NAME #}
+
+        {# {{ 'de'|locale_name }}
+        {{ 'fr'|locale_name }} #}
+
+
+
+
+
+    
+    {# JSON_ENCODE #}
+
+        {# {% set data = {"foo": "bar"} %}
+        {{ data|json_encode }} #}
+
+
+
+
+
+
+    {# ABS #}
+
+        {# {% set number = -5 %}
+        {{ number|abs }} #}
+
+
+
+
+
+
+    {# LENGTH #}
+
+        {# length of a sequence, mapping, length of a string #}
+
+        {# {% if users|length %}
+        {% endif %} #}
+
+
+
+
+
+
+    {# NL2BR #}
+
+        {# \n => <br/> #}
+
+        {#
+            I like Twig.<br />
+            You will like it too.
+        #}
+
+        {# {{ "I like Twig.\nYou will like it too."|nl2br }} #}
+
+
+
+
+
+    {# STRIPTAGS(allowed_tags) #}
+
+        {# supprime les balises HTML et PHP d'une chaine  #}
+
+        {# {{ some_html|striptags }} #}
+        {# <br> and <p> won't be removed #}
+        {# {{ some_html|striptags('<br><p>') }} #}
+
+
+
+
+
+    {# SPACELESS #}
+
+        {# remove whitespace between HTML tags #}
+
+        {# '<div><strong>foo</strong></div>' #}
+        {# {{
+            "<div>
+                <strong>foo</strong>
+            </div>
+            "|spaceless
+        }} #}
+
+
+
+
+
+    {# TIMEZONE_NAME #}
+
+
+        {# {{ 'Europe/Paris'|timezone_name }}
+        {{ 'America/Los_Angeles'|timezone_name }}
+        {{ 'America/Los_Angeles'|timezone_name('fr') }} #}
+
+
+
+
+
+    {# COUNTRY_TIMEZONES #}
+
+
+        {# {{ country_timezones('FR')|join(', ') }} #}
+        {# {{ country_timezones('ES')|join(', ') }} #}
+
+
+
+
+
+    {# TEMPLATE_FROM_STRING #}
+
+        {# loads a template from a string #}
+        {# {% set name = "Florent" %}
+        {{ include(template_from_string("Hello {{ name }}")) }} #}
+        {# {{ include(template_from_string(page.template)) }} #}
+
+
+
+
+
+    
+    {# HTML_CLASSES #}
+
+        {# <p class="{{ html_classes('a-class', 'anoteher-class', {
+                'errored': 'one-error',
+                'finished': 'one-finished',
+                'pending': 'one-pending'
+        }) }}">How are you doing?</p> #}
+
+
+
+
+
+    {# TESTS #}
+
+        {# {% if foo is ITERABLE %}
+        {% endif %}
+
+        {% if foo is CONSTANT('Post::PUBLISHED') %}
+        {% endif %}
+
+        {% if foo is DEFINED %}
+        {% endif %}
+
+        {% if foo.bar is DEFINED %}
+        {% endif %}
+
+        {% if foo['bar'] is DEFINED %}
+        {% endif %}
+
+        {% if loop.index is DIVISIBLE BY(3) %}
+        {% endif %} #}
+
+        {# empty string, empty array, empty hash, exactly false, exactly null #}
+        {# {% if foo is EMPTY %}
+        {% endif %}
+
+        {{ foo is EVEN }}
+        {{ foo is ODD }}
+
+        {{ foo is NULL }} #}
+
+        {# equivalent to === #}
+        {# {% if foo SAME AS(false) %}
+        {% endif %} #}
+
+
+</body>
+</html>

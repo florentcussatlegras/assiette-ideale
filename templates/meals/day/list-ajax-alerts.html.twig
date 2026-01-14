@@ -1,0 +1,70 @@
+
+
+
+	{% if alerts is empty %}
+	
+		{% set text = "Conseillé" %}
+
+		<div 
+			class="alert-{{ dishOrFoodId }} flex items-center advice text-sm font-bold w-full cursor-default"
+			{# data-alert-color="color: rgb(34 197 94)" #}
+			data-alert-text="{{ text }}"
+		>
+			{# <svg class="w-4 h-4 mr-1.5 dark:text-green-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> #}
+			{# <span class="border border-green-500 text-green-500 rounded-full px-2 py-1">{{ text }}</span> #}
+			{# <span class="flex bg-green-500 uppercase px-2 py-1 text-xs font-bold mr-3 text-white bg-opacity-70 rounded-lg">{{ text }}</span> #}
+			<div class="flex items-center justify-center rounded-full text-green-500 border" style="width: 40px; height: 40px">
+				<svg fill="#22c55e" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#22c55e" class="w-5 h-5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"></path> </g></svg>
+			</div>
+		</div>
+
+	{% else %}
+
+		{# <div 
+			data-modal-target="alert-meal-modal" 
+			data-modal-toggle="alert-meal-modal" 
+			class="alert-{{ dishOrFoodId }} flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
+			data-action="click->alert-meal-modal#showMessages"
+			data-url="{{ path('alert_meal_list', {
+				'class': class,
+				'dishOrFoodId': dishOrFoodId,
+				'isSelected': isSelected|default(0),
+				'rankMeal': rankMeal,
+				'rankDish': rankDish
+			}) }}"
+			type="button"
+			data-alert-color="{{ alerts.higher_level.color }}"
+			data-alert-text="{{ alerts.higher_level.text }}"
+		>
+			{{ include('partials/svg/warning.html.twig', {color: alerts.higher_level.color, size: 25}) }}
+		</div> #}
+
+		<!-- Button trigger modal -->
+		<button 
+			type="button" 
+			data-toggle="modal" 
+			data-target="#alertMealModal"
+			class="alert-{{ dishOrFoodId }} flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
+			data-action="click->alert-meal-modal#showMessages"
+			data-url="{{ path('alert_meal_list', {
+				'class': class,
+				'dishOrFoodId': dishOrFoodId,
+				'isSelected': isSelected|default(0),
+				'rankMeal': rankMeal,
+				'rankDish': rankDish
+			}) }}"
+			type="button"
+			data-alert-color="{{ alerts.higher_level.color }}"
+			data-alert-text="{{ alerts.higher_level.text }}"
+		>
+			
+			<span class="rounded-full flex items-center justify-center" style="border: 1px solid {{ alerts.higher_level.color }}; width: 40px; height: 40px">
+				<svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5L12 14" stroke="{{ alerts.higher_level.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{ alerts.higher_level.color }}"></path> </g></svg>			{# <span class="flex md:uppercase px-2 py-1 text-xs md:text-xs font-bold mr-3 text-white bg-opacity-70 rounded-lg" style="background-color: {{ alerts.higher_level.color }}">{{ alerts.higher_level.text }}</span> #}
+			</span>
+
+		</button>
+
+
+
+	{% endif %}
+

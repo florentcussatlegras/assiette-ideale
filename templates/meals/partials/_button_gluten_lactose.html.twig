@@ -1,0 +1,17 @@
+<button 
+        type="button"
+        {# class="xl:leading-3 h-7 md:h-11 py-2 px-4 font-semibold bg-white rounded-lg text-dark-blue mr-2 current-shadow text-base" #}
+        class="font-semibold text-dark-blue px-4 py-3 text-sm cursor-pointer bg-white rounded-lg hover:bg-sky-600 transition duration-300 hover:text-white {% if with_shadow is defined %}current-shadow{% endif %}"
+        data-action="reload-content#onSelectGlutenFood"
+    >
+    Sans gluten
+</button>
+
+<button 
+        type="button"
+        {# class="xl:leading-3 h-7 md:h-11 py-2 px-4 font-semibold bg-white rounded-lg text-dark-blue current-shadow text-base" #}
+        class="font-semibold text-dark-blue px-4 py-3 text-sm cursor-pointer bg-white rounded-lg hover:bg-sky-600 transition duration-300 hover:text-white {% if with_shadow is defined %}current-shadow{% endif %}"
+        data-action="reload-content#onSelectLactoseFood"
+    >
+    Sans lactose
+</button>

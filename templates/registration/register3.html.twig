@@ -1,0 +1,33 @@
+{% extends "security/_layout.html.twig" %}
+
+{# {% form_theme registerForm _self %} #}
+
+{% block title %}S'inscrire{% endblock %}
+
+{% block body %}
+
+{% block content %}
+
+   
+
+    {{ form_start(registerForm, {'attr' : {'novalidate' : 'novalidate'}}) }}
+
+        {{ form_errors(registerForm) }}
+
+        
+        <div class="mt-8 form-group text-sm">
+
+            {{ form_row(registerForm.email) }}
+
+            {{ form_row(registerForm.username) }}
+    
+        </div>
+
+        <button type="submit">Valider</button>
+
+
+
+    {{ form_end(registerForm) }}
+
+{% endblock %}
+{% endblock %}

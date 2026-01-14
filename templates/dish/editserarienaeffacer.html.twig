@@ -1,0 +1,7 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+        
+    {{ include('dish/form_layout.html.twig', {h1_content: "Recette #{dish.name}"}, ignore_missing = true) }}
+    
+{% endblock %}

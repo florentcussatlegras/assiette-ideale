@@ -1,0 +1,17 @@
+<div class="list-fgp">
+
+	{% for foodGroupParent in foodGroupParents %}
+
+		<div>
+
+			{% if foodGroupParent.id in listfgp %}
+
+				{{ include("meal/pictos/check-min.xml.twig", {"color" : foodGroupParent.color}) }}
+				
+			{% endif %}
+
+		</div>
+
+	{% endfor %}
+
+</div>

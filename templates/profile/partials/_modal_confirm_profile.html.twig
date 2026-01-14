@@ -1,0 +1,77 @@
+ <!--Modal-->
+  <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
+    <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+    
+    <div class="modal-container bg-white w-1/2 w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
+      
+      <div class="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50">
+        <svg class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+          <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+        </svg>
+        <span class="text-sm">(Esc)</span>
+      </div>
+
+      <!-- Add margin if you want to see some of the overlay behind the modal-->
+      <div class="modal-content py-4 text-left px-6">
+        <!--Title-->
+        <div class="flex justify-between items-center pb-3">
+          <p class="text-2xl font-bold">Bienvenue!</p>
+          <div class="modal-close cursor-pointer z-50">
+            <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
+              <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!--Body-->
+        <div class="flex justify-center h-1/2 mb-5">
+
+            {{ include('partials/svg/green-checkmark-line.svg') }}
+               
+        </div>
+
+        <p>
+          C'est bon pour nous, toutes les informations requises pour utiliser nos services sont enregistrées!<br>
+          Vous pourrez les modifier à n'importe quel moment à partir de votre profil.
+
+          {% if app.user.energy %}
+
+            <div class="bg-red-100 rounded-lg w-full p-4 mt-5">
+                <span class="pb-2 flex items-center justify-center text-lg font-medium text-red-700 border-b border-red-700 w-full">Votre besoin énergétique journalier</span>
+                <div class="pt-4 flex items-center justify-center my-2 text-2xl text-red-700 font-bold">
+                    {{ '%s kCal'|format(app.user.energy|round) }} / {{ '%s kJ'|format(app.user.energyKj|round) }}
+                </div>
+                {# <div class="flex">
+                    <button type="button" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-red-800 dark:hover:bg-red-900">
+                    <svg class="-ml-0.5 mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path></svg>
+                    View more
+                    </button>
+                    <button type="button" class="text-red-700 bg-transparent border border-red-700 hover:bg-red-800 hover:text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-xs px-3 py-1.5 text-center dark:border-red-800 dark:text-red-800 dark:hover:text-white" data-collapse-toggle="alert-additional-content-2" aria-label="Close">
+                    Dismiss
+                    </button>
+                </div> #}
+            </div>
+        
+          {% else %}
+
+            <div id="alert-border-4" class="flex p-4 bg-yellow-100 border-t-4 border-yellow-500 mt-2" role="alert">
+                <svg class="flex-shrink-0 w-5 h-5 text-yellow-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                <div class="ml-3 text-l font-medium text-yellow-700">
+                Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier.
+                </div>
+            </div>
+
+          {% endif %}
+
+        </p>
+
+        <!--Footer-->
+        <div class="button-group flex items-center justify-end mt-4 gap-6">
+            <a href="{{ path('app_dashboard_index') }}" class="btn btn-primary shadow-md flex items-center bg-sky-400 border-none">
+              Let's go !!
+            </a>
+        </div>
+        
+      </div>
+    </div>
+  </div>

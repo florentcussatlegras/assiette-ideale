@@ -1,0 +1,147 @@
+
+<div class="w-3/4 mx-auto flex flex-col items-stretch">
+
+    <h1 class="flex flex-col md:flex-row items-start md:items-center text-slate-700 justify-between mt-6 md:mt-2">
+       
+        <span class="text-2xl font-bold tracking-tight">{{ date|format_date('full', locale='fr')|capitalize }}</span>
+ 
+        {% if meals is not empty %}
+            <div class="-ml-6 md:ml-0">
+                {{ render(path('menu_meals_show_total_energy', { 'energyMeals': meals[0].energyAllMealsDay, 'sizeIcon': 26, 'bgColor': 'white' } )) }}
+            </div>
+        {% endif %}
+
+    </h1>
+
+    {% if meals is not empty %}
+
+        <a href="{{ path('app_balance_sheet_index', { start: date|date('Y-m-d'), end: date|date('Y-m-d') }) }}" class="flex text-sm md:text-base text-light-blue font-semibold items-center leading-tight gap-2 -ml-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <span>Voir le bilan complet de cette journée</span>
+        </a>
+
+        {% if meals[0].alertsAllMealsDay is not empty %}
+
+            <ul class="mt-4 text-sm md:text-base text-red-500">
+                {% for key, messages in meals[0].alertsAllMealsDay %}
+                    {% if messages is iterable %}
+                        {% for message in messages %}
+                            <li>{{ message }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>{{ messages }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
+        {% endif %}
+
+        {% if meals[0].listFgpRemainingAbsentAllMealsDay is not empty %}
+            <span class="text-sm md:text-base text-red-500">Certains groupes alimentaires sont manquants</span>
+            {# (
+                {% for id in meals[0].getListFgpRemainingAbsentAllMealsDay %}
+                    {{ id }}   
+                {% endfor %}
+            ). #}
+        {% endif %}
+
+        <div class="flex flex-col md:flex-row items-start mt-6 md:mt-4 text-base gap-4 md:justify-between">
+            <div class="flex md:my-hidden justify-center -ml-2 md:ml-0">
+                {{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: meals[0].listFgpAllMealsDay })) }}
+            </div>
+            <div>
+                <ol>
+                    {% for nutrient, value in averageDailyNutrient %}
+                        <li>{{ "#{nutrient|trans({}, 'recommendations')|capitalize} : #{value} g" }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="my-hidden md:flex justify-center -ml-2 md:ml-0">
+                {{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: meals[0].listFgpAllMealsDay })) }}
+            </div>
+        </div>
+
+    {% endif %}
+
+    {% for meal in meals %}
+
+        {# {{ dump(meal.alertOnDishes) }} #}
+
+        <div class="mt-8">
+       
+            <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-end md:justify-between gap-2 mb-4">
+
+                <h1 class="font-medium mb-2 text-xl">
+                    {{ meal.type.frontName }}
+                </h1>
+
+                <div class="flex  -ml-2 md:ml-0">
+                    {{ render(controller("App\\Controller\\meal\\MenuController::getListFgpMeal", { 'id': meal.id })) }}
+                </div>
+                
+            </div>
+
+            <div class="mb-12">
+                <ul class="text-base">
+
+                    {% for dishAndFood in meal.dishAndFoods %}
+
+                        <li class="flex flex-col">                 
+
+                            <div class="flex gap-2 w-auto my-1 items-center">
+
+                                <div class="text-slate-300 font-bold w-2">{{ loop.index }}</div>    
+
+                                {% if dishAndFood['type'] == 'Dish' %}
+
+                                    {% set element = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
+
+                                    {{ include('meals/model/_picture_element.html.twig') }}
+
+                                    <div class="flex flex-col md:flex-row text-sm md:text-base gap-0 md:gap-2">
+                                        <div>
+                                            <span>{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
+                                            <span>de</span>
+                                        </div>
+                                        <a href="{{ path('app_dish_show', { 'id' : element.id, 'slug' : element.slug }) }}" class="text-light-blue font-bold">
+                                            {{ element.name }}
+                                        </a>
+                                    </div>
+
+                                {% else %}
+
+                                    {% set element = object(dishAndFood['id'], 'App\\Entity\\Food') %}
+
+                                    {{ include('meals/model/_picture_element.html.twig') }}
+
+                                    <div class="flex flex-col md:flex-row text-sm md:text-base gap-0 md:gap-2">
+                                        <div>
+                                            <span>{{ dishAndFood['quantity'] }}</span>
+                                            <span>{{ object(dishAndFood.unitMeasure, 'App\\Entity\\UnitMeasure').alias }}</span>
+                                            <span>de</span>
+                                        </div>
+                                        <a href="{{ path('app_food_show', { 'slug' : element.slug }) }}" class="text-light-blue font-bold">
+                                            {{ element.name }}
+                                        </a>
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+                        </li>
+                    
+                    {% endfor %}
+
+                </ul>
+            </div>
+
+        </div>
+
+    {% else %}
+    
+        <h1 class="py-12">Aucun repas trouvés</h1>
+
+    {% endfor %}
+
+</div>

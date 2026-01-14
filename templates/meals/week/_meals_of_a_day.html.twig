@@ -1,0 +1,71 @@
+
+<ul class="flex flex-col list-none mx-2 pr-2">
+								
+	{% for meal in meals %}
+
+		{% if meal is not null %}
+
+			{% for index, dishAndFood in meal.dishAndFoods %}
+				
+				{% if dishAndFood is not null %}
+
+					{% set element = object(dishAndFood['id'], 'App\\Entity\\' ~ dishAndFood['type']) %}
+
+					{% if dishAndFood['type'] == 'Dish' %}
+
+						<li class="flex flex-row items-start">
+
+							<div class="flex text-sm gap-2 items-start mb-2">
+								{% if element.picture is not null and element.picturePath is not null %}
+									<img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+								{% else %}
+									<img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
+								{% endif %}
+								<div class="flex flex-col leading-4 mt-1">
+									<a href="" class="font-bold text-light-blue">{{ element.name }}</a>
+									<div class="text-gray-600 text-xs font-bold">
+										{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}
+									</div>
+								</div>
+							</div>
+
+							<div class="ml-auto mt-2">
+								{% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnDishes|keys %}
+									{{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnDishes[index].higher_level.color}) }}
+								{% endif %}
+							</div>
+							
+						</li>
+
+					{% else %}
+
+						<li class="flex flex-row items-center">
+							<div class="flex text-sm gap-2 items-center mb-2">
+								{% if element.picture is not null and element.picturePath is not null %}
+									<img alt="Photo plat" class="rounded-lg w-8" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+								{% else %}
+									<img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
+								{% endif %}
+								<div class="flex flex-col leading-4 mt-1">
+									<a href="" class="font-bold text-light-blue">{{ element.name }}</a>
+									<span class="text-gray-600 text-xs font-bold">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}</span>
+								</div>
+							</div>
+							<div class="ml-auto">
+								{% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnFoods|keys %}
+									{{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnFoods[index].higher_level.color}) }}
+								{% endif %}
+							</div>
+						</li>
+
+					{% endif %}
+
+				{% endif %}
+
+			{% endfor %}
+			
+		{% endif %}
+
+	{% endfor %}
+
+</ul>

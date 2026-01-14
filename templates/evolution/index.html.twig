@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - Evolution de votre alimentation{% endblock %}
+
+{% block body %}
+
+	<main role="main">
+
+		{{ include('partials/_header.html.twig', { h1_content: 'Evolution de mon alimentation' }) }}
+
+		<div class="my-4 text-xl">
+
+			<div {{ stimulus_controller('evolution', { urlLoadContent: path('app_evolution_chart_index') } ) }} class="flex flex-col tabs-content-evolution">
+
+				{{ include('evolution/_tabs_content.html.twig') }}
+				{{ include('evolution/_tabs_date.html.twig') }}
+
+				<div class="content my-8 text-gray-500 text-sm md:text-base mt-0 md:mt-16 w-full min-h-64 flex items-center justify-center" data-evolution-target="content"></div>
+
+				<div class="h-96 my-8 flex items-center justify-center hidden" data-evolution-target="loader">
+					<div class="loader"></div>
+				</div>
+
+			</div>
+
+		</div>
+
+	</main>
+
+{% endblock %}

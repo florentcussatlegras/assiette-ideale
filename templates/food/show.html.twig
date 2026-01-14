@@ -1,0 +1,100 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ parent() }} - Les aliments{% endblock %}
+
+{% block body %}
+
+    <main role="main">
+
+        <div class="flex">
+            {{ include("partials/_header.html.twig", { h1_content: food.name, urlIntermediates: { 'Les aliments': path('app_food_list') }}) }}
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_food_add', { slug : food.slug }) }}">
+                    <i data-feather="edit" class="w-6 h-6"></i>
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="flex bg-white shadow-soft rounded-2xl pt-6 text-sm relative">
+
+            <div class="font-bold px-4 py-1 rounded uppercase absolute z-30 left-6 text-sm" style="background-color: {{ food.foodGroup.parent.degradedColor }}; color: {{ food.foodGroup.parent.color }}">
+                {{ food.foodGroup.name }}
+            </div>
+
+            <div class="flex flex-col items-center lg:flex-row w-full">
+
+                <div class="w-full lg:w-1/2 p-8">
+
+                    {% if food.picture is empty %}
+                        <img class="w-full h-64 image-fit" src="https://via.placeholder.com/800">
+                    {% else %}
+                        <img alt="Image plat" class="image-fit mx-auto" src="{{ food.picturePath|imagine_filter('squared_thumbnail_medium') }}" width="450px">
+                    {% endif %}
+
+                    <div class="flex flex-row gap-2 mt-12 px-12">
+                        {{ food.info is not null ? food.info }}
+                    </div>
+
+                </div>
+
+                <div class="flex flex-col w-full lg:w-1/2 gap-4 text-sm">
+
+                    <div class="flex flex-row gap-4 px-8">
+
+                        <div class="font-bold bg-yellow-100 text-yellow-800 px-4 py-1 rounded">
+                            {{ food.haveGluten ? 'GLUTEN' : 'SANS GLUTEN' }}
+                        </div>
+
+                        <div class="font-bold bg-slate-100 text-sky-800 px-4 py-1 rounded">
+                            {{ food.haveLactose ? 'LACTOSE' : 'SANS LACTOSE' }}
+                        </div>
+                    
+                    </div>
+
+                    <div class="mt-4 flex flex-col items-center gap-4 text-sm">
+
+                        <div class="flex flex-col w-full px-8">
+
+                            <div class="flex flex-col md:flex-row item-center gap-4 w-full">
+                    
+                                <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
+                                    <label class="flex flex-row">Energie</label><span class="text-neutral-500">{{ food.nutritionalTable.energy }} KCAL</span>
+                                </div>
+                                <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
+                                    <label class="flex flex-row">Lipides</label><span class="text-neutral-500">{{ food.nutritionalTable.lipid }} g</span>
+                                </div>
+                                <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
+                                    <label class="flex flex-row">Glucides</label><span class="text-neutral-500">{{ food.nutritionalTable.carbohydrate }} g</span>
+                                    </div>
+                                <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
+                                    <label class="flex flex-row">Protéines</label><span class="text-neutral-500">{{ food.nutritionalTable.protein }} g</span>
+                                </div>
+        
+                            </div>
+
+                            <div class="mt-2 text-xs">Energie pour 100g d'aliment</div>
+
+                        </div>
+
+                        <div class="pt-2 mb-8">
+                            {% if chartAllZero %}
+                                <div class="text-gray-400 text-center py-16">
+                                    Pas de données nutritionnelles à afficher.
+                                </div>
+                            {% else %}
+                                {{ render_chart(chart) }}
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        
+        <div>
+
+    </main>
+
+{% endblock %}
+
