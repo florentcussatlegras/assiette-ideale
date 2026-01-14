@@ -19,6 +19,7 @@
                 {% if favoriteDishesId is defined %}
 
                     {{ include("partials/_header.html.twig", { h1_content: "Les plats" }) }}
+
                     <a class="link-white flex items-center justify-center gap-2 ml-auto text-center px-2 py-2 leaning-4 font-bold text-md md:text-base text-white bg-sky-600 hover:bg-sky-700 transition duration-300 rounded-lg w-[250px]" href="{{ path('app_dish_food_session_clear') }}"> 
                         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g id="Edit / Add_Plus"> <path id="Vector" d="M6 12H12M12 12H18M12 12V18M12 12V6" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g> </g></svg>
                         Saisir une recette
@@ -39,23 +40,29 @@
                     <div class="flex flex-col gap-2 items-start">
 									
                         <div class="flex flex-row gap-2 items-center">
+
                             <button
                                 type="button"
                                 data-action="reload-content#onSelectAllFoodGroup"
                                 data-reload-content-target="selectAllFoodGroup"
                                 class="flex items-center justify-center py-3 px-4 gap-2 font-semibold text-sm leading-4 cursor-pointer rounded-lg text-white bg-light-blue hover:text-white hover:bg-sky-600 transition-colors duration-300"
                             >
-                                {# <svg fill="#fff" viewBox="0 0 24 24" class="w-5 h-5" id="add-collection" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" stroke="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path id="secondary" d="M7,10h6M10,7v6" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary" d="M7,21H20a1,1,0,0,0,1-1V5" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><rect id="primary-2" data-name="primary" x="3" y="3" width="14" height="14" rx="1" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></rect></g></svg> #}
+                            
                                 <span>Tous les groupes</span>
+
                             </button>
+
                             <button 
                                 type="button" 
                                 data-action="reload-content#onDeselectAllFoodGroup"
                                 data-reload-content-target="deselectAllFoodGroup"
                                 class="flex items-center justify-center py-3 px-4 gap-2 font-semibold text-sm leading-4 cursor-pointer rounded-lg bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300"
                             >
+
                                 <span>Aucun groupe</span>
+
                             </button>
+
                         </div>
 
                         <div class="flex flex-row flex-wrap gap-2">
@@ -67,6 +74,7 @@
                     <div class="flex flex-col gap-4 xl:gap-0 items-start xl:flex-row mt-4 justify-start xl:items-center lg:justify-between w-full xl:h-8">
 
                         <div class="relative search_dish_list w-full md:w-1/2">
+
                             <input
                                 id="input_search_dish_list"
                                 name="q"
@@ -76,11 +84,13 @@
                                 data-reload-content-target="search"
                                 data-action="reload-content#onSearchInput"
                             >
+
                         </div>
 
                         <div class="flex flex-col justify-start md:flex-row gap-4 md:gap-0 w-full">
 
                             <div class="flex items-center">
+
                                 <button 
                                     type="button"
                                     class="leading-4 btn-type-dish py-3 px-4 font-semibold tabs-date-range_tab bg-light-blue text-white mr-2 text-sm cursor-pointer rounded-lg hover:text-white hover:bg-sky-600 transition-colors duration-300"
@@ -90,7 +100,9 @@
                                 >
                                     Tous
                                 </button>
+
                                 {% for type in constant('App\\Service\\TypeDishHandler::TYPE_NAMES') %}
+
                                     <button 
                                         type="button"
                                         class="leading-4 btn-type-dish py-3 px-4 font-semibold tabs-date-range_tab bg-white text-dark-blue mr-2 text-sm cursor-pointer rounded-lg hover:text-white hover:bg-sky-600 transition-colors duration-300" 
@@ -100,6 +112,7 @@
                                     >
                                         {{ type|trans({}, 'dishes')|capitalize }}
                                     </button>
+
                                 {% endfor %}
                             </div>
 
@@ -124,6 +137,7 @@
                         'urlRemove': path('app_favorite_dishes_remove')
                     }) }}
                 >
+
                     <div 
                         id="wrapper" 
                         class="wrapper gap-4 mt-8 relative min-h-64"
@@ -131,7 +145,9 @@
                         data-reload-content-target="content"
                         data-favorite-dishes-target="content"
                     >     
+
                         {{ include('dish/_dish_list.html.twig') }}
+
                     </div>
 
                 </div>
@@ -142,10 +158,13 @@
                         class="container-loader w-full h- items-center justify-center mt-24 xl:mt-32 hidden flex py-8"
                         data-reload-content-target="loader"
                     >
+
                         <div class="loader"></div>
+
                     </div>
 
                     <center class="mt-8 mb-8">
+
                         <button 
                             type="button"
                             class="bg-gray-200 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300"
@@ -154,6 +173,7 @@
                         >
                             Voir plus de plat...
                         </button>
+
                     </center>
 
                 {% endif %}

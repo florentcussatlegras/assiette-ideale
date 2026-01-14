@@ -19,14 +19,20 @@
 
             {% set foodGroupAlias = food.foodGroup.alias %}
 
-            <input name="food_group_alias" class="food-group-alias" type="hidden" value="{{ foodGroupAlias }}" /> 
+            <input name="food_group_alias" class="food-group-alias" type="hidden" value="{{ foodGroupAlias }}" />
+
             <input name="food_group_slug" class="food-group-slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
 
             <input name="foods[{{ food.id }}][quantity]" required="required" type="text" class="food-quantity w-24 rounded-lg" placeholder="Quantité" aria-label="default input inline 1"
+            
                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                         and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
+
                             value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
-                {% endif %} />
+
+                {% endif %}
+                
+            />
             
             <select name="foods[{{ food.id }}][unit_measure]" class="food-unit-measure rounded-lg" aria-label="Default select example">
             

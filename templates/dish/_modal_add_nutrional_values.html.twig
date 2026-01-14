@@ -6,8 +6,11 @@
     class="flex items-center gap-2 mb-2"
     type="button"
 >
+
      <label>Valeurs nutritionnelles</label>
+
     {{ include('partials/svg/edit.html.twig') }}
+
 </button>
 
 <div class="modal fade" id="nutrionalValuesModal" tabindex="-1" role="dialog" aria-labelledby="nutrionalValuesModalLabel" aria-hidden="true">
@@ -25,33 +28,45 @@
                     data-dismiss="modal"
                     aria-label="Close"
                 >
+
                     <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                 d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
+
                 </button>
+
             </div>
 
             <!-- Body -->
             <div class="p-5 min-h-[8rem]">
 
                 <div class="flex items-start gap-4 mb-4">
+
                     <div class="font-bold text-3xl leading-tight">
+
                         Valeurs nutritionnelles
+
                     </div>
+
                 </div>
 
                 <div class="text-base px-4 flex flex-col">
+
                     <div class="flex flex-col">
 
                         <div class="flex flex-row">
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.protein) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.protein) }}
+
                                 <div class="flex flex-row gap-2">
                                     {{ form_widget(dishForm.nutritionalTable.protein) }}
                                 </div>
+
                             </div>
 
                         </div>
@@ -59,19 +74,31 @@
                         <div class="flex flex-row gap-2">
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.lipid) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.lipid) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.lipid) }}
+
                                 </div>
+
                             </div>
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.saturatedFattyAcid) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.saturatedFattyAcid) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.saturatedFattyAcid) }}
+
                                 </div>
+
                             </div>
 
                         </div>
@@ -79,19 +106,29 @@
                         <div class="flex flex-row gap-2">
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.carbohydrate) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.carbohydrate) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.carbohydrate) }}
+
                                 </div>
+
                             </div>
 
                             <div class="flex flex-col">
 
                                 {{ form_label(dishForm.nutritionalTable.sugar) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.sugar) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.sugar) }}
+
                                 </div>
 
                             </div>
@@ -101,19 +138,29 @@
                         <div class="flex flex-row gap-2">
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.salt) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.salt) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.salt) }}
+
                                 </div>
+
                             </div>
 
                             <div class="flex flex-col">
 
                                 {{ form_label(dishForm.nutritionalTable.fiber) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.fiber) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.fiber) }}
+
                                 </div>
 
                             </div>
@@ -123,19 +170,29 @@
                         <div class="flex flex-row gap-2">
 
                             <div class="flex flex-col">
+
                                 {{ form_label(dishForm.nutritionalTable.energy) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.energy) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.energy) }}
+
                                 </div>
+
                             </div>
 
                             <div class="flex flex-col">
 
                                 {{ form_label(dishForm.nutritionalTable.nutriscore) }}
+
                                 {{ form_errors(dishForm.nutritionalTable.nutriscore) }}
+
                                 <div class="flex flex-row gap-2">
+
                                     {{ form_widget(dishForm.nutritionalTable.nutriscore) }}
+
                                 </div>
 
                             </div>
@@ -143,14 +200,18 @@
                         </div>
 
                     </div>
+
                 </div>
+
             </div>
 
             <!-- Footer -->
             <div class="p-5 border-t border-gray-100 flex justify-end rounded-b-3xl">
+
                 <button type="button" class="close-modal-nutritional-values bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
                     Fermer
                 </button>
+                
             </div>
 
         </div>

@@ -8,7 +8,9 @@
             <h1 class="text-2xl font-bold mb-3">Modifier un aliment</h1>
 
             <p class="my-4">Veuillez indiquer la quantité de 
+
                 <span class="text-dark-blue">{{ food.name }}</span> 
+
                 que vous souhaitez ajouter au plat :
             </p>
     
@@ -19,6 +21,7 @@
                 {% set foodGroupAlias = food.foodGroup.alias %}
 
                 <input name="food_group_code" type="hidden" value="{{ foodGroupAlias }}" /> 
+
                 <input name="food_group_slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
 
                 <input name="foods[{{ food.id }}][quantity]" 
@@ -42,16 +45,16 @@
                                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                                 and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
                         and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
-                                            selected="selected"
-                                        {% endif %}>
+                                    selected="selected"
+                                {% endif %}>
 
-                                        {{ unitMeasure.alias }}
-                                        
-                                    </option>
+                                {{ unitMeasure.alias }}
+                                
+                            </option>
 
-                                {% endif %}
+                        {% endif %}
 
-                            {% endfor %}
+                    {% endfor %}
                 
                 </select>
 
