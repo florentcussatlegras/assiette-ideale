@@ -1,0 +1,59 @@
+services:
+  app:
+    build: .
+    container_name: nutrition_app
+    ports:
+      - "8000:8000"  # Symfony accessible depuis localhost:8000
+    volumes:
+      - .:/var/www/nutrition  # Monte le code local dans le conteneur
+      - /var/www/nutrition/vendor # Pour garder le cache Composer séparé
+      - /var/www/nutrition/node_modules # Pour le front JS
+    env_file:
+      - .env.docker
+    depends_on:
+      - db
+      - redis
+    command: >
+      bash -c "php bin/console cache:clear &&
+               php bin/console doctrine:migrations:migrate --no-interaction &&
+               php bin/console server:run 0.0.0.0:8000"
+
+  db:
+    image: mysql:8
+    container_name: nutrition_db
+    env_file:
+      - .env.docker
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: nutrition_redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+###> doctrine/doctrine-bundle ###
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+    volumes:
+      - database_data:/var/lib/postgresql/data:rw
+      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
+      # - ./docker/db/data:/var/lib/postgresql/data:rw
+###< doctrine/doctrine-bundle ###
+
+volumes:
+  db_data:
+
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
