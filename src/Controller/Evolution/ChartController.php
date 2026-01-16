@@ -7,12 +7,10 @@ use App\Repository\MealRepository;
 use App\Repository\NutrientRepository;
 use Symfony\UX\Chartjs\Model\Chart;
 use App\Service\BalanceSheetFeature;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FoodGroupParentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -24,23 +22,17 @@ class ChartController extends AbstractController
     {
         if($request->query->has('start')) {
             $start = \DateTime::createFromFormat('Y-m-d', $request->query->get('start'));
-            // $start = $start->format('Y-m-d');
         }else{
             $start = new \DateTime('-1 day');
         }
 
         if($request->query->has('end')) {
             $end = \DateTime::createFromFormat('Y-m-d', $request->query->get('end'));
-            // $end = $end->format('Y-m-d');
         }else{
             $end = new \DateTime('-1 day');
         }
         $start = $start->format('Y-m-d');
         $end = $end->format('Y-m-d');
-        // $response = $this->forward('App\Controller\Evolution\ChartController::chart'.$request->query->get('category'), [], [
-        //     'start' => $request->query->get('start') ?? null,
-        //     'end' => $request->query->get('end') ?? null,
-        // ]);
 
         $response = $this->forward('App\Controller\Evolution\ChartController::chart'.$request->query->get('category'), [], [
             'start' => $start,

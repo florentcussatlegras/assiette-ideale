@@ -7,57 +7,46 @@ use App\Entity\Food;
 use App\Entity\FoodGroup\FoodGroupParent;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Alert
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Dish")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $dish;
+    #[ORM\ManyToOne(targetEntity: Dish::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Dish $dish = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Food")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $food;
+    #[ORM\ManyToOne(targetEntity: Food::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Food $food = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroupParent")
-     */
-    private $foodGroupParent;
+    #[ORM\ManyToOne(targetEntity: FoodGroupParent::class)]
+    private ?FoodGroupParent $foodGroupParent = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $rankMeal;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $rankMeal = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $rankDish;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $rankDish = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Alert\LevelAlert")
-     */
-    private $levelAlert;
+    #[ORM\ManyToOne(targetEntity: LevelAlert::class)]
+    private ?LevelAlert $levelAlert = null;
 
-    /**
-     * @ORM\Column(type="boolean", name="already_not_recommended")
-     */
-    private $alreadyNotRecommended;
+    #[ORM\Column(type: 'boolean', name: 'already_not_recommended')]
+    private bool $alreadyNotRecommended;
 
-    public function __construct($dish, $food, $foodGroupParent, $rankMeal, $rankDish, $levelAlert, $alreadyNotRecommended)
-    {
+    public function __construct(
+        ?Dish $dish,
+        ?Food $food,
+        ?FoodGroupParent $foodGroupParent,
+        ?int $rankMeal,
+        ?int $rankDish,
+        ?LevelAlert $levelAlert,
+        bool $alreadyNotRecommended
+    ) {
         $this->dish = $dish;
         $this->food = $food;
         $this->foodGroupParent = $foodGroupParent;
@@ -80,7 +69,6 @@ class Alert
     public function setRankMeal(?int $rankMeal): self
     {
         $this->rankMeal = $rankMeal;
-
         return $this;
     }
 
@@ -92,7 +80,6 @@ class Alert
     public function setRankDish(?int $rankDish): self
     {
         $this->rankDish = $rankDish;
-
         return $this;
     }
 
@@ -104,7 +91,6 @@ class Alert
     public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
-
         return $this;
     }
 
@@ -116,7 +102,6 @@ class Alert
     public function setLevelAlert(?LevelAlert $levelAlert): self
     {
         $this->levelAlert = $levelAlert;
-
         return $this;
     }
 
@@ -128,7 +113,6 @@ class Alert
     public function setFood(?Food $food): self
     {
         $this->food = $food;
-
         return $this;
     }
 
@@ -140,11 +124,10 @@ class Alert
     public function setFoodGroupParent(?FoodGroupParent $foodGroupParent): self
     {
         $this->foodGroupParent = $foodGroupParent;
-
         return $this;
     }
 
-    public function getAlreadyNotRecommended(): ?bool
+    public function getAlreadyNotRecommended(): bool
     {
         return $this->alreadyNotRecommended;
     }
@@ -152,7 +135,6 @@ class Alert
     public function setAlreadyNotRecommended(bool $alreadyNotRecommended): self
     {
         $this->alreadyNotRecommended = $alreadyNotRecommended;
-
         return $this;
     }
 }

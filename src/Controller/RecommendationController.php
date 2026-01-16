@@ -27,7 +27,6 @@ class RecommendationController extends AbstractController
 
     // GROUPES ALIMENTAIRES
 
-    // new route for 'app_recommended_quantity_edit':
     #[Route('/foodgroup/edit', name: 'foodgroup_edit')]
     public function edit(EntityManagerInterface $manager)
     {
@@ -35,7 +34,6 @@ class RecommendationController extends AbstractController
 
         $user = $this->getUser();
 
-        // $recommendedQuantities = $user->getRecommendedQuantities();
         $recommendedQuantities = [
             'FGP_VPO' => 200,
             'FGP_STARCHY' => 200,
@@ -46,7 +44,6 @@ class RecommendationController extends AbstractController
             'FGP_SUGAR' => 200,
             'FGP_CONDIMENT' => 200
         ];
-        // $recommendedQuantities['FGP_CONDIMENT'] = 200;
 
         $user->setRecommendedQuantities($recommendedQuantities);
 
@@ -83,17 +80,6 @@ class RecommendationController extends AbstractController
         return $this->redirectToRoute('app_profile_index');
     }
 
-    // NUTRIENT
-
-    // #[Route('/nutrient/list', name: 'nutrient_list')]
-    // public function nutritionList()
-    // {
-    //     $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
-    //     return $this->render('recommendations/nutrient/_list.html.twig');
-    // }
-
-
     #[Route('/nutrient/calculate', name: 'nutrient_estimate')]
     public function calculateNutrientRecommendations(
             NutrientHandler $nutrientHandler, 
@@ -105,8 +91,6 @@ class RecommendationController extends AbstractController
 
         $user = $this->getUser();
         
-        // $nutrientRecommendations = $this->nutrientHandler->getRecommendations();
-
         $user->getNutrientRecommendations()->forAll(function($key, $entity) use ($manager, $user) {
             $user->removeNutrientRecommendation($entity);
             $manager->remove($entity);

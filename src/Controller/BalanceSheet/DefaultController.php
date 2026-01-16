@@ -74,11 +74,10 @@ class DefaultController extends AbstractController implements AlertUserControlle
     #[Route('/{start?}/{end?}', name: 'index')]
     public function index(Request $request, ?string $start, ?string $end)
     {
-        // $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         if($start) {
             $start = \DateTime::createFromFormat('Y-m-d', $start);
-            // $start = $start->format('Y-m-d');
         }else{
             $start = new \DateTime('-1 day');
         }
@@ -86,7 +85,6 @@ class DefaultController extends AbstractController implements AlertUserControlle
 
         if($end) {
             $end = \DateTime::createFromFormat('Y-m-d', $end);
-            // $end = $end->format('Y-m-d');
         }else{
             $end = new \DateTime('-1 day');
         }

@@ -30,19 +30,15 @@ use Symfony\Bundle\SecurityBundle\Security;
 
 class RegistrationController extends AbstractController
 {
-    /**
-     * @Route("/register", name="app_register")
-     */
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(Request $request, SessionInterface $session, EntityManagerInterface $manager, 
         UserPasswordHasherInterface $passwordHasher, VerifyEmailHelperInterface $verifyEmailHelper,
-        MailerInterface $mailer, string $adminEmail,
-        ValidatorInterface $validator,
+        MailerInterface $mailer
         )
     {
         if ($this->isGranted('IS_AUTHENTICATED_REMEMBERED'))
             return $this->redirectToRoute('app_dashboard_index');
 
-        
         // L'inscription se fait en 3 étapes
         // Paramètres/profile/besoins energétiques
         // On crée un User que l'on stocke d'abord en session
@@ -52,27 +48,6 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
 
         $form->handleRequest($request);
-
-        // if ($request->isXmlHttpRequest()) {
-
-        //     $errors = $form->getErrors(true, true);
-
-        //     if (count($errors) > 0) {
-        //         foreach ($errors as $error) {
-        //             $errorMessages[$error->getOrigin()->getName()] = $error->getMessage();
-        //         }
-        //         $res = ['response' => 'unvalid', 'errorMessages' => $errorMessages];
-        //     } else {
-        //         $res = ['response' => 'valid'];
-        //     }
-
-        //     return new JsonResponse($res);
-
-        // }
-        // if ($form->isSubmitted() && !$form->isValid()) 
-        // {
-        //     dd($form->getErrors(true));
-        // }
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -86,47 +61,27 @@ class RegistrationController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            // if($request->cookies->has('already_register_last_7_days'))
-            // {
-            //     $emails = unserialize($request->cookies->get('already_register_last_7_days'));
+            $signatureComponents = $verifyEmailHelper->generateSignature(
+                'app_verify_email',
+                $user->getId(),
+                $user->getEmail(),
+                ['id' => $user->getId()]
+            );
 
-            //     $mailer->send((new NotificationEmail())
-            //             ->subject('Multiple registration attempt')
-            //             ->htmlTemplate('emails/multiple_attempt_registration.html.twig')
-            //             ->from($adminEmail)
-            //             ->to($adminEmail)
-            //             ->context([
-            //                     'previous_register_emails' => implode(', ', $emails),
-            //                     'new_attempt_email' => $user->getEmail()
-            //                 ]
-            //             )
-            //     );
+            $mailer->send((new TemplatedEmail())
+                    ->subject('Confirmation de votre adresse électronique')
+                    ->htmlTemplate('emails/confirmation_email.html.twig')
+                    ->from('contact@fc-nutrition.com')
+                    ->to(new Address($user->getEmail()))
+                    ->context([
+                        'username' => $user->getUsername(),
+                        'signedUrl' => $signatureComponents->getSignedUrl()
+                    ])
+            );
 
-            // }else{
+            $this->addFlash('success', 'Nous vous avons envoyé un lien de confirmation.');
 
-                $signatureComponents = $verifyEmailHelper->generateSignature(
-                    'app_verify_email',
-                    $user->getId(),
-                    $user->getEmail(),
-                    ['id' => $user->getId()]
-                );
-
-                $mailer->send((new TemplatedEmail())
-                        ->subject('Confirmation de votre adresse électronique')
-                        ->htmlTemplate('emails/confirmation_email.html.twig')
-                        ->from('contact@fc-nutrition.com')
-                        ->to(new Address($user->getEmail()))
-                        ->context([
-                            'username' => $user->getUsername(),
-                            'signedUrl' => $signatureComponents->getSignedUrl()
-                        ])
-                );
-
-                $this->addFlash('success', 'Nous vous avons envoyé un lien de confirmation.');
-                // $this->addFlash('success', 'Votre inscription a été prise en compte. Merci de vous identifier.');
-
-                return $this->redirectToRoute('app_login');
-            // }
+            return $this->redirectToRoute('app_login');
 
         }
 
@@ -135,11 +90,7 @@ class RegistrationController extends AbstractController
         ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200));
     }
 
-    /**
-     * @Route("/verify", name="app_verify_email")
-     *
-     * @return Response
-     */
+    #[Route('/verify', name: 'app_verify_email', methods: ['GET'])]
     public function verifyUserEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, 
     UserRepository $userRepository, EntityManagerInterface $manager): Response
     {
@@ -187,9 +138,7 @@ class RegistrationController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/verify/resend/{id}", name="app_verify_resend_email")
-     */
+    #[Route('/verify/resend/{id}', name: 'app_verify_resend_email', methods: ['GET'])]
     public function resendVerifyEmail(User $user, Request $request, UserRepository $userRepository, VerifyEmailHelperInterface $verifyEmailHelper)
     {
         if (!$user) {

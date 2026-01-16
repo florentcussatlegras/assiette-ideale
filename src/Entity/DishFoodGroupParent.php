@@ -5,41 +5,30 @@ namespace App\Entity;
 use App\Entity\FoodGroup\FoodGroupParent;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * DishFoodGroupParent
- *
- * @ORM\Table(name="dish_food_group_parent")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: "dish_food_group_parent")]
 class DishFoodGroupParent
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Dish", inversedBy="dishFoodGroupParents")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $dish; 
+    #[ORM\ManyToOne(targetEntity: Dish::class, inversedBy: "dishFoodGroupParents")]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Dish $dish = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroupParent")
-     * @ORM\JoinColumn(name="foodgroupparent_id", nullable=false)
-     */
-    private $foodGroupParent;
+    #[ORM\ManyToOne(targetEntity: FoodGroupParent::class)]
+    #[ORM\JoinColumn(name: "foodgroupparent_id", nullable: false)]
+    private ?FoodGroupParent $foodGroupParent = null;
 
-    public function __construct($dish, $foodGroupParent)
+    public function __construct(?Dish $dish = null, ?FoodGroupParent $foodGroupParent = null)
     {
         $this->dish = $dish;
         $this->foodGroupParent = $foodGroupParent;
     }
 
+    // --- Getters / Setters ---
     public function getId(): ?int
     {
         return $this->id;
@@ -53,7 +42,6 @@ class DishFoodGroupParent
     public function setDish(?Dish $dish): self
     {
         $this->dish = $dish;
-
         return $this;
     }
 
@@ -65,9 +53,6 @@ class DishFoodGroupParent
     public function setFoodGroupParent(?FoodGroupParent $foodGroupParent): self
     {
         $this->foodGroupParent = $foodGroupParent;
-
         return $this;
     }
-
-    
 }

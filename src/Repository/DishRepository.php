@@ -140,53 +140,25 @@ class DishRepository extends ServiceEntityRepository
 				$fglist[$key] = (int)$fg;
 			}
 		}
-	
-		// dump($type);
-		// dump($fglist);
 		
 		foreach($this->findAll() as $dish) {
 
-			// dump($dish->getType());
-			// dump($dish->getFoodGroupIds());
-			// exit;
-			// if($dish->getId() == 36) {
-			
-				// dd($dish->getFoodGroupIds());
+			if(!empty($fglist) && count($fglist) < $countAllFgp) {
 
-				if(!empty($fglist) && count($fglist) < $countAllFgp) {
-					// $foodGroupIdsToRemove = array_diff($this->foodGroupRepository->myFindAllIds(), $arrayFgList);
-
-					$validateFg = false;
-					// foreach($foodGroupIdsToRemove as $fgIdtoRemove) {
-					// 	if(in_array((int)$fgIdtoRemove, $dish->getFoodGroupIds())) {
-					// 		$validateFg = false;
-					// 		break;
-					// 	}
-					// }
-					// foreach($fglist as $fgId) {
-					// 	if(!in_array((int)$fgId, $dish->getFoodGroupIds())) {
-					// 		$validateFg = false;
-					// 		break;
-					// 	}
-					// }
-					// dd($dish->getFoodGroupIds(), $fglist);
-					foreach($dish->getFoodGroupIds() as $fgId) {
-						if(in_array($fgId, $fglist)) {
-							$validateFg = true;
-							break;
-						}
+				$validateFg = false;
+				
+				foreach($dish->getFoodGroupIds() as $fgId) {
+					if(in_array($fgId, $fglist)) {
+						$validateFg = true;
+						break;
 					}
-					// dd($validateFg);
-					if($validateFg) {
-						$dishesValidateFg[] = $dish->getId(); 
-					}
-				}else{
+				}
+				if($validateFg) {
 					$dishesValidateFg[] = $dish->getId(); 
 				}
-
-			// }
-			
-			// exit;
+			}else{
+				$dishesValidateFg[] = $dish->getId(); 
+			}
 
 			if(true === (bool)$freeGluten) {
 				if(false === $dish->getHaveGluten()) {
@@ -206,8 +178,6 @@ class DishRepository extends ServiceEntityRepository
 	
 			if(!empty($keyword))
 			{
-				// $qb->andWhere('dish.name LIKE :keyword')
-				//    ->setParameter('keyword', "%{$keyword}%");
 				if(str_contains(strtolower($dish->getName()), strtolower(trim($keyword)))) {
 					$dishesValidateKeyword[] = $dish->getId();
 				}

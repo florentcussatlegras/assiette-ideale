@@ -10,16 +10,6 @@ class AgeRangeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // $tabsAgerange = array_map(
-        //     function($ageMin, $agemax) {
-        //         return [$ageMin, $agemax];
-        //     }, 
-        //     range(34, 84, 10), 
-        //     range(43, 93, 10)
-        // );
-
-        // array_unshift($tabsAgerange, [0, 18], [19, 33], [94, 10000]);
-
         $tabsrange = [
             [
                 'min' => 0,

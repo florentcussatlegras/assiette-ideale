@@ -26,8 +26,6 @@ class BalanceSheetFeature
     {
         $dateStart = new \DateTime($start);
         $dateEnd = new \DateTime($end);
-        // $dateEnd = $dateEnd->modify('+1 day');
-        // dd($dateStart, $dateEnd);
 
         $meals = $this->getMealsForAPeriod($dateStart, $dateEnd);
         if(empty($meals)) {
@@ -40,10 +38,8 @@ class BalanceSheetFeature
                 $energy += $this->mealUtil->getEnergy($meal);
             }
         }
-        // dump($energy);
         
         $countDays = $dateStart->diff($dateEnd)->format("%a") + 1;
-        // dd($countDays);
         
         return 0 != $countDays ? round($energy/$countDays) : round($energy); 
     }
@@ -65,7 +61,6 @@ class BalanceSheetFeature
   
         foreach ($meals as $dateDay => $list) {
             foreach($list as $meal) {
-                // $nutrients += $this->mealUtil->getNutrients($meal);
                 $nutrientsValues = $this->mealUtil->getNutrients($meal);
                 $results['protein'] += $nutrientsValues['protein'];
                 $results['lipid'] += $nutrientsValues['lipid'];
@@ -180,9 +175,6 @@ class BalanceSheetFeature
 	{
         $dateStart = new \DateTime($start);
         $dateEnd = new \DateTime($end);
-        // $meals = $this->mealRepository->findBy([
-        //     'user' => $this->security->getUser(),
-        // ]);
         $meals = $this->getMealsForAPeriod($dateStart, $dateEnd);
         $energyMax = 0;
         $mostCaloricMeal = null;

@@ -171,14 +171,6 @@ class AlertController extends AbstractController implements AlertUserController
         return $this->render('balance_sheet/index.html.twig', $params);
     }
 
-    // #[Route('/show-weight-imc-energy', name: 'show_weight_imc_energy')]
-    // public function weightImcEnergy(Request $request, BalanceSheetFeature $balanceSheetFeature, AlertFeature $alertFeature)
-    // {
-    //     return $this->render('balance_sheet/_weight_imc_energy.html.twig', [
-    //         'balanceWeightEnergyAndImcAlerts' => $alertFeature->getWeightEnergyAndImcBalanceAlerts(),
-    //     ]);
-    // }
-
     #[Route('/message-details-alert-energy/{energy?}', name: 'message_details_alert_energy', methods: ['GET'])]
 	public function messageDetailsAlertEnergy(Request $request, AlertFeature $alertFeature, ?int $energy)
 	{
@@ -218,21 +210,6 @@ class AlertController extends AbstractController implements AlertUserController
         $fgp = $foodGroupParentRepository->findOneByAlias($fgpAlias);
 		$remainingDayQuantity = abs(round($user->getRecommendedQuantities()[$fgpAlias] - $quantity));
  
-		// if(LevelAlert::BALANCE_WELL === $alertCode) {
-		// 	$title = "Super, vous êtes bon en {$fgp->getName()} !";
-		// 	$message = "Votre consommation quotidiennement de {$fgp->getName()} est bonne";
-		// } elseif(LevelAlert::BALANCE_LACK === $alertCode
-		// 		||
-		// 		LevelAlert::BALANCE_VERY_LACK === $alertCode
-		// 		||
-		// 		LevelAlert::BALANCE_CRITICAL_LACK === $alertCode
-		// ){
-		// 	$title = "Consommez plus de {$fgp->getName()} !";
-		// 	$message = "Vous devriez consommer quotidiennement environ $remainingDayQuantity g supplémentaire";
-		// } else {
-		// 	$title = "Consommez moins de {$fgp->getName()} !";
-		// 	$message = "Vous consommez quotidiennement $remainingDayQuantity g en trop";
-		// }
         $title= '';
         $message = '';
 

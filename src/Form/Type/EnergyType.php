@@ -18,8 +18,6 @@ class EnergyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-       // dd($options['validation_groups']);
-      //  dd($options['validation_groups'], $options['unit_measure_selected']);
         $builder->add('energy', IntegerType::class, [
                         'label' => false,
                         'label_attr' => [

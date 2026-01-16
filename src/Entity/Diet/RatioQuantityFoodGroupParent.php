@@ -5,37 +5,25 @@ namespace App\Entity\Diet;
 use App\Entity\FoodGroup\FoodGroupParent;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * RatioQuantityFoodGroupParentForDiet
- *
- * @ORM\Table(name="ratio_quantity_foodgroupparent_for_diet")
- * @ORM\Entity
- */
+#[ORM\Table(name: "ratio_quantity_foodgroupparent_for_diet")]
+#[ORM\Entity]
 class RatioQuantityFoodGroupParent
 {
-	 /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroupParent")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $foodGroupParent;
+    #[ORM\ManyToOne(targetEntity: FoodGroupParent::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FoodGroupParent $foodGroupParent = null;
 
-    /**
-     * @ORM\Column(name="ratio", type="integer")
-     */
-    private $ratio;
+    #[ORM\Column(name: "ratio", type: "integer")]
+    private ?int $ratio = null;
 
-    public function __toString()
+    public function __toString(): string
     {
-    	return $this->foodGroupParent->getName() . ' / ' . $this->ratio;
+        return ($this->foodGroupParent?->getName() ?? '') . ' / ' . ($this->ratio ?? '');
     }
 
     public function getId(): ?int
@@ -51,7 +39,6 @@ class RatioQuantityFoodGroupParent
     public function setRatio(int $ratio): self
     {
         $this->ratio = $ratio;
-
         return $this;
     }
 
@@ -63,7 +50,6 @@ class RatioQuantityFoodGroupParent
     public function setFoodGroupParent(?FoodGroupParent $foodGroupParent): self
     {
         $this->foodGroupParent = $foodGroupParent;
-
         return $this;
     }
 }

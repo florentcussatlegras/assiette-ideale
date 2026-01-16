@@ -57,17 +57,14 @@ class DishType extends AbstractType
 
         $dish = $options['data'];
 
-        //$isEdit = $dish && $dish->getId();
         if ($session->has('recipe_dish'))
         {
-            // dump($session->get('recipe_dish'));
             $level = $session->get('recipe_dish')->getLevel();
             $type = $session->get('recipe_dish')->getType();
         }else{
             $level = !$dish->getLevel() ? 'recipe.level.easy' : $dish->getLevel();
             $type = !$dish->getType() ? 'dish.type.entry' : $dish->getLevel();
         }
-        // dd($type);
 
         $builder
             ->add('name', TextType::class, [
@@ -203,26 +200,6 @@ class DishType extends AbstractType
             $event->setData($steps);
         });
 
-
-        // if(
-        //     ($session->has('recipe_pictures') && empty($session->get('recipe_pictures'))) 
-        //         && 
-        //     empty($dish->getPictures()->toArray())
-        // ) {
-            // $imageConstraints[] = new Assert\NotBlank([
-            //     'message' => 'Veuillez sélectionner une image.'
-            // ]);
-        //}
-
-        // $builder->add('picturesFile', FileType::class, [
-        //         'label' => false,
-        //         'mapped' => false,
-        //         'required' => false,
-        //         'multiple' => true,
-        //         'constraints' => $imageConstraints
-        //     ]
-        // );
-
         $builder->add('pictureFile', DropzoneType::class, [
             'attr' => [
                 'placeholder' => 'Drag and drop a file or click to browse',
@@ -233,7 +210,6 @@ class DishType extends AbstractType
             'mapped' => false,
             'required' => false,
             'multiple' => false,
-            // 'constraints' => $imageConstraints
             'constraints' => new Assert\File([
                     'maxSize' => '5M',
                     'mimeTypes' => ['jpeg', 'jpg', 'gif'],
@@ -249,27 +225,6 @@ class DishType extends AbstractType
                 'validation_groups' => false
             ]);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-        // $builder->addEventListener(
-        //         FormEvents::PRE_SUBMIT, 
-        //         function(FormEvent $event) use($session){
-        //             if(!$session->has('recipe_foods') || empty($session->get('recipe_foods'))) {
-        //                 $form = $event->getForm();
-        //                 $form->addError(new FormError('Veuillez choisir au minimum un aliment.'));
-        //             }
-        //         }
-        // );
     }
 
     public function configureOptions(OptionsResolver $resolver)

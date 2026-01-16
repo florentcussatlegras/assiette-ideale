@@ -17,12 +17,7 @@ use  Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class SessionFoodHandler
-{
-    // private $dishFoodRepository;
-    // private $foodRepository;
-    // private $quantityConverter;
-    // private $csrfTokenManager;
-    
+{   
     public function __construct(
             private RequestStack $requestStack, 
             private DishFoodRepository $dishFoodRepository,
@@ -33,28 +28,8 @@ class SessionFoodHandler
             private UrlGeneratorInterface $urlGenerator
     )
     {
-        // $this->session = $requestStack->getSession();
-        // $this->dishFoodRepository = $dishFoodRepository;
-        // $this->foodRepository = $foodRepository;
-        // $this->quantityConverter = $quantityConverter;
-        // $this->csrfTokenManager = $csrfTokenManager;
-        // $this->uploaderHelper = $uploaderHelper;
+    
     }
-
-    // Envoi les aliments de la request envoyée par le formulaires/liste d'aliment dans la session
-    // public function addFromFoodList(array $request)
-    // {
-    //     if(
-    //         !$this->csrfTokenManager->isTokenValid(new CsrfToken('select_foods', $request['_token']))
-    //     )
-    //     {
-    //         throw new InvalidCsrfTokenException('Le token soumis est invalide.');
-    //     }
-
-    //     $this->add($request['foods'], $request['food_group_code']);
-
-    //     return true;
-    // }
 
     // Extrait les aliments d'un plat en mode edit pour les envoyer dans la session
     public function addFromDishObject(Dish $dish)
@@ -113,8 +88,6 @@ class SessionFoodHandler
             throw new InvalidCsrfTokenException('Le token soumis est invalide.');
         }
 
-        // $foodGroupSlug = $request['food_group_slug'];
-        
         if(isset($datas['foods'])) {
             $foods = $datas['foods'];
             // On supprime les aliments aux quantités vides
@@ -125,12 +98,8 @@ class SessionFoodHandler
 
         if(empty($foods)) {
 
-            // $session->getFlashBag()->add('error', 'Merci d\'indiquer une quantité d\'aliments');
             $session->set('food_error_quantity', 'Merci d\'indiquer une quantité');
 
-            // $url = $this->urlGenerator->generate('app_food_list', [
-            //     'slug' => $foodGroupSlug
-            // ]);
             $params = isset($datas['fg']) ? ['fg' => $datas['fg']] : [];
 
             $url = $this->urlGenerator->generate('app_food_list', $params);
@@ -170,9 +139,6 @@ class SessionFoodHandler
                 $sessionFoods[$foodQuantities['foodgroup_alias']][$foodId] = $foodQuantities;
             }
         }
-        // elseif(array_key_exists($foodGroupAlias, $sessionFoods)) {
-        //     unset($sessionFoods[$foodGroupAlias]);
-        // }
 
         !empty($sessionFoods) ? $session->set('recipe_foods', $sessionFoods) : $session->remove('recipe_foods');
 
@@ -184,11 +150,6 @@ class SessionFoodHandler
         $session = $this->requestStack->getSession();
 
         if($pictureFile) {
-            // $picturesSession = $session->get('recipe_pictures', []);
-            // foreach($pictureFiles as $pictureFile) {
-            //     $picture = $this->uploaderHelper->uploadDishPictures($pictureFile);
-            //     $picturesSession[] = $picture;
-            // }
             $picture = $this->uploaderHelper->upload($pictureFile, UploaderHelper::DISH);
             $session->set('recipe_picture', $picture);
 

@@ -13,7 +13,6 @@ class FoodGroupCrudController extends AbstractCrudController
     {
         return FoodGroup::class;
     }
-
     
     public function configureFields(string $pageName): iterable
     {

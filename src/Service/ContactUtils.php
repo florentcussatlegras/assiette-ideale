@@ -22,9 +22,6 @@ class ContactUtils
     {
         $objects = iterator_to_array($this->finder->in($this->dirJson)->files()->name($this->jsonSubjectContact));
 
-        
-        
-
         return json_decode(current($objects)->getContents(), true);
     }
 }

@@ -48,7 +48,6 @@ class DishFoodHandler
             $recipeFoods = $session->get('recipe_foods');
         }
 
-        // dd($recipeFoods);
         foreach ($recipeFoods as $foodGroupAlias => $foodRows) {
             
             $totalGrByFoodGroup[$foodGroupAlias] = array_sum(array_column($foodRows, 'quantity_g'));

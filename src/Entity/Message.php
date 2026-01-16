@@ -4,34 +4,32 @@ namespace App\Entity;
 
 use App\Repository\MessageRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass=MessageRepository::class)
- */
+#[ORM\Entity(repositoryClass: MessageRepository::class)]
 class Message
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $email;
+    #[ORM\Column(type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Merci de saisir un email")]
+    #[Assert\Email(message: "L'adresse email '{{ value }}' n'est pas valide.")]
+    private ?string $email = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $subject;
+    #[ORM\Column(type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Merci de saisir un sujet")]
+    private ?string $subject = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $body;
-    
+    #[ORM\Column(type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Merci de saisir un message")]
+    #[Assert\Length(
+        min: 10,
+        minMessage: "Le message doit contenir au moins {{ limit }} caractères."
+    )]
+    private ?string $body = null;
 
     public function getId(): ?int
     {

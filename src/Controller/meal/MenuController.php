@@ -89,16 +89,13 @@ class MenuController extends AbstractController
 	#[Route('/week', name: 'menu_week_menu')]
 	public function week(Request $request, QuantityTreatment $quantityTreatment, WeekAlertFeature $weekAlertFeature, TypeMealRepository $typeMealRepository, BalanceSheetFeature $balanceSheetFeature)
 	{
-		// dd($request->getSession()->all());
 		$startingDate = $request->query->get('startingDate');
-		// dd($quantityTreatment->getMealsPerDay());
 
 		$mealsPerDay = $quantityTreatment->getMealsPerDay($startingDate);
 		
 		$energyTotalPerDays = [];
 		$averageDailyNutrientPerDays = [];
 		foreach($mealsPerDay as $day => $mealsOfTheDayPerType) {
-			// $averageDailyNutrientPerDays[$day] = $balanceSheetFeature->averageDailyNutrientForAPeriod($day, $day);
 			foreach($mealsOfTheDayPerType as $typeMeal => $meals) {
 				if(!empty($meals)) {
 					$energyTotalPerDays[$day] = $meals[0]->getEnergyAllMealsDay();
@@ -137,7 +134,6 @@ class MenuController extends AbstractController
            "quantitiesConsumed" => $quantityTreatment->getQuantitiesConsumedOnWeek($startingDate),
 				    "typeMeals" => $typeMealRepository->findAll(),
 	       "energyTotalPerDays" => $energyTotalPerDays,
-//   "averageDailyNutrientPerDays" => $averageDailyNutrientPerDays,
 			    ]
 		    );
 	}
@@ -219,29 +215,6 @@ class MenuController extends AbstractController
 			}
 		}
 		$session->set('_meal_day_range', $range - 1);
-		// dd($request->getSession()->all());
-
-		// foreach($typeMeals as $type) {
-		// 	if( null !== $meal = $mealRepository->findOneBy([
-		// 			'eatedAt' => $date,
-		// 			'user' => $this->getUser(),
-		// 			'type' => $type,
-		// 		])) 
-		// 	{
-		// 		dump($meal);
-		// 		// if($typeMeal == $type) {
-		// 		// 	$session->set('_meal_day_' . $range, ['type' => $typeMeal->getBackName(), 'dishAndFoods' => []]);
-		// 		// }else{
-		// 		$session->set('_meal_day_' . $meal->getRankView(), ['type' => $meal->getType()->getBackName(), 'dishAndFoods' => $meal->getDishAndFoods()]);
-		// 		$session->set('_meal_day_range', (int)$meal->getRankView());
-		// 		// // }
-		// 		// $range++;
-		// 	}
-		// }
-
-		
-		// $session->set('_meal_day_0', ['type' => $typeMeal->getBackName(), 'dishAndFoods' => []]);
-
 
 		$session->set('_meal_day_date', $date);
 
@@ -383,7 +356,6 @@ class MenuController extends AbstractController
 			if($morningSnack)
 			{
 				$quantitiesForMorningSnack[$fgpCode] = $firstPartOfDay[$fgpCode] / 3;
-				// $quantitiesForLunch[$fgpCode] = ($firstPartOfDay[$fgpCode] * 2) / 3;
 			}else{
 				$quantitiesForMorningSnack[$fgpCode] = 0;
 				$quantitiesForLunch[$fgpCode] = $firstPartOfDay[$fgpCode];
@@ -489,14 +461,8 @@ class MenuController extends AbstractController
 	#[Route('/meals-energy/{energyMeals}', name: 'menu_meals_show_total_energy')]
 	public function mealsEnergy(Request $request, AlertFeature $alertFeature, $energyMeals)
 	{
-		$session = $request->getSession();
-	
-		// $mealDayEnergy = $energyMeals;
-		// $remainingMealDayEnergy = abs(round($this->getUser()->getEnergy() - $mealDayEnergy));
-
 		return $this->render('meals/week/_show_total_energy.html.twig', [
 			         'mealDayEnergy' => $energyMeals,
-			// 'remainingMealDayEnergy' => $remainingMealDayEnergy,
 			'alert' => $alertFeature->isWellBalanced($energyMeals, $this->getUser()->getEnergy()),
 			'sizeIcon' => $request->query->get('sizeIcon'),
 			'fromMenuWeek' => $request->query->has('fromMenuWeek') ? true : false,

@@ -23,18 +23,6 @@ class MealRepository extends ServiceEntityRepository
 		$this->security = $security;
     }
 
-	// public function myFindByEatedAt($date, $user)
-	// {
-	// 	$qb = $this->createQueryBuilder('m')
-	// 			   ->where('m.eatedAt = :date')
-	// 			   ->setParameter('date', $date)
-	// 			   ->andWhere('m.user = :user')
-	// 			   ->setParameter('user', $user)
-	// 			   ->orderBy('m.rankView');
-
-	// 	return $qb->getQuery()->getResult();
-	// }
-
 	public function getAllGroupByDate(UserInterface $user)
 	{   
 		$conn = $this->getEntityManager()->getConnection();

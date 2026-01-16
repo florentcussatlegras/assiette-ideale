@@ -7,35 +7,27 @@ use Symfony\Component\HttpFoundation\File\File;
 use App\Service\UploaderHelper;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class Picture
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show_dish", "list_dish"})
-     */
-    private $name;
+    #[ORM\Column(type: "string", length: 255)]
+    #[Groups(["show_dish", "list_dish"])]
+    private ?string $name = null;
 
-    private $file;
+    private ?File $file = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Dish::class, inversedBy="pictures")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $dish;
+    #[ORM\ManyToOne(targetEntity: Dish::class, inversedBy: "pictures")]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Dish $dish = null;
 
     public function __toString(): string
     {
-        return $this->getPath().'/'.$this->getName();
+        return $this->getPath() . '/' . $this->getName();
     }
 
     public function getId(): ?int
@@ -55,7 +47,7 @@ class Picture
         return $this;
     }
 
-    public function getFile()
+    public function getFile(): ?File
     {
         return $this->file;
     }
@@ -77,11 +69,9 @@ class Picture
         return $this;
     }
 
-    /**
-     * @Groups({"show_dish", "list_dish"})
-     */
-    public function getPath()
+    #[Groups(["show_dish", "list_dish"])]
+    public function getPath(): string
     {
-        return UploaderHelper::DISH.'/'.$this->getName();
+        return UploaderHelper::DISH . '/' . $this->getName();
     }
 }

@@ -20,9 +20,6 @@ class FoodSearchListComponent
     #[LiveProp(writable: true)]
     public ?string $query = null;
 
-    // #[LiveProp(writable: true)]
-    // public ?array $fgs;
-
     #[LiveProp]
     public ?string $foodGroupAlias;
 
@@ -52,8 +49,6 @@ class FoodSearchListComponent
         }
 
         return $this->foodRepository->myFindByKeyword($this->query);
-
-        // return $this->searchService->search($this->em, Food::class, $this->query);
     }
 
     public function getUnitMeasures(): array

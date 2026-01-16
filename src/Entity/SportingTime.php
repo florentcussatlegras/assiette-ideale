@@ -7,51 +7,36 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SportingTimeRepository::class)
- */
+#[ORM\Entity(repositoryClass: SportingTimeRepository::class)]
 class SportingTime
 {
-    const NO_SPORT = 'NO_SPORT';
+    public const NO_SPORT = 'NO_SPORT';
+    public const LESS_5_H = 'LESS_5_H';
+    public const MORE_5_H = 'MORE_5_H';
 
-    const LESS_5_H = 'LESS_5_H';
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    const MORE_5_H = 'MORE_5_H';
+    #[ORM\Column(name: "description", type: "string", length: 255)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Column(type: "string", nullable: true)]
+    private ?string $duration = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255)
-     */
-    private $description;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $duration;
-
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PhysicalActivity", mappedBy="sportingTime")
-     */
-    private $physicalActivities;
+    #[ORM\OneToMany(mappedBy: "sportingTime", targetEntity: PhysicalActivity::class)]
+    private Collection $physicalActivities;
 
     public function __construct()
     {
         $this->physicalActivities = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->description;
+        return (string)$this->description;
     }
-
 
     public function getId(): ?int
     {
@@ -103,7 +88,6 @@ class SportingTime
     public function removePhysicalActivity(PhysicalActivity $physicalActivity): self
     {
         if ($this->physicalActivities->removeElement($physicalActivity)) {
-            // set the owning side to null (unless already changed)
             if ($physicalActivity->getSportingTime() === $this) {
                 $physicalActivity->setSportingTime(null);
             }

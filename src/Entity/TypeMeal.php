@@ -3,68 +3,34 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
 use Cocur\Slugify\Slugify;
 
-/**
- * TypeMeal
- *
- * @ORM\Table(name="type_meal")
- * @ORM\Entity()
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Table(name: "type_meal")]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class TypeMeal
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="back_name", type="string", length=255, unique=true)
-     */
-    private $backName;
+    #[ORM\Column(name: "back_name", type: "string", length: 255, unique: true)]
+    private ?string $backName = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="front_name", type="string", length=255, unique=true)
-     */
-    private $frontName;
+    #[ORM\Column(name: "front_name", type: "string", length: 255, unique: true)]
+    private ?string $frontName = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="short_cut", type="string", length=255, unique=true, nullable=true)
-     */
-    private $shortCut;
+    #[ORM\Column(name: "short_cut", type: "string", length: 255, unique: true, nullable: true)]
+    private ?string $shortCut = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ranking", type="integer", nullable=true)
-     */
-    private $ranking;
+    #[ORM\Column(name: "ranking", type: "integer", nullable: true)]
+    private ?int $ranking = null;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_snack", type="boolean")
-     */
-    private $isSnack;
+    #[ORM\Column(name: "is_snack", type: "boolean")]
+    private ?bool $isSnack = null;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

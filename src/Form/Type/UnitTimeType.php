@@ -18,11 +18,6 @@ class UnitTimeType extends AbstractType
         $this->unitTimeRepository = $unitTimeRepository;
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        
-    }
-
     public function configureOptions(Optionsresolver $resolver): void
     {
         $resolver->setDefaults([

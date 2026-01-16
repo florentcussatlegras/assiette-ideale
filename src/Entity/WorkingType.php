@@ -7,38 +7,23 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\WorkingTypeRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\WorkingTypeRepository")]
 class WorkingType
 {
-    const SOFT = false;
+    public const SOFT = false;
+    public const HARD = true;
 
-    const HARD = true;
-
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id, ORM\GeneratedValue, ORM\Column(type: "integer")]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="string", length=255)
-     */
+    #[ORM\Column(name: "description", type: "string", length: 255)]
     private $description;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private $isHard;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\PhysicalActivity", mappedBy="workingType")
-     * @Ignore()
-     */
+    #[ORM\OneToMany(mappedBy: "workingType", targetEntity: "App\Entity\PhysicalActivity")]
+    #[Ignore]
     private $physicalActivities;
 
     public function __construct()
@@ -46,7 +31,7 @@ class WorkingType
         $this->physicalActivities = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->description;
     }
@@ -101,7 +86,6 @@ class WorkingType
     public function removePhysicalActivity(PhysicalActivity $physicalActivity): self
     {
         if ($this->physicalActivities->removeElement($physicalActivity)) {
-            // set the owning side to null (unless already changed)
             if ($physicalActivity->getWorkingType() === $this) {
                 $physicalActivity->setWorkingType(null);
             }

@@ -4,137 +4,72 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * AgeRangeGender
- *
- * @ORM\Table(name="age_range_gender")
- * @ORM\Entity(repositoryClass="App\Repository\AgeRangeGenderRepository")
- */
+#[ORM\Table(name: "age_range_gender")]
+#[ORM\Entity(repositoryClass: "App\Repository\AgeRangeGenderRepository")]
 class AgeRangeGender
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="description", type="string", unique=true)
-     */
-    private $description;
+    #[ORM\Column(type: "string", unique: true)]
+    private ?string $description = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\AgeRange")
-     */
-    private $ageRange;
+    #[ORM\ManyToOne(targetEntity: AgeRange::class)]
+    private ?AgeRange $ageRange = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Gender")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $gender;
+    #[ORM\ManyToOne(targetEntity: Gender::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Gender $gender = null;
 
-    public function __construct(AgeRange $ageRange, Gender $gender, $description)
+    public function __construct(AgeRange $ageRange, Gender $gender, string $description)
     {
         $this->ageRange = $ageRange;
         $this->gender = $gender;
         $this->description = $description;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        if(is_null($this->description)) {
-            return 'NULL';
-        }
-        return $this->description;
+        return $this->description ?? 'NULL';
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set description
-     *
-     * @param string $description
-     *
-     * @return AgeAndGenderCode
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    /**
-     * Set gender
-     *
-     * @param \App\Entity\Gender $gender
-     *
-     * @return AgeAndGenderCode
-     */
-    public function setGender(\App\Entity\Gender $gender)
+    public function setDescription(string $description): self
     {
-        $this->gender = $gender;
-
+        $this->description = $description;
         return $this;
     }
 
-    /**
-     * Get gender
-     *
-     * @return \App\Entity\Gender
-     */
-    public function getGender()
+    public function getAgeRange(): ?AgeRange
+    {
+        return $this->ageRange;
+    }
+
+    public function setAgeRange(?AgeRange $ageRange): self
+    {
+        $this->ageRange = $ageRange;
+        return $this;
+    }
+
+    public function getGender(): ?Gender
     {
         return $this->gender;
     }
 
-    /**
-     * Set ageRange
-     *
-     * @param \App\Entity\AgeRange $ageRange
-     *
-     * @return AgeAndGenderCode
-     */
-    public function setAgeRange(\App\Entity\AgeRange $ageRange = null)
+    public function setGender(Gender $gender): self
     {
-        $this->ageRange = $ageRange;
-
+        $this->gender = $gender;
         return $this;
-    }
-
-    /**
-     * Get ageRange
-     *
-     * @return \App\Entity\AgeRange
-     */
-    public function getAgeRange()
-    {
-        return $this->ageRange;
     }
 }

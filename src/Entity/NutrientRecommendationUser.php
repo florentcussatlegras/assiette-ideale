@@ -2,56 +2,37 @@
 
 namespace App\Entity;
 
-use App\Repository\NutrientRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Repository\NutrientRecommendationUserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
+use App\Entity\Nutrient;
 
-/**
- * NutrientRecommendationsUser
- *
- * @ORM\Table(name="nutrient_recommendation_user")
- * @ORM\Entity(repositoryClass="App\Repository\NutrientRecommendationUserRepository")
- */
+#[ORM\Entity(repositoryClass: NutrientRecommendationUserRepository::class)]
+#[ORM\Table(name: "nutrient_recommendation_user")]
 class NutrientRecommendationUser
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(targetEntity: Nutrient::class)]
+    private ?Nutrient $nutrient = null;
+
+    #[ORM\Column(name: "recommended_quantity", type: "float")]
+    private ?float $recommendedQuantity = null;
+
+    public function __toString(): string
+    {
+        return self::class;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity=User::class)
-     */
-    private $user;
-
-    /**
-     * @var Nutrient
-     *
-     * @ORM\ManyToOne(targetEntity=Nutrient::class)
-     */
-    private $nutrient;
-
-    /**
-     * @var RecommendedQuantity
-     *
-     * @ORM\Column(name="recommended_quantity", type="float")
-     */
-    private $recommendedQuantity;
-
-    public function __toString()
-    {
-        return self::class;
     }
 
     public function getRecommendedQuantity(): ?float

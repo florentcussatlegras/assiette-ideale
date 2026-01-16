@@ -47,32 +47,12 @@ class DefaultController extends AbstractController
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 		
 		$session = $request->getSession();
-
-		// dump($session->all());
-		// $session->remove('_meal_day_range');
-		// $session->clear();
-		
-		// if(!$session->has('_meal_day_range') || $session->get('_meal_day_range') < 0)
-		// {
-		// 	//$init = true;
-		// 	$meal['type'] = $lastTypeMeal = 'breakfast';
-		// 	$meal['dishAndFoods'] = [];
-		// 	// $meal['energy'] = 0;
-		// 	$session->set('_meal_day_0', $meal);
-		// 	$session->set('_meal_day_range', 0);
-		// 	$session->set('_meal_day_energy', 0);
-		// }else{
-		// $session->clear();
 			
 		// On liste les fgp présents dans les plats/aliments des repas
 		$listFgp = [];
 
 		if($session->has('_meal_day_range')) {
 
-			//$init = false;
-
-			// if($session->get('_meal_day_range') > 0 )
-			// {
 				$energyDay = 0;
 				// On stocke les énergies augmentées à chaque plat en partant de zéro
 				$energies[0][0] = 0;
@@ -83,7 +63,6 @@ class DefaultController extends AbstractController
 					$energyMeal = 0;
 
 					$meal = $session->get('_meal_day_' . $i);
-					// dump($meal);
 					
 					if($i === 0) {
 						$meal['rankPreviousType'] = null;
@@ -91,7 +70,6 @@ class DefaultController extends AbstractController
 
 					if(null === $previousTypeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($session->get('_meal_day_0')['type']))
 					{
-						// dump()
 						$meal = $session->get('_meal_day_0');
 						$meal['type'] = null;
 						$meal['rankPreviousType'] = null;
@@ -152,8 +130,6 @@ class DefaultController extends AbstractController
 
 		}
 
-		// dd($session->all());
-
 		if($session->has('rankDish') && null !== $session->get('rankDish'))
 			$session->set('rankDish', null);
 
@@ -170,7 +146,6 @@ class DefaultController extends AbstractController
 
 		if($request->query->get('ajax')) {
 			return $this->render('meals/day/_meals_day.html.twig', [
-					// 'foodGroupParents' => $manager->getRepository(FoodGroupParent::class)->findAll([], ['ranking' => 'ASC']),
 					      'foodGroups' => $manager->getRepository(FoodGroup::class)->findAll([], ['ranking' => 'ASC']),
 								'page' => 0,
 						   'typeMeals' => $manager->getRepository(TypeMeal::class)->findBy([], ['ranking' => 'ASC']),
@@ -181,8 +156,6 @@ class DefaultController extends AbstractController
 		}
 
 		return $this->render('meals/day/index.html.twig', [
-					        //'init' => $init,
-				// 'foodGroupParents' => $manager->getRepository(FoodGroupParent::class)->findAll([], ['ranking' => 'ASC']),
 					  'foodGroups' => $manager->getRepository(FoodGroup::class)->findAll([], ['ranking' => 'ASC']),
 							'page' => 0,
 					   'typeMeals' => $manager->getRepository(TypeMeal::class)->findBy([], ['ranking' => 'ASC']),
@@ -215,10 +188,8 @@ class DefaultController extends AbstractController
 			$meal['name'] = $modelMeal->getName();
 			$meal['type'] = $modelMeal->getType() !== null ? $modelMeal->getType()->getBackName() : null;
 			$meal['dishAndFoods'] = $modelMeal->getDishAndFoods();
-			// dd($meal);
 
 			$session->set('_meal_day_' . $rangeMeal, $meal);
-			// dd($session->all());
 
 			$alertFeature->setEnergyAndNutrientsDataSession();
 		}
@@ -227,7 +198,7 @@ class DefaultController extends AbstractController
 	}
 
 	#[Route('/remove', name:'meal_day_remove', options: ['expose' => true])]
-	public function remove(Request $request, EntityManagerInterface $manager, MealUtil $mealUtil)
+	public function remove(Request $request, MealUtil $mealUtil)
 	{
 		$session = $request->getSession();
 		
@@ -286,43 +257,13 @@ class DefaultController extends AbstractController
 
 		$session->set('_meal_day_' . $rankMeal, $meal);
 
-		// dd($session->get('_meal_day_alerts/_dishes_selected'));
-
-		// ON MET A JOUR LA VARIABLE DE SESSION STOCKANT L'ENERGIE PLAT APRES PLAT
-
-		// $energyEvolutionMeal = $session->get('_meal_day_energy_evolution');
-		// $energyConsumed = end($energyEvolutionMeal[$rankMeal]);
-		// $energyEvolutionMeal[$rankMeal][$rankDish+1] = $energyConsumed + $energyElement;
-		// $session->set('_meal_day_energy_evolution', $energyEvolutionMeal);
-
 		$alertFeature->setEnergyAndNutrientsDataSession();
 		
 		$alertFeature->setAlertOnDishesAndFoodsAlreadySelected();
 	
-		// $energyConsumed = $session->has('_meal_day_energy_evolution') ? $session->get('_meal_day_energy_evolution')[$rankMeal][$rankDish] : 0;
-
 		if($request->query->get('ajax')) {
 			return new Response('OK', Response::HTTP_NO_CONTENT);
 		}
-
-		// if($request->query->get('fromPreselect')) {
-		// 	if(!$session->has('_meal_day_preselected_items') || empty($session->get('_meal_day_preselected_items'))) {
-		// 		throw $this->createNotFoundException('Aucun plat ou aliment n\'a été selectionné!');
-		// 	}
-		// 	$rankMeal = $request->query->has('rankMeal') ? $request->query->get('rankMeal') : (int)$session->get('rankMeal');
-		// 	$meal = $session->has('_meal_day_' . $rankMeal) ? $session->get('_meal_day_'  . $rankMeal) : [];
-			
-		// 	$i = ($request->query->has('rankDish') && "" != $request->query->get('rankDish') && "all" != $request->query->get('rankDish')) ? (int)$request->query->get('rankDish') : 0;
-
-		// 	foreach($session->get('_meal_day_preselected_items') as $newDishOrFood) {
-		// 		$meal['dishAndFoods'][$i] = $newDishOrFood;
-		// 		$i++;
-		// 	}
-		// 	$session->set('_meal_day_' . $rankMeal, $meal);
-		// 	$session->set('_meal_day_preselected_items', []);
-
-		// 	return new Response('OK', Response::HTTP_NO_CONTENT);
-		// }
 
 		return $this->redirectToRoute('meal_day');
 	}
@@ -337,10 +278,6 @@ class DefaultController extends AbstractController
 		$meal = $session->get('_meal_day_'  . $rankMeal);
 
 		if($request->query->get('fromRankDishToTheEnd')) {
-			// for($i = $rankDish; $i < (count($meal['dishAndFoods'])-1); $i++ ) {
-			// 	unset()
-			// }
-			// dd($meal['dishAndFoods']);
 			$meal['dishAndFoods'] = array_slice($meal['dishAndFoods'], 0, $rankDish);
 		} else{
 			unset($meal['dishAndFoods'][$rankDish]);
@@ -348,27 +285,6 @@ class DefaultController extends AbstractController
 		}
 		$session->set('_meal_day_'  . $rankMeal, $meal);
 
-		// if(!empty($meal['dishAndFoods'])) {
-		// 	$meal['dishAndFoods'] = array_values($meal['dishAndFoods']);
-		// 	$session->set('_meal_day_'  . $rankMeal, $meal);
-		// } 
-		// else {
-		// 	$mealUtil->removeMealSession($rankMeal);
-		// }
-
-		// ON MET A JOUR LA VARIABLE DE SESSION STOCKANT L'ENERGIE PLAT APRES PLAT
-		// $energyEvolutionMeal = $session->get('_meal_day_energy_evolution');
-		// dump($energyEvolutionMeal);
-		// // dd(!empty($energyEvolutionMeal[$rankMeal]));
-		// if(!empty($energyEvolutionMeal[$rankMeal])) {
-		// 	array_pop($energyEvolutionMeal[$rankMeal]);
-		// }
-		// dd($energyEvolutionMeal);
-		// if(null === $energyEvolutionMeal[$rankMeal]) {
-		// 	$energyEvolutionMeal[$rankMeal][0] = 0;
-		// }
-		// // dd($energyEvolutionMeal);
-		// $session->set('_meal_day_energy_evolution', $energyEvolutionMeal);
 		$alertFeature->setEnergyAndNutrientsDataSession();
 
 		$alertFeature->setAlertOnDishesAndFoodsAlreadySelected();
@@ -408,7 +324,7 @@ class DefaultController extends AbstractController
 	}
 
 	#[Route('/remove-selection', name:'meal_day_remove_selection')]
-	public function removeMealSelection(Request $request, EntityManagerInterface $manager, MealUtil $mealUtil, AlertFeature $alertFeature)
+	public function removeMealSelection(Request $request, MealUtil $mealUtil, AlertFeature $alertFeature)
 	{
 		$session = $request->getSession();
 
@@ -423,13 +339,6 @@ class DefaultController extends AbstractController
 			$alertFeature->setAlertOnDishesAndFoodsAlreadySelected();
 
 		} else {
-			// $mealUtil->removeMealsSession();
-
-			// $this->addFlash('notice', 'Les repas ont bien été supprimés');
-
-			// return $this->redirectToRoute('menu_week_get_meals', [
-			// 	'date' => $request->getSession()->get('_meal_day_date')
-			// ]);
 			return $this->redirectToRoute('menu_week_remove_meals', [
 				'date' => $request->getSession()->get('_meal_day_date'),
 			]);
@@ -464,12 +373,11 @@ class DefaultController extends AbstractController
 			return new Response('OK', Response::HTTP_NO_CONTENT);
 		}
 
-		// return new JsonResponse(['data' => 'OK']);
 		return $this->redirectToRoute('meal_day');
 	}
 
 	#[Route('/list/list-ajax', name: 'meal_day_list_ajax', options: ['expose' => true])]
-	public function listAjax(Request $request, EntityManagerInterface $manager, QuantityTreatment $quantityTreatment, AlertFeature $alertFeature, DishUtil $dishUtil, FoodUtil $foodUtil, DishRepository $dishRepository, FoodRepository $foodRepository, TokenStorageInterface $tokenStorage)
+	public function listAjax(Request $request, AlertFeature $alertFeature, DishUtil $dishUtil, FoodUtil $foodUtil, DishRepository $dishRepository, FoodRepository $foodRepository, TokenStorageInterface $tokenStorage)
 	{
 		$user = $this->getUser();
 		
@@ -486,23 +394,13 @@ class DefaultController extends AbstractController
 		$freeLactose = !empty($request->query->get('freeLactose')) ? $request->query->get('freeLactose') : false;
 		$freeGluten = !empty($request->query->get('freeGluten')) ? $request->query->get('freeGluten') : false;
 
-		// $typeItems = $request->query->has('typeItem') ? $request->query->get('typeItem'): [];
-		// dd($request->query->all());
-
 		$limit = 12;
-		// if($request->query->get('reloadFromStart')) {
-		// 	$offset = 0;
-		// 	// $limit = ($request->query->get('page') + 1) * $limit;
-		// }else{
 		$offset = $request->query->get('page') * $limit;
 		$dishes = $foods = [];
 
-		// }
 		if($request->query->has('rankMeal') && null !== $request->query->get('rankMeal')) {
 			// On cherche les plats/aliments pour les ajouter à un repas, donc on exclu les interdits (régimes, goûts personnels etc)
 			// On vient de la page de saisie des repas
-			// $dishes = $dishUtil->myFindByKeywordAndFGExcludeForbidden($keyword, $fglist, 'ASC', $offset, $limit);
-			// $foods = $foodUtil->myFindByKeywordAndFGExcludeForbidden($keyword, $fglist, 'ASC', $offset, $limit);
 			if($request->query->has('typeItem') && !empty($request->query->get('typeItem'))) {
 				if(in_array('dish', explode(',', $request->query->get('typeItem')))) {
 					$dishes = $dishUtil->myFindByKeywordAndFGAndTypeAndLactoseAndGlutenExcludeForbidden($keyword, $fglist, $freeLactose, $freeGluten);
@@ -516,8 +414,6 @@ class DefaultController extends AbstractController
 			}
 		}else{
 			// On affiche tous les résultats sans discriminations
-			// $dishes = $dishRepository->myFindByKeywordAndFG($keyword, $fglist, 'ASC', $offset, $limit);
-			// $foods = $foodRepository->myFindByKeywordAndFG($keyword, $fglist, 'ASC', $offset, $limit);
 			$dishes = $dishRepository->myFindByKeywordAndFG($keyword, $fglist, 'ASC');
 			$foods = $foodRepository->myFindByKeywordAndFG($keyword, $fglist, 'ASC');
 		}
@@ -550,16 +446,8 @@ class DefaultController extends AbstractController
 			$lastResults = true;
 		}
 
-		// if(empty($results))
-		// 	return new JsonResponse(["response" => "no-results"]);
-
-		// $offset = $request->query->get('page') * 8;
-		// $results = array_slice($results, $offset, 8);
-
 		if($request->query->has('rankMeal')) {
-			// dump($request->query->get('rankMeal'), $request->query->get('rankDish'));
-			// dump($request->getSession()->get('_meal_day_energy_evolution'));
-			// dd($request->query->all());
+
 			$rankMeal = $request->query->get('rankMeal');
 
 			if("none" !== $request->query->get('updateDish')) {
@@ -576,10 +464,8 @@ class DefaultController extends AbstractController
 							"results" => $results,
 							"keyword" => $keyword,
 						   "rankMeal" => $request->query->get('rankMeal'),
-							//  "rankDish" => $request->query->get('rankDish'),
 							 "rankDish" => $rankDish,
 							 "update" => $update,
-							// "lastBlock" => ($offset > ($countResults - 8)),
 							"lastResults" => $lastResults,
 				)
 			);
@@ -593,7 +479,7 @@ class DefaultController extends AbstractController
 	}
 
 	#[Route('/reorder-list-ajax', name: 'meal_day_reorder_list_ajax', options: ['expose' => true])]
-	public function reorderListAjax(Request $request, EntityManagerInterface $manager)
+	public function reorderListAjax(Request $request)
 	{
 		$session = $request->getSession();
 
@@ -630,10 +516,6 @@ class DefaultController extends AbstractController
 	#[Route('/session/alerts', name: 'meal_day_session_alerts')]
 	public function sessionAlert(Request $request)
 	{
-		// foreach($request->getSession()->get('_meal_day_alerts/_dishes_not_selected') as $alert)
-		// {
-		// 	dump($alert);
-		// }  
 		dump($request->getSession()->get('_meal_day_alerts/_dishes_not_selected'));
 		dump($request->getSession()->get('_meal_day_alerts/_foods_not_selected'));
 
@@ -788,7 +670,6 @@ class DefaultController extends AbstractController
 			$newEnergyTotal = (int)$session->get('_meal_day_energy') + $energyNewItem - $energyItemToReplace;
 			// dd($newEnergyTotal);
 		} else {
-			// dd('la2');
 			// on ajoute un item au repas du jour
 			// dump('on ajoute un item au repas ' . $rankMeal . ' au rang ' . $rankDish);
 			$newEnergyTotal = (int)$session->get('_meal_day_energy') + $energyNewItem;
@@ -810,7 +691,6 @@ class DefaultController extends AbstractController
 	#[Route('/sidebar-preselect-item/{id?}/{type?}', name: 'meal_sidebar_preselect_item', methods: ['GET'])]
 	public function preSelectItem(Request $request, UnitMeasureRepository $unitMeasureRepository, AlertFeature $alertFeature, ?int $id, ?string $type)
 	{
-		// $preSelectedItem = $request->getSession()->get('')
 		$session = $request->getSession();
 
 		if($request->query->has('unitMeasure')) {
@@ -820,9 +700,6 @@ class DefaultController extends AbstractController
 			$unitMeasure = $unitMeasureRepository->findOneByAlias('g')->getId();
 			$unitMeasureAlias = 'g';
 		}
-
-		// $repo = 'dish' === $type ? $dishRepository : $foodRepository;
-		// $energy = $alertFeature->extractDataFromDishOrFoodSelected('energy', $repo->findOneBy((int)$id), (float)$request->request->get('quantity'), (float)$unitMeasureAlias);
 
 		$newDishOrFood = [
 			'rankMeal' => $request->query->get('rankMeal'),
@@ -851,7 +728,6 @@ class DefaultController extends AbstractController
 				'rankDish' => $request->query->get('rankDish'),
 				'alertColor' => $request->query->get('alertColor'),
 				'alertText' => $request->query->get('alertText'),
-				// 'session' => $request->getSession()->all(),
 			]);
 		}
 
@@ -887,8 +763,6 @@ class DefaultController extends AbstractController
 
 		return $this->render('meals/day/_list_item_preselected.html.twig', [
 			'items' => $preSelectedItems,
-			// 'rankMeal' => $request->query->get('rankMeal'),
-			// 'rankDish' => $request->query->get('rankDish'),
 		]);
 	}
 

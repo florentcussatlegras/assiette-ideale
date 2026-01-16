@@ -28,35 +28,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @Route("/profile")
- */
+#[Route('/profile')]
 class ProfileController extends AbstractController implements AlertUserController
 {
-    /**
-     * @Route("", name="app_profile_index")
-     */
+    #[Route('', name: 'app_profile_index')]
     public function index(EntityManagerInterface $manager)
     {
-        //dump($this->getUser());
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $user = $this->getUser();
-
-        // if($user->getEnergy() && !$user->hasStartedFillProfile())
-        // {
-        //     $user->setStartedFillProfile(true);
-        //     $manager->persist($user);
-        //     $manager->flush();
-
-        //     $showModalConfirmProfile = true;
-        // }
 
         return $this->render("profile/index.html.twig", [
             'showModalConfirmProfile' => !(empty($showModalConfirmProfile)) ? true : false
         ]);
     }
-
 
     // // Si l'utilisateur n'a pas encore saisi son profil on utilise les formulaires de profile plus détaillés avec des sous-étapes
     // // e.g. le formulaire "user" est partitionné en plusieurs petites formulaires "user_gender", "user_birthday", "user_height", "user_weight"
@@ -76,35 +61,6 @@ class ProfileController extends AbstractController implements AlertUserControlle
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
         $user = $this->getUser();
-        // dd(empty($user->getForbiddenFoods()->toArray()));
-        // dd($element);
-
-        // if(!$user->getEnergy()) {
-        //     $accessor = PropertyAccess::createpropertyAccessor();
-        //     $value = $accessor->getValue($user, $element);
-        //     // dump($element);
-        //     // dd($value);
-        //     if($value instanceof \Traversable){
-        //         $value = empty($value->toArray()) ?? null;
-        //     }
-        //     // dd($element, $value, $profileHandler->nextElement($element));
-        //     // dd($profileHandler->nextElement($element));
-        //     // dd($element);
-
-        //     // if(null !== $value) {
-        //     //     return $this->redirectToRoute('app_profile_edit', [
-        //     //         'element' => $profileHandler->nextElement($element),
-        //     //     ]);
-        //     // }
-        // }
-
-        // dd($request->query->all());
-        // if($request->query->get('first_fill_profile')) {
-        //     $user->setFirstFillProfile(true);
-        //     $manager->flush();
-
-        //     return $this->redirectToRoute('app_dashboard_index');
-        // }
 
         $form = $this->createForm(ProfileType::class, $user, [
             'element' => $element,
@@ -131,7 +87,6 @@ class ProfileController extends AbstractController implements AlertUserControlle
                         $pictureFile,
                         [$pictureConstraint]
                     );
-                    // dd($errorsPic);
                     if(isset($errorsPic[0])) {
                         $request->getSession()->set('user_error_pic', $errorsPic[0]->getMessage());
 
@@ -151,14 +106,6 @@ class ProfileController extends AbstractController implements AlertUserControlle
                 if($form->get('archived_weight')->getData()) {
 
                     $weights = $user->getWeightEvolution();
-                    // $weights = [
-                    //     '02/14/2022' => 78,
-                    //     '08/15/2022' => 86,
-                    //     '12/31/2022' => 87,
-                    //     '02/14/2023' => 63,
-                    //     '08/15/2023' => 89,
-                    //     '12/31/2023' => 79,
-                    // ];
                     $weights[date('m/d/Y')] = $user->getWeight();
                     $user->setWeightEvolution($weights);
 
@@ -176,10 +123,8 @@ class ProfileController extends AbstractController implements AlertUserControlle
 
             $manager->persist($user);
             $manager->flush();
-            // dd($nextElement);
 
             if(!$user->hasFirstFillProfile() && $nextElement) {
-                // dd($nextElement);
                 return $this->redirectToRoute('app_profile_edit', [
                     'element' => $nextElement
                 ]);
@@ -193,15 +138,12 @@ class ProfileController extends AbstractController implements AlertUserControlle
         return $this->render("profile/forms.html.twig", [
                 'profileForm' => $form->createView(),
                 'element' => $element,
-                // 'steps' => ProfileHandler::STEPS,
                 'nextElement' => $nextElement,
             ]
         );
     }
 
-    /**
-     * @Route("/change-password", name="app_profile_password_edit")
-     */
+    #[Route('/change-password', name: 'app_profile_password_edit', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -235,9 +177,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200));
     }
 
-    /**
-     * @Route("/progressbar", name="app_profile_progress_bar")
-     */
+    #[Route('/progressbar', name: 'app_profile_progress_bar', methods: ['GET'])]
     public function progressBar(ProfileHandler $profileHandler)
     {
         return $this->render('profile/partials/_progress_bar_ratio.html.twig', [
@@ -245,9 +185,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    /**
-     * @Route("/users/roles/edit", name="app_users_roles_edit")
-     */
+    #[Route('/users/roles/edit', name: 'app_users_roles_edit', methods: ['POST'])]
     public function editUserRoles(Request $request, UserRepository $userRepository, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN_ROLE');
@@ -276,9 +214,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    /**
-     * @Route("/users/roles/export/{username}", name="app_users_roles_export")
-     */
+    #[Route('/users/roles/export/{username}', name: 'app_users_roles_export', methods: ['GET'])]
     public function exportUserRoles(Request $request, User $user, SluggerInterface $slugger)
     {
         $response = new Response(json_encode($user->getRoles()), 200, [

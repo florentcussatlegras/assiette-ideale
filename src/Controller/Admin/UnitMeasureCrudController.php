@@ -12,8 +12,7 @@ class UnitMeasureCrudController extends AbstractCrudController
     {
         return UnitMeasure::class;
     }
-
-    
+  
     public function configureFields(string $pageName): iterable
     {
         return [

@@ -113,8 +113,7 @@ class ModelController extends AbstractController
 	}
 
 	#[Route('/listfgp/{id}', name: 'model_meal_list_fgp', options: ['expose' => true])]
-	public function getListFgp(Request $request, MealUtil $mealUtil, FoodGroupParentRepository $foodGroupParentRepository, 
-				EntityManagerInterface $manager, MealModel $meal, int $sizeTabletColorFgp = 5)
+	public function getListFgp(MealUtil $mealUtil, FoodGroupParentRepository $foodGroupParentRepository, MealModel $meal, int $sizeTabletColorFgp = 5)
 	{
 		return $this->render("meals/partials/_list_fgp.html.twig", 
 			[

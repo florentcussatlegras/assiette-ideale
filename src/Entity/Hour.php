@@ -4,65 +4,37 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Hours
- *
- * @ORM\Table(name="hour")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: "hour")]
 class Hour
 {
-    const NORMAL = 'NORMAL_H';
+    public const NORMAL = 'NORMAL_H';
+    public const STAGGERED = 'STAGGERED_H';
+    public const HALF_TIME = 'HALF_TIME_H';
+    public const NONE = 'NONE_H';
 
-    const STAGGERED = 'STAGGERED_H';
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    const HALF_TIME = 'HALF_TIME_H';
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: true)]
+    private ?string $title = null;
 
-    const NONE = 'NONE_H';
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $details = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: "string", length: 255, unique: true)]
+    private ?string $alias = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, unique=true, nullable=true)
-     */
-    private $title = null;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="details", type="string", length=255, nullable=true)
-     */
-    private $details;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string", length=255, unique=true)
-     */
-    private $alias;
-
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getTitle(): ?string
@@ -73,7 +45,6 @@ class Hour
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
         return $this;
     }
 
@@ -85,7 +56,6 @@ class Hour
     public function setDetails(string $details): self
     {
         $this->details = $details;
-
         return $this;
     }
 
@@ -97,7 +67,6 @@ class Hour
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
-
         return $this;
     }
 }

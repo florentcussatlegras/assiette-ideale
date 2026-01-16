@@ -36,11 +36,6 @@ class AlertController extends AbstractController
 		$alerts = [];
 		$session = $request->getSession();
 
-		// dd($session->get('_meal_day_alerts/_foods_selected'));
-		// if($dishOrFoodId === 713) {
-		// 	dd('Ananas');
-		// }
-
 		if(true == $isSelected)
 		{	
 
@@ -57,7 +52,6 @@ class AlertController extends AbstractController
 
 			}
 
-			// dd($alerts['higher_level']);
 			if($request->query->get('showMessages')) {
 				return $this->render('meals/day/_list_alert_messages.html.twig', [
 					'alerts' => $alerts,
@@ -96,7 +90,6 @@ class AlertController extends AbstractController
 			if(!empty($alertsOnDishesNotSelected) && array_key_exists($dishOrFoodId, $alertsOnDishesNotSelected))
 			{
 				$alerts = $alertsOnDishesNotSelected[$dishOrFoodId];
-				// dd($alerts);
 				$session->set('color_current_alert', $alerts['higher_level']->getColor());
 			}else{
 				$session->remove('color_current_alert');
@@ -150,7 +143,6 @@ class AlertController extends AbstractController
 	#[Route('/show-on-week', name: 'alert_show_on_week', options: ['expose' => true])]
 	public function showOnWeek(Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage, AlertFeature $alertFeature, $quantitiesConsumed)
 	{
-   		// $recommendedQuantities = $manager->getRepository(RecommendedQuantity::class)->findByEnergy($tokenStorage->getToken()->getUser()->getEnergy());
    		$fgpLevel = [];
 
    		foreach ($manager->getRepository(FoodGroupParent::class)->findAll() as $fgp) {
@@ -173,8 +165,6 @@ class AlertController extends AbstractController
 	#[Route('/show-session', name: 'alert_show_session')]
 	public function showSession(Request $request)
 	{
-		// dump($request->getSession()->get('_meal_day_0'));
-		// dd($request->getSession()->get('_meal_day_alerts/_dishes_selected'));
 		dd($request->getSession()->all());
 	}
 }

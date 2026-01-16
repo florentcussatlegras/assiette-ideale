@@ -2,50 +2,32 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
+use App\Entity\TypeMeal;
 
-/**
- * MealModel
- *
- * @ORM\Table(name="meal_model")
- * @ORM\Entity(repositoryClass="App\Repository\MealModelRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\MealModelRepository")]
+#[ORM\Table(name: "meal_model")]
 class MealModel
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string")
-     */
-    private $name;
+    #[ORM\Column(type: "string")]
+    private string $name;
 
-     /**
-     * @var \Entity
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\TypeMeal")
-     */
-    private $type;  
+    #[ORM\ManyToOne(targetEntity: TypeMeal::class)]
+    private ?TypeMeal $type = null;
 
-    /**
-     * @ORM\Column(name="dish_and_foods", type="array")
-     */
-    private $dishAndFoods;
+    #[ORM\Column(name: "dish_and_foods", type: "array")]
+    private array $dishAndFoods = [];
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"})
-     */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"])]
+    private ?User $user = null;
 
-    public function __construct($name, $type, $dishAndFoods, $user)
+    public function __construct(string $name, ?TypeMeal $type, array $dishAndFoods, ?User $user)
     {
         $this->name = $name;
         $this->type = $type;
@@ -58,7 +40,7 @@ class MealModel
         return $this->id;
     }
 
-    public function getDishAndFoods(): ?array
+    public function getDishAndFoods(): array
     {
         return $this->dishAndFoods;
     }
@@ -66,7 +48,6 @@ class MealModel
     public function setDishAndFoods(array $dishAndFoods): self
     {
         $this->dishAndFoods = $dishAndFoods;
-
         return $this;
     }
 
@@ -78,11 +59,10 @@ class MealModel
     public function setUser(?User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -90,7 +70,6 @@ class MealModel
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -102,7 +81,6 @@ class MealModel
     public function setType(?TypeMeal $type): self
     {
         $this->type = $type;
-
         return $this;
     }
 }

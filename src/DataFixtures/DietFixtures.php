@@ -4,7 +4,6 @@ namespace App\DataFixtures;
 
 
 use App\Entity\Diet\Diet;
-use App\Entity\Diet\SubDiet;
 use App\DataFixtures\BaseFixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -13,11 +12,6 @@ class DietFixtures extends BaseFixture implements FixtureGroupInterface
 {
     protected function loadData(ObjectManager $manager)
     {
-        // $noMeat = new Diet();
-        // $noMeat->setName('Sans produit animaux');
-        // $noMeat->setDescription('Ne mange pas de viande');
-        // $manager->persist($noMeat);
-        
         $vegan = new Diet();
         $vegan->setName('Véganisme');
         $vegan->setDescription('Ne consomme aucun produit issus de l\'exploitation animale');

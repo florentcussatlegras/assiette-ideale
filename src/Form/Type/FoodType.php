@@ -25,7 +25,6 @@ class FoodType extends AbstractType
             ->add('isSubFoodGroup', CheckboxType::class, [
                 'required' => false
             ])
-            // ->add('equivalenceReferenceFoodGroup')
             ->add('pictureFile', FileType::class, [
                 'label' => 'Image',
                 'mapped' => false,
@@ -50,11 +49,6 @@ class FoodType extends AbstractType
             ->add('canBeAPart', CheckboxType::class, [
                 'required' => false
             ])
-
-            // ->add('energy', NumberType::class)
-            // ->add('lipid', NumberType::class)
-            // ->add('protein', NumberType::class)
-            // ->add('carbohydrate', NumberType::class)
 
             ->add('nutritionalTable', NutritionalTableType::class, [
                 'data' => $options['data'] ? $options['data']->getNutritionalTable() : null

@@ -206,22 +206,6 @@ class AlertFeature
 		$alertDishes = $alertFoods = [];
 		$fgpQuantitiesConsumed = $this->quantityTreatment->getQuantitiesConsumedInSessionDishes($rankMeal, $rankDish);
 
-		// $energyConsumed = ($session->has('_meal_day_energy_evolution/energy') && isset($session->get('_meal_day_energy_evolution/energy')[$rankMeal][$rankDish]))
-		// 			? $session->get('_meal_day_energy_evolution/energy')[$rankMeal][$rankDish] : 0;
-
-
-		// $proteinConsumed = ($session->has('_meal_day_energy_evolution/protein') && isset($session->get('_meal_day_energy_evolution/protein')[$rankMeal][$rankDish])) 
-		// 			? $session->get('_meal_day_energy_evolution/protein')[$rankMeal][$rankDish] : 0;
-
-		// $lipidConsumed = ($session->has('_meal_day_energy_evolution/lipid') && isset($session->get('_meal_day_energy_evolution/lipid')[$rankMeal][$rankDish])) 
-		// 			? $session->get('_meal_day_energy_evolution/lipid')[$rankMeal][$rankDish] : 0;
-
-		// $carbohydrateConsumed = ($session->has('_meal_day_energy_evolution/carbohydrate') && isset($session->get('_meal_day_energy_evolution/carbohydrate')[$rankMeal][$rankDish])) 
-		// 			? $session->get('_meal_day_energy_evolution/carbohydrate')[$rankMeal][$rankDish] : 0;
-
-		// $sodiumConsumed = ($session->has('_meal_day_energy_evolution/sodium') && isset($session->get('_meal_day_energy_evolution/sodium')[$rankMeal][$rankDish])) 
-		// 			? $session->get('_meal_day_energy_evolution/sodium')[$rankMeal][$rankDish] : 0;
-
 		$energyConsumed = ($session->has('_meal_day_evolution/energy') && isset($session->get('_meal_day_evolution/energy')[$rankMeal][$rankDish]))
 					? $session->get('_meal_day_evolution/energy')[$rankMeal][$rankDish] : 0;
 
@@ -292,11 +276,8 @@ class AlertFeature
 
 		// ALERTES SUR LES ALIMENTS
 
-		// $unitMeasureGr = $this->manager->getRepository(UnitMeasure::class)->findOneByAlias('g');
 		foreach ($this->manager->getRepository(Food::class)->findAll() as $food) 
 		{										
-			// dd($this->getAlerts('food_group_parent', $food, $fgpQuantitiesConsumed, 1, null, 'mg'));
-
 			// ALERTES SUR FOODGROUP
 			if(null !== $listAlertFgp = $this->getAlerts('food_group_parent', $food, $fgpQuantitiesConsumed, 1, null, 'mg')) {
 				$alertFoods[$food->getId()]["food_group_parent"] = $listAlertFgp;
@@ -570,8 +551,6 @@ class AlertFeature
 			$level = LevelAlert::HIGHLY_NOT_RECOMMENDED;
 		}elseif($quantityOrEnergyConsumed > ($quantityOrEnergyRecommended + (LevelAlert::RECOMMENDED_WELL_RANGE * $quantityOrEnergyRecommended))){
 			$level = LevelAlert::NOT_RECOMMENDED;
-		// }elseif($quantityConsumedWithThisDish < ($this->quantitiesRecommended[$fgpAlias] / 2)){
-		// 	$level = Level::HIGHLY_RECOMMENDED; 
 		}else{
 			$level = LevelAlert::RECOMMENDED;
 		}
@@ -634,10 +613,7 @@ class AlertFeature
 		$session = $this->requestStack->getSession();
 
 		if($session->has('_meal_day_range')) {
-			//$init = false;
 
-			// if($session->get('_meal_day_range') > 0 )
-			// {
 			$energyDay = $proteinDay = $lipidDay = $carbohydrateDay = $sodiumDay = 0;
 			// On stocke les énergies augmentées à chaque plat en partant de zéro
 			$energies[0][0] = $proteins[0][0] = $lipids[0][0] = $carbohydrates[0][0] = $sodiums[0][0] = 0;
@@ -658,10 +634,8 @@ class AlertFeature
 				if(isset($meal['dishAndFoods']))
 				{
 					$dishAndFoods = $meal['dishAndFoods'];
-					// $listFgp = array_merge($mealUtil->getListfgp($dishAndFoods), $listFgp);
 
 					foreach($dishAndFoods as $j => $dishOrFood) {
-						// $energyDishOrFoodOld = $energyHandler->getEnergyForDishOrFoodSelected($dishOrFood['id'], $dishOrFood['type'], $dishOrFood['quantity'], $dishOrFood['unitMeasureAlias']);
 						$repo = ('Dish' === $dishOrFood['type'] || 'dish' === $dishOrFood['type']) ? $this->dishRepository : $this->foodRepository;
 						$item = $repo->findOneById((int)$dishOrFood['id']);
 

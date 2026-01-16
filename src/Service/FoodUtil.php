@@ -52,41 +52,6 @@ class FoodUtil
 
 	public function isForbidden($food)
 	{
-		/*foreach($this->user->getDiets()->toArray() as $diet)
-		{
-			dump(1);
-			if($diet->getForbiddenFoods()->contains($food))
-			{
-				$forbidden = true;
-			}
-			if(!$forbidden)
-			{
-				if($diet->getForbiddenFoodGroups()->contains($food->getFoodGroup()))
-				{
-					$forbidden = true;
-				}
-			}
-		}
-		if(!$forbidden)
-		{
-			dump(2);
-
-			foreach($this->user->getSubDiets()->toArray() as $subDiet)
-			{
-				if($subDiet->getForbiddenFoods()->contains($food))
-				{
-					$forbidden = true;
-				}
-				if(!$forbidden)
-				{
-					if($subDiet->getForbiddenFoodGroups()->contains($food->getFoodGroup()))
-					{
-						$forbidden = true;
-					}
-				}
-			}
-		}*/
-
 		$user = $this->security->getUser();
 
 		$forbidden = false;
@@ -114,49 +79,6 @@ class FoodUtil
 				}
 			}
 		}
-
-		// if(!$forbidden)
-		// {
-		// 	foreach($user->getDiets()->toArray() as $diet)
-		// 	{
-		// 		if(
-		// 			$diet->getForbiddenFoods()->contains($food) 
-		// 				|| 
-		// 			$diet->getForbiddenFoods()->contains($food->getSubFoodGroup())
-		// 		)
-		// 		{
-		// 			$forbidden = true;
-		// 		}
-		// 		if(!$forbidden)
-		// 		{
-		// 			if($diet->getForbiddenFoodGroups()->contains($food->getFoodGroup()))
-		// 			{
-		// 				$forbidden = true;
-		// 			}
-		// 		}
-		// 	}
-		// }
-		// if(!$forbidden)
-		// {
-		// 	foreach($this->user->getSubDiets()->toArray() as $subDiet)
-		// 	{
-		// 		if(
-		// 			$subDiet->getForbiddenFoods()->contains($food)
-		// 				||
-		// 			$subDiet->getForbiddenFoods()->contains($food->getSubFoodGroup())
-		// 		)
-		// 		{
-		// 			$forbidden = true;
-		// 		}
-		// 		if(!$forbidden)
-		// 		{
-		// 			if($subDiet->getForbiddenFoodGroups()->contains($food->getFoodGroup()))
-		// 			{
-		// 				$forbidden = true;
-		// 			}
-		// 		}
-		// 	}
-		// }
 
 		return $forbidden;
 	}
@@ -214,22 +136,6 @@ class FoodUtil
 
 		return $results;
 	}
-
-	// public function getQuantityNutrient(Food $food, int $quantityG)
-	// {
-	// 	/*
-	// 		100g => $food->getProtein()
-	// 		$quantityG => $qtyProtein?
-
-	// 		$qtyProtein = ($qtyFoodG * $qtyProtein100g) / 100
-	// 		etc
-	// 	*/
-	// 	$result['protein'] = ($quantityG * $food->getProtein()) / 100;
-	// 	$result['lipid'] = ($quantityG * $food->getLipid()) / 100;
-	// 	$result['carbohydrate'] = ($quantityG * $food->getCarbohydrate()) / 100;
-
-	// 	return $result;
-	// }
 
 	public function getNutrientsForDishOrFoodSelected(int|Food|Dish $dishOrFood, $type, float $quantity, int|string|UnitMeasure|null $unitMeasureObjectOrIdOrAlias = null)
     {

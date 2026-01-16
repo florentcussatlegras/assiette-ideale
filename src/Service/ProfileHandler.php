@@ -59,32 +59,6 @@ class ProfileHandler
             throw new \LogicException("L'utilisateur doit être un objet User");
         }
 
-        // $currentIndex = (int)array_search($element, self::STEPS);
-        // $nextIndex = $currentIndex + 1;
-
-        // if(array_key_exists($nextIndex, self::STEPS)) {
-        //     $accessor = PropertyAccess::createPropertyAccessor();
-
-        //     if(null !== $accessor->getValue($user, self::STEPS[$nextIndex])) {
-        //         return self::STEPS[$nextIndex];
-        //     }
-        // }
-
-
-        // do 
-        // {
-        //     $currentIndex = (int)array_search($element, self::STEPS);
-        //     $nextIndex = $currentIndex + 1;
-
-        //     if (array_key_exists($nextIndex, self::STEPS)) {
-        //         $element = self::STEPS[$nextIndex];
-        //         $accessor = PropertyAccess::createPropertyAccessor();
-        //         $value = $accessor->getValue($user, element);
-        //     }else{
-        //         break;
-        //     }
-        // }while(null === $value);
-
         $value = null;
         $index = (int)array_search($element, self::STEPS);
 
@@ -110,16 +84,6 @@ class ProfileHandler
     public function proportionCompleted(): float
     {
         $user = $this->security->getUser();
-
-        // $r = 0;
-        // $countProperty = 8;
-
-        // if($user->getGender()) $r++;
-        // if($user->getAgeRange()) $r++;
-        // if($user->getHeight()) $r++;
-        // if($user->getWeight()) $r++;
-        // if($user->getSportingTime()) $r++;
-        // if($user->getWorkingType()) $r++;
         
         $q = 0;
         foreach(self::STEPS as $element) {

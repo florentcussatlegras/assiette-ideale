@@ -49,12 +49,6 @@ class MealModelRepository extends ServiceEntityRepository
 
 	public function myFindByUserGroupByType()
 	{
-		// $qb = $this->createQueryBuilder('m')
-		// 			->select('m.name')
-		// 			->join('m.type', 'type')
-		// 			->select('type.backName')
-		// 			->groupBy('type')
-		// 			->getQuery();
 		$results = [];
 
 		foreach($this->typeMealRepository->findAll() as $typeMeal) {

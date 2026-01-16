@@ -24,19 +24,9 @@ class QuantityFoodFormType extends AbstractType
                     'placeholder' => 'Quantité'
                 ]
             ])
-            // ->add('unitMeasure', ChoiceType::class, [
-            //     'choices' => $this->quantityHandler->getUnitMeasureList(),
-            //     'choice_label' => 'alias',
-            //     'attr' => [
-            //         'class' => 'form-select form-select-lg rounded-none mt-1'
-            //     ],
-            // ])
             ->add('unitMeasure', EntityType::class, [
                 'class' => UnitMeasure::class,
                 'choice_label' => 'alias',
-                // 'query_builder' => function(EntityRepository $er){
-                //     return $er->createQueryBuilder('u')
-                //                 ->orderBy()
             ])
         ;
     }
@@ -46,13 +36,4 @@ class QuantityFoodFormType extends AbstractType
         $resolver->setDefined('idFood');
         $resolver->setAllowedTypes('idFood', ['null', 'integer', 'string']);
     }
-
-    // public function configureOptions(OptionsResolver $resolver)
-    // {
-    //     $resolver->setDefaults([
-    //         'csrf_protection' => true,
-    //         'csrf_field_name' => '_token',
-    //         'csrf_token_id' => 'select_foods'
-    //     ]);
-    // }
 }

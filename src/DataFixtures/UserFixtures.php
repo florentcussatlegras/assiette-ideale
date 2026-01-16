@@ -19,7 +19,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
 
     protected function loadData(ObjectManager $manager)
     {
-        $recommendedQuantitites = [
+        $recommendedQuantities = [
                 'FGP_VPO' => 200,
                 'FGP_STARCHY' => 200,
                 'FGP_VEG' => 200,

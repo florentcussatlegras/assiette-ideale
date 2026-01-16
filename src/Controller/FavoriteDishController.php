@@ -2,20 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Dish;
 use App\Repository\DishRepository;
 use App\Repository\FoodGroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/favorite-dishes', name: 'app_favorite_dishes')]
 class FavoriteDishController extends AbstractController
 {
-
     #[Route('/list', name: '_list')]
     public function list(Request $request, DishRepository $dishRepository, FoodGroupRepository $foodGroupRepository)
     {
@@ -84,21 +81,12 @@ class FavoriteDishController extends AbstractController
                         ])
                     ]);
 
-                    // return $this->render('dish/_dish_list.html.twig', [
-                    //     'dishes' => $this->getUser()->getFavoriteDishes(),
-                    // ]);
                 }else{
                     return $this->render('partials/alert/_alert.html.twig', [
                         'key' => 'notice',
                         'message' => sprintf('Le plat "%s" a été supprimé de vos favoris', $dish->getName()),
                     ]);
                 }
-
-                // return new JsonResponse(['success' => 'Le plat a été supprimé des favoris']);
-                // return $this->render('partials/alert/_alert.html.twig', [
-                //     'key' => 'notice',
-                //     'message' => sprintf('Le plat "%s" a été supprimé de vos favoris', $dish->getName()),
-                // ]);
 
             }else{
 
@@ -109,15 +97,5 @@ class FavoriteDishController extends AbstractController
         }
 
         return new JsonResponse(['error' => 'Veuillez indiquer un plat!']);
-
     }
-
-    // #[Route('/show-alert/{id?}', name: '_show_alert')]
-    // public function showAlert(Request $request, ?Dish $dish)
-    // {
-    //     return $this->render('partials/_alert_ajax.html.twig', [
-    //         'key' => 'notice',
-    //         'message' => sprintf('Le plat %s a été ajouté à vos favoris', $dish->getName()),
-    //     ]);
-    // }
 }

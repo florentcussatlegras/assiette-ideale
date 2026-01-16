@@ -45,9 +45,6 @@ class DishCleanupCommand extends Command
         $questionHelper = $this->getHelper('question');
 
        if(!$dishname = $input->getArgument('dishname')) {
-            // if($io->confirm('Voulez-vous supprimer un plat précis?', 0)) {
-            //     $dishname = $io->ask('Veuillez indiquer le nom du plat:');
-            // }
             $confirmation = new ConfirmationQuestion('Voulez-vous supprimer un plat précis?', false);
             if($questionHelper->ask($input, $output, $confirmation)) {
                 $question = new Question('Veuillez indiquer le nom du plat:');
@@ -105,10 +102,7 @@ class DishCleanupCommand extends Command
                 $questionHelper = $this->getHelper('question');
                 $question = new ConfirmationQuestion('Confirmez-vous la suppression?', true);
 
-                // if($io->confirm('Confirmez-vous la suppression?')) {
                 if($questionHelper->ask($input, $output, $question)) {
-                    //$count = $this->dishRepository->deleteOldRejected($daysBeforeRejected, $dishname);
-                    
                     $outputStyle = new OutputFormatterStyle('bright-white', 'bright-green', ['bold', 'underscore']);
                     $output->getFormatter()->setStyle('confirm', $outputStyle);
             

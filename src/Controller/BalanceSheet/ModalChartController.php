@@ -17,27 +17,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ModalChartController extends AbstractController
 {
     #[Route('/fgp/{averageFgp}/{title}/{displayLabel}', name: 'fgp')]
-    public function chartFgp(Request $request, ChartBuilderInterface $chartBuilder, SerializerInterface $serializer, FoodGroupParentRepository $foodGroupParentRepository, string $averageFgp, bool $displayLabel, string $title)
+    public function chartFgp(ChartBuilderInterface $chartBuilder, SerializerInterface $serializer, FoodGroupParentRepository $foodGroupParentRepository, string $averageFgp, bool $displayLabel, string $title)
     {
         $averageFgp = $serializer->decode($averageFgp, 'json');
    
         $chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
-
-        // foreach($averageFgp as $fgpAlias => $quantity) {
-        //     $fgp = $foodGroupParentRepository->findOneByAlias($fgpAlias);
-        //     $fgpColors[$fgp->getName()] = $fgp->getColor();
-        // }
-
-        // $chart->setData([
-        //     'labels' => false,
-        //     'datasets' => [
-        //         [
-        //             'label' => 'Groupe d\'aliment',
-        //             'data' => array_values($averageFgp),
-        //             'backgroundColor' => array_values($fgpColors)
-        //         ]
-        //     ],
-        // ]);
 
         $data = [];
         $fgpColors = [];
@@ -59,7 +43,6 @@ class ModalChartController extends AbstractController
         }
 
         $chart->setData([
-            // 'labels' => $labels,
             'labels' => $labels,
             'datasets' => [
                 [
@@ -80,7 +63,6 @@ class ModalChartController extends AbstractController
             ],
         ]);
 
-
         return $this->render('balance_sheet/_chart_average_fgp.html.twig', [
             'chart' => $chart,
             'fgpColors' => $fgpColors,
@@ -90,7 +72,7 @@ class ModalChartController extends AbstractController
     }
 
     #[Route('/fgp/{averageNutrient}/{title}/{displayLabel}', name: 'nutrient')]
-    public function chartNutrient(Request $request, ChartBuilderInterface $chartBuilder, SerializerInterface $serializer, NutrientRepository $nutrientRepository, string $averageNutrient, bool $displayLabel, string $title)
+    public function chartNutrient(ChartBuilderInterface $chartBuilder, SerializerInterface $serializer, NutrientRepository $nutrientRepository, string $averageNutrient, bool $displayLabel, string $title)
     {
         $averageNutrient = $serializer->decode($averageNutrient, 'json');
    

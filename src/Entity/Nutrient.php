@@ -5,58 +5,36 @@ namespace App\Entity;
 use App\Repository\NutrientRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Nutrient
- *
- * @ORM\Table(name="nutrient")
- * @ORM\Entity(repositoryClass="App\Repository\NutrientRepository")
- */
+#[ORM\Entity(repositoryClass: NutrientRepository::class)]
+#[ORM\Table(name: "nutrient")]
 class Nutrient
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string")
-     */
-    private $name;
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Le nom du nutriment est requis.")]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="code", type="string")
-     */
-    private $code;
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Le code du nutriment est requis.")]
+    private ?string $code = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="color", type="string")
-     */
-    private $color;
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "La couleur du nutriment est requise.")]
+    private ?string $color = null;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="description", type="text")
-     */
-    private $description;
+    #[ORM\Column(type: "text")]
+    #[Assert\NotBlank(message: "La description est requise.")]
+    private ?string $description = null;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="order", type="integer")
-     */
-    private $order;
+    #[ORM\Column(name: "`order`", type: "integer")]
+    #[Assert\NotNull(message: "L'ordre est requis.")]
+    private ?int $order = null;
 
     public function getId(): ?int
     {
@@ -122,6 +100,4 @@ class Nutrient
 
         return $this;
     }
-
-    
 }

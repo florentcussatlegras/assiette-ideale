@@ -4,49 +4,27 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * UnitTime
- *
- * @ORM\Table(name="unit_time")
- * @ORM\Entity(repositoryClass="App\Repository\UnitTimeRepository")
- * @ORM\Entity
- */
+#[ORM\Table(name: "unit_time")]
+#[ORM\Entity(repositoryClass: "App\Repository\UnitTimeRepository")]
 class UnitTime
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text", type="string")
-     */
-    private $text;
-    
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string")
-     */
-    private $alias;
+    #[ORM\Column(name: "text", type: "string")]
+    private ?string $text = null;
 
-    public function __toString()
+    #[ORM\Column(name: "alias", type: "string")]
+    private ?string $alias = null;
+
+    public function __toString(): string
     {
-        return $this->text;
+        return $this->text ?? '';
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -359,33 +359,6 @@ class ProfileType extends AbstractType
 
         }
 
-        // $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event))
-
-        // $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
-        //     $form = $event->getForm();
-        //     $data = $event->getData();
-
-        //     if(!array_key_exists('automaticCalculateEnergy', $data) && 
-        //             array_key_exists('energyFields', $data) &&
-        //             array_key_exists('unitMeasureEnergy', $data['energyFields'])
-        //     )
-        //     {
-
-        //         // $constraintsEnergy = new ProfileAssert\IsEnergyValid([
-        //         //         'groups' => ['profile_energy'],
-        //         //         'unitMeasure' => $data['unitMeasureEnergy']
-        //         //     ]
-        //         // );
-        //         $form->remove('energyFields');
-     
-        //         $form->add('energyFields', EnergyType::class, [
-        //                 'mapped' => false,
-        //                 'unit_measure_selected' => $data['energyFields']['unitMeasureEnergy'],
-        //                 'validation_groups' => ['profile_energy']
-        //             ]
-        //         );
-        //     }
-        // });
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use($options){
 
             if (ProfileHandler::ENERGY == $options["element"]) {
@@ -484,17 +457,6 @@ class ProfileType extends AbstractType
 
                 }
 
-                // if($user->getAutomaticCalculateEnergy()) {
-                //     try{
-                //         $energyEstimate = $this->energyHandler->evaluateEnergy();
-                //         $user->setEnergy($energyEstimate);
-                //     }catch(MissingElementForEnergyEstimationException $e){
-                //         // $this->request->getSession()->getFlashBag()->add('warning', $e->getMessage());
-                //     }
-                // }elseif(ProfileHandler::ENERGY == $options["element"] && EnergyHandler::KJ == $form->get('unitMeasureEnergy')->getData()) {
-                //     $user->setEnergy($form->get('energy')->getData() * EnergyHandler::MULTIPLICATOR_CONVERT_KJ_IN_KCAL);
-                // }
-                // $user->setEnergyCalculate($energyEstimate);
             }
             $event->setData($user);
         });

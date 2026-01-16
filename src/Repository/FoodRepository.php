@@ -51,9 +51,6 @@ class FoodRepository extends ServiceEntityRepository
 
 		$qb->orderBy('f.name', 'ASC');
 
-		// $qb->setFirstResult($offset);
-		// $qb->setMaxResults($limit);
-
         return $qb->getQuery()->execute();
     }
 
@@ -174,21 +171,6 @@ class FoodRepository extends ServiceEntityRepository
 		return $qb->getQuery()->getResult();	
 	}
 
-	// public function myFindByFgpCodeExcludeForbidden($fgpCode, $forbiddenFoods)
-	// {	
-	// 	$qb = $this->createQueryBuilder('f')
-	// 			   ->where('f.id NOT IN (:forbiddenFoods)')
-	// 			   ->innerJoin('f.foodGroup', 'fg')
-	// 			   ->innerJoin('fg.parent', 'fgp')
-	// 			   ->andWhere('fgp.code = :fgpCode')
-	// 			   // ->innerJoin('f.foodParent', 'fp')
-	// 			   // ->andWhere('fp.id NOT IN (:forbiddenFoods)')
-	// 			   ->setParameter('fgpCode', $fgpCode)
-	// 			   ->setParameter('forbiddenFoods', $forbiddenFoods);
-
-	// 	return $qb->getQuery()->getResult();
-	// }
-
 	public function myFindByKeyword($keyword)
 	{
 	    $qb = $this->createQueryBuilder('f');
@@ -265,17 +247,6 @@ class FoodRepository extends ServiceEntityRepository
 		$qb->andWhere('f.isSubFoodGroup = ?0');
 	    $qb->setParameter('0', 0);
 
-		/*if(!empty($forbiddenFoods))
-		{
-		    $qb->andWhere('f.id not in (:forbiddenFoods)');
-		    $qb->leftJoin('f.subFoodGroup', 'fsfg');
-		    $qb->andWhere('fsfg.id not in (:forbiddenFoods)');
-		    $qb->setParameter('forbiddenFoods', $forbiddenFoods);
-		}*/
-		// if(null !== $sortAlpha)
-		// 	$qb->orderBy('f.name', $sortAlpha);	
-		// else
-
 		$qb->orderBy('f.name', 'ASC');
 
 		$qb->setFirstResult($offset);
@@ -283,11 +254,6 @@ class FoodRepository extends ServiceEntityRepository
 		$qb->setMaxResults($limit);
 
 		return $qb->getQuery()->getResult();
-
-		// $query->setFirstResult($first);
-		// $query->setMaxResults($limit);
-
-		// return new Paginator($query, true);
 	}
 
 	public function myFindByKeywordAndFGExcludeForbidden($keyword = null, $fglist = [], $sortAlpha = 'ASC', $offset = 0, $limit = 10)
@@ -295,8 +261,6 @@ class FoodRepository extends ServiceEntityRepository
 	    $qb = $this->createQueryBuilder('f')
 	               ->where('f.notConsumableRaw = ?1')
 				   ->setParameter('1', 0);
-	    // dump($forbiddenFoods);
-	    // dd($fgplist);
 
 		if(!empty($fglist) && !is_array($fglist)) {
 			$fglist = explode(',', $fglist);
@@ -317,27 +281,12 @@ class FoodRepository extends ServiceEntityRepository
 		$qb->andWhere('f.isSubFoodGroup = ?0');
 	    $qb->setParameter('0', 0);
 
-		// if(!empty($forbiddenFoods))
-		// {
-		//     $qb->andWhere('f.id not in (:forbiddenFoods)');
-		//     $qb->leftJoin('f.subFoodGroup', 'fsfg');
-		//     $qb->andWhere('fsfg.id not in (:forbiddenFoods)');
-		//     $qb->setParameter('forbiddenFoods', $forbiddenFoods);
-		// }
-
 		if(null !== $sortAlpha)
 			$qb->orderBy('f.name', $sortAlpha);	
 
 		$qb->orderBy('f.name', 'ASC');
-		// $qb->setFirstResult($offset);
-		// $qb->setMaxResults($limit);
 
 		return $qb->getQuery()->getResult();
-
-		// $query->setFirstResult($first);
-		// $query->setMaxResults($limit);
-
-		// return new Paginator($query, true);
 	}
 
 	public function findAllIdByFoodGroup($foodGroupCode)

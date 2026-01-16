@@ -37,38 +37,6 @@ class EnergyHandler
         private EntityManagerInterface $manager
     ){}
 
-    // public static function getListEnergy()
-    // {
-    //     $results = [];
-
-    //     for ($i=7000; $i<=18000; $i=$i+500)
-    //     {
-    //         $results[$i] = $i;
-    //     }
-
-    //     return $results;
-    // }
-
-    // public function getRoundEnergy($user)
-    // {
-    //     $energy = 'kcal' == $user->getUnitMeasureEnergyEstimate() ? $user->getEnergyEstimate() / 0.235 : $user->getEnergyEstimate();
-
-    //     foreach($this->getListEnergy() as $roundEnergy)
-    //     {
-    //         //on cree une variable qui sera notre ecart en valeur absolue
-    //         $abs = abs($roundEnergy-$energy);
-
-    //         //et on cree un nouveau tableau $array qui contiendra la valeur "normale" associee a son ecart par rapport au nombre choisi en valeur absolue (ou plutot l'inverse)
-    //         $array[$abs] = $roundEnergy;
-    //     }
-
-    //     //on trie les clés dans l'ordre croissant
-    //     ksort($array);
-
-    //     //et on affiche notre resultat
-    //     return current($array);
-    // }
-
     public function evaluateEnergy()
     {
         $user = $this->security->getUser();
@@ -88,30 +56,6 @@ class EnergyHandler
         $weightForEnergy = ($user->getWeight() > $perfectWeight) ? $user->getWeight() : $perfectWeight;
 
         $energy = $coeffPI * $user->getAgeRange()->getCoeffEnergy() * $weightForEnergy * $user->getPhysicalActivity();
-
-        // if ($age > 18 && $age <= 33)
-        //     $energy = $coeffPI * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 33 && $age <= 43)
-        //     $energy = $coeffPI * 0.98 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 43 && $age <= 53)
-        //     $energy = $coeffPI * 0.96 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 53 && $age <= 63)
-        //     $energy = $coeffPI * 0.94 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 63 && $age <= 73)
-        //     $energy = $coeffPI * 0.92 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 73 && $age <= 83)
-        //     $energy = $coeffPI * 0.9 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age > 83 && $age <= 93)
-        //     $energy = $coeffPI * 0.88 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
-
-        // if ($age <= 18 || ($age > 93 && $age <= 1000))
-        //     $energy = $coeffPI * 0.86 * $weightForEnergy * $user->getPhysicalActivity()->getValue();
 
         // Le résultat obtenu est en Kj, on le renvoit en Kcal en * 0.2388
         return $energy * self::MULTIPLICATOR_CONVERT_KJ_IN_KCAL;

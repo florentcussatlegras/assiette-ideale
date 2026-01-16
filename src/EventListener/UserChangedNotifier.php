@@ -20,7 +20,6 @@ class UserChangedNotifier
 
     public function postUpdate(User $user, LifecycleEventArgs $event): void
     {
-        dd('toto');
         $energyCalculate = $this->energyHandler->evaluateEnergy($user);
         $user->setEnergyCalculate($energyCalculate);
 

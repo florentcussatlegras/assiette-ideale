@@ -14,8 +14,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Filesystem\Filesystem;
 
-// class FoodFixtures extends BaseFixture implements FixtureGroupInterface, DependentFixtureInterface
-class FoodFixtures
+class FoodFixtures extends BaseFixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     private $foodGroupUtils;
     private $uploaderHelper;

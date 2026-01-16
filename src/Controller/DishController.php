@@ -3,97 +3,47 @@
 namespace App\Controller;
 
 use App\Entity\Dish;
-use App\Entity\Food;
 use App\Entity\UnitTime;
 use App\Service\FoodUtil;
 use App\Entity\StepRecipe;
-use Pagerfanta\Pagerfanta;
 use App\Form\Type\DishType;
 use App\Service\UploaderHelper;
 use App\Entity\NutritionalTable;
 use App\Service\DishFoodHandler;
-use App\Service\TypeDishHandler;
 use App\Repository\DishRepository;
 use App\Repository\FoodRepository;
 use App\Service\SessionFoodHandler;
 use Algolia\SearchBundle\SearchService;
-use App\Form\Type\QuantityFoodFormType;
 use App\Repository\FoodGroupRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UnitMeasureRepository;
-use Pagerfanta\Doctrine\ORM\QueryAdapter;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Serializer\Normalizer\DishDenormalizer;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\HttpFoundation\AcceptHeader;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
-use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
-
 
 #[Route(
     '/plats'
 )]
 class DishController extends AbstractController
 {
-    // protected $searchService;
-
-    // public function __construct(
-    //     private SearchService $searchService)
-    // {
-    //     $this->searchService = $searchService;
-    // }
-
-    // #[Route('/food/add', name: 'app_dish_food_add', methods: ['POST'])]
-    // public function addFood(Request $request, SessionFoodHandler $sessionFoodHandler)
-    // {
-    //     dd($request->request->all());
-    //     $sessionFoodHandler->addFromSearchBox($request->request->all()['foods']);
-    // }
-
     #[Route('/save-dish-in-session', name: 'app_save_dish_in_session', options: ['expose' => true])]
     public function saveDishInSession(
             Request $request, 
             EntityManagerInterface $manager,
             SessionFoodHandler $sessionFoodHandler,
-            SerializerInterface $serializer
         )
     {
         // Les données du plat sont stockées en session pour en conservant l'affichage
         $dishSerialized = $request->query->get('dish_serialized');
 
         parse_str(urldecode($dishSerialized), $dishDeserialized);
-        // dd($dishDeserialized);
-        /*
-            $dishDeserialized :
-            "dish" => array:10 [▼
-                "id" => ""
-                "name" => ""
-                "lengthPersonForRecipe" => ""
-                "preparationTime" => ""
-                "preparationTimeUnitTime" => "15"
-                "cookingTime" => ""
-                "cookingTimeUnitTime" => "15"
-                "nutritionalTable" => array:9 [▶]
-                "_token" => "cdcb5.hJe1i9OdVHGx0XkBFkTcxMr4P8sNIbdPvWstHHbvJ48._fjC2bmuZjfk4RA3Zy2ItIO_XfthFu4Z5yofLDCpdPfFpdTosawBCYeGEg"
-                "quantityFood" => array:3 [▶]
-        */
         $arrayDish = $dishDeserialized['dish'];
-
-        // #[Route('/food/{foodgroup_alias}/{id_food<\d+>}/delete/{id_dish<\d+>}', name: 'app_dish_food_delete')]
 
         if(!empty($arrayDish['dish_id'])) {
             if($request->query->has('remove_pic')) {
@@ -184,10 +134,6 @@ class DishController extends AbstractController
                 'route_referer',
                 $url
             );
-            // $data = [
-            //     'food_groups' => [$request->query->get('id_foodgroup_togo')]
-            // ];
-            // dd(http_build_query($data));
 
             return $this->redirectToRoute('app_food_list', [
                 'fg' => $request->query->get('id_foodgroup_togo'),
@@ -222,8 +168,6 @@ class DishController extends AbstractController
             ValidatorInterface $validator): Response
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-        // dump($session->clear());
-        // dump($session->all());
 
         $dish = new Dish();
         $form = $this->createForm(DishType::class, $dish);
@@ -232,144 +176,105 @@ class DishController extends AbstractController
         
         $form->handleRequest($request);
         
-        // if($request->isMethod('POST'))
-        // {
-            
-            if ($form->isSubmitted() && $form->isValid()) {
-                   
-                //L'utilisateur supprime une photo
-                // if (null !== $picRankForDelete = $form->get('picRankForDelete')->getData()) {
-                //     $session->set('recipe_dish', $dish);
-                //     return $this->redirectToRoute('app_pic_dish_delete', [
-                //         'rank' => $picRankForDelete
-                //     ]);
-                // }
+        if ($form->isSubmitted() && $form->isValid()) {
+                
+            //L'utilisateur supprime une photo
 
-                // On a cliqué sur le bouton de validation du formulaire
-                if ($form->get('saveAndAdd')->isClicked()) {
+            // On a cliqué sur le bouton de validation du formulaire
+            if ($form->get('saveAndAdd')->isClicked()) {
 
-                        // On ajoute au plat les images
-                    // sélectionnées dans la session qui ont déja été uploadées
-                    if ($session->get('recipe_picture')) {
-                        $dish->setPicture($session->get('recipe_picture'));
-                    }
-    
-                    // On ajoute les images sélectionnées dans le input file
-                    if (null !== $pictureFile = $form->get('pictureFile')->getData()) { 
+                    // On ajoute au plat les images
+                // sélectionnées dans la session qui ont déja été uploadées
+                if ($session->get('recipe_picture')) {
+                    $dish->setPicture($session->get('recipe_picture'));
+                }
 
-                        // $pictureConstraint = new Assert\File([
-                        //         'maxSize' => '5M',
-                        //         'mimeTypes' => ['jpeg', 'jpg', 'gif'],
-                        //         'mimeTypesMessage' => 'Merci de choisir une image valide',
-                        // ]);
+                // On ajoute les images sélectionnées dans le input file
+                if (null !== $pictureFile = $form->get('pictureFile')->getData()) { 
 
-                        $pictureConstraint = new Assert\File([
-                            'maxSize' => '5M',
-                            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/gif', 'image/png'],
-                            'mimeTypesMessage' => 'Merci de choisir une image valide',
-                        ]);
+                    $pictureConstraint = new Assert\File([
+                        'maxSize' => '5M',
+                        'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/gif', 'image/png'],
+                        'mimeTypesMessage' => 'Merci de choisir une image valide',
+                    ]);
 
-                        $errorsPic = $validator->validate(
-                            $pictureFile,
-                            $pictureConstraint
-                        );
-
-                        if(isset($errorsPic[0])) {
-
-                            $session->set('recipe_error_pic', $errorsPic[0]->getMessage());
-                            
-                            $request->getSession()->set('recipe_dish', $dish);
-
-                            return $this->redirectToRoute('app_dish_new');
-                        }
-
-                        $pictureName = $uploaderHelper->upload($pictureFile, UploaderHelper::DISH);
-                        $dish->setPicture($pictureName);
-
-                    }
-    
-                    // On crée les élements DishFood, DishFoodGroup, DishFoodGroupParent liés au plat Dish
-                    $dish = $dishFoodHandler->createDishFoodElement($dish);
-                    //dd($dish);
-                    // On vide la session
-                    $session->clear();
-    
-                    $manager->persist($dish);
-                    $manager->flush();
-    
-                    $this->addFlash('success', 'Le plat a bien été ajouté.');
-                        
-                    return $this->redirectToRoute('app_dish_show', [
-                            'id' => $dish->getId(),
-                            'slug' => $dish->getSlug()
-                        ]);
-
-                // } elseif ($form->get('saveQuantityFood')->isClicked()) {
-
-                //     // Ici l'utilisateur a saisi un aliment sur le champs de recherche et a saisi et validé
-                //     // la quantité et l'unité de mesure qu'il souhaite ajouté à la recette,
-                //     // depuis les champs de la fenêtre modale
-
-                //     $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-
-                //     // L'objet dish est (re)stocké en session
-                //     $session->set('recipe_dish', $dish);
-
-              
-                //     // On récupère les données quantité et unité de mesure saisies
-                //     // Champ quantityFood => Formulaire imbriqué de type QuantityFoodFormType
-                //     $sessionFoodHandler->addFromSearchBox($form->get('quantityFood')->getData());
-
-                //     return $this->redirectToRoute('app_dish_new');
-
-                } elseif ($form->getClickedButton()->getConfig()->hasOption('food_group')) {
-                   
-                    // Si le bouton saisi est de type DishFoodGroupSubmitType :
-                    // On stocke les données du formulaire en session
-                    // afin de les récupérer en retour de saisie des aliments
-                    // On redirige vers la liste des aliments du groupe concerné
-
-                    $sessionFoodHandler->savePicturesInSession($form->get('pictureFile')->getData());
-                    
-                    // L'objet dish est (re)stocké en session
-                    $session->set('recipe_dish', $dish);
-                    
-                    $session->set(
-                        'route_referer',
-                        $this->generateUrl($request->attributes->get('_route'))
+                    $errorsPic = $validator->validate(
+                        $pictureFile,
+                        $pictureConstraint
                     );
 
-                    return $this->redirectToRoute('app_food_list', [
-                            'slug' => $form->getClickedButton()->getConfig()
-                                            ->getOption('food_group')->getSlug(),
+                    if(isset($errorsPic[0])) {
 
+                        $session->set('recipe_error_pic', $errorsPic[0]->getMessage());
+                        
+                        $request->getSession()->set('recipe_dish', $dish);
+
+                        return $this->redirectToRoute('app_dish_new');
+                    }
+
+                    $pictureName = $uploaderHelper->upload($pictureFile, UploaderHelper::DISH);
+                    $dish->setPicture($pictureName);
+
+                }
+
+                // On crée les élements DishFood, DishFoodGroup, DishFoodGroupParent liés au plat Dish
+                $dish = $dishFoodHandler->createDishFoodElement($dish);
+                // On vide la session
+                $session->clear();
+
+                $manager->persist($dish);
+                $manager->flush();
+
+                $this->addFlash('success', 'Le plat a bien été ajouté.');
+                    
+                return $this->redirectToRoute('app_dish_show', [
+                        'id' => $dish->getId(),
+                        'slug' => $dish->getSlug()
                     ]);
-                }
 
-            }elseif($form->isSubmitted() && !$form->isValid()) {
+            } elseif ($form->getClickedButton()->getConfig()->hasOption('food_group')) {
+                
+                // Si le bouton saisi est de type DishFoodGroupSubmitType :
+                // On stocke les données du formulaire en session
+                // afin de les récupérer en retour de saisie des aliments
+                // On redirige vers la liste des aliments du groupe concerné
 
-                // Si l'utilisateur a sélectionné des images, on les stocke en session
                 $sessionFoodHandler->savePicturesInSession($form->get('pictureFile')->getData());
+                
+                // L'objet dish est (re)stocké en session
+                $session->set('recipe_dish', $dish);
+                
+                $session->set(
+                    'route_referer',
+                    $this->generateUrl($request->attributes->get('_route'))
+                );
 
-            }elseif(!$form->isSubmitted() && $request->isMethod('POST')){
+                return $this->redirectToRoute('app_food_list', [
+                        'slug' => $form->getClickedButton()->getConfig()
+                                        ->getOption('food_group')->getSlug(),
 
-                // On vient d'ajouter un aliment depuis la page de liste des aliments
-                // On stocke les aliments et leur quantité sélectionnée en session
-                if(true !== $response = $sessionFoodHandler->add($request->request->all())) {
-                    // si !true => aucun aliment n'a été sélectionné
-                    // on redirige vers la page des aliments avec un message d'erreur
-                    $session->set('food_error_quantity', 'Merci d\'indiquer une quantité');
-
-                    return $response;
-                }
-
-                // return $this->render('dish/form_layout.html.twig', [
-                //     'foodGroups' => $foodGroupRepository->findAll([], ['ranking' => 'ASC']),
-                //     'dishForm' => $form->createView(),
-                // ], new Response(null, 422));
-                return $this->redirectToRoute('app_dish_new');
+                ]);
             }
-        // }
+
+        }elseif($form->isSubmitted() && !$form->isValid()) {
+
+            // Si l'utilisateur a sélectionné des images, on les stocke en session
+            $sessionFoodHandler->savePicturesInSession($form->get('pictureFile')->getData());
+
+        }elseif(!$form->isSubmitted() && $request->isMethod('POST')){
+
+            // On vient d'ajouter un aliment depuis la page de liste des aliments
+            // On stocke les aliments et leur quantité sélectionnée en session
+            if(true !== $response = $sessionFoodHandler->add($request->request->all())) {
+                // si !true => aucun aliment n'a été sélectionné
+                // on redirige vers la page des aliments avec un message d'erreur
+                $session->set('food_error_quantity', 'Merci d\'indiquer une quantité');
+
+                return $response;
+            }
+
+            return $this->redirectToRoute('app_dish_new');
+        }
 
         return $this->render('dish/form_layout.html.twig', [
             'foodGroups' => $foodGroupRepository->findAll([], ['ranking' => 'ASC']),
@@ -389,20 +294,15 @@ class DishController extends AbstractController
             ValidatorInterface $validator
     ): Response
     {
-        // $this->denyAccessUnlessGranted('EDIT_DISH', $dish);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
         
-        //dump($session->all());
         $session = $request->getSession();
-        // dd($request->request->all());
         $form = $this->createForm(DishType::class, $dish);
         $form->handleRequest($request);
-        // dd($dish);
         
         // Si aucun aliment en session, on stocke les aliments du plat en session
 
         if(!$session->has('recipe_foods') || empty($session->get('recipe_foods'))) {
-        // if(!$session->has('recipe_foods')) {
             $sessionFoodHandler->addFromDishObject($dish);
         }
 
@@ -410,138 +310,86 @@ class DishController extends AbstractController
             $session->set('recipe_picture', $dish->getPicture());
         }
 
-        // if($request->isMethod('POST'))
-        // {
-            if($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid()) {
 
-               //L'utilisateur supprime une photo
-            //    if(null !== $picRankForDelete = $form->get('picRankForDelete')->getData()) {
-            //         $session->set('recipe_dish', $dish);
-            //         return $this->redirectToRoute('app_pic_dish_delete', [
-            //             'rank' => $picRankForDelete,
-            //             "dish_id" => $dish->getId()
-            //         ]);
-            //     }
-                
-                if($form->get('saveAndAdd')->isClicked()) {
+            //L'utilisateur supprime une photo
+            
+            if($form->get('saveAndAdd')->isClicked()) {
 
-                    // if($form->isValid()) {
-                        // dd($dish->getPathPicture());
-                        // $manager->remove($dish->getPicturePath());
-                        // $manager->flush();
+                if (null !== $pictureFile = $form->get('pictureFile')->getData()) { 
 
-                        // On ajoute les images sélectionnées dans la session
-                        // qui ont déja été uploadées
-                        // if($session->has('recipe_picture')) {
-                        //     $dish->setPicture($session->get('recipe_picture'));
-                        // }
-
-                        // On ajoute (ou remplace l'image) avec une éventuelle nouvelle image
-                        // dd($form->get('pictureFile'));
-                        if (null !== $pictureFile = $form->get('pictureFile')->getData()) { 
-
-                            $pictureConstraint = new Assert\File([
-                                    'maxSize' => '5M',
-                                    'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/gif', 'image/png'],
-                                    'mimeTypesMessage' => 'Merci de choisir une image valide',
-                            ]);
-
-                            $errorsPic = $validator->validate(
-                                $pictureFile,
-                                [$pictureConstraint]
-                            );
-
-                            if(isset($errorsPic[0])) {
-                                $session->set('recipe_error_pic', $errorsPic[0]->getMessage());
-
-                                $request->getSession()->set('recipe_dish', $dish);
-                                
-                                return $this->redirectToRoute('app_dish_edit', [
-                                    'id' => $dish->getId(),
-                                ]);
-                            }
-
-                            if(null !== $dish->getPicture()) {
-                                unlink($this->getParameter('uploads_base_dir').'/'.UploaderHelper::DISH.'/'.$dish->getPicture());
-                            }
-                            $pictureName = $uploaderHelper->upload($pictureFile, UploaderHelper::DISH);
-                            $dish->setPicture($pictureName);
-                        }
-
-                        // On supprime les anciens élements DishFood, DishFoodGroup, DishFoodGroupParent 
-                        // liés au plat Dish
-                        $dishFoodHandler->removeDishFoodElement($dish);
-                
-                        $manager->flush();
-                        // On recrée les nouveaux élements DishFood, DishFoodGroup, DishFoodGroupParent liés au plat Dish
-                        $dish = $dishFoodHandler->createDishFoodElement($dish);
-                        $session->clear();
-
-                        $manager->persist($dish);
-                        $manager->flush();
-
-                        //dd($dish->getDishFoods()->toArray());
-
-                        $this->addFlash('success', 'Le plat a bien été modifié.');
-
-                        return $this->redirectToRoute('app_dish_show', [
-                            'id' => $dish->getId(),
-                            'slug' => $dish->getSlug()
-                        ]);
-
-                // }elseif ($form->getClickedButton()->getConfig()->hasOption('food_group')){
-
-                //     $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-
-                // }
-
-                // }elseif($form->get('saveQuantityFood')->isClicked()) {
-
-                //     // Ici l'utilisateur a saisi un aliment sur le champs de recherche et a saisi et validé 
-                //     // la quantité et l'unité de mesure qu'il souhaite ajouté à la recette,
-                //     // depuis les champs de la fenêtre modale
-
-                //     // Si l'utilisateur a sélectionné des images, on les stocke en session
-                //     $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-                //     // L'objet dish est (re)stocké en session
-                //     $session->set('recipe_dish', $dish);
-              
-                //     // On récupère les données quantité et unité de mesure saisies
-                //     // Champ quantityFood => Formulaire imbriqué de type QuantityFoodFormType
-
-                //     $sessionFoodHandler->addFromSearchBox($form->get('quantityFood')->getData());
-
-                //     return $this->redirectToRoute('app_dish_edit', [
-                //             'id'=> $dish->getId()
-                //     ]);
-
-                }elseif($form->getClickedButton()->getConfig()->hasOption('food_group')){
-
-                    // Si l'utilisateur a sélectionné des images, on les stocke en session
-                    $sessionFoodHandler->savePicturesInSession($form->get('pictureFile')->getData());
-
-                    // L'objet dish est stocké en session
-                    $session->set('recipe_dish', $dish);
-
-                    $session->set('route_referer', 
-                        $this->generateUrl($request->attributes->get('_route'), ['id' => $dish->getId()])
-                    );
-
-                    return $this->redirectToRoute('app_food_list', [
-                                        'slug' => $form->getClickedButton()->getConfig()
-                                                        ->getOption('food_group')->getSlug(),
+                    $pictureConstraint = new Assert\File([
+                            'maxSize' => '5M',
+                            'mimeTypes' => ['image/jpeg', 'image/jpg', 'image/gif', 'image/png'],
+                            'mimeTypesMessage' => 'Merci de choisir une image valide',
                     ]);
 
+                    $errorsPic = $validator->validate(
+                        $pictureFile,
+                        [$pictureConstraint]
+                    );
+
+                    if(isset($errorsPic[0])) {
+                        $session->set('recipe_error_pic', $errorsPic[0]->getMessage());
+
+                        $request->getSession()->set('recipe_dish', $dish);
+                        
+                        return $this->redirectToRoute('app_dish_edit', [
+                            'id' => $dish->getId(),
+                        ]);
+                    }
+
+                    if(null !== $dish->getPicture()) {
+                        unlink($this->getParameter('uploads_base_dir').'/'.UploaderHelper::DISH.'/'.$dish->getPicture());
+                    }
+                    $pictureName = $uploaderHelper->upload($pictureFile, UploaderHelper::DISH);
+                    $dish->setPicture($pictureName);
                 }
 
-            }elseif(!$form->isSubmitted() && $request->isMethod('POST')){
+                // On supprime les anciens élements DishFood, DishFoodGroup, DishFoodGroupParent 
+                // liés au plat Dish
+                $dishFoodHandler->removeDishFoodElement($dish);
+        
+                $manager->flush();
+                // On recrée les nouveaux élements DishFood, DishFoodGroup, DishFoodGroupParent liés au plat Dish
+                $dish = $dishFoodHandler->createDishFoodElement($dish);
+                $session->clear();
 
-                // B
-                // On stocke les aliments et leur quantité sélectionnée en session
-                // dd($request->request->all());
-                $sessionFoodHandler->add($request->request->all());
-            }  
-        //}
+                $manager->persist($dish);
+                $manager->flush();
+
+                $this->addFlash('success', 'Le plat a bien été modifié.');
+
+                return $this->redirectToRoute('app_dish_show', [
+                    'id' => $dish->getId(),
+                    'slug' => $dish->getSlug()
+                ]);
+
+            }elseif($form->getClickedButton()->getConfig()->hasOption('food_group')){
+
+                // Si l'utilisateur a sélectionné des images, on les stocke en session
+                $sessionFoodHandler->savePicturesInSession($form->get('pictureFile')->getData());
+
+                // L'objet dish est stocké en session
+                $session->set('recipe_dish', $dish);
+
+                $session->set('route_referer', 
+                    $this->generateUrl($request->attributes->get('_route'), ['id' => $dish->getId()])
+                );
+
+                return $this->redirectToRoute('app_food_list', [
+                                    'slug' => $form->getClickedButton()->getConfig()
+                                                    ->getOption('food_group')->getSlug(),
+                ]);
+
+            }
+
+        }elseif(!$form->isSubmitted() && $request->isMethod('POST')){
+
+            // B
+            // On stocke les aliments et leur quantité sélectionnée en session
+            $sessionFoodHandler->add($request->request->all());
+        }  
 
         return $this->render('dish/form_layout.html.twig', [
             'foodGroups' => $foodGroupRepository->findAll([], ['ranking' => 'ASC']),
@@ -561,171 +409,9 @@ class DishController extends AbstractController
         return $this->redirectToRoute('app_dashboard_index');
     }
 
-    // #[Route('/{id}/edit', name: 'app_dish_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
-    // public function edit(Dish $dish, 
-    //             EntityManagerInterface $manager, 
-    //             Request $request, 
-    //             SessionInterface $session,
-    //             FoodGroupRepository $foodGroupRepository, 
-    //             DishFoodHandler $dishFoodHandler,
-    //             SessionFoodHandler $sessionFoodHandler,
-    //             UploaderHelper $uploaderHelper
-    //             ): Response
-    // {
-    //     // $this->denyAccessUnlessGranted('EDIT_DISH', $dish);
-        
-    //     //dump($session->all());
-        
-    //     $form = $this->createForm(DishType::class, $dish);
-    //     $form->handleRequest($request);
-        
-    //     // Si aucun aliment en session, on stocke les aliments du plat en session
-
-    //     if(!$session->has('recipe_foods') || empty($session->get('recipe_foods'))) {
-    //         $sessionFoodHandler->addFromDishObject($dish);
-    //     }
-
-    //     if(!$session->has('recipe_pictures')) {
-    //         $session->set('recipe_pictures', $dish->getPictures()->toArray());
-    //     }
-
-    //     if($request->isMethod('POST'))
-    //     {
-    //         if($form->isSubmitted()) {
-
-    //            //L'utilisateur supprime une photo
-    //            if(null !== $picRankForDelete = $form->get('picRankForDelete')->getData()) {
-    //                 $session->set('recipe_dish', $dish);
-    //                 return $this->redirectToRoute('app_pic_dish_delete', [
-    //                     'rank' => $picRankForDelete,
-    //                     "dish_id" => $dish->getId()
-    //                 ]);
-    //             }
-                
-    //             if($form->get('saveAndAdd')->isClicked()) {
-
-    //                 if($form->isValid()) {
-
-    //                     foreach($dish->getPictures() as $picture) {
-    //                         $manager->remove($picture);
-    //                     }
-    //                     $manager->flush();
-
-    //                     // On ajoute les images sélectionnées dans la session
-    //                     // qui ont déja été uploadées
-    //                     if($session->get('recipe_pictures')) {
-    //                         foreach($session->get('recipe_pictures') as $picture) {
-    //                             $dish->addPicture($picture);
-    //                         }
-    //                     }
-
-    //                     // On ajoute les images sélectionnées dans le input file
-    //                     if($picturesFile = $form->get('picturesFile')->getData()) {
-    //                         foreach($picturesFile as $pictureFile) {
-    //                             $picture = $uploaderHelper->uploadDishPictures($pictureFile);
-    //                             $dish->addPicture($picture);
-    //                         }
-    //                     }
-
-    //                     // On supprime les anciens élements DishFood, DishFoodGroup, DishFoodGroupParent 
-    //                     // liés au plat Dish
-    //                     $dishFoodHandler->removeDishFoodElement($dish);
-                
-    //                     $manager->flush();
-    //                     // On recrée les nouveaux élements DishFood, DishFoodGroup, DishFoodGroupParent liés au plat Dish
-    //                     $dish = $dishFoodHandler->createDishFoodElement($dish);
-    //                     //dd($dish);
-    //                     $session->clear();
-
-    //                     //$manager->persist($dish);
-    //                     $manager->flush();
-
-    //                     //dd($dish->getDishFoods()->toArray());
-
-    //                     $this->addFlash('success', 'Le plat a bien été modifié.');
-
-    //                     return $this->redirectToRoute('app_dish_show', [
-    //                         'id' => $dish->getId(),
-    //                         'slug' => $dish->getSlug()
-    //                     ]);
-
-    //                 }else{
-
-    //                     $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-
-    //                 }
-
-    //             }elseif($form->get('saveQuantityFood')->isClicked()) {
-
-    //                 // Ici l'utilisateur a saisi un aliment sur le champs de recherche et a saisi et validé 
-    //                 // la quantité et l'unité de mesure qu'il souhaite ajouté à la recette,
-    //                 // depuis les champs de la fenêtre modale
-
-    //                 // Si l'utilisateur a sélectionné des images, on les stocke en session
-    //                 $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-    //                 // L'objet dish est (re)stocké en session
-    //                 $session->set('recipe_dish', $dish);
-              
-    //                 // On récupère les données quantité et unité de mesure saisies
-    //                 // Champ quantityFood => Formulaire imbriqué de type QuantityFoodFormType
-
-    //                 $sessionFoodHandler->addFromSearchBox($form->get('quantityFood')->getData());
-
-    //                 return $this->redirectToRoute('app_dish_edit', [
-    //                         'id'=> $dish->getId()
-    //                 ]);
-
-    //             }elseif($form->getClickedButton()->getConfig()->hasOption('food_group')){
-
-    //                 // Si l'utilisateur a sélectionné des images, on les stocke en session
-    //                 $sessionFoodHandler->savePicturesInSession($form->get('picturesFile')->getData());
-
-    //                 // L'objet dish est stocké en session
-    //                 $session->set('recipe_dish', $dish);
-
-    //                 $session->set('route_referer', 
-    //                     $this->generateUrl($request->attributes->get('_route'), ['id' => $dish->getId()])
-    //                 );
-
-    //                 return $this->redirectToRoute('app_food_list', [
-    //                                     'slug' => $form->getClickedButton()->getConfig()
-    //                                                     ->getOption('food_group')->getSlug(),
-    //                 ]);
-
-    //             }
-
-    //         }else{
-
-    //             // B
-    //             // On stocke les aliments et leur quantité sélectionnée en session
-    //             $sessionFoodHandler->addFromFoodList($request->request->all());
-    //         }  
-    //     }
-
-    //     return $this->render('dish/edit.html.twig', [
-    //         'foodGroups' => $foodGroupRepository->findAll([], ['ranking' => 'ASC']),
-    //         'dishForm' => $form->createView(),
-    //         'dish' => $dish,
-    //     ]);
-    // }
-
     #[Route('/{id}/show/{slug}', name: 'app_dish_show', options: ['expose'=> true])]
     public function show(Request $request, Dish $dish)
     {
-        // $dishDate = $dish->getUpdatedAt();
-        
-        // $response = new Response();
-        // $response->setLastModified($dishDate);
-        // $response->setPublic();
-      
-        // if($response->isNotModified($request)) {
-        //     return $response;
-        // }
-
-        // return $this->render('dish/show.html.twig', [
-        //     'dish' => $dish,
-        // ], $response);
-
         return $this->render('dish/show.html.twig', [
             'dish' => $dish,
         ]);
@@ -734,57 +420,18 @@ class DishController extends AbstractController
     #[Route('/food/{idFood<\d+>}/edit/{idDish?}', name: 'app_dish_food_edit', methods: ['GET', 'POST'])]
     public function editFood(FoodRepository $foodRepository, UnitMeasureRepository $unitMeasureRepository, SessionFoodHandler $sessionFoodHandler, FoodUtil $foodUtil, Request $request, int $idFood, ?string $idDish)
     {
-        // $form = $this->createForm(QuantityFoodFormType::class, null, [
-        //     'action' => $this->generateUrl('app_dish_food_edit', ['idFood' => (int)$idFood, 'idDish' => (int)$idDish]),
-        //     'idFood' => $idFood
-        // ]);
-        
-        // $form->handleRequest($request);
-
-        // if($form->isSubmitted() && $form->isValid()) {
-        //     $sessionFoodHandler->addFromSearchBox($form->getData());
-        //     if(!$idDish) {
-        //         return $this->redirectToRoute('app_dish_new');
-        //     }else{
-        //         return $this->redirectToRoute('app_dish_edit', ['id' => $idDish]);
-        //     }
-        // }
-
         if($request->query->get('ajax')) {
             $sessionFoodHandler->modifyQuantity($idFood, $request->query->all());
 
             return $this->render('dish/_quantity_food.html.twig', [
-                // 'form' => $form->createView(),
-                // 'idFood' => $idFood,
                 'quantity' => $request->query->get('new_quantity'),
                 'unitMeasure' => $request->query->get('new_unit_measure'),
                 'idFood' => $idFood,
                 'idDish' => $idDish,
             ]);
         }
-
-        // if($request->isMethod('POST')) {
-        //     $sessionFoodHandler->add($request->request->all());
-        //     if(!$idDish) {
-        //         return $this->redirectToRoute('app_dish_new');
-        //     }else{
-        //         return $this->redirectToRoute('app_dish_edit', ['id' => $idDish]);
-        //     }
-        // }
-
-
-
-        // return $this->render('dish/_modal_edit_quantity_food.html.twig', [
-        //             // 'form' => $form->createView(),
-        //             // 'idFood' => $idFood,
-        //             'food' => $foodRepository->findOneById($idFood),
-        //             'idDish' => $idDish,
-        //             'unitMeasures' => $unitMeasureRepository->findAll(),
-        // ]);
    
         return $this->render('dish/_form_edit_food.html.twig', [
-            // 'form' => $form->createView(),
-            // 'idFood' => $idFood,
             'food' => $foodRepository->findOneById($idFood),
             'idDish' => $idDish,
             'unitMeasures' => $unitMeasureRepository->findAll(),
@@ -796,8 +443,6 @@ class DishController extends AbstractController
     {
         $foods = $request->getSession()->get('recipe_foods');
         unset($foods[$foodgroup_alias][$id_food]);
-        // if(empty($foods[$foodgroup_alias]))
-        //     unset($foods[$foodgroup_alias]);
         $request->getSession()->set('recipe_foods', $foods);
 
         if($id_dish)
@@ -970,28 +615,4 @@ class DishController extends AbstractController
 
         return new Response($message);
     }
-
-    // #[Route('/update-gluten-lactose')]
-    // public function updateGlutenLactose(DishRepository $dishRepo, EntityManagerInterface $em)
-    // {
-    //     foreach($dishRepo->findAll() as $dish) {
-    //         $dish->setHaveLactose(false);
-    //         $dish->setHaveGluten(false);
-            
-    //         foreach($dish->getDishFoods() as $dishFood) {
-    //             if($dishFood->getFood()->isHaveLactose()) {
-    //                 $dish->sethaveLactose(true);
-    //             }
-    //             if($dishFood->getFood()->isHaveGluten()) {
-    //                 $dish->sethaveGluten(true);
-    //             }
-    //         }
-
-    //         $em->persist($dish);
-    //     }
-
-    //     $em->flush();
-
-    //     return new Response('OK');
-    // }
 }

@@ -7,70 +7,39 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * PhysicalActivity
- *
- * @ORM\Table(name="physical_activity")
- * @ORM\Entity
- */
+#[ORM\Entity]
+#[ORM\Table(name: "physical_activity")]
 class PhysicalActivity
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\WorkingType", inversedBy="physicalActivities", cascade={"persist"})
-     * @Assert\NotBlank(message="Veuillez cocher la difficulté de votre métier", groups={"profile_life"})
-     */
-    private $workingType;
+    #[ORM\ManyToOne(targetEntity: "App\Entity\WorkingType", inversedBy: "physicalActivities", cascade: ["persist"])]
+    #[Assert\NotBlank(message: "Veuillez cocher la difficulté de votre métier", groups: ["profile_life"])]
+    private ?WorkingType $workingType = null;
     
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SportingTime", inversedBy="physicalActivities", cascade={"persist"})
-     * @Assert\NotBlank(message="Veuillez choisir une activité sportive", groups={"profile_life"})
-     */
-    private $sportingTime;
+    #[ORM\ManyToOne(targetEntity: "App\Entity\SportingTime", inversedBy: "physicalActivities", cascade: ["persist"])]
+    #[Assert\NotBlank(message: "Veuillez choisir une activité sportive", groups: ["profile_life"])]
+    private ?SportingTime $sportingTime = null;
     
-    /**
-     * @ORM\Column(name="value", type="string", length=255)
-     */
-    private $value;
+    #[ORM\Column(name: "value", type: "string", length: 255)]
+    private ?string $value = null;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set value
-     *
-     * @param string $value
-     *
-     * @return PhysicalActivity
-     */
-    public function setValue($value)
+    public function setValue(string $value): self
     {
         $this->value = $value;
 
         return $this;
     }
 
-    /**
-     * Get value
-     *
-     * @return string
-     */
-    public function getValue()
+    public function getValue(): ?string
     {
         return $this->value;
     }

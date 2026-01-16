@@ -2,127 +2,71 @@
 
 namespace App\Entity;
 
+use App\Entity\FoodGroup\FoodGroup;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * DishFoodGroup
- *
- * @ORM\Table(name="dish_food_group")
- * @ORM\Entity(repositoryClass="App\Repository\DishFoodGroupRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\DishFoodGroupRepository")]
+#[ORM\Table(name: "dish_food_group")]
 class DishFoodGroup
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Dish", inversedBy="dishFoodGroups")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $dish; 
+    #[ORM\ManyToOne(targetEntity: Dish::class, inversedBy: "dishFoodGroups")]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Dish $dish = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroup")
-     * @ORM\JoinColumn(name="foodgroup_id", nullable=false)
-     */
-    private $foodGroup;
+    #[ORM\ManyToOne(targetEntity: FoodGroup::class)]
+    #[ORM\JoinColumn(name: "foodgroup_id", nullable: false)]
+    private ?FoodGroup $foodGroup = null;
 
-    /**
-     * @ORM\Column(name="quantity_for_one", type="float", nullable=true)
-     */
-    private $quantityForOne;
+    #[ORM\Column(name: "quantity_for_one", type: "float", nullable: true)]
+    private ?float $quantityForOne = null;
 
-    public function __construct($foodGroup, $quantityForOne)
+    public function __construct(?FoodGroup $foodGroup = null, ?float $quantityForOne = null)
     {
         $this->foodGroup = $foodGroup;
         $this->quantityForOne = $quantityForOne;
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    // --- Getters / Setters ---
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set dish
-     *
-     * @param \App\Entity\Dish $dish
-     *
-     * @return DishFoodGroup
-     */
-    public function setDish(\App\Entity\Dish $dish)
-    {
-        $this->dish = $dish;
-
-        return $this;
-    }
-
-    /**
-     * Get dish
-     *
-     * @return \App\Entity\Dish
-     */
-    public function getDish()
+    public function getDish(): ?Dish
     {
         return $this->dish;
     }
 
-    /**
-     * Set foodGroup
-     *
-     * @param \App\Entity\FoodGroup\FoodGroup $foodGroup
-     *
-     * @return DishFoodGroup
-     */
-    public function setFoodGroup(\App\Entity\FoodGroup\FoodGroup $foodGroup)
+    public function setDish(?Dish $dish): self
     {
-        $this->foodGroup = $foodGroup;
-
+        $this->dish = $dish;
         return $this;
     }
 
-    /**
-     * Get foodGroup
-     *
-     * @return \App\Entity\FoodGroup
-     */
-    public function getFoodGroup()
+    public function getFoodGroup(): ?FoodGroup
     {
         return $this->foodGroup;
     }
 
-    /**
-     * Set quantityForOne
-     *
-     * @param float $quantityForOne
-     *
-     * @return DishFoodGroup
-     */
-    public function setQuantityForOne($quantityForOne)
+    public function setFoodGroup(?FoodGroup $foodGroup): self
     {
-        $this->quantityForOne = $quantityForOne;
-    
+        $this->foodGroup = $foodGroup;
         return $this;
     }
 
-    /**
-     * Get quantityForOne
-     *
-     * @return float
-     */
-    public function getQuantityForOne()
+    public function getQuantityForOne(): ?float
     {
         return $this->quantityForOne;
+    }
+
+    public function setQuantityForOne(?float $quantityForOne): self
+    {
+        $this->quantityForOne = $quantityForOne;
+        return $this;
     }
 }

@@ -50,19 +50,6 @@ class RegistrationType extends AbstractType
                     ],
                 ]
             )
-            /* ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'mapped' => false,
-                'help' => 'Le mot de passe doit contenir au minimum 6 caractères composés de lettres et de chiffres',
-                'invalid_message' => 'Les mots de passe ne correspondent pas',
-                'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmez votre mot de passe'],
-                'constraints' => [
-                    new AppAssert\PasswordRequirements([
-                        'groups' => ['registration']
-                    ])
-                ]
-            ]) */
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Votre mot de passe',
                 'mapped' => false,

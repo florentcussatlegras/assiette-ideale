@@ -2,58 +2,42 @@
 
 namespace App\Entity;
 
-use App\Entity\EnergyGroup;
 use App\Entity\FoodGroup\FoodGroupParent;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * RecommendedQuantity
- *
- * @ORM\Table(name="recommended_quantity")
- * @ORM\Entity(repositoryClass="App\Repository\RecommendedQuantityRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\RecommendedQuantityRepository")]
+#[ORM\Table(name: "recommended_quantity")]
 class RecommendedQuantity
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroupParent")
-     */
-    private $foodGroupParent;
+    #[ORM\ManyToOne(targetEntity: FoodGroupParent::class)]
+    private ?FoodGroupParent $foodGroupParent = null;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $energy;
+    #[ORM\Column(type: "integer")]
+    private ?int $energy = null;
 
-    /**
-     * @ORM\Column(type="string")
-     *
-     */
-    private $quantity;
+    #[ORM\Column(type: "string")]
+    private ?string $quantity = null;
+
+    public function __construct(FoodGroupParent $foodGroupParent, int $energy, string $quantity)
+    {
+        $this->foodGroupParent = $foodGroupParent;
+        $this->energy = $energy;
+        $this->quantity = $quantity;
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->quantity;
-    }
-
-    public function __construct($foodGroupParent, $energy, $quantity)
-    {
-    	$this->foodGroupParent = $foodGroupParent;
-    	$this->energy = $energy;
-    	$this->quantity = $quantity;
     }
 
     public function getQuantity(): ?string
@@ -90,5 +74,5 @@ class RecommendedQuantity
         $this->energy = $energy;
 
         return $this;
-    }    
+    }
 }

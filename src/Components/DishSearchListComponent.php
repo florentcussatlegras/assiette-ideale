@@ -21,9 +21,6 @@ class DishSearchListComponent
     #[LiveProp(writable: true)]
     public int $count = 0;
 
-    // #[LiveProp(writable: true)]
-    // public ?string $type = null;
-
     public function __construct(private SearchService $searchService, 
                             private EntityManagerInterface $em,
                             private DishRepository $dishRepository)
@@ -38,25 +35,4 @@ class DishSearchListComponent
 
         return $this->searchService->search($this->em, Dish::class, $this->query);
     }
-
-    // public function getRandomNumber(): int
-    // {
-    //     return rand(0, $this->max);
-    // }
-
-    // #[LiveAction]
-    // public function foo()
-    // {
-    //     $this->max = 1000;
-    // }
-
-
-
-    // #[LiveAction]
-    // public function selectType(#[LiveArg] string $type = null): ?array
-    // {
-    //     if(null !== $type) {
-    //         return $this->dishRepository->findByType($type);
-    //     }
-    // }
 }

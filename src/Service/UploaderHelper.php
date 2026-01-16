@@ -38,42 +38,13 @@ class UploaderHelper
         $this->publicAssetBaseUrl = $uploadedAssetsBaseUrl;
     }
 
-    // // Upload des images des plats qui peuvent en avoir plusieurs, on crée un objet Picture
-    // // Ensuite stocké dans pictures[]|Collection du plat
-    // public function uploadDishPicture(File $file): Picture
-    // {
-    //     $safename = $this->safename($file);
-    //     // Le troisième argument de $this->move($file, $uploadPath, $existingFilename) 
-    //     // $existingFilename est null car les images des plats étant multi-upload
-    //     // le système de suppression est géré par une fonction dédiée
-    //     $this->move($file, self::DISH, $safename, null);
-
-    //     $picture = new Picture();
-    //     $picture->setName($safename);
-
-    //     return $picture;
-    // }
-
     public function upload(File $file, string $uploadPath, ?string $existingFilename = null): string
     {
-        //$destination = $this->uploadsPath . '/' . self::FOOD;
-
         $safename = $this->safename($file);
         $this->move($file, $uploadPath, $safename, $existingFilename);
 
         return $safename;
     }
-
-     // Upload des images des aliments qui contiennent une seule image
-    //  public function uploadUserPicture(File $file, ?string $existingFilename): string
-    //  {
-    //      //$destination = $this->uploadsPath . '/' . self::FOOD;
- 
-    //      $safename = $this->safename($file);
-    //      $this->move($file, self::USER, $safename, $existingFilename);
- 
-    //      return $safename;
-    //  }
     
     public function safename($file)
     {

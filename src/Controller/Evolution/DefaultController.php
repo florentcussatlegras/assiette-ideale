@@ -17,14 +17,12 @@ class DefaultController extends AbstractController
 
         if($request->query->has('start')) {
             $start = \DateTime::createFromFormat('Y-m-d', $request->query->get('start'));
-            // $start = $start->format('Y-m-d');
         }else{
             $start = new \DateTime('-1 day');
         }
 
         if($request->query->has('end')) {
             $end = \DateTime::createFromFormat('Y-m-d', $request->query->get('end'));
-            // $end = $end->format('Y-m-d');
         }else{
             $end = new \DateTime('-1 day');
         }

@@ -267,39 +267,18 @@ class QuantityTreatment
 		*/
 		$countDayWithNoMeal = $this->countDayWithNoMeal($startingDate);
 		$quantitiesRecommended = $this->user->getQuantitiesRecommended();
-		// dump($this->getRemainingQuantitiesOnWeek());
 
 		foreach ($this->getRemainingQuantitiesOnWeek() as $fgpCode => $quantity) {
 
-			// if($quantity > $this->getQuantitiesRecommended()[$fgpCode])
-			// {
-				if(($quantity/$countDayWithNoMeal) > ($quantitiesRecommended[$fgpCode] + ($quantitiesRecommended[$fgpCode]/2)))
-				{
-					$remainingQuantitiesPerDay[$fgpCode] = $quantitiesRecommended[$fgpCode] + ($quantitiesRecommended[$fgpCode]/2);
-				}else{
-					$remainingQuantitiesPerDay[$fgpCode] = $quantity/$countDayWithNoMeal;
-				}
-			// }else{
-			// 	$remainingQuantitiesPerDay[$fgpCode] = $quantity;
-			// }
+			if(($quantity/$countDayWithNoMeal) > ($quantitiesRecommended[$fgpCode] + ($quantitiesRecommended[$fgpCode]/2)))
+			{
+				$remainingQuantitiesPerDay[$fgpCode] = $quantitiesRecommended[$fgpCode] + ($quantitiesRecommended[$fgpCode]/2);
+			}else{
+				$remainingQuantitiesPerDay[$fgpCode] = $quantity/$countDayWithNoMeal;
+			}
 
 		}
 
 		return $remainingQuantitiesPerDay;
 	}
-
-
-
-	// public function updateRemainingQuantitiesRecommended($rankMeal = null, $rankDish = null)
-	// {
-	// 	$quantitiesConsumed = $this->getQuantitiesConsumed($targetedList, $rankMeal, $rankDish);
-
-	// 	foreach($this->getQuantitiesRecommended() as $fgpCode => $quantityRecommended){
-	// 		$remainingQuantitiesRecommended[$fgpCode] = $quantityRecommended - $quantitiesConsumed[$fgpCode];
-	// 	}
-		
-	// 	$this->session->set('_meal_day_remaining_quantities_recommended', $remainingQuantitiesRecommended);
-
-	// 	return true;
-	// }
 }	

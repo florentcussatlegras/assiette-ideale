@@ -5,90 +5,50 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * UnitMeasure
- *
- * @ORM\Table(name="unit_measure")
- * @ORM\Entity(repositoryClass="App\Repository\UnitMeasureRepository")
- * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("alias")
- */
-// class UnitMeasure implements UnitMeasureInterface
+#[ORM\Table(name: "unit_measure")]
+#[ORM\Entity(repositoryClass: "App\Repository\UnitMeasureRepository")]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity("alias")]
 class UnitMeasure
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-	/**
-	 * @ORM\Column(name="name", type="string", length=255)
-	 */
-	private $name;
+    #[ORM\Column(name: "name", type: "string", length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(name="alias", type="string", length=10)
-     */
-    private $alias;
+    #[ORM\Column(name: "alias", type: "string", length: 10)]
+    private ?string $alias = null;
 
-    /**
-     * @ORM\Column(name="gram_ratio", type="float", nullable=true)
-     */
-    private $gramRatio;
+    #[ORM\Column(name: "gram_ratio", type: "float", nullable: true)]
+    private ?float $gramRatio = null;
 
-    /**
-     * @ORM\Column(name="is_unit", type="boolean")
-     */
-    private $isUnit;
-    
+    #[ORM\Column(name: "is_unit", type: "boolean")]
+    private ?bool $isUnit = null;
 
-    public function __toString()
+    public function __toString(): string
     {
-        if(null === $this->name)
-            return 'NULL';
-
-        return $this->name;
+        return $this->name ?? 'NULL';
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return UnitMeasure
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
-
-    
 
     public function getAlias(): ?string
     {
@@ -125,6 +85,4 @@ class UnitMeasure
 
         return $this;
     }
-
-   
 }

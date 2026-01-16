@@ -55,36 +55,6 @@ class DishCountUser extends Command
             $output->writeln('<verbose>N\'hésitez pas à passer nous voir!</verbose>');
         }
 
-        // $formatter = $this->getHelper('formatter');
-
-        // $formattedLine = $formatter->formatSection('SomeSection','Here is some message');
-        // $output->writeln($formattedLine);
-
-        // $errorMessages = ['Error!', 'Something went wrong'];
-        // $formattedBlock = $formatter->formatBlock($errorMessages, 'error');
-        // $output->writeln($formattedBlock);
-
-        // $message = "This is a very long message, which should be truncated";
-        // $truncatedMessage = $formatter->truncate($message, 7);
-        // $output->writeln($truncatedMessage);
-
-        // $truncatedMessage = $formatter->truncate($message, -5);
-        // $output->writeln($truncatedMessage);
-
-        // $truncatedMessage = $formatter->truncate($message, 7, '!!');
-        // $output->writeln($truncatedMessage);
-
-        // $output->writeln('<error>Message erreur</error>');
-
-        // $style = new OutputFormatterStyle('blue', 'white', ['bold']);
-        // $output->getFormatter()->setStyle('custom', $style);
-        // $output->writeln('<custom>message dans custom</custom>');
-
-        // $helper = $this->getHelper('process');
-        // $process = new Process(['figlet', 'Symfony']);
-        // $helper->run($output, $process);
-
-
         return Command::SUCCESS;
     }
 }
