@@ -1,6 +1,6 @@
 # Assiette idéale
 
-## Assiette idéale ## lateforme web dédiée à la nutrition et au suivi de plats, développée avec **Symfony** et un stack **fullstack moderne**, pensée pour être maintenable, évolutive et facilement déployable.
+**Assiette idéale** est une plateforme web dédiée à la nutrition et au suivi de plats, développée avec **Symfony** et un stack **fullstack moderne**, pensée pour être maintenable, évolutive et facilement déployable.
 
 🔗 Site en production : https://fc-nutrition.com
 
