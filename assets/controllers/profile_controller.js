@@ -5,17 +5,24 @@ class CustomSelect {
 
     constructor(originalSelect) {
         this.originalSelect = originalSelect
-        this.customSelect = document.createElement("div")
-        // this.customSelect.classList.add("select")
 
-        console.log(this.originalSelect);
+        // Supprime un ancien custom div si présent
+        const existingCustom = originalSelect.nextElementSibling;
+        if (existingCustom) {
+            existingCustom.remove();
+        }
+
+        this.customSelect = document.createElement("div")
+        this.customSelect.classList.add("w-full");
 
         this.originalSelect.querySelectorAll("option").forEach(optionElement => {
 
             const itemElement = document.createElement("div")
 
             itemElement.classList.add("select_profile__item")
-            itemElement.classList.add("bg-light-blue")
+            itemElement.classList.add("bg-sky-600")
+            itemElement.classList.add("hover:bg-sky-800")
+            itemElement.classList.add("w-full")
             itemElement.classList.add("text-white")
             itemElement.classList.add("p-4")
             itemElement.classList.add("cursor-pointer")
@@ -38,14 +45,14 @@ class CustomSelect {
                 }else{
                     this._select(itemElement)
                 }
-                const changeEvent = new Event("change")
-                this.originalSelect.dispatchEvent(changeEvent)
+                // Dispatch un CustomEvent pour éviter que Symfony / Turbo fasse un fetch 422
+                const event = new CustomEvent("customSelectChanged", {
+                    detail: { value: this.originalSelect.value },
+                    bubbles: false
+                });
+                this.originalSelect.dispatchEvent(event);
             })
-
         })
-
-        console.log('ici j affiche le custom select toto');
-        console.log(this.customSelect);
 
         this.originalSelect.insertAdjacentElement("afterend", this.customSelect)
         this.originalSelect.style.display = "none"
@@ -57,8 +64,7 @@ class CustomSelect {
         if(!this.originalSelect.multiple) {
             this.customSelect.querySelectorAll(".select_profile__item").forEach(el => {
                 el.classList.remove("select_profile__item--selected")
-                el.classList.replace("bg-dark-blue", "bg-light-blue")
-                // el.classList.replace("text-white", "text-dark-blue")
+                el.classList.replace("bg-sky-800", "bg-sky-600")
             })
         }
 
@@ -76,7 +82,7 @@ class CustomSelect {
         }
 
         itemElement.classList.add("select_profile__item--selected")
-        itemElement.classList.replace("bg-light-blue", "bg-dark-blue")
+        itemElement.classList.replace("bg-sky-600", "bg-sky-800")
         // itemElement.classList.replace("text-dark-blue", "text-white")
     }
 
@@ -85,7 +91,7 @@ class CustomSelect {
 
         this.originalSelect.querySelectorAll("option")[index].selected = false
         itemElement.classList.remove("select_profile__item--selected")
-        itemElement.classList.replace("bg-dark-blue", "bg-light-blue")
+        itemElement.classList.replace("bg-sky-800", "bg-sky-600")
         // itemElement.classList.replace("text-white", "text-dark-blue")
     }
 
@@ -122,11 +128,4 @@ export default class extends Controller {
             }
         })
     }
-    
-    // toggleInputEnergy(display) {
-    //     document.querySelectorAll('.energy').forEach((element) => {
-    //         element.style.display = display
-    //     }) 
-    // }
-
 }

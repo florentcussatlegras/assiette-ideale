@@ -14,7 +14,6 @@ class DietCrudController extends AbstractCrudController
         return Diet::class;
     }
 
-    
     public function configureFields(string $pageName): iterable
     {
         return [

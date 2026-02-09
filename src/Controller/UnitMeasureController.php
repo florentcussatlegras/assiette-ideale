@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UnitMeasureController extends AbstractController
 {
-    #[Route('/unitmeasure/show', name:'app_unitmeasure_show')]
+    #[Route('/unitmeasure/show', name:'app_unitmeasure_show', methods: ['GET', 'POST'])]
     public function show(Request $request, UnitMeasureToAliasTransformer $transformer)
     {
         $builder = $this->createFormBuilder()

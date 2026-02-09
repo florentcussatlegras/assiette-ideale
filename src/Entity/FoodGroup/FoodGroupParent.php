@@ -7,142 +7,77 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\FoodGroup\Model\ModelFoodGroup;
 
-/**
- * FoodGroupParent
- *
- * @ORM\Table(name="food_group_parent")
- * @ORM\Entity(repositoryClass="App\Repository\FoodGroupParentRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\FoodGroupParentRepository")]
+#[ORM\Table(name: "food_group_parent")]
 class FoodGroupParent extends ModelFoodGroup
 {
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="color", type="string", length=255)
-     */    
-    private $color;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $color;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="degraded_color", type="string", length=255)
-     */    
-    private $degradedColor;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $degradedColor;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\FoodGroup\FoodGroup", mappedBy="parent", cascade={"persist"})
-     */
-    private $foodGroups;
+    #[ORM\OneToMany(
+        targetEntity: FoodGroup::class,
+        mappedBy: "parent",
+        cascade: ["persist"]
+    )]
+    private Collection $foodGroups;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_principal", type="boolean")
-     */
-    private $isPrincipal;
-    
-    /**
-     * Constructor
-     */
+    #[ORM\Column(type: "boolean")]
+    private bool $isPrincipal;
+
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $content = null;
+
     public function __construct()
     {
-        $this->foodGroups = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->foodGroups = new ArrayCollection();
     }
 
-    /**
-     * Set color
-     *
-     *
-     * @return FoodGroupParent
-     */
-    public function setColor($color)
+    public function setColor(string $color): self
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * Get color
-     *
-     */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * Add foodGroup
-     *
-     * @param \App\Entity\FoodGroup\FoodGroup $foodGroup
-     *
-     * @return FoodGroupParent
-     */
-    public function addFoodGroup(\App\Entity\FoodGroup\FoodGroup $foodGroup)
+    public function addFoodGroup(FoodGroup $foodGroup): self
     {
-        $this->foodGroups[] = $foodGroup;
+        if (!$this->foodGroups->contains($foodGroup)) {
+            $this->foodGroups[] = $foodGroup;
+        }
 
         return $this;
     }
 
-    /**
-     * Remove foodGroup
-     *
-     */
-    public function removeFoodGroup(\App\Entity\FoodGroup\FoodGroup $foodGroup)
+    public function removeFoodGroup(FoodGroup $foodGroup): self
     {
         $this->foodGroups->removeElement($foodGroup);
+
+        return $this;
     }
 
-    /**
-     * Get foodGroups
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getFoodGroups()
+    public function getFoodGroups(): Collection
     {
         return $this->foodGroups;
     }
 
-    public function hasOneChildren()
+    public function hasOneChildren(): bool
     {
-        if ($this->foodGroups->count() == 1)
-        {
-            return true;
-        }
-
-        return false;
+        return $this->foodGroups->count() === 1;
     }
 
-    /**
-     * Set colorCode
-     *
-     * @param string $colorCode
-     *
-     * @return FoodGroupParent
-     */
-    public function setColorCode($colorCode)
-    {
-        $this->colorCode = $colorCode;
-    
-        return $this;
-    }
-
-    /**
-     * Get colorCode
-     *
-     * @return string
-     */
-    public function getColorCode()
-    {
-        return $this->colorCode;
-    }
-
-    public function getSubFoodGroups()
+    public function getSubFoodGroups(): array
     {
         $results = [];
-        
-        foreach ($this->foodGroups->toArray() as $foodGroup) {
+
+        foreach ($this->foodGroups as $foodGroup) {
             $results[] = $foodGroup->getSubFoodGroups();
         }
 
@@ -161,7 +96,7 @@ class FoodGroupParent extends ModelFoodGroup
         return $this;
     }
 
-    public function getIsPrincipal(): ?bool
+    public function getIsPrincipal(): bool
     {
         return $this->isPrincipal;
     }
@@ -169,6 +104,18 @@ class FoodGroupParent extends ModelFoodGroup
     public function setIsPrincipal(bool $isPrincipal): self
     {
         $this->isPrincipal = $isPrincipal;
+
+        return $this;
+    }
+
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
 
         return $this;
     }

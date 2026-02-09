@@ -6,6 +6,8 @@ const cards = document.querySelectorAll(".card");
 if(btnModeList && btnModeGrid) {
 
     btnModeList.addEventListener("click", function (event) {
+
+        console.log('view mode list');
         // List view
         event.preventDefault();
         wrapper.classList.add("list");

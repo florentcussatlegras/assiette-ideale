@@ -16,8 +16,7 @@ trigger_deprecation('florent/liveforeat', '3.0', 'The "%s" class is deprecated, 
 #[Route('/recommended-quantity', name: 'app_recommended_quantity_')]
 class RecommendedQuantityController extends AbstractController
 {
-
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index()
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -26,7 +25,7 @@ class RecommendedQuantityController extends AbstractController
         return new Response('test depr');
     }
 
-    #[Route('/edit', name: 'edit')]
+    #[Route('/edit', name: 'edit', methods: ['POST'])]
     public function edit(EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');

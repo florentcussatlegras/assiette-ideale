@@ -1,18 +1,13 @@
-
-
 {% if app.session.has('recipe_foods') %}
 
     <div class="w-full">
 
-    {# {{ dump(app.session.all()) }} #}
-    
         {% for foodGroupAlias, foods in app.session.get('recipe_foods') %}
 
             {% if foods is not empty %}
 
                 <span class="mt-6 font-bold text-base">{{ foodGroupAlias|change('App\\Entity\\FoodGroup\\FoodGroup', 'alias', 'name') }}</span>
 
-                {# {{ dump(foods) }} #}
 
                 <div class="flex flex-col w-full">
 
@@ -29,18 +24,9 @@
                                         {% else %}
                                             <img src="{{ asset('uploads/dish/pic_dish_default.jpg') }}" alt="Photo plat {{ item.food.name }}" class="rounded-lg w-12">
                                         {% endif %}
-                                        <a class="font-bold text-light-blue">{{ item.food.name }}</a>
+                                        <a class="font-semibold text-light-blue">{{ item.food.name }}</a>
                                         <div class="text-gray-600 text-xs whitespace-nowrap">{{ item.food.isSubFoodGroup ? item.food.name : item.food.subFoodGroup }}</div>
                                     </div>
-                                    {# <td class="py-2">
-                                        <div class="w-10 h-10">
-                                            {% if item.food.picture is not null %}
-                                                <img alt="Image aliment" class="rounded-lg" src="{{ item.food.picturePath|imagine_filter('squared_thumbnail_small') }}">
-                                            {% else %}
-                                                <img src="{{ asset('uploads/dish/pic_dish_default.jpg') }}" alt="Photo plat {{ item.food.name }}" class="rounded-lg w-12">
-                                            {% endif %}
-                                        </div>
-                                    </td> #}
     
                                     <div class="w-2/6 flex flex-row items-center justify-center h-full" style="height: 100%" data-foods-dish-target="quantity"> 
                                         {{ include('dish/_quantity_food.html.twig', { quantity: item.quantity, unitMeasure: item.unit_measure, idFood: id, idDish: idDish }) }}
@@ -50,30 +36,17 @@
 
                                         <div class="flex justify-end items-center ml-auto pr-4 gap-2">
 
-                                            {# <a class="modal-overlay edit flex items-center mr-3 text-slate-500 font-medium" href="javascript:;" data-food-id="{{ item.food.id }}">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square w-4 h-4 mr-1"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg> 
-                                                <span>Modifier</span>
-                                            </a> #}
-
-                                            {# <div data-controller="modal" data-modal-allow-background-close="false"> #}
-
-                                            {# <a href="#" data-action="click->modal#open" class="flex items-center mr-3 text-slate-500 font-medium"> #}
                                             <button 
                                                 type="button" 
                                                 data-action="foods-dish#toggleFormEdit"
                                                 data-foods-dish-target="btnToggleEdit"
                                                 class="flex items-center font-medium"
                                             >
-                                                {# <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square w-4 h-4 mr-1"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>  #}
                                                 {{ include('partials/svg/edit.html.twig') }}
-                                                {# <span>Modifier</span> #}
                                             </button>
 
-                                            {# <a class="delete flex items-center text-theme-24 font-medium" href="{{ path('app_dish_food_delete', {foodgroup_alias : foodGroupAlias, id_food : id, id_dish : idDish}) }}" onclick="return confirm('Supprimer l\'aliment?')"> #}
                                             <a href="#" class="delete-food flex items-center font-medium" data-foodgroup-alias="{{ foodGroupAlias }}" data-foodid="{{ id }}">
-                                                {# <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 w-4 h-4 mr-1"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>  #}
                                                 {{ include('partials/svg/remove.html.twig') }}
-                                                {# <span>Supprimer</span> #}
                                             </a>
                                         </div>
                                     </div>

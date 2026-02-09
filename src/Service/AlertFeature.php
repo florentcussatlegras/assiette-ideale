@@ -15,6 +15,7 @@ use App\Service\EnergyHandler;
 use App\Service\QuantityTreatment;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\FoodGroup\FoodGroupParent;
+use App\Repository\ImcMessageRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -34,6 +35,7 @@ class AlertFeature
 		private EnergyHandler $energyHandler,
 		private DishRepository $dishRepository,
 		private FoodRepository $foodRepository,
+		private ImcMessageRepository $imcMessageRepository,
 		private TranslatorInterface $translator,
 	){}
 
@@ -345,21 +347,21 @@ class AlertFeature
 		$session = $this->requestStack->getSession();
 
 		$fgpQuantitiesConsumed = $this->quantityTreatment->getQuantitiesConsumedInSessionDishes($rankMeal, $rankDish);
+	
+		$energyConsumed = ($session->has('_meal_day_evolution/energy') && isset($session->get('_meal_day_evolution/energy')[$rankMeal][$rankDish]))
+					? $session->get('_meal_day_evolution/energy')[$rankMeal][$rankDish] : 0;
 
-		$energyConsumed = ($session->has('_meal_day_energy/energy') && isset($session->get('_meal_day_energy/energy')[$rankMeal][$rankDish]))
-					? $session->get('_meal_day_energy/energy')[$rankMeal][$rankDish] : 0;
+		$proteinConsumed = ($session->has('_meal_day_evolution/protein') && isset($session->get('_meal_day_evolution/protein')[$rankMeal][$rankDish])) 
+					? $session->get('_meal_day_evolution/protein')[$rankMeal][$rankDish] : 0;
 
-		$proteinConsumed = ($session->has('_meal_day_energy/protein') && isset($session->get('_meal_day_energy/protein')[$rankMeal][$rankDish])) 
-					? $session->get('_meal_day_energy/protein')[$rankMeal][$rankDish] : 0;
+		$lipidConsumed = ($session->has('_meal_day_evolution/lipid') && isset($session->get('_meal_day_evolution/lipid')[$rankMeal][$rankDish])) 
+					? $session->get('_meal_day_evolution/lipid')[$rankMeal][$rankDish] : 0;
 
-		$lipidConsumed = ($session->has('_meal_day_energy/lipid') && isset($session->get('_meal_day_energy/lipid')[$rankMeal][$rankDish])) 
-					? $session->get('_meal_day_energy/lipid')[$rankMeal][$rankDish] : 0;
+		$carbohydrateConsumed = ($session->has('_meal_day_evolution/carbohydrate') && isset($session->get('_meal_day_evolution/carbohydrate')[$rankMeal][$rankDish])) 
+					? $session->get('_meal_day_evolution/carbohydrate')[$rankMeal][$rankDish] : 0;
 
-		$carbohydrateConsumed = ($session->has('_meal_day_energy/carbohydrate') && isset($session->get('_meal_day_energy/carbohydrate')[$rankMeal][$rankDish])) 
-					? $session->get('_meal_day_energy/carbohydrate')[$rankMeal][$rankDish] : 0;
-
-		$sodiumConsumed = ($session->has('_meal_day_energy/sodium') && isset($session->get('_meal_day_energy/sodium')[$rankMeal][$rankDish])) 
-					? $session->get('_meal_day_energy/sodium')[$rankMeal][$rankDish] : 0;
+		$sodiumConsumed = ($session->has('_meal_day_evolution/sodium') && isset($session->get('_meal_day_evolution/sodium')[$rankMeal][$rankDish])) 
+					? $session->get('_meal_day_evolution/sodium')[$rankMeal][$rankDish] : 0;
 
 		if($object instanceof Dish) {
 
@@ -799,15 +801,15 @@ class AlertFeature
 		return $this->isWellBalanced($weight, $idealWeight);
 	}
 
-	public function getImcAlert(): LevelAlert
-	{
-		$user = $this->security->getUser();
+	// public function getImcAlert(): LevelAlert
+	// {
+	// 	$user = $this->security->getUser();
 
-		$imc = $user->getImc();
-		$idealImc = $user->getIdealImc();
+	// 	$imc = $user->getImc();
+	// 	$idealImc = $user->getIdealImc();
 		
-		return $this->isWellBalanced($imc, $idealImc);
-	}
+	// 	return $this->isWellBalanced($imc, $idealImc);
+	// }
 
 	public function getEnergyAlert(): null|LevelAlert
 	{
@@ -849,5 +851,54 @@ class AlertFeature
 		return $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL);
 	}
 
+	public function getImcAlert(float $imc): LevelAlert
+	{
+		if ($imc < 16) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_CRITICAL_LACK);
+		}
 
+		if ($imc < 17) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_VERY_LACK);
+		}
+
+		if ($imc < 18.5) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_LACK);
+		}
+
+		if ($imc <= 25) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_WELL);
+		}
+
+		if ($imc <= 30) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_EXCESS);
+		}
+
+		if ($imc <= 35) {
+			return $this->manager->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_VERY_EXCESS);
+		}
+
+		return $this->manager->getRepository(LevelAlert::class)
+			->findOneByCode(LevelAlert::BALANCE_CRITICAL_EXCESS);
+	}
+
+
+	public function getCalorieAdjustmentPercent(LevelAlert $imcAlert): int
+	{
+		return match ($imcAlert->getCode()) {
+			LevelAlert::BALANCE_CRITICAL_EXCESS => -15,
+			LevelAlert::BALANCE_VERY_EXCESS     => -10,
+			LevelAlert::BALANCE_EXCESS          => -5,
+			LevelAlert::BALANCE_WELL            => 0,
+			LevelAlert::BALANCE_LACK            => 5,
+			LevelAlert::BALANCE_VERY_LACK       => 10,
+			LevelAlert::BALANCE_CRITICAL_LACK   => 15,
+			default => 0,
+		};
+	}
 }

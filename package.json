@@ -34,6 +34,7 @@
         "flatpickr": "^4.6.13",
         "flowbite": "^4.0.1",
         "jquery": "^3.7.1",
+        "nouislider": "^15.8.1",
         "path-to-regexp": "^8.0.0",
         "preact": "^10.26.9",
         "pristinejs": "^1.1.0",

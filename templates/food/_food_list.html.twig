@@ -2,7 +2,7 @@
 {% for food in foods %}
     {{ include("food/_food.html.twig") }}
 {% else %}
-    <div class="flex items-center h-64 text-lg text-gray-400">
+    <div class="absolute flex items-center justify-center text-center h-64 text-lg text-gray-400 w-full">
         <span>Aucun aliment ne correspond à votre recherche</span>
     </div>
 {% endfor %}

@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { addFadeTransition } from '../util/add-transition';
 
 export default class extends Controller {
-    static targets = ['results'];
+    static targets = ['results', 'illustration'];
 
     connect(event) {
         addFadeTransition(this, this.resultsTarget);
@@ -15,4 +15,13 @@ export default class extends Controller {
             this.leave();
         }
     }
+
+    enter() {
+        this.illustrationTarget.classList.add('hidden-fade');
+    }
+
+    leave() {
+        this.illustrationTarget.classList.remove('hidden-fade');
+    }
 }
+

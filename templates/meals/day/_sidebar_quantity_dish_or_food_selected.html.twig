@@ -1,11 +1,9 @@
+{% if newDishOrFood.type == 'Dish' %}
 
-					
-    {% if newDishOrFood.type == 'Dish' %}
+    {{ newDishOrFood.quantity }} portions
 
-        {{ newDishOrFood.quantity }} portions
+{% else %}
 
-    {% else %}
+    {{ "#{newDishOrFood.quantity} #{newDishOrFood.unitMeasureAlias}" }}
 
-        {{ "#{newDishOrFood.quantity} #{newDishOrFood.unitMeasureAlias}" }}
-
-    {% endif %}
+{% endif %}

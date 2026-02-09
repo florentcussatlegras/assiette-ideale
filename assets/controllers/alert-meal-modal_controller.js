@@ -9,22 +9,7 @@ export default class AlertMealModal extends Controller {
     }
 
     async showMessages(event) {
-        // const url = event.currentTarget.dataset.url;
-
-        // const params = new URLSearchParams({
-        //     'showMessages': 1
-        // });
-
-        // console.log(`${url}?${params.toString()}`);
-
-        // const response = await fetch(`${url}?${params.toString()}`);
-     
-        // this.contentTarget.classList.replace('hidden', 'flex');
-        
-        // this.contentTarget.innerHTML = await response.text();
-
-
-
+    
         const url = event.currentTarget.dataset.url;
 
         this.loaderTarget.classList.remove('hidden');
@@ -51,6 +36,5 @@ export default class AlertMealModal extends Controller {
 
     hideMessages() {
         document.getElementById('alert-meal-modal').classList.replace('flex', 'hidden');
-        // document.getElementById('alert-meal-modal').classList.remove('show'); // bootstrap 4
     }
 }

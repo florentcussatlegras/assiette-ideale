@@ -65,4 +65,40 @@ class MealModelRepository extends ServiceEntityRepository
 
 		return $results;
 	}
+
+	public function findFilteredByUser(array $filters): array
+	{
+		$qb = $this->createQueryBuilder('m')
+			->andWhere('m.user = :user')
+			->setParameter('user', $this->user);
+
+		// minCalories
+		if (isset($filters['minCalories']) && $filters['minCalories'] !== '') {
+			$qb->andWhere('m.energy >= :min')
+			->setParameter('min', $filters['minCalories']);
+		}
+
+		// maxCalories
+		if (isset($filters['maxCalories']) && $filters['maxCalories'] !== '') {
+			$qb->andWhere('m.energy <= :max')
+			->setParameter('max', $filters['maxCalories']);
+		}
+
+		if (!empty($filters['search'])) {
+			$qb->andWhere('LOWER(m.name) LIKE :search')
+			->setParameter('search', '%' . mb_strtolower($filters['search']) . '%');
+		}
+
+		if (!empty($filters['types'])) {
+			$qb->andWhere('m.type IN (:types)')
+			->setParameter('types', $filters['types']);
+		}
+
+		$qb->orderBy(
+			'm.energy',
+			($filters['sort'] ?? 'asc') === 'desc' ? 'DESC' : 'ASC'
+		);
+
+		return $qb->getQuery()->getResult();
+	}
 }

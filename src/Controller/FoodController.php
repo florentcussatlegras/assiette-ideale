@@ -21,30 +21,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use ACSEO\TypesenseBundle\Finder\TypesenseQuery;
 use App\Repository\DietRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 #[Route('/aliments')]
 class FoodController extends AbstractController
 {
-	#[Route('/{dish_id?}', name: 'app_food_list')]
+	#[Route('/{dish_id?}', name: 'app_food_list', methods: ['GET'], requirements: ['dish_id' => '\d+'])]
 	#[Entity('dish', options: ['id' => 'dish_id'])]
-    public function list(SessionInterface $session, Request $request, FoodGroupRepository $foodGroupRepository, FoodRepository $foodRepository, 
-						UnitMeasureRepository $unitMeasureRepository, QuantityHandler $quantityHandler, ?Dish $dish,
-						EntityManagerInterface $em, SearchService $searchService
+    public function list(Request $request, FoodGroupRepository $foodGroupRepository, FoodRepository $foodRepository, UnitMeasureRepository $unitMeasureRepository,
 	)
-    {
-		// $foods = $searchService->search($em, Food::class, 'dev_foods_query_suggestions');
-	
+    {	
 		$fg = !empty($request->query->get('fg')) ? $request->query->all()['fg'] : [];
 
 		if(empty($fg) && $request->query->get('ajax')) {
@@ -73,7 +64,6 @@ class FoodController extends AbstractController
 				$freeLactose,
 				$freeGluten
 			);
-			// exit();
 			$offset = $page * $limit;
 			$foods = array_slice($allFoods, $offset, $limit);
 			if(count($foods) < 10) {
@@ -91,42 +81,12 @@ class FoodController extends AbstractController
 			$foods = [];
 		}
 
-		// $foodGroupsSelected = !$request->query->has('food_groups') ? $foodGroupRepository->myFindAllIds() : $request->query->get('food_groups');
-
-		// $searchTerm = $request->query->get('q');
-		// $foods = $foodRepository->search(
-		// 	$foodGroupsSelected,
-		// 	$searchTerm
-		// );
-
 		if($request->query->get('ajax')) {
 			return $this->render('food/_food_list.html.twig', [
 				'foods' => $foods,
 				'lastResults' => $lastResults,
 			]);
 		}
-
-        //$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
-		// $foodSubFoodGroupList = $foodRepository->findBy(['foodGroup' => $foodGroup, 'isSubFoodGroup' => true]);
-
-        // return $this->render('food/list.html.twig', [
-		// 	'foodGroup' => $foodGroup,
-        //     'foods' => $foodRepository->findBy(['foodGroup' => $foodGroup]),
-		// 	'dish' => $dish,
-		// 	'foodSubFoodGroupList' => $foodSubFoodGroupList,
-		// 	'unitMeasures' => $quantityConverter->getUnitMeasureList()
-		// ]);
-		// dd($foodGroupRepository->findAll());
-
-		// if($this->foodGroupAlias) {
-        //     $foodGroup = $this->foodGroupRepository->findByAlias($this->foodGroupAlias);
-        //     if(empty($this->query)) {
-        //         return $this->foodRepository->findBy(['foodGroup' => $foodGroup]);
-        //     }
-
-        //     return $this->foodRepository->myFindByKeywordAndFg($this->query, $this->foodGroupAlias);
-        // }
 
 		return $this->render('food/list.html.twig', [
 			'foodGroupsSelected' => $fg ?? null,
@@ -140,7 +100,7 @@ class FoodController extends AbstractController
     }
 	
 
-	#[Route('/foodgroup/list/{foodGroupSelected?}', name: 'app_food_foodgroup_list')]
+	#[Route('/foodgroup/list/{foodGroupSelected?}', name: 'app_food_foodgroup_list', methods: ['GET'], requirements: ['foodGroupSelected' => '\d+'])]
 	public function getFoodGroupList(EntityManagerInterface $manager, Request $request, ?int $foodGroupSelected)
 	{
 		return $this->render('/food/_foodgroup_list.html.twig', [
@@ -149,7 +109,7 @@ class FoodController extends AbstractController
 		]);
 	}
 
-	#[Route('/show/{slug}', name: 'app_food_show')]
+	#[Route('/show/{slug}', name: 'app_food_show', methods: ['GET'], requirements: ['slug' => '[a-zA-Z0-9\-]+'])]
 	public function show(Food $food, ChartBuilderInterface $chartBuilder, SerializerInterface $serializer, TranslatorInterface $translator)
 	{
 		$chart = $chartBuilder->createChart(Chart::TYPE_DOUGHNUT);
@@ -194,11 +154,9 @@ class FoodController extends AbstractController
 		]);
 	}
 
-	#[Route('/add/{slug?}', name: 'app_food_add')]
+	#[Route('/add/{slug?}', name: 'app_food_add', methods: ['GET', 'POST'], requirements: ['slug' => '[a-zA-Z0-9\-]+'])]
 	public function add(?string $slug, Request $request, EntityManagerInterface $manager, UploaderHelper $uploaderHelper)
 	{
-		// $this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN');
-
 		if($slug) {
 			if (null === $food = $manager->getRepository(Food::class)->findOneBySlug($slug)) {
 				throw $this->createNotFoundException('The food does not exist');
@@ -232,8 +190,8 @@ class FoodController extends AbstractController
 		]);
 	}
 
-	#[Route('/search', name: 'app_food_search', priority: 2)]
-	public function search(SearchService $searchService, EntityManagerInterface $manager): Response
+	#[Route('/search', name: 'app_food_search', methods: ['GET'], priority: 2)]
+	public function search(): Response
 	{
 		return $this->render('food/search.html.twig');
 	}
@@ -249,9 +207,7 @@ class FoodController extends AbstractController
 		]);
 	}
 
-	/**
-	 * @Route("/add-dish-sesssion", name="app_food_add_dish_session")
-	 */
+	#[Route('/add-dish-sesssion', name: 'app_food_add_dish_session', methods: ['POST'])]
 	public function addDishSession(FoodRepository $foodRepository, SessionFoodHandler $sessionFoodHandler, Request $request)
 	{
 		$quantitiesFood = $request->request->all()['quantity_food_form'];
@@ -278,52 +234,7 @@ class FoodController extends AbstractController
 		return $this->redirectToRoute('app_dish_new');
 	}
 
-	// /**
-	//  * @Route("/search", name="search_food", defaults={"_format"="json"}, methods={"GET"})
-	//  */
-	// public function search(Request $request, FoodRepository $foodRepository)
-	// {
-	//     $q = $request->query->get('term');
-	//     $results = $foodRepository->myFindByKeyword($q);
-
-	//     return $this->render("food/search.json.twig", ['foods' => $results]);
-	// }
-
-	// /**
-    //  * @Route("/create-nutrition")
-    //  */
-	// public function createNutrition(EntityManagerInterface $manager)
-	// {
-	// 	$foods = $manager->getRepository(Food::class)->findAll();
-
-	// 	foreach($foods as $food) {
-	// 		$nutritionalTable = new NutritionalTable();
-	// 		$nutritionalTable->setEnergy($food->getEnergy());
-	// 		$nutritionalTable->setCarbohydrate($food->getCarbohydrate());
-	// 		$nutritionalTable->setLipid($food->getLipid());
-	// 		$nutritionalTable->setProtein($food->getProtein());
-	// 		$nutritionalTable->setNutriscore('A');
-
-	// 		$manager->persist($nutritionalTable);
-
-	// 		$food->setNutritionalTable($nutritionalTable);
-	// 	}
-
-	// 	$manager->flush();
-		
-	// 	return new Response('Aliment modifié');
-	// }
-
-	// private $foodFinder;
-
-	// public function __construct($foodFinder)
-	// {
-	// 	$this->foodFinder = $foodFinder;
-	// }
-
-	/**
-	 * @Route("/remove-sfg", name="app_food_remove-sfg")
-	 */
+	#[Route('/remove-sfg', name: 'app_food_remove-sfg', methods: ['GET'])]
 	public function removeSfg(EntityManagerInterface $em)
 	{
 		foreach($em->getRepository(Food::class)->findAll() as $food)
@@ -337,9 +248,7 @@ class FoodController extends AbstractController
 		return new Response('Food modified');
 	}
 
-	/**
-	 * @Route("/gluten/update", name="app_food_set_gluten")
-	 */
+	#[Route('/gluten/update', name: 'app_food_set_gluten', methods: ['GET'])]
 	public function setDietGluten(FoodRepository $foodRepository, DietRepository $dietRepository, EntityManagerInterface $em)
 	{
 		$dietNoGluten = $dietRepository->findOneById(39);
@@ -356,9 +265,7 @@ class FoodController extends AbstractController
 		return new Response('diet gluten ok');
 	}
 
-	/**
-	 * @Route("/lactose/update", name="app_food_set_lactose")
-	 */
+	#[Route('/lactose/update', name: 'app_food_set_lactose', methods: ['GET'])]
 	public function setDietLactose(FoodRepository $foodRepository, DietRepository $dietRepository, EntityManagerInterface $em)
 	{
 		$dietNoLactose = $dietRepository->findOneById(40);

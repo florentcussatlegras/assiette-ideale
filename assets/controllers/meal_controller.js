@@ -26,38 +26,7 @@ export default class extends Controller {
         lastRankMeal: String,
     }
     
-    connect() {
-    
-        // if(this.lastRankMealValue !== "none") {
-
-        //     const lastMealElement = document.getElementById('meal-' + this.lastRankMealValue);
-            
-        //     // On vérifie que le dernier repas a bien un type
-        //     const types = lastMealElement.getElementsByClassName('type-meal');
-        //     let typeChecked = false;
-
-        //     Array.from(types).forEach((element) => {
-        //         if(element.checked == true) {
-        //             typeChecked = true;
-        //         }
-        //     });
-
-        //     if(typeChecked == false) {
-        //         this.element.querySelector('.btn-add-meal').classList.add('hidden'); 
-        //     }
-
-        //     // On vérifie que le dernier repas contient bien des plats/aliments
-        //     const dishes = lastMealElement.getElementsByClassName('row-dish');
-        //     if (dishes.length === 0) {
-        //         this.element.querySelector('.btn-add-meal').classList.add('hidden'); 
-        //     }
-        // }
-        
-    }
-
     removeMeals(event) {
-        // this.url = event.currentTarget.dataset.url;
-        // this.urlRedirect = event.currentTarget.dataset.urlRedirect;
 
         Swal.fire({
             title: 'Confirmation',
@@ -69,11 +38,6 @@ export default class extends Controller {
             confirmButtonText: 'Oui',
             showLoaderOnConfirm: true,
             preConfirm: () => {
-                // fetch(this.urlRemoveMealValue)
-                //     .then((response) => {
-                //         return this.refreshContent();
-                //     });
-                console.log(this.urlRemoveMealValue);
                 document.location.href = this.urlRemoveMealValue;
             }
         });
@@ -81,9 +45,7 @@ export default class extends Controller {
 
     onRemoveMeal(event) {
         const rankMeal = event.currentTarget.dataset.rankMeal;
-        console.log(rankMeal);
-        // this.urlRedirect = event.currentTarget.dataset.urlRedirect;
-
+       
         Swal.fire({
             title: 'Confirmation',
             text: 'Etes-vous sûr de vouloir supprimer ce repas?',
@@ -97,7 +59,6 @@ export default class extends Controller {
                 const params = new URLSearchParams({
                     'rankMeal': rankMeal
                 });
-                // console.log(`${this.urlRemoveMealValue}?${params.toString()}`);
                 fetch(`${this.urlRemoveMealValue}?${params.toString()}`)
                     .then((response) => {
                         return this.refreshContent()
@@ -107,11 +68,6 @@ export default class extends Controller {
     }
 
     onAddMeal(event) {
-        // this.url = event.currentTarget.dataset.url;
-        // this.urlRedirect = event.currentTarget.dataset.urlRedirect;
-
-        // const rankMeal = event.currentTarget.dataset.rankMeal;
-        // console.log(this.lastRankMealValue);
 
         if(this.lastRankMealValue !== "none") {
 
@@ -130,7 +86,7 @@ export default class extends Controller {
             if(typeChecked == false) {
                 
                 Swal.fire({
-                    title: "Ouch!",
+                    title: "Attention!",
                     text: "Vous n'avez pas précisé de type pour votre dernier repas",
                     icon: "warning"
                 })
@@ -142,7 +98,7 @@ export default class extends Controller {
             const dishes = lastMealElement.getElementsByClassName('row-dish');
             if (dishes.length === 0 ) {
                 Swal.fire({
-                    title: "Ouch!",
+                    title: "Attention!",
                     text: "Vous n'avez pas saisis de plats pour votre dernier repas",
                     icon: "warning"
                 })
@@ -171,28 +127,11 @@ export default class extends Controller {
         document.getElementById('meals-day').innerHTML = await response.text();
     }
 
-    // async removeMeal(event) {
-
-
-
-    //     $(document).on('click', '.remove-meal', function(e){
-    //         e.preventDefault();
-    //         var url = Routing.generate('meal_day_remove', {'rankMeal' : $(this).data('rank-meal')});
-    //         console.log(url);
-    //         window.location.href = url;
-    //     });
-    // }
-
-    // async removeDish() {
-    //     await(fetch(this.urlRemove));
-    //     document.location.href = this.urlRedirect;
-    // }
-
     saveMeals(event) {
 
         const urlRedirect = event.currentTarget.dataset.url;
         const meals = document.querySelectorAll('.meal');
-        console.log(meals.length);
+     
         let displayErrorType = false;
 
         meals.forEach((element) => {
@@ -203,8 +142,6 @@ export default class extends Controller {
                     typeChecked = true;
                 }
             });
-            console.log("typeChecked :" + typeChecked);
-            console.log("displayErrorType :" + displayErrorType);
             if (typeChecked == false) {
                 displayErrorType = true;
             }
@@ -214,9 +151,10 @@ export default class extends Controller {
 
         if(displayErrorType == true) {
             Swal.fire({
-                title: "Ouch!",
+                title: "Attention!",
                 text: "Merci d'indiquer un type pour tous vos repas",
-                icon: "warning"
+                icon: "warning",
+                confirmButtonColor: "#0284c7"
             });
 
             return;
@@ -233,9 +171,10 @@ export default class extends Controller {
 
         if(noDishesSelected === true) {
             Swal.fire({
-                title: "Ouch!",
+                title: "Attention!",
                 text: "Un de vos repas ne contient pas de plats ou d'aliments",
-                icon: "warning"
+                icon: "warning",
+                confirmButtonColor: "#0284c7"
             });
 
             return;
@@ -277,13 +216,8 @@ export default class extends Controller {
             
             return
         }
-        // else{
-        //     confirmSave = true;
-        // }
         
-        // if(confirmSave == true) {
         document.location.href = urlRedirect;
-        // }
     }
 
     selectDish(event) {

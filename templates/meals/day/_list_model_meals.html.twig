@@ -1,129 +1,121 @@
-{# {% for typeMeal, list in modelMeals %}
+{% if modelMeals is not empty %}
 
-        <h1 class="font-bold mt-4 mb-2">{{ typeMeal }}</h1> #}
+    <div class="absolute right-0 -top-8 text-sm text-gray-500">{{ modelMeals|length }} repas</div>
 
-        {% if modelMeals is not empty %}
+    {% for modelMeal in modelMeals %}
 
-            <div class="absolute right-0 -top-8 text-sm text-gray-500">{{ modelMeals|length }} repas</div>
+        <div class="flex items-start mt-0 mb-2 bg-gray-100 pl-2 pr-4 py-4 rounded-2xl">
 
-            {% for modelMeal in modelMeals %}
+            <div class="flex flex-col w-full">
 
-                <div class="flex items-start mt-0 mb-2 bg-gray-100 pl-2 pr-4 py-4 rounded-2xl">
+                <div class="flex flex-row items-start justify-between w-full">
 
-                    <div class="flex flex-col w-full">
+                    <div class="flex justify-start items-center mb-4">
 
-                        <div class="flex flex-row items-start justify-between w-full">
+                        <a href="#" class="expend-down mr-2 p-2 rounded-full hover:bg-gray-300 transtion duration-300" data-rank="{{ loop.index0 }}">
+                            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </a>
 
-                            <div class="flex justify-start items-center mb-4">
+                        <a href="#" class="expend-up my-hidden mr-2 p-2 rounded-full hover:bg-gray-300 transition duration-300" data-rank="{{ loop.index0 }}">
+                            <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                        </a>
 
-                                <a href="#" class="expend-down mr-2 p-2 rounded-full hover:bg-gray-300 transtion duration-300" data-rank="{{ loop.index0 }}">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </a>
+                        <div class="flex flex-col">
 
-                                <a href="#" class="expend-up my-hidden mr-2 p-2 rounded-full hover:bg-gray-300 transition duration-300" data-rank="{{ loop.index0 }}">
-                                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
-                                </a>
+                            <div class="text-sm leading-4 ml-1 uppercase">{{ modelMeal.name }}</div>
 
-                                <div class="flex flex-col">
+                            {% if modelMeal.type.frontName is defined %}
+                                <div class="text-xs leading-4 ml-1 text-neutral-500">{{ modelMeal.type.frontName }}</div>
+                            {% endif %}
 
-                                    <div class="text-sm leading-4 ml-1 uppercase">{{ modelMeal.name }}</div>
-                                    {# {{ dump(modelMeal) }} #}
-
-                                    {% if modelMeal.type.frontName is defined %}
-                                        <div class="text-xs leading-4 ml-1 text-neutral-500">{{ modelMeal.type.frontName }}</div>
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
-
-                            <a href="{{ path('meal_day_add', {'idModelMeal' : modelMeal.id}) }}" class="group inline-flex ml-auto" alt="Choisir ce repas">
-                                <svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
-                                    <rect
-                                    x="0"
-                                    y="0"
-                                    width="24"
-                                    height="24"
-                                    rx="2"
-                                    class="fill-sky-600 group-hover:fill-sky-700 transition-colors duration-300"
-                                    />
-                                    <path
-                                    d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
-                                    fill="white"
-                                    />
-                                </svg>
-                            </a>
-
-
-                        </div>
-
-                        <div class="flex flex-row justify-between w-full">
-                            <div class="flex ml-10">
-                                {{ render(controller("App\\Controller\\meal\\ModelController::getListFgp", {id: modelMeal.id, sizeTabletColorFgp: 2})) }}
-                            </div>
-                            <div class="font-bold text-xs px-2 py-1 bg-yellow-400 text-white rounded-full ml-auto">
-                                {{ render(controller("App\\Controller\\meal\\DefaultController::getEnergy", { 'id': modelMeal.id })) }}
-                            </div>
                         </div>
 
                     </div>
 
+                    <a href="{{ path('meal_day_add', {'idModelMeal' : modelMeal.id}) }}" class="group inline-flex ml-auto" alt="Choisir ce repas">
+                        <svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
+                            <rect
+                            x="0"
+                            y="0"
+                            width="24"
+                            height="24"
+                            rx="12"
+                            class="fill-sky-600 group-hover:fill-sky-700 transition-colors duration-300"
+                            />
+                            <path
+                            d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
+                            fill="white"
+                            />
+                        </svg>
+                    </a>
 
                 </div>
 
-                <ul id="list-model-meal-{{ loop.index0 }}" class="my-hidden mt-4 mb-4 ml-6 px-6">
+                <div class="flex flex-row justify-between w-full">
+                    <div class="flex ml-10">
+                        {{ render(controller("App\\Controller\\meal\\ModelController::getListFgp", {id: modelMeal.id, sizeTabletColorFgp: 2})) }}
+                    </div>
+                    <div class="font-bold text-xs px-2 py-1 bg-gray-400 text-white rounded-full ml-auto">
+                        {{ render(controller("App\\Controller\\meal\\DefaultController::getEnergy", { 'id': modelMeal.id })) }}
+                    </div>
+                </div>
 
-                    {% for dishAndFood in modelMeal.dishAndFoods %}
+            </div>
 
-                        <li class="px-1 pb-2 flex items-center gap-2">
+        </div>
 
-                            {% if dishAndFood['type'] == 'Dish' %}
+        <ul id="list-model-meal-{{ loop.index0 }}" class="my-hidden mt-4 mb-4 ml-6 px-6">
 
-                                {% set dish = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
+            {% for dishAndFood in modelMeal.dishAndFoods %}
 
-                                {% if dish.picture is not null and dish.picturePath is not null %}
-                                    <img src="{{ dish.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ dish.slug }}" class="rounded-lg w-6">
-                                {% else %}
-                                    <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
-                                {% endif %}
+                <li class="px-1 pb-2 flex items-center gap-2">
 
-                                {% if dish is not empty %}
-                                    <a href="{{ path('app_dish_show', {'id' : dish.id, 'slug' : dish.slug}) }}" class="text-sm text-sky-600 hover:text-sky-700 mr-2">
-                                        {{ dish.name }}
-                                    </a>
-                                    <span class="text-gray-500 text-xs">{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
-                                {% endif %}
+                    {% if dishAndFood['type'] == 'Dish' %}
 
-                            {% else %}
+                        {% set dish = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
 
-                                {% set food = object(dishAndFood['id'], 'App\\Entity\\Food') %}
+                        {% if dish.picture is not null and dish.picturePath is not null %}
+                            <img src="{{ dish.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ dish.slug }}" class="rounded-lg w-6">
+                        {% else %}
+                            <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
+                        {% endif %}
 
-                                {% if food.picture is not null and food.picturePath is not null %}
-                                    <img src="{{ food.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ food.slug }}" class="rounded-lg w-6">
-                                {% else %}
-                                    <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
-                                {% endif %}
+                        {% if dish is not empty %}
+                            <a href="{{ path('app_dish_show', {'id' : dish.id, 'slug' : dish.slug}) }}" class="text-sm font-bold text-sky-600 hover:text-sky-700 mr-2">
+                                {{ dish.name }}
+                            </a>
+                            <span class="text-gray-500 text-xs">{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
+                        {% endif %}
 
-                                <a href="#" class="text-sm mr-2 text-sky-600 hover:text-sky-700">
-                                    {{ food.name }}
-                                </a>
+                    {% else %}
 
-                                <span class="text-gray-500 text-xs">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], 'App\\Entity\\UnitMeasure').alias }}</span>
+                        {% set food = object(dishAndFood['id'], 'App\\Entity\\Food') %}
 
-                            {% endif %}
+                        {% if food.picture is not null and food.picturePath is not null %}
+                            <img src="{{ food.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ food.slug }}" class="rounded-lg w-6">
+                        {% else %}
+                            <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
+                        {% endif %}
 
-                        </li>
+                        <a href="#" class="text-sm mr-2 font-bold text-sky-600 hover:text-sky-700 tracking-tight">
+                            {{ food.name }}
+                        </a>
 
-                    {% endfor %}
+                        <span class="text-gray-500 text-xs">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], 'App\\Entity\\UnitMeasure').alias }}</span>
 
-                </ul>
+                    {% endif %}
+
+                </li>
 
             {% endfor %}
 
-        {% else %}
+        </ul>
 
-            <h1 class="my-10 font-bold italic text-sm text-gray-300">Aucun repas repertorié</h1>
+    {% endfor %}
 
-        {% endif %}
+{% else %}
+
+    <h1 class="my-10 text-sm text-neutral-400">Aucun repas repertorié</h1>
+
+{% endif %}
     
-    {# {% endfor %} #}

@@ -6,10 +6,6 @@ export default class extends Controller {
         url: String
     }
 
-    connect() {
-        console.log('connect meel week');
-    }
-
     async reloadMenu(event) {
         const btnReload = event.currentTarget;
         const format = btnReload.dataset.format;

@@ -36,7 +36,7 @@ export default class extends Controller {
             'ajax': 1
         });
 
-        // console.log(`${this.urlValue}?${params.toString()}`);
+        console.log(`${this.urlValue}?${params.toString()}`);
         const response = await fetch(`${this.urlValue}?${params.toString()}`);
         this.contentTarget.innerHTML = await response.text();
     }

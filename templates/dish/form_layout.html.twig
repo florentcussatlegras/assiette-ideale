@@ -2,33 +2,32 @@
 
 {% form_theme dishForm 'form/_custom_dish_themes.html.twig' %}
 
-{% block title %}{{ parent() }} - Nouvelle recette{% endblock %}
+{% block title %}
+	{{ parent() }}
+	- Nouvelle recette
+{% endblock %}
 
 {% block body %}
 
-    <main role="main">
+	<div class="py-12">
 
-        {% if dish is defined %}
-            {% set idDish, h1_content = dish.id, "#{dish.name}" %}
-        {% else %}
-            {% set idDish, h1_content = null, "Nouvelle recette" %}
-        {% endif %}
+		{% if dish is defined %}
+			{% set idDish, h1_content = dish.id, "#{dish.name}" %}
+		{% else %}
+			{% set idDish, h1_content = null, "Nouvelle recette" %}
+		{% endif %}
 
-        {{ form_start(dishForm, {'attr': {'novalidate': 'novalidate', 'id': 'form_dish', 'class': 'm-0 p-0'}}) }}
+		{{ form_start(dishForm, {'attr': {'novalidate': 'novalidate', 'id': 'form_dish', 'class': 'm-0 p-0'}}) }}
 
-        <div class="flex flex-col items-start md:flex-row md:items-center">
-            {{ include("partials/_header.html.twig", { h1_content: h1_content }) }}
-            <div class="ml-auto md:mt-5">
-                {{ include("dish/_button_group.html.twig") }}
-            </div>
-        </div>
+		<div class="flex flex-col items-start md:flex-row md:items-center">
+			{{ include("partials/_header.html.twig", { h1_content: h1_content }) }}
+			<div class="ml-auto md:mt-5">
+				{{ include("dish/_button_group.html.twig") }}
+			</div>
+		</div>
 
-        {# {{ dump(app.session.all()) }} #}
+		{{ include('dish/_form.html.twig') }}
 
-        {# {{ include("partials/_alert.html.twig") }} #}
-
-        {{ include('dish/_form.html.twig') }}
-
-    </main>
+	</div>
 
 {% endblock %}

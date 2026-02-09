@@ -774,6 +774,7 @@ $(function(){
         var $containerAlerts = $('#alerts-Food-' + $this.data('food-id'));
         var url = Routing.generate('meal_day_update_alert_on_food_on_update_quantity', {'id' : $this.data('food-id'), 'quantity' : quantity, 'unitMeasure' : unitMeasure, 'rankDish' : $this.data('rank-dish'), 'rankMeal' : $this.data('rank-meal')});
 
+        console.log(url);
         $.ajax({
             url : url,
             beforeSend: function( xhr ) {

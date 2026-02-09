@@ -9,53 +9,39 @@ use Symfony\Component\Form\Extension\Core\Type\WeekType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class SearchController extends AbstractController
 {
-    #[Route('/meal/search', name: 'app_meal_search')]
+    #[Route('/meal/search', name: 'app_meal_search', methods: ['GET', 'POST'])]
     public function searchWeekMenu(Request $request, WeekAlertFeature $weekAlertFeature)
     {
         $searchWeekMenuForm = $this->createFormBuilder()
                                     ->setAction($this->generateUrl('app_meal_search'))
-                                    // ->add('week', WeekType::class, [
-                                    //     'attr' => [
-                                    //         'class' => 'pl-10 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 datepicker-input',
-                                    //     ],
-                                    //     'block_prefix' => 'custom_datepicker_week',
-                                    // ])
-                                    ->add('week', DateType::class, [
+                                    ->add('week', TextType::class, [
                                         'attr' => [
-                                            'class' => 'border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 datepicker-input rounded-lg',
+                                            'class' => 'datepicker-input block w-full rounded-lg border border-gray-300 py-2 px-3 text-gray-900 text-sm focus:ring-sky-200 focus:border-sky-500 transition',
+                                            'placeholder' => 'jj/mm/aaaa'
                                         ],
-                                        'widget' => 'single_text'
                                     ])
-                                    // ->add('btnSearch', SubmitType::class, [
-                                    //     'label' => 'Cherchez mes repas',
-                                    //     'attr' => [
-                                    //         'class' => 'font-bold rounded-full bg-gray px-4 py-1 text-current-color text-sm h-full'
-                                    //     ]
-                                    // ])
                                     ->getForm();
                                     
         $searchWeekMenuForm->handleRequest($request);
                              
         if($searchWeekMenuForm->isSubmitted() && $searchWeekMenuForm->isValid()) {
-            // $data = $searchWeekMenuForm->get('week')->getData();
-            // dd($data);
-            // $data = explode('-', $$searchWeekMenuForm->get('week')->getData()->format('Y-m-d'));
-            // $year = $data['year'];
-            // $week = $data['week']; 
-            // $date = new \DateTime();
-            // $date->setISODate($year, $week);
+            $dateStr = $searchWeekMenuForm->get('week')->getData();
 
-            // return $this->redirectToRoute('menu_week_menu', ['startingDate' => $date->format('Y-m-d')]);
+            $date = \DateTime::createFromFormat('d/m/Y', $dateStr);
+
+            if (!$date) {
+                $this->addFlash('error', 'Date invalide');
+                return $this->redirectToRoute('app_meal_search');
+            }
+
             return $this->redirectToRoute('menu_week_menu', [
-                'startingDate' => $weekAlertFeature->getStartingDayOfWeek($searchWeekMenuForm->get('week')->getData()->format('Y-m-d'))
+                'startingDate' => $weekAlertFeature->getStartingDayOfWeek($date->format('Y-m-d'))
             ]);
         }
-        // else{
-        //     dd($searchWeekMenuForm->getErrors());
-        // }
 
         return $this->render('meals/week/_search_week_menu.html.twig', [
             'searchWeekMenuForm' => $searchWeekMenuForm->createView()

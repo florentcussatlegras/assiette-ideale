@@ -1,12 +1,19 @@
 {% for key, messages in app.flashes() %}
 
-    {% for message in messages %}
+	{% if key == 'welcome_modal' %}
 
-        {{ include('partials/alert/_alert.html.twig') }}
+		{% include 'homepage/_welcome_modal.html.twig' %}
 
-    {% endfor %}
+	{% else %}
+
+		{% for message in messages %}
+
+			{{ include('partials/alert/_alert.html.twig') }}
+
+		{% endfor %}
+
+	{% endif %}
 
 {% endfor %}
 
- <div id="alert-ajax" class="hidden"></div>
-
+<div id="alert-ajax" class="hidden"></div>

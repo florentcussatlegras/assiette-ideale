@@ -1,0 +1,19 @@
+<ul>
+    {% set previousPriority = null %}
+
+    {% for item in balanceSheetAlerts %}
+        {% if item.key != 'energy' and item.alert.code != 'balance_well' %}
+
+            {# Si la priorité change, on ajoute un espace #}
+            {% if previousPriority is not null and previousPriority != item.alert.priority %}
+                <li style="list-style:none; height:12px;"></li>
+            {% endif %}
+
+            <li style="color: {{ item.alert.color }}">
+                Les <strong>{{ item.label }}</strong> sont <em>{{ item.alert.placeholderText }}s</em>
+            </li>
+
+            {% set previousPriority = item.alert.priority %}
+        {% endif %}
+    {% endfor %}
+</ul>

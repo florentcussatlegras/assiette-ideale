@@ -7,65 +7,65 @@
     <div class="flex flex-col xl:flex-row items-start xl:items-center tabs-date-range gap-2">
 
         <div class="px-0 md:px-2 date-picker text-xl">
-            <a class="inline-block">
-                <form class="flex flex-col md:flex-row items-start md:items-center gap-2 mb-2 md:mb-0">
+          
+            <form class="flex flex-flex-row items-center gap-2 mb-2 md:mb-0">
 
-                    <div class="flex flex-row items-center">
+                <div class="flex flex-row items-center">
 
-                        <span class="mr-2 text-sm lg:text-lg">Du</span>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none px-3">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                </svg>
-                            </div>
-                            <input 
-                                id="startDate"
-                                name="start" 
-                                type="text" 
-                                class="pl-10 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 rounded-lg" 
-                                placeholder="Date de départ"
-                                data-balance-sheet-target="start"
-                            >
+                    <span class="mr-2 text-sm lg:text-lg">Du</span>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none px-3">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
                         </div>
-
+                        <input 
+                            id="startDate"
+                            name="start" 
+                            type="text" 
+                            class="pl-10 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 rounded-lg" 
+                            placeholder="Date de départ"
+                            data-balance-sheet-target="start"
+                        >
                     </div>
 
-                    <div class="flex flex-row items-center">
-                        <span class="mr-2 text-sm lg:text-lg">au</span>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none px-3">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                </svg>
-                            </div>
-                            <input 
-                                id="endDate"
-                                name="end" 
-                                type="text" 
-                                class="pl-10 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 rounded-lg" 
-                                placeholder="Date de fin"
-                                data-balance-sheet-target="end"
-                            >
+                </div>
+
+                <div class="flex flex-row items-center">
+                    <span class="mr-2 text-sm lg:text-lg">au</span>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none px-3">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
+                            </svg>
                         </div>
+                        <input 
+                            id="endDate"
+                            name="end" 
+                            type="text" 
+                            class="pl-10 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 rounded-lg" 
+                            placeholder="Date de fin"
+                            data-balance-sheet-target="end"
+                        >
                     </div>
+                </div>
 
 
-                    <button
-                        id="validateDates"
-                        type="button" 
-                        class="bg-sky-600 hover:bg-sky-700 transition duration-300 text-white font-semibold text-sm lg:text-lg cursor-pointer rounded-lg px-4 py-3"
-                        data-action="balance-sheet#setDates"
-                    >
-                        Valider
-                    </button>
-                </form>
-            </a>
+                <button
+                    id="validateDates"
+                    type="button" 
+                    class="bg-sky-600 hover:bg-sky-700 transition duration-300 text-white font-semibold text-sm lg:text-lg cursor-pointer rounded-lg px-4 py-3"
+                    data-action="balance-sheet#setDates"
+                >
+                    Valider
+                </button>
+            </form>
+          
         </div>
 
         <div class="flex flex-col gap-2 md:flex-row w-full items-stretch xl:ml-12">
             <button
-                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
+                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-gray-100 text-gray-900 hover:text-white hover:bg-gray-200 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
                 data-balance-sheet-target="defaultDate"
                 data-action="click->balance-sheet#setDates"
                 data-start="{{ "-1 day"|date('m/d/Y') }}"
@@ -75,7 +75,7 @@
             </button>
             <button 
                 href="#" 
-                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
+                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-gray-100 text-gray-900 hover:text-white hover:bg-gray-200 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
                 data-action="click->balance-sheet#setDates"
                 data-start="{{ "-1 week"|date('m/d/Y') }}"
                 data-end="{{ "yesterday"|date('m/d/Y') }}"
@@ -84,7 +84,7 @@
             </button>
             <button 
                 href="#" 
-                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
+                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-gray-100 text-gray-900 hover:text-white hover:bg-gray-200 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
                 data-action="click->balance-sheet#setDates"
                 data-start="{{ "-2 weeks"|date('m/d/Y') }}"
                 data-end="{{ "yesterday"|date('m/d/Y') }}"
@@ -93,7 +93,7 @@
             </button>
             <button 
                 href="#" 
-                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
+                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-gray-100 text-gray-900 hover:text-white hover:bg-gray-200 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
                 aria-current="page"
                 data-action="click->balance-sheet#setDates"
                 data-start="{{ "-1 month"|date('m/d/Y') }}"
@@ -103,7 +103,7 @@
             </button>
             <button 
                 href="#" 
-                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-white text-dark-blue hover:text-white hover:bg-sky-600 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
+                class="inline-block px-4 py-3 font-semibold tabs-date-range_tab bg-gray-100 text-gray-900 hover:text-white hover:bg-gray-200 transition-colors duration-300 mr-0 md:mr-3 rounded-lg text-sm lg:text-lg leading-4 cursor-pointer"
                 data-action="click->balance-sheet#setDates"
                 data-start="{{ "-1 year"|date('m/d/Y') }}"
                 data-end="{{ "yesterday"|date('m/d/Y') }}"

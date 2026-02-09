@@ -25,15 +25,11 @@ export default class extends Controller {
     connect() {
         useDebounce(this);
         console.log(this.urlValue);
-        // const foodGroupButtonSelected = this.foodGroupTargets.filter((element) => element.classList.contains('selected') == true);
 
         this.foodGroupTargets.forEach((element) => {
             if(element.classList.contains('selected') == true) {
                 this.foodGroupButtonSelected.push(element);
             }
-            // else{
-            //     element.querySelector('.checkmark').classList.replace('flex', 'hidden');
-            // }
         });
 
         this.foodGroupButtonSelected.forEach(element => {
@@ -46,37 +42,19 @@ export default class extends Controller {
     }
 
     onSearchInput(event) {
-
-        // const params = new URLSearchParams({
-        //     q: event.target.value,
-        //     food_groups: this.selectedFoodGroupId.join(','),
-        //     ajax: 1
-        // })
-
-        // const params = new URLSearchParams({
-        //     q: this.searchTarget.value,
-        //     food_groups: this.selectedFoodGroupId.join(','),
-        //     type: this.typeDishValue,
-        //     ajax: 1
-        // });
-        
-        // this.url = `${this.urlValue}?${params.toString()}`;
         this.pageValue = 0;
         this.refreshContent();
     }
 
     onSelectFoodGroup(event) {
         const btnSelected = event.currentTarget;
-        console.log('on select foodgroup');
 
         const newFoodGroupId = btnSelected.dataset.foodGroupId;
         const indexFoodGroupId = this.selectedFoodGroupId.indexOf(newFoodGroupId);
 
         if(indexFoodGroupId == -1) {
-            console.log('je suis là 1');
             this.selectedFoodGroupId.push(newFoodGroupId);
             btnSelected.classList.add('selected');
-            // btnSelected.querySelector('.checkmark').classList.replace('hidden', 'flex');
             this.allFgUnchecked = false;
             if(this.selectedFoodGroupId.length == this.lengthFgpTotal) {
                 this.updateBtnAllFgpCheckedClasses(true);
@@ -85,10 +63,8 @@ export default class extends Controller {
             }
             this.updateBtnAllFgpUnCheckedClasses(false);
         }else{
-            console.log('je suis là 2');
             this.selectedFoodGroupId.splice(indexFoodGroupId, 1);
             btnSelected.classList.remove('selected');
-            // btnSelected.querySelector('.checkmark').classList.replace('flex', 'hidden');
             if(this.selectedFoodGroupId.length == 0) {
                 this.allFgUnchecked = true;
                 this.updateBtnAllFgpUnCheckedClasses(true);
@@ -108,12 +84,20 @@ export default class extends Controller {
 
         if(active) {
             btn.classList.add('selected')
-            btn.classList.replace('text-dark-blue', 'text-white');
-            btn.classList.replace('bg-white', 'bg-light-blue');
+            btn.classList.replace("text-gray-900", "text-white");
+            btn.classList.remove("hover:text-gray-900");
+            btn.classList.add("hover:text-white");
+            btn.classList.replace("bg-gray-100", "bg-sky-600");
+            btn.classList.remove("hover:bg-gray-900");
+            btn.classList.add("hover:bg-sky-600");
         }else{
             btn.classList.remove('selected')
-            btn.classList.replace('text-white', 'text-dark-blue');
-            btn.classList.replace('bg-light-blue', 'bg-white');
+            btn.classList.replace("text-white", "text-gray-900");
+            btn.classList.remove("hover:text-white");
+            btn.classList.add("hover:text-gray-900");
+            btn.classList.replace("bg-sky-600", "bg-gray-100");
+            btn.classList.remove("hover:bg-sky-600");
+            btn.classList.add("hover:bg-gray-900");
         }
     }
 
@@ -122,58 +106,42 @@ export default class extends Controller {
 
         if(active) {
             btn.classList.add('selected')
-            btn.classList.replace('text-dark-blue', 'text-white');
-            btn.classList.replace('bg-white', 'bg-light-blue');
+            btn.classList.replace("text-gray-900", "text-white");
+            btn.classList.remove("hover:text-gray-900");
+            btn.classList.add("hover:text-white");
+            btn.classList.replace("bg-gray-100", "bg-sky-600");
+            btn.classList.remove("hover:bg-gray-900");
+            btn.classList.add("hover:bg-sky-600");
         }else{
-            btn.classList.remove('selected')
-            btn.classList.replace('text-white', 'text-dark-blue');
-            btn.classList.replace('bg-light-blue', 'bg-white');
+            btn.classList.remove('selected');
+            btn.classList.replace("text-white", "text-gray-900");
+            btn.classList.remove("hover:text-white");
+            btn.classList.add("hover:text-gray-900");
+            btn.classList.replace("bg-sky-600", "bg-gray-100");
+            btn.classList.remove("hover:bg-sky-600");
+            btn.classList.add("hover:bg-gray-900");
         }
     }
 
-    // setSelectedFoodGroup(newFoodGroupId) {
-
-    //     const indexFoodGroupId = this.selectedFoodGroupId.indexOf(newFoodGroupId);
-    //     const selectedFoodGroup = this.findSelectedFoodGroup(newFoodGroupId);
-
-    //     if(indexFoodGroupId == -1) {
-    //         this.selectedFoodGroupId.push(newFoodGroupId);
-    //         selectedFoodGroup.classList.replace('opacity-50', 'shadow-lg');
-    //         selectedFoodGroup.classList.replace('py-2', 'py-3');
-
-    //         return;
-    //     }
-
-    //     this.selectedFoodGroupId.splice(indexFoodGroupId, 1);
-    //     selectedFoodGroup.classList.replace('shadow-lg', 'opacity-50');
-    //     selectedFoodGroup.classList.replace('py-3', 'py-2');
-    // }
-
-    // /**
-    //  * @return {Element|null}
-    //  */
-    // findSelectedFoodGroup(newFoodGroupId) {
-    //     return this.foodGroupTargets.find((element) => element.dataset.foodGroupId == newFoodGroupId);
-    // }
-
-
     onSelectTypeDish(event) {
 
-        // const clickedType = event.currentTarget.dataset.typeName;
-        // this.clickedType =  clickedType == this.typeNamevalue ? null : clickedType;
         this.typeDishValue = event.currentTarget.dataset.typeDish;
 
         this.typeDishTargets.forEach((element) => {
             if(element.dataset.typeDish == this.typeDishValue) {
-                element.classList.replace('text-dark-blue', 'text-white');
-                element.classList.replace('bg-white', 'bg-light-blue');
-                // element.classList.add('selected');
-                // element.children[0].classList.replace('hidden', 'flex');
+                element.classList.replace("text-gray-900", "text-white");
+                element.classList.remove("hover:text-gray-900");
+                element.classList.add("hover:text-white");
+                element.classList.replace("bg-gray-100", "bg-sky-600");
+                element.classList.remove("hover:bg-gray-900");
+                element.classList.add("hover:bg-sky-600");
             } else {
-                element.classList.replace('text-white', 'text-dark-blue');
-                element.classList.replace('bg-light-blue', 'bg-white');
-                // element.classList.remove('selected');
-                // element.children[0].classList.replace('flex', 'hidden');
+                element.classList.replace("text-white", "text-gray-900");
+                element.classList.remove("hover:text-white");
+                element.classList.add("hover:text-gray-900");
+                element.classList.replace("bg-sky-600", "bg-gray-100");
+                element.classList.remove("hover:bg-sky-600");
+                element.classList.add("hover:bg-gray-900");
             }
         });
 
@@ -189,10 +157,29 @@ export default class extends Controller {
         var allTypeItemDeselect = true;
 
         if(element.classList.contains('selected')) {
+
             element.classList.remove('selected');
+
+            element.classList.replace("text-white", "text-gray-900");
+            element.classList.remove("hover:text-white");
+            element.classList.add("hover:text-gray-900");
+            element.classList.replace("bg-sky-600", "bg-gray-100");
+            element.classList.remove("hover:bg-sky-600");
+            element.classList.add("hover:bg-gray-200");
+
         } else {
+
             element.classList.add('selected');
+
+            element.classList.replace("text-gray-900", "text-white");
+            element.classList.remove("hover:text-gray-900");
+            element.classList.add("hover:text-white");
+            element.classList.replace("bg-gray-100", "bg-sky-600");
+            element.classList.remove("hover:bg-gray-200");
+            element.classList.add("hover:bg-sky-600");
+
             allTypeItemDeselect = false;
+
         }
 
         this.typeItemSelected = [];
@@ -215,8 +202,6 @@ export default class extends Controller {
             }
         });
 
-        console.log(this.typeItemSelected);
-
         this.pageValue = 0;
         this.refreshContent();
 
@@ -228,13 +213,25 @@ export default class extends Controller {
 
         if(btnChoice.classList.contains('selected')) {
             btnChoice.classList.remove('selected')
-            btnChoice.classList.replace('text-white', 'text-dark-blue');
-            btnChoice.classList.replace('bg-light-blue', 'bg-white');
+        
+            btnChoice.classList.replace("text-white", "text-gray-900");
+            btnChoice.classList.remove("hover:text-white");
+            btnChoice.classList.add("hover:text-gray-900");
+            btnChoice.classList.replace("bg-sky-600", "bg-gray-100");
+            btnChoice.classList.remove("hover:bg-sky-600");
+            btnChoice.classList.add("hover:bg-gray-200");
+
             this.freeGluten = 0;
         }else{
-            btnChoice.classList.add('selected')
-            btnChoice.classList.replace('text-dark-blue', 'text-white');
-            btnChoice.classList.replace('bg-white', 'bg-light-blue');
+            btnChoice.classList.add('selected');
+
+            btnChoice.classList.replace("text-gray-900", "text-white");
+            btnChoice.classList.remove("hover:text-gray-900");
+            btnChoice.classList.add("hover:text-white");
+            btnChoice.classList.replace("bg-gray-100", "bg-sky-600");
+            btnChoice.classList.remove("hover:bg-gray-200");
+            btnChoice.classList.add("hover:bg-sky-600");
+
             this.freeGluten = 1;
         }
 
@@ -249,13 +246,25 @@ export default class extends Controller {
 
         if(btnChoice.classList.contains('selected')) {
             btnChoice.classList.remove('selected')
-            btnChoice.classList.replace('text-white', 'text-dark-blue');
-            btnChoice.classList.replace('bg-light-blue', 'bg-white');
+          
+            btnChoice.classList.replace("text-white", "text-gray-900");
+            btnChoice.classList.remove("hover:text-white");
+            btnChoice.classList.add("hover:text-gray-900");
+            btnChoice.classList.replace("bg-sky-600", "bg-gray-100");
+            btnChoice.classList.remove("hover:bg-sky-600");
+            btnChoice.classList.add("hover:bg-gray-200");
+
             this.freeLactose = 0;
         }else{
-            btnChoice.classList.add('selected')
-            btnChoice.classList.replace('text-dark-blue', 'text-white');
-            btnChoice.classList.replace('bg-white', 'bg-light-blue');
+            btnChoice.classList.add('selected');
+
+            btnChoice.classList.replace("text-gray-900", "text-white");
+            btnChoice.classList.remove("hover:text-gray-900");
+            btnChoice.classList.add("hover:text-white");
+            btnChoice.classList.replace("bg-gray-100", "bg-sky-600");
+            btnChoice.classList.remove("hover:bg-gray-200");
+            btnChoice.classList.add("hover:bg-sky-600");
+
             this.freeLactose = 1;
         }
 
@@ -263,37 +272,6 @@ export default class extends Controller {
         this.refreshContent();
         
     }
-
-
-    // typeDishValueChanged() {
-    //     alert('3');
-    //     this.typeDishTargets.forEach((element) => {
-    //         if(element.dataset.typeDish == this.typeDishValue) {
-    //             element.classList.add('selected');
-    //         } else {
-    //             element.classList.remove('selected');
-    //         }
-    //     });
-
-    //     // const params = new URLSearchParams({
-    //     //     q: this.searchTarget.value,
-    //     //     food_groups: this.selectedFoodGroupId.join(','),
-    //     //     type: this.typeDishValue,
-    //     //     ajax: 1
-    //     // });
-        
-    //     // this.url = `${this.urlValue}?${params.toString()}`;
-
-    //     this.refreshContent();
-    // }
-
-
-    // loadMore(event) {
-    //     event.preventDefault();
-    //     console.log('load more');
-    //     this.page++;
-    //     this.refreshContent();
-    // }
 
     onAddItem() {
         this.rankDishValue++;
@@ -367,10 +345,7 @@ export default class extends Controller {
         });
         
         this.url = `${this.urlValue}?${params.toString()}`;
-        console.log('url pour rafraichir le contenu');
-        console.log(this.url);
-        // console.log(this.pageValue);
-
+     
         if(this.pageValue > 0) {
 
             const response = await fetch(this.url);
@@ -411,35 +386,12 @@ export default class extends Controller {
                     }
             });
 
-            // this.loaderTarget.classList.add('hidden');
-            // target.classList.remove('hidden');
-            // console.log(this.lastResultsTargets);
-            // alert(this.lastResultsTargets.reverse()[0].value);
-            // if(this.lastResultsTargets.reverse()[0].value != 1) {
-            //     this.loadMoreTarget.classList.remove('hidden');
-            // }
-
         }
 
     }
 
     onSelectAllFoodGroup(event) {
 
-        // const btnChoice = event.currentTarget;
-
-        // if(btnChoice.classList.contains('selected') == false) {
-        //     btnChoice.classList.add('selected')
-        //     btnChoice.classList.replace('text-dark-blue', 'text-white');
-        //     btnChoice.classList.replace('bg-white', 'bg-light-blue');
-        // }
-
-        // const btnDeselectedAllFgp = this.deselectAllFoodGroupTarget;
-
-        // if(btnDeselectedAllFgp.classList.contains('selected')) {
-        //     btnDeselectedAllFgp.classList.remove('selected')
-        //     btnDeselectedAllFgp.classList.replace('text-white', 'text-dark-blue');
-        //     btnDeselectedAllFgp.classList.replace('bg-light-blue', 'bg-white');
-        // }
         this.updateBtnAllFgpCheckedClasses(true);
         this.updateBtnAllFgpUnCheckedClasses(false);
 
@@ -461,28 +413,12 @@ export default class extends Controller {
 
     onDeselectAllFoodGroup(event) {
 
-        // const btnChoice = event.currentTarget;
-
-        // if(btnChoice.classList.contains('selected') == false) {
-        //     btnChoice.classList.add('selected')
-        //     btnChoice.classList.replace('text-dark-blue', 'text-white');
-        //     btnChoice.classList.replace('bg-white', 'bg-light-blue');
-        // }
-
-        // const btnSelectedAllFgp = this.selectAllFoodGroupTarget;
-
-        // if(btnSelectedAllFgp.classList.contains('selected')) {
-        //     btnSelectedAllFgp.classList.remove('selected')
-        //     btnSelectedAllFgp.classList.replace('text-white', 'text-dark-blue');
-        //     btnSelectedAllFgp.classList.replace('bg-light-blue', 'bg-white');
-        // }
         this.updateBtnAllFgpCheckedClasses(false);
         this.updateBtnAllFgpUnCheckedClasses(true);
 
         this.selectedFoodGroupId = [];
 
         this.foodGroupTargets.forEach((element) => {
-            console.log(element);
             element.classList.remove('selected');
             // this.foodGroupButtonSelected.remove(element);
         });
@@ -490,24 +426,4 @@ export default class extends Controller {
         this.pageValue = 0;
         this.refreshContent();
     }
-
-    // async removeFavoriteDish() {
-    //     console.log('remove favorite dish');
-    //     console.log(this.urlListRemoveFavoriteDishValue);
-
-    //     const btn = event.currentTarget;
-    //     const dishId = btn.dataset.dishId;
-
-    //     const params = new URLSearchParams({
-    //         dish_id: dishId
-    //     });
-
-    //     console.log(`${this.urlListRemoveFavoriteDishValue}?${params.toString()}`);
-    //     const response = await fetch(`${this.urlListRemoveFavoriteDishValue}?${params.toString()}`);
-
-    //     document.getElementById('alert-ajax').innerHTML = await response.text();
-
-    //     this.pageValue = 0;
-    //     this.refreshContent();
-    // }
 }

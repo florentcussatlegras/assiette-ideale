@@ -6,7 +6,6 @@ use App\Service\AlertFeature;
 use App\Entity\Alert\LevelAlert;
 use App\Service\BalanceSheetFeature;
 use App\Controller\AlertUserController;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FoodGroupParentRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/balance_sheet/alert', name: 'app_balance_sheet_')]
 class AlertController extends AbstractController implements AlertUserController
 {
-    #[Route('/show-imc-alert', name: 'show_imc_alert')]
+    #[Route('/show-imc-alert', name: 'show_imc_alert', methods:['GET'])]
     public function showImcAlert(AlertFeature $alertFeature)
     {
         $levelAlert = $alertFeature->getImcAlert();
@@ -67,7 +66,7 @@ class AlertController extends AbstractController implements AlertUserController
         ]);
     }
 
-    #[Route('/show-weight-alert', name: 'show_weight_alert')]
+    #[Route('/show-weight-alert', name: 'show_weight_alert', methods:['GET'])]
     public function showWeightAlert(AlertFeature $alertFeature)
     {
         $levelAlert = $alertFeature->getWeightAlert();
@@ -116,7 +115,7 @@ class AlertController extends AbstractController implements AlertUserController
         ]);
     }
 
-    #[Route('/show-average-data', name: 'show_average_data')]
+    #[Route('/show-average-data', name: 'show_average_data', methods:['GET'])]
     public function averageData(Request $request, BalanceSheetFeature $balanceSheetFeature, AlertFeature $alertFeature)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -170,14 +169,6 @@ class AlertController extends AbstractController implements AlertUserController
         
         return $this->render('balance_sheet/index.html.twig', $params);
     }
-
-    // #[Route('/show-weight-imc-energy', name: 'show_weight_imc_energy')]
-    // public function weightImcEnergy(Request $request, BalanceSheetFeature $balanceSheetFeature, AlertFeature $alertFeature)
-    // {
-    //     return $this->render('balance_sheet/_weight_imc_energy.html.twig', [
-    //         'balanceWeightEnergyAndImcAlerts' => $alertFeature->getWeightEnergyAndImcBalanceAlerts(),
-    //     ]);
-    // }
 
     #[Route('/message-details-alert-energy/{energy?}', name: 'message_details_alert_energy', methods: ['GET'])]
 	public function messageDetailsAlertEnergy(Request $request, AlertFeature $alertFeature, ?int $energy)

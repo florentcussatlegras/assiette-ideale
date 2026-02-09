@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\WeightLog;
 use App\Service\EnergyHandler;
 use App\Service\AlertFeature;
 use App\Service\ProfileHandler;
@@ -13,50 +14,32 @@ use App\Form\Type\RoleUserFormType;
 use App\Form\Type\Profile\ProfileType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\Type\ChangePasswordFormType;
-use App\Form\Type\Profile\FirstProfileType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\PhysicalActivityRepository;
+use App\Service\EnergyAdjustmentManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @Route("/profile")
- */
+#[Route('/profile')]
 class ProfileController extends AbstractController implements AlertUserController
 {
-    /**
-     * @Route("", name="app_profile_index")
-     */
+    #[Route('', name: 'app_profile_index', methods: ['GET'])]
     public function index(EntityManagerInterface $manager)
     {
-        //dump($this->getUser());
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
         $user = $this->getUser();
-
-        // if($user->getEnergy() && !$user->hasStartedFillProfile())
-        // {
-        //     $user->setStartedFillProfile(true);
-        //     $manager->persist($user);
-        //     $manager->flush();
-
-        //     $showModalConfirmProfile = true;
-        // }
 
         return $this->render("profile/index.html.twig", [
             'showModalConfirmProfile' => !(empty($showModalConfirmProfile)) ? true : false
         ]);
     }
-
 
     // // Si l'utilisateur n'a pas encore saisi son profil on utilise les formulaires de profile plus détaillés avec des sous-étapes
     // // e.g. le formulaire "user" est partitionné en plusieurs petites formulaires "user_gender", "user_birthday", "user_height", "user_weight"
@@ -64,61 +47,23 @@ class ProfileController extends AbstractController implements AlertUserControlle
     // if(!$user->hasStartedFillProfile() && ProfileHandler::STEP_PHYSICAL_CHARACTERISTICS === $step && null === $subStep) {
     //     $subStep = ProfileHandler::STEP_PHYSICAL_CHARACTERISTICS_GENDER;
     // }
-     #[Route('/edit/{element?}', name:'app_profile_edit', defaults: ['element' => ProfileHandler::GENDER])]
-    public function edit(Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, PhysicalActivityRepository $physicalActivityRepository, UploaderHelper $uploaderHelper, ProfileHandler $profileHandler, ?string $element, bool $firstFillProfile = false)
+    #[Route('/edit/{element?}', name:'app_profile_edit', methods: ['GET', 'POST'], defaults: ['element' => ProfileHandler::GENDER])]
+    public function edit(Request $request, EntityManagerInterface $manager, ValidatorInterface $validator, PhysicalActivityRepository $physicalActivityRepository, UploaderHelper $uploaderHelper, ProfileHandler $profileHandler, EnergyAdjustmentManager $energyAdjustmentManager, ?string $element, bool $firstFillProfile = false)
     {
-        if($this->isGranted('IS_AUTHENTICATED') && !$this->getUser()->isIsVerified()) {
-            return $this->redirectToRoute('app_verify_resend_email', [
-                'id' => $this->getUser()->getId(),
-            ]);
-        }
-
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
 
         $user = $this->getUser();
-        // dd(empty($user->getForbiddenFoods()->toArray()));
-        // dd($element);
-
-        // if(!$user->getEnergy()) {
-        //     $accessor = PropertyAccess::createpropertyAccessor();
-        //     $value = $accessor->getValue($user, $element);
-        //     // dump($element);
-        //     // dd($value);
-        //     if($value instanceof \Traversable){
-        //         $value = empty($value->toArray()) ?? null;
-        //     }
-        //     // dd($element, $value, $profileHandler->nextElement($element));
-        //     // dd($profileHandler->nextElement($element));
-        //     // dd($element);
-
-        //     // if(null !== $value) {
-        //     //     return $this->redirectToRoute('app_profile_edit', [
-        //     //         'element' => $profileHandler->nextElement($element),
-        //     //     ]);
-        //     // }
-        // }
-
-        // dd($request->query->all());
-        // if($request->query->get('first_fill_profile')) {
-        //     $user->setFirstFillProfile(true);
-        //     $manager->flush();
-
-        //     return $this->redirectToRoute('app_dashboard_index');
-        // }
 
         $form = $this->createForm(ProfileType::class, $user, [
             'element' => $element,
             'validation_groups' => sprintf('profile_%s', $element)
         ]);
 
-        $nextElement = $profileHandler->nextElement($element);
-
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()) {
 
             if(ProfileHandler::PARAMETERS === $element) {
-
                 if(null !== $pictureFile = $form->get('pictureFile')->getData()){
 
                     $pictureConstraint = new Assert\File([
@@ -131,7 +76,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
                         $pictureFile,
                         [$pictureConstraint]
                     );
-                    // dd($errorsPic);
+                 
                     if(isset($errorsPic[0])) {
                         $request->getSession()->set('user_error_pic', $errorsPic[0]->getMessage());
 
@@ -146,6 +91,16 @@ class ProfileController extends AbstractController implements AlertUserControlle
                 }
             }
 
+            if($element === ProfileHandler::WEIGHT) {
+
+                // je sais plus comment ça se fait mais ici le user a bien le nouvel IMC
+
+                // 2️⃣ Mise à jour de la date du dernier poids
+                $user->setLastWeightUpdateAt(new \DateTime());
+                $user = $energyAdjustmentManager->logNewWeight($user);
+
+            }
+     
             if($form->has('archived_weight')) {
 
                 if($form->get('archived_weight')->getData()) {
@@ -170,18 +125,23 @@ class ProfileController extends AbstractController implements AlertUserControlle
                 $user->addValidStepProfiles($element);
             }
 
-            if(null !== $user->getEnergy()) {
+
+            if(null !== $user->getEnergy() && !$user->getFirstFillProfile()) {
                 $user->setFirstFillProfile(true);
+                $manager->persist($user);
+                $manager->flush();
+
+                $this->addFlash('welcome_modal', true);
+           
+                return $this->redirectToRoute('app_homepage');
             }
 
             $manager->persist($user);
             $manager->flush();
-            // dd($nextElement);
 
-            if(!$user->hasFirstFillProfile() && $nextElement) {
-                // dd($nextElement);
+            if(!$user->hasFirstFillProfile()) {
                 return $this->redirectToRoute('app_profile_edit', [
-                    'element' => $nextElement
+                    'element' => $profileHandler->currentStep(),
                 ]);
             }
 
@@ -194,14 +154,63 @@ class ProfileController extends AbstractController implements AlertUserControlle
                 'profileForm' => $form->createView(),
                 'element' => $element,
                 // 'steps' => ProfileHandler::STEPS,
-                'nextElement' => $nextElement,
+                // 'nextElement' => $nextElement,
             ]
         );
     }
 
-    /**
-     * @Route("/change-password", name="app_profile_password_edit")
-     */
+    #[Route('/embedded/edit/{element?}', name:'app_embedded_profile_edit', methods: ['GET', 'POST'], defaults: ['element' => ProfileHandler::GENDER])]
+    public function embeddedEdit(
+        Request $request,
+        EntityManagerInterface $manager,
+        ProfileHandler $profileHandler,
+        EnergyAdjustmentManager $energyAdjustmentManager,
+        ?string $element
+    ) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
+
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileType::class, $user, [
+            'element' => $element,
+            'validation_groups' => sprintf('profile_%s', $element)
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+
+            if (!$form->isValid()) {
+                return $this->render("profile/partials/_form.html.twig", [
+                    'profileForm' => $form->createView(),
+                    'element' => $element,
+                ]);
+            }
+
+            if ($element === ProfileHandler::WEIGHT) {
+                $user->setLastWeightUpdateAt(new \DateTime());
+                $user = $energyAdjustmentManager->logNewWeight($user);
+            }
+
+            $manager->persist($user);
+            $manager->flush();
+
+            $messageSuccess = "Vos informations ont bien été enregistrées";
+
+            return $this->render("profile/partials/_form.html.twig", [
+                'profileForm' => $form->createView(),
+                'element' => $element,
+                'messageSuccess' => "Vos informations ont bien été enregistrées",
+            ]);
+        }
+
+        return $this->render("profile/partials/_form.html.twig", [
+            'profileForm' => $form->createView(),
+            'element' => $element,
+        ]);
+    }
+
+    #[Route('/change-password', name: 'app_profile_password_edit', methods: ['GET', 'POST'])]
     public function changePassword(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $em)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -235,9 +244,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200));
     }
 
-    /**
-     * @Route("/progressbar", name="app_profile_progress_bar")
-     */
+    #[Route('/progressbar', name: 'app_profile_progress_bar', methods: ['GET'])]
     public function progressBar(ProfileHandler $profileHandler)
     {
         return $this->render('profile/partials/_progress_bar_ratio.html.twig', [
@@ -245,9 +252,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    /**
-     * @Route("/users/roles/edit", name="app_users_roles_edit")
-     */
+    #[Route('/users/roles/edit', name: 'app_users_roles_edit', methods: ['GET', 'POST'])]
     public function editUserRoles(Request $request, UserRepository $userRepository, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN_ROLE');
@@ -276,9 +281,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    /**
-     * @Route("/users/roles/export/{username}", name="app_users_roles_export")
-     */
+    #[Route('/users/roles/export/{username}', name: 'app_users_roles_export', methods: ['GET'], requirements: ['username' => '.+'])]
     public function exportUserRoles(Request $request, User $user, SluggerInterface $slugger)
     {
         $response = new Response(json_encode($user->getRoles()), 200, [
@@ -295,7 +298,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         return $response;
     }
 
-    #[Route('/energy', name: 'app_users_energy')]
+    #[Route('/energy', name: 'app_users_energy', methods: ['GET'])]
     public function energy(EnergyHandler $energyHandler, AlertFeature $alertFeature)
     {
         return $this->render('profile/partials/_energy.html.twig', [
@@ -304,7 +307,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    #[Route('/weight', name: 'app_users_weight')]
+    #[Route('/weight', name: 'app_users_weight', methods: ['GET'])]
     public function weight(EnergyHandler $energyHandler, AlertFeature $alertFeature)
     {
         return $this->render('profile/partials/_weight.html.twig', [
@@ -312,15 +315,15 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    #[Route('/imc', name: 'app_users_imc')]
+    #[Route('/imc', name: 'app_users_imc', methods: ['GET'])]
     public function imc(EnergyHandler $energyHandler, AlertFeature $alertFeature)
     {
         return $this->render('profile/partials/_imc.html.twig', [
-            'balanceImcAlerts' => $alertFeature->getImcAlert(),
+            'balanceImcAlerts' => $alertFeature->getImcAlert($this->getUser()->getImc()),
         ]);
     }
 
-    #[Route('/remove-picture', name: 'app_users_remove_pic')]
+    #[Route('/remove-picture', name: 'app_users_remove_pic', methods: ['POST'])]
     public function removePicture(Request $request, EntityManagerInterface $manager): Response
     {
         $user = $this->getUser();
@@ -337,7 +340,7 @@ class ProfileController extends AbstractController implements AlertUserControlle
         ]);
     }
 
-    #[Route('/show-error-picture')]
+    #[Route('/show-error-picture', name: 'app_users_show_error_picture', methods: ['GET'])]
     public function showErrorPicture(Request $request): Response
     {
         $message = $request->getSession()->get('user_error_pic');

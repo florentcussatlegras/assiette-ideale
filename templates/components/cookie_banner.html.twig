@@ -1,0 +1,27 @@
+<div
+    id="cookie-banner"
+    class="fixed bottom-0 left-0 right-0 bg-gray-900 text-white py-8 px-4 hidden z-50"
+    {{ stimulus_controller('cookies') }}
+>
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-sm">
+            Ce site utilise des cookies pour améliorer l’expérience utilisateur.
+        </p>
+
+        <div class="flex gap-3">
+            <button
+                class="px-4 py-2 bg-gray-700 rounded"
+                data-action="cookies#reject"
+            >
+                Refuser
+            </button>
+
+            <button
+                class="px-4 py-2 bg-blue-600 rounded"
+                data-action="cookies#accept"
+            >
+                Accepter
+            </button>
+        </div>
+    </div>
+</div>

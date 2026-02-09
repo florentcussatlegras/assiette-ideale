@@ -1,0 +1,30 @@
+{% extends "security/_layout.html.twig" %}
+
+{% block title %}Confirmation{% endblock %}
+
+{% block content %}
+
+    <div class="flex flex-col gap-2">
+
+        <h1 class="text-3xl font-bold text-white">
+            Confirmation du compte
+        </h1>
+
+        <p class="mt-2 text-white text-left">
+            Entrez le code reçu par email
+        </p>
+
+        {{ form_start(form, {'attr': {'data-turbo': 'false', 'class': 'security'}}) }}
+            <div class="text-red-700 text-sm mb-2">
+                {{ form_errors(form.code) }}
+            </div>
+            {{ form_widget(form.code, {'attr' : {'class' : 'block w-full bg-white rounded-lg border-none text-gray-900'}}) }}
+
+            <button class="mt-4 bg-sky-700 hover:bg-sky-800 text-white w-full font-bold py-3 text-base cursor-pointer rounded-lg transition duration-300">
+                Confirmer
+            </button>
+        {{ form_end(form) }}
+
+    </div>
+
+{% endblock %}

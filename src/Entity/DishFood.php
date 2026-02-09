@@ -4,171 +4,68 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * DishFood
- *
- * @ORM\Table(name="dish_food")
- * @ORM\Entity(repositoryClass="App\Repository\DishFoodRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: "App\Repository\DishFoodRepository")]
+#[ORM\Table(name: "dish_food")]
+#[ORM\HasLifecycleCallbacks]
 class DishFood
 {
-	/**
-   * @ORM\Column(name="id", type="integer")
-   * @ORM\Id
-   * @ORM\GeneratedValue(strategy="AUTO")
-   */
-  private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-  /**
-   * var integer
-   *
-   * @ORM\Column(name="quantity_g", type="integer", nullable=true)
-   */
-  private $quantityG;
+    #[ORM\Column(name: "quantity_g", type: "integer", nullable: true)]
+    private ?int $quantityG = null;
 
-  /**
-   * var integer
-   *
-   * @ORM\Column(name="quantity_real", type="integer")
-   */
-  private $quantityReal;
+    #[ORM\Column(name: "quantity_real", type: "integer")]
+    private int $quantityReal;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="App\Entity\UnitMeasure")
-   * @ORM\JoinColumn(nullable=false)
-   */
-  private $unitMeasure;
+    #[ORM\ManyToOne(targetEntity: UnitMeasure::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?UnitMeasure $unitMeasure = null;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="App\Entity\Dish")
-   * @ORM\JoinColumn(nullable=false)
-   */
-  private $dish;
+    #[ORM\ManyToOne(targetEntity: Dish::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Dish $dish = null;
 
-  /**
-   * @ORM\ManyToOne(targetEntity="App\Entity\Food", cascade={"persist"})
-   * @ORM\JoinColumn(nullable=false)
-   */
-  private $food;
+    #[ORM\ManyToOne(targetEntity: Food::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Food $food = null;
 
-//   public function __construct($food, $quantityReal, $quantityG, $unitMeasure)
-//   {
-//       $this->food = $food;
-//       $this->quantityG = $quantityG;
-//       $this->quantityReal = $quantityReal;
-//       $this->unitMeasure = $unitMeasure;
-//   }
+    // ------------------- Magic Methods -------------------
+    public function __toString(): string
+    {
+        return ($this->food ? $this->food->getName() : '') 
+            . ' - ' 
+            . ($this->dish ? $this->dish->getName() : '');
+    }
 
-  public function __toString()
-  {
-    return $this->food->getName() . ' - ' . $this->dish->getName(); 
-  }
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    // ------------------- Getters & Setters -------------------
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set dish
-     *
-     * @param \App\Entity\Dish $dish
-     *
-     * @return DishFood
-     */
-    public function setDish(\App\Entity\Dish $dish)
-    {
-        $this->dish = $dish;
-
-        return $this;
-    }
-
-    /**
-     * Get dish
-     *
-     * @return \App\Entity\Dish
-     */
-    public function getDish()
-    {
-        return $this->dish;
-    }
-
-    /**
-     * Set food
-     *
-     * @param \App\Entity\Food $food
-     *
-     * @return DishFood
-     */
-    public function setFood(\App\Entity\Food $food)
-    {
-        $this->food = $food;
-
-        return $this;
-    }
-
-    /**
-     * Get food
-     *
-     * @return \App\Entity\Food
-     */
-    public function getFood()
-    {
-        return $this->food;
-    }
-
-    /**
-     * Set quantityG
-     *
-     * @param integer $quantityG
-     *
-     * @return DishFood
-     */
-    public function setQuantityG($quantityG)
-    {
-        $this->quantityG = $quantityG;
-    
-        return $this;
-    }
-
-    /**
-     * Get quantityG
-     *
-     * @return integer
-     */
-    public function getQuantityG()
+    public function getQuantityG(): ?int
     {
         return $this->quantityG;
     }
 
-    /**
-     * Set quantityReal
-     *
-     * @param integer $quantityReal
-     *
-     * @return DishFood
-     */
-    public function setQuantityReal($quantityReal)
+    public function setQuantityG(?int $quantityG): self
     {
-        $this->quantityReal = $quantityReal;
-    
+        $this->quantityG = $quantityG;
         return $this;
     }
 
-    /**
-     * Get quantityReal
-     *
-     * @return integer
-     */
-    public function getQuantityReal()
+    public function getQuantityReal(): int
     {
         return $this->quantityReal;
+    }
+
+    public function setQuantityReal(int $quantityReal): self
+    {
+        $this->quantityReal = $quantityReal;
+        return $this;
     }
 
     public function getUnitMeasure(): ?UnitMeasure
@@ -179,11 +76,28 @@ class DishFood
     public function setUnitMeasure(?UnitMeasure $unitMeasure): self
     {
         $this->unitMeasure = $unitMeasure;
-
         return $this;
     }
 
- 
+    public function getDish(): ?Dish
+    {
+        return $this->dish;
+    }
 
-    
+    public function setDish(Dish $dish): self
+    {
+        $this->dish = $dish;
+        return $this;
+    }
+
+    public function getFood(): ?Food
+    {
+        return $this->food;
+    }
+
+    public function setFood(Food $food): self
+    {
+        $this->food = $food;
+        return $this;
+    }
 }

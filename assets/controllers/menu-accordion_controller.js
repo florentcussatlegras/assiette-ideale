@@ -3,11 +3,8 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["panel", "arrowDown", "arrowUp"];
 
-  connect() {
-    console.log("connect menu accordion");
-  }
-
   toggle(event) {
+  
     const clickedDay = event.currentTarget.dataset.day;
 
     this.panelTargets.forEach(panel => {

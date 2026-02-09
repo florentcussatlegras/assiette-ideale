@@ -1,9 +1,0 @@
-{% extends "base.html.twig" %}
-
-{% block body %}
-    {% set foo = 'foo' %}
-    {% set tab = { (foo): 'foo', (1 + 1): 'bar', (foo ~ 'b'): 'baz' } %}
-    {% set tab2 = [1, {"foo": "bar"}] %}
-    {{ dump(tab2) }}
-{% endblock %}
-

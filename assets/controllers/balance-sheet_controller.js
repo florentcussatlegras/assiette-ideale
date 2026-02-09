@@ -154,13 +154,21 @@ export default class extends Controller {
     tabs.forEach((tab) => {
       tab.addEventListener("click", (e) => {
         tabs.forEach((t) => {
-          t.classList.replace("text-white", "text-dark-blue");
-          t.classList.replace("bg-light-blue", "bg-white");
+          t.classList.replace("text-white", "text-gray-900");
+          t.classList.remove("hover:text-white");
+          t.classList.add("hover:text-gray-900");
+          t.classList.replace("bg-sky-600", "bg-gray-100");
+          t.classList.remove("hover:bg-gray-600");
+          t.classList.add("hover:bg-gray-900");
         });
 
         if (!tab.classList.contains("date-picker")) {
-          tab.classList.replace("text-dark-blue", "text-white");
-          tab.classList.replace("bg-white", "bg-light-blue");
+          tab.classList.replace("text-gray-900", "text-white");
+          tab.classList.remove("hover:text-gray-900");
+          tab.classList.add("hover:text-white");
+          tab.classList.replace("bg-gray-100", "bg-sky-600");
+          tab.classList.remove("hover:bg-gray-900");
+          tab.classList.add("hover:bg-sky-600");
         }
       });
     });
@@ -237,13 +245,22 @@ export default class extends Controller {
         const tabEnd = this.normalizeDate(tab.dataset.end);
 
         // reset styles
-        tab.classList.replace("text-white", "text-dark-blue");
-        tab.classList.replace("bg-light-blue", "bg-white");
+        tab.classList.replace("text-white", "text-gray-900");
+        tab.classList.remove("hover:text-white");
+        tab.classList.add("hover:text-gray-900");
+        tab.classList.replace("bg-sky-600", "bg-gray-100");
+        tab.classList.remove("hover:bg-sky-600");
+        tab.classList.add("hover:bg-gray-900");
 
         // match exact dates
         if (tabStart === currentStart && tabEnd === currentEnd) {
-            tab.classList.replace("text-dark-blue", "text-white");
-            tab.classList.replace("bg-white", "bg-light-blue");
+            tab.classList.replace("text-gray-900", "text-white");
+            tab.classList.remove("hover:text-gray-900");
+            tab.classList.add("hover:text-white");
+            tab.classList.replace("bg-gray-100", "bg-sky-600");
+            tab.classList.remove("hover:bg-gray-900");
+            tab.classList.add("hover:bg-sky-600");
+            
             matched = true;
         }
     });

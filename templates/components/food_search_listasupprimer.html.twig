@@ -1,0 +1,81 @@
+<div {{attributes}}>
+
+    <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
+
+    <input name="food_group_code" type="hidden" value="{{ foodGroupAlias }}" /> 
+    <input name="food_group_slug" type="hidden" value="{{ foodGroupSlug }}" />
+
+    <div class="flex gap-2 flex-wrap">
+        {% for foodGroup in fgs|default(null) %}
+            {{ foodGroup }}
+        {% endfor %}
+    </div>
+
+    <div class="flex flex-col items-start lg:flex-row mt-4 md:items-center md:justify-between">
+
+        <div class="flex relative search_food_list mb-2 w-1/4">
+            <input
+                id="input_search_food_list"
+                type="search"
+                data-model="query"
+                class="block p-6 rounded-full border border-slate-800 w-full"
+                placeholder="Saisissez le nom d'un aliment..."
+            >
+        </div>
+
+        <div class="flex lg:ml-auto h-11">
+
+            {{ include('partials/_view_mode_list.html.twig') }}
+
+            <div class="flex items-center gap-6 ml-6">
+
+                <select>
+                    <option><span class="font-bold">TRIER</span>: Pertinence</option>
+                    <option>Ordre alphabétique</option>
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="flex flex-wrap py-2 gap-4">
+        {{ render(controller('App\\Controller\\FoodController::getFoodGroupList')) }}
+    </div>
+
+    <div id="wrapper" class="wrapper mt-3 gap-4" data-loading="addClass(opacity-50)">       
+
+        {% if this.foods|length > 0 %}   
+            {% for food in this.foods %}
+                {{ include("food/_food.html.twig", {unitMeasures: this.unitMeasures}) }}
+            {% endfor %}
+        {% else %}
+            <div>No foods found</div>
+        {% endif %}
+
+    </div>
+
+    <script> 
+        const wrapper = document.getElementById("wrapper");
+        const btnModeList = document.getElementById("view-mode-list");
+        const btnModeGrid = document.getElementById("view-mode-grid");
+
+        btnModeList.addEventListener("click", function (event) {
+            // List view
+            event.preventDefault();
+            wrapper.classList.add("list");
+            btnModeGrid.classList.remove("view-mode-switch__display--selected")
+            this.classList.add("view-mode-switch__display--selected");
+        });
+
+        btnModeGrid.addEventListener("click", function (event) {
+            // Grid view
+            event.preventDefault();
+            wrapper.classList.remove("list");
+            btnModeList.classList.remove("view-mode-switch__display--selected");
+            this.classList.add("view-mode-switch__display--selected");
+        });
+    </script>
+
+</div>

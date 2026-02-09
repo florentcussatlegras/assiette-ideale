@@ -29,7 +29,7 @@ class StepRecipeType extends AbstractType
             ->add('description', TextareaType::class, [
                 'required' => false,
                 'attr' => [
-                    'class' => 'w-2/3 border border-gray min-h-16',
+                    'class' => 'w-2/3 rounded-lg border border-gray-200 min-h-16',
                     'data-controller' => 'textarea-autogrow',
                     'data-textarea-autogrow-resize-debounce-delay-value' => '500',
                 ]

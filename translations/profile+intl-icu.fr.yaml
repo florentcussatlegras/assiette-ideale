@@ -10,7 +10,7 @@ profile:
         forbiddenFoods: Aliments interdits
         diets: Régimes
         energy: Energie
-    title: Mon profil
+    title: Mon espace
     change_password: 'Modifier le mot de passe'
     physical_activities:
         label: 'Vos activités physiques'

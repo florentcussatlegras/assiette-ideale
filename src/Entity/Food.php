@@ -2,189 +2,100 @@
 
 namespace App\Entity;
 
-use Cocur\Slugify\Slugify;
-use App\Service\UploaderHelper;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Diet\Diet;
 use App\Entity\FoodGroup\FoodGroup;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\HttpFoundation\File\File;
+use App\Entity\UnitMeasure;
+use App\Service\UploaderHelper;
+use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Entity\Diet\Diet;
 
-/**
- * Food
- *
- * @ORM\Table(name="food")
- * @ORM\Entity(repositoryClass="App\Repository\FoodRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: "App\Repository\FoodRepository")]
+#[ORM\Table(name: "food")]
+#[ORM\HasLifecycleCallbacks]
 class Food
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank(message="Veuillez saisir un nom")
-     * @Groups({"searchable"})
-     */
-    private $name;
+    #[ORM\Column(type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Veuillez saisir un nom")]
+    #[Groups(["searchable"])]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
-     */
-    private $slug;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $slug = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="createdAt", type="datetime")
-     */
-    private $createdAt;
+    #[ORM\Column(type: "datetime")]
+    private \DateTime $createdAt;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
-     */
-    private $updatedAt;
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTime $updatedAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Food", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="sub_food_group_id", nullable=true)
-     */
-    private $subFoodGroup;
+    #[ORM\ManyToOne(targetEntity: self::class, cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(name: "sub_food_group_id", nullable: true)]
+    private ?self $subFoodGroup = null;
 
-    /**
-     * @ORM\Column(name="is_sub_food_group", type="boolean")
-     * @var boolean
-     */
-    private $isSubFoodGroup;
+    #[ORM\Column(type: "boolean")]
+    private bool $isSubFoodGroup = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroup", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="food_group_id", nullable=false, onDelete="CASCADE")
-     */
-    private $foodGroup;
+    #[ORM\ManyToOne(targetEntity: FoodGroup::class, cascade: ["persist", "remove"])]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    private FoodGroup $foodGroup;
 
-    /**
-     * @var integer
-     *
-     * @Assert\Type(type="float", message="{{ value }} n'est pas un nombre valide")
-     *
-     * @ORM\Column(name="equivalenceReferenceFoodGroup", type="float", nullable=true)
-     */
-    private $equivalenceReferenceFoodGroup;
+    #[ORM\Column(type: "float", nullable: true)]
+    #[Assert\Type(type: "float", message: "{{ value }} n'est pas un nombre valide")]
+    private ?float $equivalenceReferenceFoodGroup = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @var string
-     */
-    private $picture;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $picture = null;
 
-    /**
-     * @ORM\Column(name="info", type="string", length=255, nullable=true)
-     */
-    private $info;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $info = null;
 
-    /**
-     * @var integer
-     *
-     * @Assert\Type(type="float", message="{{ value }} n'est pas un nombre valide")
-     *
-     * @ORM\Column(name="medianWeight", type="float", nullable=true)
-     */
-    private $medianWeight;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $medianWeight = null;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="show_median_weight", type="boolean", nullable=true)
-     */
-    private $showMedianWeight;
+    #[ORM\Column(type: "boolean", nullable: true)]
+    private ?bool $showMedianWeight = null;
 
-    /**
-     * @var string
-     * 
-     * @Assert\Count(min = "1", minMessage="Vous devez indiquer au moins {{ limit }} unité de mesure")
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\UnitMeasure", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $unitMeasures;
+    #[ORM\ManyToMany(targetEntity: UnitMeasure::class, cascade: ["persist"])]
+    private Collection $unitMeasures;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="have_gluten", type="boolean")
-     */
-    private $haveGluten;
+    #[ORM\Column(type: "boolean")]
+    private bool $haveGluten = false;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="have_lactose", type="boolean")
-     */
-    private $haveLactose;
+    #[ORM\Column(type: "boolean")]
+    private bool $haveLactose = false;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="not_consumable_raw", type="boolean")
-     */
-    private $notConsumableRaw;
+    #[ORM\Column(type: "boolean")]
+    private bool $notConsumableRaw = false;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="can_be_a_part", type="boolean")
-     */
-    private $canBeAPart;
+    #[ORM\Column(type: "boolean", name: 'can_be_a_part')]
+    private bool $canBeAPart = false;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $energy;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $energy = null;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $lipid;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $lipid = null;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $carbohydrate;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $carbohydrate = null;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
-    private $protein;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $protein = null;
 
-    /**
-     * @var NutritionalTable
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\NutritionalTable", cascade={"persist"})
-     */
-    private $nutritionalTable;
+    #[ORM\OneToOne(targetEntity: NutritionalTable::class, cascade: ["persist"])]
+    private ?NutritionalTable $nutritionalTable = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Diet\Diet", mappedBy="forbiddenFoods")
-     */
-    private $forbiddenDiets;
+    #[ORM\ManyToMany(targetEntity: Diet::class, mappedBy: "forbiddenFoods")]
+    private Collection $forbiddenDiets;
 
     public function __construct()
     {
@@ -192,256 +103,46 @@ class Food
         $this->forbiddenDiets = new ArrayCollection();
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return $this->name ?? '';
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function setCreatedValue()
+    #[ORM\PrePersist]
+    public function setCreatedValue(): void
     {
         $this->createdAt = new \DateTime();
     }
 
-    /** 
-    * @ORM\PreUpdate 
-    */
-    public function setUpdatedAtValue()
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTime();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setSlugValue(): void
+    {
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($this->name);
+    }
+
+    // --------------------- Getters & Setters ---------------------
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Food
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Food
-     */
-    public function setCreatedAt($createdAt)
+    public function setName(string $name): self
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Food
-     */
-    public function setUpdatedAt($updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt(): \DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set equivalenceReferenceFoodGroup
-     *
-     * @param integer $equivalenceReferenceFoodGroup
-     *
-     * @return Food
-     */
-    public function setEquivalenceReferenceFoodGroup($equivalenceReferenceFoodGroup)
-    {
-        $this->equivalenceReferenceFoodGroup = $equivalenceReferenceFoodGroup;
-
-        return $this;
-    }
-
-    /**
-     * Get equivalenceReferenceFoodGroup
-     *
-     * @return integer
-     */
-    public function getEquivalenceReferenceFoodGroup()
-    {
-        return $this->equivalenceReferenceFoodGroup;
-    }
-
-    public function setPicture($picture): self
-    {
-        $this->picture = $picture;
-
-        return $this;
-    }
-
-    public function getPicture(): ?string
-    {
-        return $this->picture;
-    }
-
-    /**
-     * Set medianWeight
-     *
-     * @param integer $medianWeight
-     *
-     * @return Food
-     */
-    public function setMedianWeight($medianWeight): self
-    {
-        $this->medianWeight = $medianWeight;
-
-        return $this;
-    }
-
-    /**
-     * Get medianWeight
-     *
-     * @return integer
-     */
-    public function getMedianWeight(): int
-    {
-        return $this->medianWeight;
-    }
-
-    /**
-     * Set showMedianWeight
-     *
-     * @param boolean $showMedianWeight
-     *
-     * @return Food
-     */
-    public function setShowMedianWeight($showMedianWeight): self
-    {
-        $this->showMedianWeight = $showMedianWeight;
-
-        return $this;
-    }
-
-    /**
-     * Get showMedianWeight
-     *
-     * @return boolean
-     */
-    public function getShowMedianWeight(): bool
-    {
-        return $this->showMedianWeight;
-    }
-
-    /**
-     * Set info
-     *
-     * @param string $info
-     *
-     * @return Food
-     */
-    public function setInfo($info): self
-    {
-        $this->info = $info;
-
-        return $this;
-    }
-
-    /**
-     * Get info
-     *
-     * @return string
-     */
-    public function getInfo(): ?string
-    {
-        return $this->info;
-    }
-
-    /**
-     * Set foodGroup
-     *
-     * @param \App\Entity\FoodGroup\FoodGroup $foodGroup
-     *
-     * @return Food
-     */
-    public function setFoodGroup(\App\Entity\FoodGroup\FoodGroup $foodGroup = null)
-    {
-        $this->foodGroup = $foodGroup;
-
-        return $this;
-    }
-
-    /**
-     * Get foodGroup
-     *
-     * @return \App\Entity\FoodGroup\FoodGroup
-     */
-    public function getFoodGroup(): ?FoodGroup
-    {
-        return $this->foodGroup;
-    }
-
-    /**
-     * Set slugNameValue
-     *
-     * @param string $slugNameValue
-     *
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     *
-     */
-    public function setSlugValue()
-    {
-        $slugify = new Slugify();
-
-        $this->slug = $slugify->slugify($this->name);
-
+        $this->name = $name;
         return $this;
     }
 
@@ -453,19 +154,28 @@ class Food
     public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
-
         return $this;
     }
 
-    public function getIsSubFoodGroup(): ?bool
+    public function getCreatedAt(): \DateTime
     {
-        return $this->isSubFoodGroup;
+        return $this->createdAt;
     }
 
-    public function setIsSubFoodGroup(bool $isSubFoodGroup): self
+    public function setCreatedAt(\DateTime $createdAt): self
     {
-        $this->isSubFoodGroup = $isSubFoodGroup;
+        $this->createdAt = $createdAt;
+        return $this;
+    }
 
+    public function getUpdatedAt(): ?\DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTime $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 
@@ -477,124 +187,96 @@ class Food
     public function setSubFoodGroup(?self $subFoodGroup): self
     {
         $this->subFoodGroup = $subFoodGroup;
-
         return $this;
     }
 
-    // /**
-    //  * @ORM\PrePersist
-    //  * @ORM\PreUpdate
-    //  */
-    // public function setSubFoodGroupDefault()
-    // {  
-    //     if(null === $this->subFoodGroup && !$this->isSubFoodGroup)
-    //     {
-    //         $this->subFoodGroup = $this;
-    //     }
-
-    //     return true;
-    // }
-
-    public function getHaveGluten(): ?bool
+    public function getIsSubFoodGroup(): bool
     {
-        return $this->haveGluten;
+        return $this->isSubFoodGroup;
     }
 
-    public function setHaveGluten(bool $haveGluten): self
+    public function setIsSubFoodGroup(bool $isSubFoodGroup): self
     {
-        $this->haveGluten = $haveGluten;
-
+        $this->isSubFoodGroup = $isSubFoodGroup;
         return $this;
     }
 
-    /**
-     * Get the value of haveLactose
-     *
-     * @return  boolean
-     */ 
-    public function getHaveLactose(): ?bool
+    public function getFoodGroup(): FoodGroup
     {
-        return $this->haveLactose;
+        return $this->foodGroup;
     }
 
-    /**
-     * Set the value of haveLactose
-     *
-     * @param  boolean  $haveLactose
-     *
-     * @return  self
-     */ 
-    public function setHaveLactose(bool $haveLactose): self
+    public function setFoodGroup(FoodGroup $foodGroup): self
     {
-        $this->haveLactose = $haveLactose;
-
+        $this->foodGroup = $foodGroup;
         return $this;
     }
 
-    public function getNotConsumableRaw(): ?bool
+    public function getEquivalenceReferenceFoodGroup(): ?float
     {
-        return $this->notConsumableRaw;
+        return $this->equivalenceReferenceFoodGroup;
     }
 
-    public function setNotConsumableRaw(?bool $notConsumableRaw): self
+    public function setEquivalenceReferenceFoodGroup(?float $equivalenceReferenceFoodGroup): self
     {
-        $this->notConsumableRaw = $notConsumableRaw;
-
+        $this->equivalenceReferenceFoodGroup = $equivalenceReferenceFoodGroup;
         return $this;
     }
 
-    public function getPicturePath()
+    public function getPicture(): ?string
     {
-        if($this->getPicture()) {
-            return UploaderHelper::FOOD.'/'.$this->getPicture();
-        }
-
-        return null;
+        return $this->picture;
     }
 
-    /**
-     * @Groups({"searchable"})
-     */
-    public function getAbsolutePicturePath()
+    public function setPicture(?string $picture): self
     {
-        return 'https://localhost:8000/uploads/' . $this->getPicturePath();
-    }
-
-    /**
-     * @Groups({"searchable"})
-     */
-    public function getSubFoodGroupName()
-    {
-        if(!$this->subFoodGroup) {
-            return null;
-        }
-
-        return $this->subFoodGroup->getName();
-    }
-
-    /**
-     * @Groups({"searchable"})
-     */
-    public function getFoodGroupName()
-    {
-        return $this->foodGroup->getName();
-    }
-
-    public function getCanBeAPart(): ?bool
-    {
-        return $this->canBeAPart;
-    }
-
-    public function setCanBeAPart(bool $canBeAPart): self
-    {
-        $this->canBeAPart = $canBeAPart;
-
+        $this->picture = $picture;
         return $this;
     }
 
-    /**
-     * @return Collection|UnitMeasure[]
-     */
+    public function getPicturePath(): ?string
+    {
+        return $this->picture ? UploaderHelper::FOOD . '/' . $this->picture : null;
+    }
+
+    public function getAbsolutePicturePath(): ?string
+    {
+        return $this->getPicturePath() ? 'https://localhost:8000/uploads/' . $this->getPicturePath() : null;
+    }
+
+    public function getInfo(): ?string
+    {
+        return $this->info;
+    }
+
+    public function setInfo(?string $info): self
+    {
+        $this->info = $info;
+        return $this;
+    }
+
+    public function getMedianWeight(): ?float
+    {
+        return $this->medianWeight;
+    }
+
+    public function setMedianWeight(?float $medianWeight): self
+    {
+        $this->medianWeight = $medianWeight;
+        return $this;
+    }
+
+    public function getShowMedianWeight(): ?bool
+    {
+        return $this->showMedianWeight;
+    }
+
+    public function setShowMedianWeight(?bool $showMedianWeight): self
+    {
+        $this->showMedianWeight = $showMedianWeight;
+        return $this;
+    }
+
     public function getUnitMeasures(): Collection
     {
         return $this->unitMeasures;
@@ -603,158 +285,109 @@ class Food
     public function addUnitMeasure(UnitMeasure $unitMeasure): self
     {
         if (!$this->unitMeasures->contains($unitMeasure)) {
-            $this->unitMeasures[] = $unitMeasure;
+            $this->unitMeasures->add($unitMeasure);
         }
-
         return $this;
     }
 
     public function removeUnitMeasure(UnitMeasure $unitMeasure): self
     {
         $this->unitMeasures->removeElement($unitMeasure);
-
         return $this;
     }
 
-    /**
-     * Get the value of energy
-     */ 
-    public function getEnergy()
-    {
-        // return $this->energy;
-        if($this->nutritionalTable) {
-            return $this->nutritionalTable->getEnergy();
-        }
-
-        return null;
-    }
-
-    /**
-     * Set the value of energy
-     *
-     * @return  self
-     */ 
-    public function setEnergy($energy)
-    {
-        $this->energy = $energy;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of lipid
-     */ 
-    public function getLipid()
-    {
-        // return $this->lipid;
-        if($this->nutritionalTable) {
-            return $this->nutritionalTable->getLipid();
-        }
-
-        return null;
-    }
-
-    /**
-     * Set the value of lipid
-     *
-     * @return  self
-     */ 
-    public function setLipid($lipid)
-    {
-        $this->lipid = $lipid;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of carbohydrate
-     */ 
-    public function getCarbohydrate()
-    {
-        // return $this->carbohydrate;
-        if($this->nutritionalTable) {
-            return $this->nutritionalTable->getCarbohydrate();
-        }
-
-        return null;
-    }
-
-    /**
-     * Set the value of carbohydrate
-     *
-     * @return  self
-     */ 
-    public function setCarbohydrate($carbohydrate)
-    {
-        $this->carbohydrate = $carbohydrate;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of protein
-     */ 
-    public function getProtein()
-    {
-        if($this->nutritionalTable) {
-            return $this->nutritionalTable->getProtein();
-        }
-
-        return null;
-    }
-
-    /**
-     * Set the value of protein
-     *
-     * @return  self
-     */ 
-    public function setProtein($protein)
-    {
-        $this->protein = $protein;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of protein
-     */ 
-    public function getSodium()
-    {
-        if($this->nutritionalTable) {
-            return $this->nutritionalTable->getSalt();
-        }
-
-        return null;
-    }
-
-    public function isIsSubFoodGroup(): ?bool
-    {
-        return $this->isSubFoodGroup;
-    }
-
-    public function isShowMedianWeight(): ?bool
-    {
-        return $this->showMedianWeight;
-    }
-
-    public function isHaveGluten(): ?bool
+    public function getHaveGluten(): bool
     {
         return $this->haveGluten;
     }
 
-    public function isHaveLactose(): ?bool
+    public function setHaveGluten(bool $haveGluten): self
+    {
+        $this->haveGluten = $haveGluten;
+        return $this;
+    }
+
+    public function getHaveLactose(): bool
     {
         return $this->haveLactose;
     }
 
-    public function isNotConsumableRaw(): ?bool
+    public function setHaveLactose(bool $haveLactose): self
+    {
+        $this->haveLactose = $haveLactose;
+        return $this;
+    }
+
+    public function getNotConsumableRaw(): bool
     {
         return $this->notConsumableRaw;
     }
 
-    public function isCanBeAPart(): ?bool
+    public function setNotConsumableRaw(bool $notConsumableRaw): self
+    {
+        $this->notConsumableRaw = $notConsumableRaw;
+        return $this;
+    }
+
+    public function getCanBeAPart(): bool
     {
         return $this->canBeAPart;
+    }
+
+    public function setCanBeAPart(bool $canBeAPart): self
+    {
+        $this->canBeAPart = $canBeAPart;
+        return $this;
+    }
+
+    // Nutritional values (delegated)
+    public function getEnergy(): ?float
+    {
+        return $this->nutritionalTable?->getEnergy() ?? $this->energy;
+    }
+
+    public function setEnergy(?float $energy): self
+    {
+        $this->energy = $energy;
+        return $this;
+    }
+
+    public function getLipid(): ?float
+    {
+        return $this->nutritionalTable?->getLipid() ?? $this->lipid;
+    }
+
+    public function setLipid(?float $lipid): self
+    {
+        $this->lipid = $lipid;
+        return $this;
+    }
+
+    public function getCarbohydrate(): ?float
+    {
+        return $this->nutritionalTable?->getCarbohydrate() ?? $this->carbohydrate;
+    }
+
+    public function setCarbohydrate(?float $carbohydrate): self
+    {
+        $this->carbohydrate = $carbohydrate;
+        return $this;
+    }
+
+    public function getProtein(): ?float
+    {
+        return $this->nutritionalTable?->getProtein() ?? $this->protein;
+    }
+
+    public function setProtein(?float $protein): self
+    {
+        $this->protein = $protein;
+        return $this;
+    }
+
+    public function getSodium(): ?float
+    {
+        return $this->nutritionalTable?->getSalt();
     }
 
     public function getNutritionalTable(): ?NutritionalTable
@@ -762,28 +395,27 @@ class Food
         return $this->nutritionalTable;
     }
 
-    public function setNutritionalTable(?NutritionalTable $nutritionalTable): static
+    public function setNutritionalTable(?NutritionalTable $nutritionalTable): self
     {
         $this->nutritionalTable = $nutritionalTable;
-
         return $this;
     }
 
-    /**
-     * @return Collection|Diet[]
-     */
+    // ---------------- Forbidden Diets ----------------
     public function getForbiddenDiets(): Collection
     {
         return $this->forbiddenDiets;
     }
+
     public function addForbiddenDiet(Diet $diet): self
     {
         if (!$this->forbiddenDiets->contains($diet)) {
-            $this->forbiddenDiets[] = $diet;
+            $this->forbiddenDiets->add($diet);
             $diet->addForbiddenFood($this);
         }
         return $this;
     }
+
     public function removeForbiddenDiet(Diet $diet): self
     {
         if ($this->forbiddenDiets->removeElement($diet)) {

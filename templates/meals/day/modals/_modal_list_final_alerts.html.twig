@@ -1,77 +1,63 @@
-<div
-     {# {{ stimulus_controller('modal-final-alerts') }} #}
->
-    {# <button
-        data-action="modal-final-alerts#showAlerts"
-        data-action="keydown.esc->modal-final-alerts#hideAlerts"
-        data-modal-target="modal-final-alerts"
-        data-modal-toggle="modal-final-alerts"
-        type="button"
-        class="show-final-alerts font-bold flex items-center gap-4 cursor-pointer"
-    >
-        <svg fill="red" height="15px" width="15px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 208.891 208.891" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M0,170l65.555-65.555L0,38.891L38.891,0l65.555,65.555L170,0l38.891,38.891l-65.555,65.555L208.891,170L170,208.891 l-65.555-65.555l-65.555,65.555L0,170z"></path> </g></svg>     
-        <span class="text-red-500 text-base text-left leading-4">Qu'est-ce qui ne va pas avec vos repas ?</span>
-    </button> #}
+<div>
+	<div class="modal fade" id="finalAlertModal" tabindex="-1" role="dialog" aria-labelledby="finalAlertModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div
+				class="modal-content rounded-3xl shadow-lg overflow-hidden">
 
+				<!-- Header -->
+				<div class="flex items-center justify-end text-light-blue p-4">
 
-    <div class="modal fade" id="finalAlertModal" tabindex="-1" role="dialog" aria-labelledby="finalAlertModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-3xl shadow-lg overflow-hidden">
+					<button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition" data-dismiss="modal" aria-label="Close">
+						<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
+							<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+						</svg>
+					</button>
+				</div>
 
-            <!-- Header -->
-            <div class="flex items-center justify-end text-light-blue p-4">
+				<!-- Body -->
+				<div class="p-5 min-h-[8rem]">
 
-                <button 
-                    type="button"
-                    class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition"
-                    data-dismiss="modal"
-                    aria-label="Close"
-                >
-                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                    </svg>
-                </button>
-            </div>
+					<div class="flex flex-col items-center justify-center gap-4 mb-4">
+						<span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid #7C2D12">
+							<svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+								<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+								<g id="SVGRepo_iconCarrier">
+									<path d="M12 5L12 14" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+									<path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="#7C2D12"></path>
+								</g>
+							</svg>
+						</span>
+						<div class="font-bold text-3xl leading-tight text-center">
+							Vos choix vont à l'encontre de certaines recommandations
+						</div>
+					</div>
 
-            <!-- Body -->
-            <div class="p-5 min-h-[8rem]">
+					<div class="text-base px-4 flex flex-col justify-center">
+						{% for key, messages in app.session.get('_meal_day_alerts/_final_list') %}
+							<ul class="mx-4 text-center">
+								{% if key == 'food_group_parent' %}
+									{% for message in messages %}
+										<li>{{ message }}</li>
+									{% endfor %}
+								{% else %}
+									<li>{{ messages }}</li>
+								{% endif %}
+							</ul>
+						{% endfor %}
+					</div>
 
-                <div class="flex flex-col items-center justify-center gap-4 mb-4">
-                    <span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid #7C2D12">
-                        <svg class="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5L12 14" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="#7C2D12"></path> </g></svg>			{# <span class="flex md:uppercase px-2 py-1 text-xs md:text-xs font-bold mr-3 text-white bg-opacity-70 rounded-lg" style="background-color: {{ alerts.higher_level.color }}">{{ alerts.higher_level.text }}</span> #}
-                    </span>
-                    <div class="font-bold text-3xl leading-tight text-center">
-                        Vos choix vont à l'encontre de certaines recommandations
-                    </div>
-                </div>
+				</div>
 
-                <div class="text-base px-4 flex flex-col justify-center">
-                    {% for key, messages in app.session.get('_meal_day_alerts/_final_list') %}
-                        <ul class="mx-4 text-center">
-                            {% if key == 'food_group_parent' %}
-                                    {% for message in messages %}
-                                        <li>{{ message }}</li>
-                                    {% endfor %}
-                            {% else %}
-                                <li>{{ messages }}</li>
-                            {% endif %}
-                        </ul>
-                    {% endfor %}
-                </div>
+				<!-- Footer -->
+				<div class="p-5 flex justify-end rounded-b-3xl">
+					<button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
+						OK
+					</button>
+				</div>
 
-            </div>
-
-            <!-- Footer -->
-            <div class="p-5 flex justify-end rounded-b-3xl">
-                <button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
-                    OK
-                </button>
-            </div>
-
-            </div>
-        </div>
-    </div>
-
+			</div>
+		</div>
+	</div>
 
 </div>

@@ -22,12 +22,6 @@ export default class FavoriteDishes extends Controller {
         btn.querySelector('.heart').classList.toggle('hidden');
         btn.querySelector('.heart-fill').classList.toggle('hidden');
 
-        
-        // console.log(`${this.urlShowAlertValue}/${dishId}`);
-        // const responseShowAlert = await fetch(`${this.urlShowAlertValue}/${dishId}`);
-        // document.getElementById('alert-ajax').innerHTML = await responseShowAlert.text();
-        // document.getElementById('alert-ajax').classList.replace('hidden', 'flex');
-
         const params = new URLSearchParams({
             dish_id: dishId
         });

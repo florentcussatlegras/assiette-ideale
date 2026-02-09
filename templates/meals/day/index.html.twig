@@ -1,13 +1,39 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }} - Repas du jour{% endblock %}
+{% block title %}
+	{{ parent() }}
+	- Repas du jour
+{% endblock %}
 
 {% block body %}
 
-	<main role="main" id="meals-day">
-		
+	<div id="meals-day">
+
 		{{ include('meals/day/_meals_day.html.twig') }}
 
-	</main>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+
+			const btn = document.getElementById('scrollTopBtn');
+
+			window.addEventListener('scroll', () => {
+			if (window.scrollY > 300) {
+			btn.classList.remove('opacity-0', 'pointer-events-none');
+			btn.classList.add('opacity-100');
+			} else {
+			btn.classList.add('opacity-0', 'pointer-events-none');
+			btn.classList.remove('opacity-100');
+			}
+			});
+
+			btn.addEventListener('click', () => {
+			window.scrollTo({top: 0, behavior: 'smooth'});
+			});
+
+		});
+	</script>
+
 
 {% endblock %}

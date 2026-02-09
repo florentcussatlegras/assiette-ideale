@@ -1,24 +1,28 @@
-
-<div class="flex flex-row items-center gap-4 px-6 py-2 bg-{{ bgColor|default('light-blue') }}">
+<div class="flex flex-row items-center gap-4 px-6 pt-2 bg-{{ bgColor|default('light-blue') }}">
 
     {% if alert is defined and app.session.get('_meal_day_date') != 'model' %}
 
-        <div 
-            {{ stimulus_controller('popover-info', {
-                url: path('meal_popover_energy')
-            }) }}
-            data-action="click->popover-info#showMessages"
-            data-energy="{{ mealDayEnergy }}"
-            class="flex items-center cursor-pointer gap-2"
-        >
+        <div class="flex flex-col items-end">
+            <div 
+                {# {{ stimulus_controller('popover-info', {
+                    url: path('meal_popover_energy')
+                }) }} #}
+                {# data-action="click->popover-info#showMessages" #}
+                data-energy="{{ mealDayEnergy }}"
+                class="flex items-center cursor-pointer gap-2"
+            >
 
-            {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(42), opacity: 1 }) }}
+                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(42), opacity: 1 }) }}
 
-            <div class="flex items-end gap-2">
-                <span class="text-3xl font-semibold leading-none" style="color: {{ alert.color  }}">{{ mealDayEnergy|round }}</span>
-                <span class="text-base" style="color: {{ alert.color  }}">Kcal</span>
+                <div class="flex items-end gap-2">
+                    <span class="text-3xl font-semibold leading-none" style="color: {{ alert.color  }}">{{ mealDayEnergy|round }}</span>
+                    <span class="text-base" style="color: {{ alert.color  }}">Kcal</span>
+                </div>
+
             </div>
-
+            {% if showDetails %}
+                <div class="text-sm md:text-base" style="color: {{ alert.color }}">Votre total énergétique sur la journée est {{ alert.text|lower }}</div>
+            {% endif %}   
         </div>
 
     {% else %}
@@ -29,7 +33,7 @@
         </div>
        
     {% endif %}
-
+     
 
     <input 
         type="hidden" 

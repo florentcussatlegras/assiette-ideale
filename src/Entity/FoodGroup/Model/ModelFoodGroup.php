@@ -5,229 +5,92 @@ namespace App\Entity\FoodGroup\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Cocur\Slugify\Slugify;
 
-/**
- * ModelGroup
- *
- * @ORM\MappedSuperclass()
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\MappedSuperclass]
+#[ORM\HasLifecycleCallbacks]
 abstract class ModelFoodGroup
-{   
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $name;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="semi_short_name", type="string", length=255)
-     */
-    private $semiShortName;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $semiShortName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="short_name", type="string", length=255)
-     */
-    private $shortName;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $shortName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
-     */
-    private $slug;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $slug = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string", length=255)
-     */
-    private $alias;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $alias;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug_alias", type="string", length=255, nullable=true)
-     */
-    private $slugAlias;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $slugAlias = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="ranking", type="integer")
-     */
-    private $ranking;
+    #[ORM\Column(type: "integer")]
+    private int $ranking;
 
-    public function getClassName()
+    // ------------------- Méthodes utilitaires -------------------
+
+    public function getClassName(): string
     {
-        return get_class($this);
+        return static::class;
     }
 
-    public function getClass()
+    public function getClass(): string
     {
-       $arrayClass = explode("\\", get_class($this));
-
-       return $arrayClass[count($arrayClass)-1];
+        $arrayClass = explode("\\", static::class);
+        return $arrayClass[count($arrayClass) - 1];
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
 
-     /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    // ------------------- Getters & Setters -------------------
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return FoodGroup
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set shortName
-     *
-     * @param string $shortName
-     *
-     * @return $this
-     */
-    public function setShortName($shortName)
+    public function setName(string $name): self
     {
-        $this->shortName = $shortName;
-    
+        $this->name = $name;
         return $this;
     }
 
-    /**
-     * Get shortName
-     *
-     * @return string
-     */
-    public function getShortName()
+    public function getShortName(): string
     {
         return $this->shortName;
     }
 
-    /**
-     * Set semiShortName
-     *
-     * @param string $semiShortName
-     *
-     * @return $this
-     */
-    public function setSemiShortName(string $semiShortName): self
+    public function setShortName(string $shortName): self
     {
-        $this->semiShortName = $semiShortName;
-        
+        $this->shortName = $shortName;
         return $this;
     }
 
-    /**
-     * Get semiShortName
-     *
-     * @return string
-     */
-    public function getSemiShortName(): ?string
+    public function getSemiShortName(): string
     {
         return $this->semiShortName;
     }
 
-     /**
-     * Set slugNameValue
-     *
-     * @param string $slugNameValue
-     *
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     *
-     */
-    public function setSlugValue()
+    public function setSemiShortName(string $semiShortName): self
     {
-        $slugify = new Slugify();
-
-        $this->slug = $slugify->slugify($this->name);
-
+        $this->semiShortName = $semiShortName;
         return $this;
-    }
-
-     /**
-     * Set slugCode
-     *
-     * @param string $slugCode
-     *
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     *
-     */
-    public function setSlugAliasValue()
-    {
-        $slugify = new Slugify();
-
-        $this->slugAlias = $slugify->slugify($this->alias);
-
-        return $this;
-    }
-
-     /**
-     * Set ranking
-     *
-     * @param integer $ranking
-     *
-     * @return FoodGroup
-     */
-    public function setRanking($ranking)
-    {
-        $this->ranking = $ranking;
-
-        return $this;
-    }
-
-    /**
-     * Get ranking
-     *
-     * @return integer
-     */
-    public function getRanking()
-    {
-        return $this->ranking;
     }
 
     public function getSlug(): ?string
@@ -238,11 +101,10 @@ abstract class ModelFoodGroup
     public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
-
         return $this;
     }
 
-    public function getAlias(): ?string
+    public function getAlias(): string
     {
         return $this->alias;
     }
@@ -250,7 +112,6 @@ abstract class ModelFoodGroup
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
-
         return $this;
     }
 
@@ -262,7 +123,35 @@ abstract class ModelFoodGroup
     public function setSlugAlias(?string $slugAlias): self
     {
         $this->slugAlias = $slugAlias;
-
         return $this;
+    }
+
+    public function getRanking(): int
+    {
+        return $this->ranking;
+    }
+
+    public function setRanking(int $ranking): self
+    {
+        $this->ranking = $ranking;
+        return $this;
+    }
+
+    // ------------------- Slug Generation -------------------
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setSlugValue(): void
+    {
+        $slugify = new Slugify();
+        $this->slug = $slugify->slugify($this->name);
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function setSlugAliasValue(): void
+    {
+        $slugify = new Slugify();
+        $this->slugAlias = $slugify->slugify($this->alias);
     }
 }

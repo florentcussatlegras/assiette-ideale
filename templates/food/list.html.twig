@@ -4,183 +4,156 @@
 
 {% block body %}
 
-    <main role="main">
+    <div
+        {{ stimulus_controller('reload-content', {
+            url: path('app_food_list') 
+        }) }}
+        class="py-12"
+    >
 
-        <div
-            {{ stimulus_controller('reload-content', {
-                url: path('app_food_list') 
-            }) }}
-        >
-
-            <form action="{{ app.session.get('route_referer') }}" method="POST">
-           
-                {% if app.session.has('recipe_dish') %}
-                    {{ include("partials/_header.html.twig", { h1_content: "Les aliments", urlIntermediates:{ 'Ma recette': app.session.get('route_referer') }}) }}
-                {% else %}
-                    {{ include("partials/_header.html.twig", { h1_content: "Les aliments"}) }}
+        <form action="{{ app.session.get('route_referer') }}" method="POST">
+        
+            <h1 class="flex items-end text-2xl md:text-4xl mb-8 font-bold gap-6">
+                Les aliments 
+                {% if app.session.has('recipe_dish') is same as(true) %}
+                    <span class="text-2xl text-sky-600">{{ app.request.query.get('fg')|foodgroupnameFromId }}</h2>
                 {% endif %}
-   
-                <div>
+            </h1>
+            
+            <div>
 
-                    {% if app.session.has('recipe_dish') is same as(true) %}
-                        <h1>{{ app.request.query.get('fg')|foodgroupnameFromId }}</h1>
-                    {% endif %}
+                <div class="flex flex-col gap-2">
 
-                    <div class="flex flex-col gap-2">
-							
-                        <div class="flex flex-row gap-2 items-center">
-
-                            {% if app.session.has('recipe_dish') is same as(false) %}
-                                <button
-                                    type="button"
-                                    data-action="reload-content#onSelectAllFoodGroup"
-                                    data-reload-content-target="selectAllFoodGroup"
-                                    class="flex items-center justify-center px-4 py-3 gap-2 text-xs md:text-sm leading-4 rounded-lg text-white bg-light-blue hover:bg-sky-600 transition duration-300 hover:text-white"
-                                >
-                                    {# <svg fill="#fff" viewBox="0 0 24 24" class="w-5 h-5" id="add-collection" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" stroke="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path id="secondary" d="M7,10h6M10,7v6" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><path id="primary" d="M7,21H20a1,1,0,0,0,1-1V5" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><rect id="primary-2" data-name="primary" x="3" y="3" width="14" height="14" rx="1" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></rect></g></svg> #}
-                                    <span>Tous les groupes</span>
-                                </button>
-                                <button 
-                                    type="button" 
-                                    data-action="reload-content#onDeselectAllFoodGroup"
-                                    data-reload-content-target="deselectAllFoodGroup"
-                                    class="flex items-center justify-center px-4 py-3 gap-2 text-xs md:text-sm leading-4 rounded-lg bg-white text-dark-blue hover:bg-sky-600 transition duration-300 hover:text-white"
-                                >
-                                    {# <svg fill="#fff" viewBox="0 0 24 24" class="w-5 h-5" id="minus-collection" data-name="Line Color" xmlns="http://www.w3.org/2000/svg" class="icon line-color" stroke="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><line id="secondary" x1="7" y1="10" x2="13" y2="10" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></line><path id="primary" d="M7,21H20a1,1,0,0,0,1-1V5" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></path><rect id="primary-2" data-name="primary" x="3" y="3" width="14" height="14" rx="1" style="fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2;"></rect></g></svg> #}
-                                    <span>Aucun groupe</span>
-                                </button>
-                            {% endif %}
-                        
-                            {{ include('meals/partials/_button_gluten_lactose.html.twig') }}
-                        
-                        </div>
-
-                        <div class="flex flex-row items-center flex-wrap gap-2 {% if app.session.has('recipe_dish') is same as(false) %}visible{% else %}invisible absolute{% endif %}">
-                            {{ include('/foodgroup/_foodgroup_list.html.twig') }}
-                        </div>
-
-                    </div>
-                    
-                    <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
-
-                    {% if app.request.query.has('fg') %}
-                        <input type="hidden" name="fg" value="{{ app.request.query.get('fg') }}" />
-                    {% endif %}
-
-                    <div class="flex flex-col items-start lg:flex-row mt-2 mb-2 md:items-center md:justify-between gap-2 w-full">
-
-                        <div class="relative search_dish_list w-full md:w-1/2">
-                            <input
-                                id="input_search_food_list"
-                                name="q"
-                                placeholder="Saisissez le nom d'un aliment..."
-                                type="search"
-                                class="block p-6 border-none w-full xl:w-2/3 rounded-lg"
-                                data-reload-content-target="search"
-                                data-action="reload-content#onSearchInput"
-                            >
-                        </div>
-
-                        <div class="hidden lg:flex h-8 md:h-10 xl:h-11 ml-0 md:ml-auto">
-
-                            {{ include('partials/_view_mode_list.html.twig') }}
-
-                            {# <div class="flex items-center gap-6 ml-6">
-
-                                <select>
-                                    <option><span class="font-bold">TRIER</span>: Pertinence</option>
-                                    <option>Ordre alphabétique</option>
-                                </select>
-
-                            </div> #}
-
-                        </div>
-
-                    </div>
-
-                    {% if app.session.has('food_error_quantity') %}
-                        <div class="text-red-700 mt-4">
-                            {{ render(controller('App\\Controller\\DishController::showErrorFoodQuantity')) }}
-                        </div>
-                    {% endif %}
-
-                    <div 
-                        id="wrapper" 
-                        class="wrapper gap-2 mt-4 relative" 
-                        data-loading="addClass(opacity-50)"
-                        data-reload-content-target="content"
-                    >
-                        {{ include('food/_food_list.html.twig') }}
-                    </div>
-
-                    <div 
-                        class="container-loader w-full h-full items-center justify-center mt-24 xl:mt-32 hidden flex"
-                        data-reload-content-target="loader"
-                    >
-                        <div class="loader"></div>
-                    </div>
-
-                    <center class="mt-8 mb-8">
-                        <button 
-                            type="button"
-                            class="bg-gray-200 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300"
-                            data-action="reload-content#onLoadMore"
-                            data-reload-content-target="loadMore"
+                    <div class="relative search_dish_list w-full md:w-1/2 mb-2">
+                        <input
+                            id="input_search_food_list"
+                            name="q"
+                            placeholder="Saisissez le nom d'un aliment..."
+                            type="search"
+                            class="block p-6 w-full xl:w-2/3 rounded-lg"
+                            data-reload-content-target="search"
+                            data-action="reload-content#onSearchInput"
                         >
-                            Voir plus d'aliments...
-                        </button>
-                    </center>
-
-                    <script> 
-                        const wrapper = document.getElementById("wrapper");
-                        const btnModeList = document.getElementById("view-mode-list");
-                        const btnModeGrid = document.getElementById("view-mode-grid");
+                    </div>
                         
+                    <div class="flex flex-row gap-2 items-center">
 
-                        btnModeList.addEventListener("click", function (event) {
-                            // List view
-                            event.preventDefault();
-                            wrapper.classList.add("list");
-                            btnModeGrid.classList.remove("view-mode-switch__display--selected")
-                            this.classList.add("view-mode-switch__display--selected");
-                            
-                        });
+                        {% if app.session.has('recipe_dish') is same as(false) %}
+                            <button
+                                type="button"
+                                data-action="reload-content#onSelectAllFoodGroup"
+                                data-reload-content-target="selectAllFoodGroup"
+                                class="flex items-center justify-center px-4 py-3 gap-2 text-sm lg:text-lg leading-4 rounded-lg text-white bg-sky-600 hover:bg-sky-600 transition duration-300 hover:text-white"
+                            >
+                                <span>Tous les groupes</span>
+                            </button>
+                            <button 
+                                type="button" 
+                                data-action="reload-content#onDeselectAllFoodGroup"
+                                data-reload-content-target="deselectAllFoodGroup"
+                                class="flex items-center justify-center px-4 py-3 gap-2 text-sm lg:text-lg leading-4 rounded-lg bg-gray-100 text-gray-900 hover:bg-gray-200 transition duration-300 hover:text-gray-900"
+                            >
+                                <span>Aucun groupe</span>
+                            </button>
+                        {% endif %}
+                    
+                        {{ include('meals/partials/_button_gluten_lactose.html.twig') }}
+                    
+                    </div>
 
-                        btnModeGrid.addEventListener("click", function (event) {
-                            // Grid view
-                            event.preventDefault();
-                            wrapper.classList.remove("list");
-                            btnModeList.classList.remove("view-mode-switch__display--selected");
-                            this.classList.add("view-mode-switch__display--selected");
-                            
-                        });
-                    </script>
+                    <div class="flex flex-row items-center flex-wrap mt-2 gap-2 {% if app.session.has('recipe_dish') is same as(false) %}visible{% else %}invisible absolute{% endif %}">
+                        {{ include('/foodgroup/_foodgroup_list.html.twig') }}
+                    </div>
+
+                </div>
+                
+                <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
+
+                {% if app.request.query.has('fg') %}
+                    <input type="hidden" name="fg" value="{{ app.request.query.get('fg') }}" />
+                {% endif %}
+
+                <div class="flex flex-col items-start lg:flex-row mt-2 mb-2 md:items-center md:justify-between gap-2 w-full">
+
+                    <div class="hidden lg:flex h-8 md:h-10 xl:h-11 ml-0 md:ml-auto">
+
+                        {{ include('partials/_view_mode_list.html.twig') }}
+
+                    </div>
 
                 </div>
 
-                {# {{ dump(app.session.all()) }} #}
-
-                {% if app.session.has('recipe_dish') is same as(true) %}
-                    {# <div class="pl-8 py-8 fixed right-0 bg-white border z-50">
-                        <button type="button" class="font-bold">Annuler</button>
-                        <button type="submit" class="bg-gray py-2 px-4 rounded-full font-bold flex items-center gap-2">
-                            <svg viewBox="0 0 24 24" class="w-5 h-5" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
-                            <span>Ajouter les aliments au plat</span>
-                        </button>
-                    <div> #}
-                    <div id="menu" class="fixed bottom-0 right-0 mb-10 mr-4 flex items-center gap-4 p-4 z-50 top-auto left-auto">
-                        {# <button type="button" class="font-bold">Annuler</button> #}
-                        <button type="submit" class="py-2 px-4 rounded-lg font-bold flex items-center gap-2 current-shadow bg-light-blue text-white text-lg">
-                            <svg viewBox="0 0 24 24" class="w-12 h-12" data-v-563d9226="" fill="#ffffff"><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
-                            <span class="hidden md:inline-block">Ajouter les aliments au plat</span>
-                        </button>
+                {% if app.session.has('food_error_quantity') %}
+                    <div class="text-red-700 mt-4">
+                        {{ render(controller('App\\Controller\\DishController::showErrorFoodQuantity')) }}
                     </div>
                 {% endif %}
 
-            </form>
+                <div 
+                    id="wrapper" 
+                    class="wrapper gap-4 mt-8 min-h-64 relative" 
+                    data-loading="addClass(opacity-50)"
+                    data-reload-content-target="content"
+                >
+                    {{ include('food/_food_list.html.twig') }}
+                </div>
 
-        </div>
+                <div 
+                    class="container-loader w-full h-64 items-center justify-center mt-8 hidden flex"
+                    data-reload-content-target="loader"
+                >
+                    <div class="loader"></div>
+                </div>
 
-    </main>
+                <center class="mt-8 mb-8">
+                    <button 
+                        type="button"
+                        class="bg-gray-200 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300"
+                        data-action="reload-content#onLoadMore"
+                        data-reload-content-target="loadMore"
+                    >
+                        Voir plus d'aliments...
+                    </button>
+                </center>
+
+                <script> 
+                    const wrapper = document.getElementById("wrapper");
+                    const btnModeList = document.getElementById("view-mode-list");
+                    const btnModeGrid = document.getElementById("view-mode-grid");
+                    
+
+                    btnModeList.addEventListener("click", function (event) {
+                        // List view
+                        event.preventDefault();
+                        wrapper.classList.add("list");
+                        btnModeGrid.classList.remove("view-mode-switch__display--selected")
+                        this.classList.add("view-mode-switch__display--selected");
+                        
+                    });
+
+                    btnModeGrid.addEventListener("click", function (event) {
+                        // Grid view
+                        event.preventDefault();
+                        wrapper.classList.remove("list");
+                        btnModeList.classList.remove("view-mode-switch__display--selected");
+                        this.classList.add("view-mode-switch__display--selected");
+                        
+                    });
+                </script>
+
+            </div>
+
+            {% if app.session.has('recipe_dish') is same as(true) %}
+                <div id="menu" class="fixed bottom-0 right-0 mb-10 mr-4 flex items-center gap-4 p-4 z-50 top-auto left-auto">
+                    <button type="submit" class="py-2 px-4 rounded-lg font-bold flex items-center gap-2 current-shadow bg-light-blue text-white text-lg hover:bg-sky-700 transition duration-300">
+                        <svg viewBox="0 0 24 24" class="w-12 h-12" data-v-563d9226="" fill="#ffffff"><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
+                        <span class="hidden md:inline-block">Ajouter les aliments au plat</span>
+                    </button>
+                </div>
+            {% endif %}
+
+        </form>
+
+    </div>
 
 {% endblock %}

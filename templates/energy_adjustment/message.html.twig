@@ -1,0 +1,68 @@
+<div
+	{{ stimulus_controller('energy_adjustment', { 
+		urlAcceptWeightGoal: path('app_energy_adjustment_accept') 
+	} ) }}
+>
+
+	{% set imcOk = imcAlert.code is constant("App\\Entity\\Alert\\LevelAlert::BALANCE_WELL") %}
+
+	{# Icône persistante – visible seulement si le message est masqué #}
+	<button id="weightGoalIcon" class="my-hidden md:flex absolute top-4 -right-4 w-16 h-16 rounded-full text-white flex items-center justify-center shadow-lg z-10 flex" style="background-color: {{ imcAlert.color }}" data-action="click->energy-adjustment#toggleMessage">
+		{% if imcOk %}
+			<svg class="text-white w-12" viewBox="0 -2.5 16 16" id="meteor-icon-kit__regular-checkmark-s" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.70711 4.2929C1.31658 3.90237 0.68342 3.90237 0.29289 4.2929C-0.09763 4.6834 -0.09763 5.3166 0.29289 5.7071L5.29289 10.7071C5.68342 11.0976 6.3166 11.0976 6.7071 10.7071L15.7071 1.70711C16.0976 1.31658 16.0976 0.68342 15.7071 0.29289C15.3166 -0.09763 14.6834 -0.09763 14.2929 0.29289L6 8.5858L1.70711 4.2929z" fill="currentColor"></path></g></svg>
+		{% else %}
+			<svg class="text-white w-12" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+				<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+				<g id="SVGRepo_iconCarrier">
+					<path d="M12 15H12.01M12 12V9M4.98207 19H19.0179C20.5615 19 21.5233 17.3256 20.7455 15.9923L13.7276 3.96153C12.9558 2.63852 11.0442 2.63852 10.2724 3.96153L3.25452 15.9923C2.47675 17.3256 3.43849 19 4.98207 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+				</g>
+			</svg>
+		{% endif %}
+	</button>
+
+	<button id="weightGoalIcon" class="flex md:my-hidden absolute top-4 -right-2 w-10 h-10 rounded-full text-white flex items-center justify-center shadow-lg z-10 flex" style="background-color: {{ imcAlert.color }}" data-action="click->energy-adjustment#toggleMessage">
+		{% if imcOk %}
+			<svg class="text-white w-8" viewBox="0 -2.5 16 16" id="meteor-icon-kit__regular-checkmark-s" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.70711 4.2929C1.31658 3.90237 0.68342 3.90237 0.29289 4.2929C-0.09763 4.6834 -0.09763 5.3166 0.29289 5.7071L5.29289 10.7071C5.68342 11.0976 6.3166 11.0976 6.7071 10.7071L15.7071 1.70711C16.0976 1.31658 16.0976 0.68342 15.7071 0.29289C15.3166 -0.09763 14.6834 -0.09763 14.2929 0.29289L6 8.5858L1.70711 4.2929z" fill="currentColor"></path></g></svg>
+		{% else %}
+			<svg class="text-white w-8" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+				<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+				<g id="SVGRepo_iconCarrier">
+					<path d="M12 15H12.01M12 12V9M4.98207 19H19.0179C20.5615 19 21.5233 17.3256 20.7455 15.9923L13.7276 3.96153C12.9558 2.63852 11.0442 2.63852 10.2724 3.96153L3.25452 15.9923C2.47675 17.3256 3.43849 19 4.98207 19Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+				</g>
+			</svg>
+		{% endif %}
+	</button>
+
+	{# Message de réajustement – visible par défaut si non accepté #}
+	<div id="weightGoalMessage" class="fixed flex flex-col justify-center items-center border top-24 w-80 text-white p-6 rounded-lg shadow-lg hidden" style="right: 65px; background-color: {{ imcAlert.color }}" data-energy-adjustment-target="container">
+			
+		<div class="flex justify-between items-center">
+			<span class="font-bold text-lg">Votre IMC</span>
+		</div>
+
+		<div>
+
+			<p class="mt-4">
+				{{ message }}
+			</p>
+
+			<p class="mt-2 mb-0" data-weight-goal-target="text">
+				{{ weightGoalMessage }}
+			</p>
+
+			<div class="mt-3 flex flex-row items-center gap-2">
+				<a href="{{ path('app_energy_adjustment_explanation') }}" class="inline-flex bg-sky-600 px-2 rounded-lg mt-4 text-white hover:text-white hover:bg-sky-700 transition duration-300">En savoir plus +</a>
+				<button class="px-2 rounded-lg mt-4 text-sky-600 hover:text-sky-700 transition duration-300" data-action="click->energy-adjustment#hide">
+					Masquer
+				</button>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+

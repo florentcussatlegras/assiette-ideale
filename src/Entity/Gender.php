@@ -4,109 +4,58 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Gender
- *
- * @ORM\Table(name="gender")
- * @ORM\Entity
- */
+#[ORM\Table(name: "gender")]
+#[ORM\Entity]
 class Gender
 {
     public const MALE = "H";
-    
     public const FEMALE = "F";
-    
     public const OTHER = "A";
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(name: "id", type: "integer")]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
+    #[ORM\Column(name: "name", type: "string", length: 255)]
     private $name;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="long_name", type="string", length=255)
-     */
+    #[ORM\Column(name: "long_name", type: "string", length: 255)]
     private $longName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: "alias", type: "string", length: 255, nullable: true)]
     private $alias;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Gender
-     */
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get longName
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Set longName
-     *
-     * @param string $longName
-     *
-     * @return Gender
-     */
-    public function setLongname($longName)
+    public function setLongName(string $longName): self
     {
         $this->longName = $longName;
 
         return $this;
     }
 
-    /**
-     * Get longName
-     *
-     * @return string
-     */
-    public function getLongName()
+    public function getLongName(): string
     {
         return $this->longName;
     }

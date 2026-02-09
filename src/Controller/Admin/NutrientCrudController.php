@@ -13,8 +13,7 @@ class NutrientCrudController extends AbstractCrudController
     {
         return Nutrient::class;
     }
-
-    
+  
     public function configureFields(string $pageName): iterable
     {
         return [

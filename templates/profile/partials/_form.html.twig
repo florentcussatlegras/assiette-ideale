@@ -1,0 +1,34 @@
+{% form_theme profileForm "form/_custom_profile_themes.html.twig" %}
+
+{{ form_start(profileForm, {
+    'attr': {
+        'action' : path('app_embedded_profile_edit', { element }),
+        'data-turbo' : 'false',
+        'class' : 'w-full gap-6 flex flex-col'
+    }
+}) }}
+
+    {% if messageSuccess is defined %}
+        <div 
+            class="text-green-500 transition-opacity duration-300"
+            data-modal-form-profile-target="messageSuccess"
+        >
+            {{ messageSuccess }}
+        </div>
+    {% endif %}
+
+    <div 
+        data-modal-form-profile-target="form"
+        style="min-width: 380px"
+    >
+        {# {{ form_errors(profileForm, {'attr': {'class': 'text-red-700'}}) }} #}
+
+        {{ form_widget(profileForm) }}
+
+        <button type="submit" class="bg-sky-600 text-white hover:bg-sky-700 px-3 py-2 rounded-xl font-bold transition duration-300">
+            Valider
+        </button>
+
+    </div>
+
+{{ form_end(profileForm, { render_rest: false }) }}

@@ -2,309 +2,227 @@
 
 namespace App\Entity;
 
-use App\Entity\Hours;
 use App\Entity\Gender;
 use App\Entity\Diet\Diet;
-use App\Entity\EnergyGroup;
-use App\Entity\Diet\SubDiet;
-use Doctrine\DBAL\Types\Types;
-use App\Service\ProfileHandler;
 use App\Service\UploaderHelper;
-use App\Entity\PhysicalActivity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\NutrientRecommendationUser;
 use App\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\Collection;
-use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Context\ExecutionContextInterface;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherAwareInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-/**
- * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity(
- *     fields={"email"},
- *     message="Cette adresse email est déja utilisée",
- *     groups={"profile_parameters", "registration"} 
- * )
- * @UniqueEntity(
- *     fields={"username"},
- *     message="Ce pseudonyme est déja utilisé",
- *     groups={"profile_parameters", "registration"}
- * )
- */
+#[ORM\Entity(repositoryClass: "App\Repository\UserRepository")]
+#[ORM\Table(name: "user")]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(
+    fields: ["email"],
+    message: "Cette adresse email est déja utilisée",
+    groups: ["profile_parameters", "registration"]
+)]
+#[UniqueEntity(
+    fields: ["username"],
+    message: "Ce pseudonyme est déja utilisé",
+    groups: ["profile_parameters", "registration"]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank(
-     *      message="Merci de saisir un identifiant",
-     *      groups={"profile_parameters", "registration"}
-     * )
-     * @Assert\Length(
-     *      min=3, 
-     *      minMessage="Votre nom doit comporter au moins {{ limit }} caractères.",
-     *      groups={"profile_parameters", "registration"}
-     * )
-     */
+    #[ORM\Column(type: "string", length: 255, unique: true)]
+    #[Assert\NotBlank(
+        message: "Merci de saisir un identifiant",
+        groups: ["profile_parameters", "registration"]
+    )]
+    #[Assert\Length(
+        min: 3,
+        minMessage: "Votre nom doit comporter au moins {{ limit }} caractères.",
+        groups: ["profile_parameters", "registration"]
+    )]
     private $username;
 
-    /**
-     * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(payload={"severity"="warning"}, message="Merci de saisir une adresse email", groups={"registration"})
-     * @Assert\Email(groups={"profile_parameters", "registration"})
-     */
+    #[ORM\Column(type: "string", length: 180, unique: true)]
+    #[Assert\NotBlank(payload: ["severity" => "warning"], message: "Merci de saisir une adresse email", groups: ["registration"])]
+    #[Assert\Email(groups: ["profile_parameters", "registration"])]
     private $email;
 
-    /**
-     * @ORM\Column(type="json", nullable=true)
-     */
+    #[ORM\Column(type: "json", nullable: true)]
     private $roles = [];
 
-    /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
-     */
+    #[ORM\Column(type: "string")]
     private $password;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private $firstFillProfile = false;
 
-    /**
-     * @ORM\Column(type="array")
-     */
+    #[ORM\Column(type: "array")]
     private $validStepProfiles = [];
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
+    #[ORM\Column(type: "boolean")]
     private $isVerified = false;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Gender", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     * @AppAssert\CanEditProfile(groups={"profile_gender"})
-     */
+    #[ORM\ManyToOne(targetEntity: Gender::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[AppAssert\CanEditProfile(groups: ["profile_gender"])]
     private $gender;
 
-    /**
-     * @ORM\Column(name="height", type="string", nullable=true)
-     * @Assert\Range(
-     *      min = 100,
-     *      max = 260,
-     *      notInRangeMessage = "La taille doit être comprise entre {{ min }} cm et {{ max }} cm",
-     *      groups={"profile_height"}
-     * )
-     * @AppAssert\CanEditProfile(groups={"profile_height"})
-     */
+    #[ORM\Column(name: "height", type: "string", nullable: true)]
+    #[Assert\Range(
+        min: 100,
+        max: 260,
+        notInRangeMessage: "La taille doit être comprise entre {{ min }} cm et {{ max }} cm",
+        groups: ["profile_height"]
+    )]
+    #[AppAssert\CanEditProfile(groups: ["profile_height"])]
     private $height;
 
-    /**
-     * @ORM\Column(name="weight", type="integer", nullable=true)
-     * @Assert\Range(
-     *      min = 35,
-     *      max = 700,
-     *      notInRangeMessage = "Le poids doit être compris entre {{ min }} kg et {{ max }} kg",
-     *      groups={"profile_weight"}
-     * )
-     * @AppAssert\CanEditProfile(groups={"profile_weight"})
-     */
+    #[ORM\Column(name: "weight", type: "integer", nullable: true)]
+    #[Assert\Range(
+        min: 35,
+        max: 250,
+        notInRangeMessage: "Le poids doit être compris entre {{ min }} kg et {{ max }} kg",
+        groups: ["profile_weight"]
+    )]
+    #[AppAssert\CanEditProfile(groups: ["profile_weight"])]
     private $weight;
 
-    /**
-     * @ORM\Column(name="weight_evolution", type="array", nullable=true)
-     */
+    #[ORM\Column(name: "weight_evolution", type: "array", nullable: true)]
     private $weightEvolution;
 
-    /**
-     * @ORM\Column(name="ideal_weight", type="integer", nullable=true)
-     * @Assert\Range(
-     *      min = 20,
-     *      max = 700,
-     *      notInRangeMessage = "Le poids doit être compris entre {{ min }}kg et {{ max }}kg",
-     * )
-     */
+    #[ORM\Column(name: "ideal_weight", type: "integer", nullable: true)]
+    #[Assert\Range(
+        min: 20,
+        max: 250,
+        notInRangeMessage: "Le poids doit être compris entre {{ min }}kg et {{ max }}kg"
+    )]
     private $idealWeight;
 
-    /**
-     * @ORM\Column(name="imc", type="float", nullable=true)
-     */
+    #[ORM\Column(name: "imc", type: "float", nullable: true)]
     private $imc;
 
-    /**
-     * @ORM\Column(name="ideal_imc", type="float", nullable=true)
-     */
+    #[ORM\Column(name: "ideal_imc", type: "float", nullable: true)]
     private $idealImc;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Hour", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     * @Assert\NotBlank(groups={"profile_life"})
-     */
+    #[ORM\ManyToOne(targetEntity: Hour::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Assert\NotBlank(groups: ["profile_life"])]
     private $hour;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\WorkingType", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     * @AppAssert\CanEditProfile(groups={"profile_workingType"})
-     */
+    #[ORM\ManyToOne(targetEntity: WorkingType::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[AppAssert\CanEditProfile(groups: ["profile_workingType"])]
     private $workingType;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\SportingTime", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     * @AppAssert\CanEditProfile(groups={"profile_sportingTime"})
-     */
+    #[ORM\ManyToOne(targetEntity: SportingTime::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[AppAssert\CanEditProfile(groups: ["profile_sportingTime"])]
     private $sportingTime;
 
-    /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $physicalActivity;
 
-    /**
-     * @ORM\Column(name="energy", type="float", nullable=true)
-     */
+    #[ORM\Column(name: "energy", type: "float", nullable: true)]
     private $energy;
 
-    /**
-     * @ORM\Column(name="energy_calculate", type="float", nullable=true)
-     */
+    #[ORM\Column(name: "energy_calculate", type: "float", nullable: true)]
     private $energyCalculate;
-    
-    /**
-     * @ORM\Column(name="automatic_calculate_energy", type="boolean", nullable=true)
-     * @AppAssert\CanEstimateEnergy(groups={"profile_energy"})
-     */
+
+    #[ORM\Column(name: "automatic_calculate_energy", type: "boolean", nullable: true)]
+    #[AppAssert\CanEstimateEnergy(groups: ["profile_energy"])]
     private $automaticCalculateEnergy;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\TypeMeal")
-     * @ORM\JoinTable(name="user_snacks")
-     */
+    #[ORM\ManyToMany(targetEntity: "App\Entity\TypeMeal")]
+    #[ORM\JoinTable(name: "user_snacks")]
     private $snacks;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Dish")
-     * @ORM\JoinTable(name="user_favorite_dish")
-     */
+    #[ORM\ManyToMany(targetEntity: "App\Entity\Dish")]
+    #[ORM\JoinTable(name: "user_favorite_dish")]
     private $favoriteDishes;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="location", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: "location", type: "string", length: 255, nullable: true)]
     private $location;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phone_number", type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(name: "phone_number", type: "string", length: 255, nullable: true)]
     private $phoneNumber;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AgeRange")
-     * @AppAssert\CanEditProfile
-     */
+    #[ORM\ManyToOne(targetEntity: AgeRange::class)]
+    #[AppAssert\CanEditProfile]
     private $ageRange;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Meal", mappedBy="user", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: Meal::class, mappedBy: "user", cascade: ["persist"])]
     private $meals;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Diet\Diet")
-     * @ORM\JoinTable(name="user_diets")
-     */
+    #[ORM\ManyToMany(targetEntity: Diet::class)]
+    #[ORM\JoinTable(name: "user_diets")]
     private $diets;
 
-    /**
-     * @var array
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Food")
-     * @ORM\JoinTable(name="user_forbidden_foods")
-     */
+    #[ORM\ManyToMany(targetEntity: "App\Entity\Food")]
+    #[ORM\JoinTable(name: "user_forbidden_foods")]
     private $forbiddenFoods;
 
-     /**
-     * @var array
-     *
-     * @ORM\Column(name="recommended_quantities", type="array", nullable="true")
-     */
+    #[ORM\Column(name: "recommended_quantities", type: "array", nullable: true)]
     private $recommendedQuantities;
 
-    /**
-     * @var Collection
-     * 
-     * @ORM\OneToMany(targetEntity="App\Entity\NutrientRecommendationUser", mappedBy="user", cascade={"persist"})
-     */
+    #[ORM\OneToMany(targetEntity: NutrientRecommendationUser::class, mappedBy: "user", cascade: ["persist"])]
     private Collection $nutrientRecommendations;
 
-    /**
-    * @var string
-    *
-    * @ORM\Column(name="picture", type="string", length=255, nullable=true)
-    */
+    #[ORM\Column(name: "picture", type: "string", length: 255, nullable: true)]
     private $picture;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $country;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $sodium;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $carboHydrate;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $lipid;
 
-     /**
-     * @ORM\Column(type="float", nullable=true)
-     */
+    #[ORM\Column(type: "float", nullable: true)]
     private $protein;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: "string", nullable: true)]
     private $registerAt;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $googleId;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
     private $githubId;
+
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $confirmationCode = null;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $confirmationCodeExpiresAt = null;
+
+    #[ORM\Column(type: "integer", nullable: true, options: ["default" => 0])]
+    private ?int $confirmationAttempts = 0;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $hasSeenWelcome = false;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $isWeightGoalActive = false;
+
+    #[ORM\Column(type: "integer")]
+    private int $calorieAdjustmentPercent = 10;
+
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: WeightLog::class, cascade: ["persist", "remove"])]
+    private Collection $weightLogs;
+
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $lastWeightUpdateAt = null;
+
 
     public function __construct()
     {
@@ -521,26 +439,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Set imc
+     * Calcule et définit l'IMC idéal de l'utilisateur
      *
+     * @return self
      */
-    public function setValueIdealImc()
+    public function setValueIdealImc(): self
     {
-        if (null !== $this->height)
-        {
-            $heightMeter = $this->height / 100;
-            $this->idealImc = $this->idealWeight / ($heightMeter * $heightMeter);
-        }else{
+        // Vérifie que la taille et le poids idéal sont valides
+        if (null !== $this->height && null !== $this->idealWeight && $this->idealWeight > 0) {
+            $heightMeter = $this->height / 100; // Conversion cm → m
+            $this->idealImc = round($this->idealWeight / ($heightMeter * $heightMeter), 1); // Arrondi à 1 décimale
+        } else {
             $this->idealImc = null;
         }
 
         return $this;
     }
-
-    // public function isAnHardWorker()
-    // {
-    //     return ('H_NORMAL' != $this->hour->getCode() || $this->physicalActivity->getForHardWorker());
-    // }
 
     /**
      * @return Collection|Meal[]
@@ -755,8 +669,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    
-
     public function getValidStepProfiles(): ?array
     {
         return $this->validStepProfiles;
@@ -775,15 +687,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    // public function isProfileCompleted()
-    // {
-    //     return count($this->validStepProfiles) == count(ProfileHandler::$steps);
-    // }
-
-    
-
-
 
     public function getCountry(): ?string
     {
@@ -1047,5 +950,117 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->githubId = $githubId;
         return $this;
+    }
+
+    public function addFavoriteDish(Dish $favoriteDish): static
+    {
+        if (!$this->favoriteDishes->contains($favoriteDish)) {
+            $this->favoriteDishes->add($favoriteDish);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteDish(Dish $favoriteDish): static
+    {
+        $this->favoriteDishes->removeElement($favoriteDish);
+
+        return $this;
+    }
+
+    public function getConfirmationCode(): ?string
+    {
+        return $this->confirmationCode;
+    }
+
+    public function setConfirmationCode(?string $confirmationCode): self
+    {
+        $this->confirmationCode = $confirmationCode;
+
+        return $this;
+    }
+
+    public function getConfirmationCodeExpiresAt(): ?\DateTimeInterface
+    {
+        return $this->confirmationCodeExpiresAt;
+    }
+
+    public function setConfirmationCodeExpiresAt(?\DateTimeInterface $confirmationCodeExpiresAt): self
+    {
+        $this->confirmationCodeExpiresAt = $confirmationCodeExpiresAt;
+
+        return $this;
+    }
+
+    public function getConfirmationAttempts(): ?int
+    {
+        return $this->confirmationAttempts;
+    }
+
+    public function setConfirmationAttempts(?int $confirmationAttempts): self
+    {
+        $this->confirmationAttempts = $confirmationAttempts;
+
+        return $this;
+    }
+
+    public function incrementConfirmationAttempts(): self
+    {
+        $this->confirmationAttempts++;
+
+        return $this;
+    }
+
+    public function resetConfirmationAttempts(): self
+    {
+        $this->confirmationAttempts = 0;
+
+        return $this;
+    }
+
+    public function getHasSeenWelcome(): bool
+    {
+        return $this->hasSeenWelcome;
+    }
+
+    public function setHasSeenWelcome(bool $hasSeenWelcome): self
+    {
+        $this->hasSeenWelcome = $hasSeenWelcome;
+        return $this;
+    }
+
+    public function isWeightGoalActive(): bool
+    {
+        return $this->isWeightGoalActive;
+    }
+
+    public function setIsWeightGoalActive(bool $isWeightGoalActive): self
+    {
+        $this->isWeightGoalActive = $isWeightGoalActive;
+
+        return $this;
+    }
+
+    public function getCalorieAdjustmentPercent(): int
+    {
+        return $this->calorieAdjustmentPercent;
+    }
+
+    public function setCalorieAdjustmentPercent(int $calorieAdjustmentPercent): self
+    {
+        $this->calorieAdjustmentPercent = $calorieAdjustmentPercent;
+
+        return $this;
+    }
+
+    public function setLastWeightUpdateAt(\DateTimeInterface $date): self
+    {
+        $this->lastWeightUpdateAt = $date;
+        return $this;
+    }
+
+    public function getLastWeightUpdateAt(): ?\DateTimeInterface
+    {
+        return $this->lastWeightUpdateAt;
     }
 }

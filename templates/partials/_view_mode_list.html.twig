@@ -3,9 +3,13 @@
     <ul role="group" class="button-group--bordered inline-flex">
         
         <li class="button-group-item flex items-center">
-            {# <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="25"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M128 136c0-22.1-17.9-40-40-40L40 96C17.9 96 0 113.9 0 136l0 48c0 22.1 17.9 40 40 40H88c22.1 0 40-17.9 40-40l0-48zm0 192c0-22.1-17.9-40-40-40H40c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40H88c22.1 0 40-17.9 40-40V328zm32-192v48c0 22.1 17.9 40 40 40h48c22.1 0 40-17.9 40-40V136c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40zM288 328c0-22.1-17.9-40-40-40H200c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40h48c22.1 0 40-17.9 40-40V328zm32-192v48c0 22.1 17.9 40 40 40h48c22.1 0 40-17.9 40-40V136c0-22.1-17.9-40-40-40l-48 0c-22.1 0-40 17.9-40 40zM448 328c0-22.1-17.9-40-40-40H360c-22.1 0-40 17.9-40 40v48c0 22.1 17.9 40 40 40h48c22.1 0 40-17.9 40-40V328z"/></svg> #}
             
-            <button id="view-mode-grid" class="rounded-l-lg flex flex-row gap-2 items-center view-mode-switch__display--selected px-4 py-2 current-shadow text-xs md:text-sm xl:text-base cursor-pointer">
+            <button 
+                id="view-mode-grid"
+                data-action="click->view-mode#grid"
+                data-view-mode-target="gridBtn"
+                class="rounded-l-lg flex flex-row gap-2 items-center view-mode-switch__display--selected px-4 py-2 current-shadow text-xs md:text-sm xl:text-base cursor-pointer"
+            >
                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-layout-grid" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M4 4m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
@@ -13,15 +17,20 @@
                     <path d="M4 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
                     <path d="M14 14m0 1a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4a1 1 0 0 1 -1 1h-4a1 1 0 0 1 -1 -1z"></path>
                 </svg>
-                {# <span>Grille</span> #}
             </button>
 
         </li>
 
-        <li class="button-group-item flex items-center">
-            {# <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="25"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M64 144a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H192zM64 464a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm48-208a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z"/></svg> #}
-            
-            <button id="view-mode-list" class="rounded-r-lg flex flex-row gap-2 items-center px-4 py-2 current-shadow cursor-pointer">
+        <li 
+            class="button-group-item flex items-center" 
+        >
+            <button 
+                id="view-mode-list" 
+                class="rounded-r-lg flex flex-row gap-2 items-center px-4 py-2 current-shadow cursor-pointer"
+                data-action="click->view-mode#list"
+                data-view-mode-target="listBtn"
+            >
+
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-list" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                     <path d="M9 6l11 0"></path>

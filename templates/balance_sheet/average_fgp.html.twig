@@ -44,20 +44,32 @@
 
     </div>
 
-    {# <div class="flex flex-row justify-center gap-4 w-full xl:w-3/5">
-        {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', { 'averageFgp': average_fgp|serialize, title: 'Votre consommation', 'displayLabel': true })) }}
-        {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', { 'averageFgp': average_fgp_recommended|serialize, title: 'Nos recommandations', 'displayLabel': false })) }}
-    </div> #}
-
-    <div class="flex flex-row justify-center w-full flex-1 charts-container">
-        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+    <div class="my-hidden md:flex flex-row flex-1 justify-center w-full">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-0">
             {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
                 'averageFgp': average_fgp|serialize,
                 'title': 'Votre consommation',
                 'displayLabel': true
             })) }}
         </div>
-        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-0">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
+                'averageFgp': average_fgp_recommended|serialize,
+                'title': 'Nos recommandations',
+                'displayLabel': false
+            })) }}
+        </div>
+    </div>
+
+    <div class="flex md:my-hidden flex-col flex-1 justify-center w-full">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-12">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
+                'averageFgp': average_fgp|serialize,
+                'title': 'Votre consommation',
+                'displayLabel': true
+            })) }}
+        </div>
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-12">
             {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartFgp', {
                 'averageFgp': average_fgp_recommended|serialize,
                 'title': 'Nos recommandations',

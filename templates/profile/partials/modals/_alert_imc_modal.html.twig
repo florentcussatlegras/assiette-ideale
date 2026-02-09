@@ -1,0 +1,60 @@
+<div class="modal fade" id="alertImcModal" tabindex="-1" aria-hidden="true">
+
+	<div class="modal-dialog modal-dialog-centered">
+
+		<div
+			class="modal-content rounded-3xl shadow-lg overflow-hidden">
+
+			<!-- Header -->
+			<div class="flex items-center justify-end text-light-blue p-4">
+				<button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition" data-dismiss="modal" aria-label="Close">
+					<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
+						<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+					</svg>
+				</button>
+			</div>
+
+			<!-- Body -->
+			<div class="p-5 min-h-[8rem]">
+
+				<div class="hidden w-full h-24 flex items-center justify-center" data-alert-imc-weight-modal-target="loader">
+					<div class="loader"></div>
+				</div>
+
+				<div class="text-base px-4 flex flex-col" data-alert-imc-weight-modal-target="content">
+
+					<div class="flex flex-col items-center gap-4 mb-2">
+
+						<span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid {{  alerts.color }}">
+							<svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+								<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+								<g id="SVGRepo_iconCarrier">
+									<path d="M12 5L12 14" stroke="{{ alerts.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+									<path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{ alerts.color }}"></path>
+								</g>
+							</svg>
+						</span>
+
+						<div class="text-center my-4 mx-8 text-xl">
+							{{ ("alert.imc." ~ alerts.code)|trans({"imc_ideal": app.user.idealImc|round}, 'alert') }}
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- Footer -->
+			<div class="p-5 flex justify-end rounded-b-3xl">
+				<button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
+					OK
+				</button>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>

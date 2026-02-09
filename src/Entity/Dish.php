@@ -2,230 +2,133 @@
 
 namespace App\Entity;
 
-
 use App\Service\TypeDishHandler;
-use Doctrine\DBAL\Types\Types;
 use App\Service\UploaderHelper;
-use App\Entity\NutritionalTable;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\DishFoodGroupParent;
-use App\Entity\FoodGroup\FoodGroup;
-use App\Validator\Constraints as MyAssert;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\Context;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizableInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Validator\Constraints as MyAssert;
 
-/**
- * Dish
- * @ORM\Table(name="dish")
- * @ORM\Entity(repositoryClass="App\Repository\DishRepository")
- * @UniqueEntity("slug")
- * @ORM\HasLifecycleCallbacks()
- * @Assert\GroupSequence({"AddOrEdit", "Dish", "Step"})
- */
+#[ORM\Entity(repositoryClass: "App\Repository\DishRepository")]
+#[ORM\Table(name: "dish")]
+#[UniqueEntity("slug")]
+#[ORM\HasLifecycleCallbacks]
+#[Assert\GroupSequence(["AddOrEdit", "Dish", "Step"])]
 class Dish implements NormalizableInterface
 {
     public function normalize(NormalizerInterface $serializer, $format = null, array $context = []): array
     {
         return [
             'name' => $this->getName(),
-            'user' => $serializer->normalize($this->getUser(), $format, $context)
+            'user' => $serializer->normalize($this->getUser(), $format, $context),
         ];
     }
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank(message="Cette valeur ne doit pas être vide.", groups={"AddOrEdit"}))
-     * @Groups({"searchable"})
-     */
-    private $name;
+    #[ORM\Column(type: "string", length: 255)]
+    #[Assert\NotBlank(message: "Cette valeur ne doit pas être vide.", groups: ["AddOrEdit"])]
+    #[Groups(["searchable"])]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, options={"default" : "-"})
-     */
-    private $slug;
+    #[ORM\Column(type: "string", length: 255, options: ["default" => "-"])]
+    private ?string $slug = null;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="length_person", type="integer", nullable=true)
-     * @Assert\NotBlank(message="Cette valeur ne doit pas être vide.", groups={"AddOrEdit"})
-     * @Assert\Positive(message="Cette valeur doit être positive", groups={"AddOrEdit"})
-     * @Assert\LessThan(25, message="Cette valeur doit être inférieure à {{ compared_value }}", groups={"AddOrEdit"})
-     */
-    private $lengthPersonForRecipe;
+    #[ORM\Column(name: "length_person", type: "integer", nullable: true)]
+    #[Assert\NotBlank(message: "Cette valeur ne doit pas être vide.", groups: ["AddOrEdit"])]
+    #[Assert\Positive(message: "Cette valeur doit être positive", groups: ["AddOrEdit"])]
+    #[Assert\LessThan(25, message: "Cette valeur doit être inférieure à {{ compared_value }}", groups: ["AddOrEdit"])]
+    private ?int $lengthPersonForRecipe = null;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="level", type="string", nullable=true)
-     * @Assert\Choice(callback={"App\Service\RecipeLevel", "getLevels"}, message="La difficulté {{ value }} n'est pas valide, elle doit appartenir à la liste {{ choices }}")
-     */
-    private $level;
+    #[ORM\Column(name: "level", type: "string", nullable: true)]
+    #[Assert\Choice(callback: ["App\Service\RecipeLevel", "getLevels"], message: "La difficulté {{ value }} n'est pas valide, elle doit appartenir à la liste {{ choices }}")]
+    private ?string $level = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
-     */
-    private $createdAt;
+    #[ORM\Column(name: "created_at", type: "datetime")]
+    private ?\DateTime $createdAt = null;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-     */
-    private $updatedAt;
+    #[ORM\Column(name: "updated_at", type: "datetime", nullable: true)]
+    private ?\DateTime $updatedAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\User")]
+    #[ORM\JoinColumn(nullable: true)]
     private $user;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DishFood", mappedBy="dish", cascade={"persist", "remove"})
-     */
-    private $dishFoods;
+    #[ORM\OneToMany(targetEntity: "App\Entity\DishFood", mappedBy: "dish", cascade: ["persist", "remove"])]
+    private Collection $dishFoods;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DishFoodGroup", mappedBy="dish", cascade={"persist", "remove"})
-     */
-    private $dishFoodGroups;
+    #[ORM\OneToMany(targetEntity: "App\Entity\DishFoodGroup", mappedBy: "dish", cascade: ["persist", "remove"])]
+    private Collection $dishFoodGroups;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\DishFoodGroupParent", mappedBy="dish", cascade={"persist", "remove"})
-     */
-    private $dishFoodGroupParents;
+    #[ORM\OneToMany(targetEntity: "App\Entity\DishFoodGroupParent", mappedBy: "dish", cascade: ["persist", "remove"])]
+    private Collection $dishFoodGroupParents;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Spice", cascade={"persist"})
-     */
-    private $spices;
+    #[ORM\ManyToMany(targetEntity: "App\Entity\Spice", cascade: ["persist"])]
+    private Collection $spices;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\StepRecipe", mappedBy="dish", cascade={"persist", "remove"})
-     * @MyAssert\IsStepRecipeUnique(groups={"Step"})
-     * @Assert\Valid(groups={"AddOrEdit"})
-     */
-    private $stepRecipes;
+    #[ORM\OneToMany(targetEntity: "App\Entity\StepRecipe", mappedBy: "dish", cascade: ["persist", "remove"])]
+    #[MyAssert\IsStepRecipeUnique(groups: ["Step"])]
+    #[Assert\Valid(groups: ["AddOrEdit"])]
+    private Collection $stepRecipes;
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\FoodGroup\FoodGroup")
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\FoodGroup\FoodGroup")]
     private $principalFoodGroup;
 
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="rank_view", type="integer", nullable=true)
-     */
-    private $rankView;
+    #[ORM\Column(name: "rank_view", type: "integer", nullable: true)]
+    private ?int $rankView = null;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="preparation_time", type="integer", nullable=true)
-     * @Assert\NotBlank(groups={"AddOrEdit"})
-     * @Assert\PositiveOrZero(message="Cette valeur doit être positive", groups={"AddOrEdit"})
-     * @Assert\LessThan(100, message="Cette valeur doit être inférieure à {{ compared_value }}", groups={"AddOrEdit"})
-     */
-    private $preparationTime;
-    
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\UnitTime")
-     */
+    #[ORM\Column(name: "preparation_time", type: "integer", nullable: true)]
+    #[Assert\NotBlank(groups: ["AddOrEdit"])]
+    #[Assert\PositiveOrZero(message: "Cette valeur doit être positive", groups: ["AddOrEdit"])]
+    #[Assert\LessThan(100, message: "Cette valeur doit être inférieure à {{ compared_value }}", groups: ["AddOrEdit"])]
+    private ?int $preparationTime = null;
+
+    #[ORM\ManyToOne(targetEntity: "App\Entity\UnitTime")]
     private $preparationTimeUnitTime;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="cooking_time", type="integer", nullable=true)
-     * @Assert\NotBlank(groups={"AddOrEdit"})
-     * @Assert\PositiveOrZero(message="Cette valeur doit être positive", groups={"AddOrEdit"})
-     * @Assert\LessThan(100, message="Cette valeur doit être inférieure à {{ compared_value }}", groups={"AddOrEdit"})
-     */
-    private $cookingTime;
+    #[ORM\Column(name: "cooking_time", type: "integer", nullable: true)]
+    #[Assert\NotBlank(groups: ["AddOrEdit"])]
+    #[Assert\PositiveOrZero(message: "Cette valeur doit être positive", groups: ["AddOrEdit"])]
+    #[Assert\LessThan(100, message: "Cette valeur doit être inférieure à {{ compared_value }}", groups: ["AddOrEdit"])]
+    private ?int $cookingTime = null;
 
-    /**
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\UnitTime")
-     */
+    #[ORM\ManyToOne(targetEntity: "App\Entity\UnitTime")]
     private $cookingTimeUnitTime;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_dessert", type="boolean", nullable=true)
-     */
-    private $isDessert;
+    #[ORM\Column(name: "is_dessert", type: "boolean", nullable: true)]
+    private ?bool $isDessert = null;
 
-    /**
-     * @var string
-     * 
-      * @ORM\Column(name="picture", type="string", length=255, nullable=true)
-     */
-    private $picture;
+    #[ORM\Column(name: "picture", type: "string", length: 255, nullable: true)]
+    private ?string $picture = null;
 
-    /**
-     * @var NutritionalTable
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\NutritionalTable", cascade={"persist"})
-     */
-    private $nutritionalTable;
+    #[ORM\OneToOne(targetEntity: "App\Entity\NutritionalTable", cascade: ["persist"])]
+    private ?NutritionalTable $nutritionalTable = null;
 
+    #[ORM\Column(name: "type", type: "string", length: 255, nullable: true)]
     #[Assert\Choice(callback: [TypeDishHandler::class, 'getChoices'])]
-    /**
-     * @ORM\Column(name="type", type="string", length=255, nullable=true)
-     */
     private ?string $type = null;
 
-    /**
-     * @var bool
-     * 
-     * @ORM\Column(name="have_gluten", type="boolean", nullable=true)
-     */
-    private $haveGluten;
+    #[ORM\Column(name: "have_gluten", type: "boolean", nullable: true)]
+    private ?bool $haveGluten = null;
 
-    /**
-     * @var bool
-     * 
-     * @ORM\Column(name="have_lactose", type="boolean", nullable=true)
-     */
-    private $haveLactose;
+    #[ORM\Column(name: "have_lactose", type: "boolean", nullable: true)]
+    private ?bool $haveLactose = null;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
-        $this->dishFoods = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->dishFoodGroups = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->spices = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->stepRecipes = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->foodGroupParents = new ArrayCollection();
+        $this->dishFoods = new ArrayCollection();
+        $this->dishFoodGroups = new ArrayCollection();
+        $this->spices = new ArrayCollection();
+        $this->stepRecipes = new ArrayCollection();
         $this->dishFoodGroupParents = new ArrayCollection();
     }
 
@@ -353,19 +256,15 @@ class Dish implements NormalizableInterface
         return $this->createdAt;
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function setCreatedAtValue()
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTime();
         $this->updatedAt = new \DateTime();
     }
 
-    /**
-     * @ORM\PreUpdate
-     */
-    public function setUpdatedAtValue()
+    #[ORM\PreUpdate]
+    public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTime();
     }

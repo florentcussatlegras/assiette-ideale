@@ -2,11 +2,9 @@
 <div class="flex flex-row items-center gap-2 py-1 my-4 text-xl w-full">
 
     {% set levelAlert = balance_sheet_alerts.energy %}
-    {# {{ include('balance_sheet/_icon_warning.html.twig', { size: 5 }) }} #}
 
     <div class="flex flex-col w-full">
 
-        {# <div class="flex flex-row items-center gap-2 w-[400px] xl:w-[500px] min-w-0"> #}
         <div class="flex flex-row items-center gap-2 w-full xl:w-[500px]">
 
             <div class="flex items-center gap-2">
@@ -34,28 +32,6 @@
 
     </div>
 
-     
-
-    {# <div class="flex w-1/2 items-center">
-        <div class="bg-gray rounded-full px-2 py-1 font-semibold">{{ average_energy }} Kcal</div>
-    </div>
-    <div class="flex w-1/2 gap-2 items-center" style="color: {{ levelAlert.color }}"> #}
-        {# <div
-            {{ stimulus_controller('popover-info', {
-                url: path('meal_popover_energy', {
-                    'energy': average_energy
-                })
-            }) }}
-            class="flex"
-        > #}
-            {# <a href="#" class="relative" data-action="click->popover-info#show">
-                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: levelAlert, size: 10 }) }} #}
-                {# {{ include('partials/_popover_info.html.twig', { top: "50%", right: "0" }) }} #}
-            {# </a> #}
-            {# {{ render(path('meal_popover_energy', { 'energy': average_energy })) }} #}
-        {# </div> #}
-        {# <span>{{ balance_sheet_alerts.energy.text }}</span> #}
-    {# </div> #}
 </div>
 
 

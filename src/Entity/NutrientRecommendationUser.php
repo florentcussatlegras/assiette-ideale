@@ -2,68 +2,38 @@
 
 namespace App\Entity;
 
-use App\Repository\NutrientRepository;
-use Doctrine\DBAL\Types\Types;
+use App\Entity\User;
+use App\Entity\Nutrient;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * NutrientRecommendationsUser
- *
- * @ORM\Table(name="nutrient_recommendation_user")
- * @ORM\Entity(repositoryClass="App\Repository\NutrientRecommendationUserRepository")
- */
+#[ORM\Entity(repositoryClass: "App\Repository\NutrientRecommendationUserRepository")]
+#[ORM\Table(name: "nutrient_recommendation_user")]
 class NutrientRecommendationUser
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $user = null;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity=User::class)
-     */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: Nutrient::class)]
+    private ?Nutrient $nutrient = null;
 
-    /**
-     * @var Nutrient
-     *
-     * @ORM\ManyToOne(targetEntity=Nutrient::class)
-     */
-    private $nutrient;
+    #[ORM\Column(name: "recommended_quantity", type: "float")]
+    private float $recommendedQuantity;
 
-    /**
-     * @var RecommendedQuantity
-     *
-     * @ORM\Column(name="recommended_quantity", type="float")
-     */
-    private $recommendedQuantity;
-
-    public function __toString()
+    public function __toString(): string
     {
         return self::class;
     }
 
-    public function getRecommendedQuantity(): ?float
-    {
-        return $this->recommendedQuantity;
-    }
+    // --------------------- Getters & Setters ---------------------
 
-    public function setRecommendedQuantity(float $recommendedQuantity): static
+    public function getId(): ?int
     {
-        $this->recommendedQuantity = $recommendedQuantity;
-
-        return $this;
+        return $this->id;
     }
 
     public function getUser(): ?User
@@ -74,7 +44,6 @@ class NutrientRecommendationUser
     public function setUser(?User $user): static
     {
         $this->user = $user;
-
         return $this;
     }
 
@@ -86,7 +55,17 @@ class NutrientRecommendationUser
     public function setNutrient(?Nutrient $nutrient): static
     {
         $this->nutrient = $nutrient;
+        return $this;
+    }
 
+    public function getRecommendedQuantity(): float
+    {
+        return $this->recommendedQuantity;
+    }
+
+    public function setRecommendedQuantity(float $recommendedQuantity): static
+    {
+        $this->recommendedQuantity = $recommendedQuantity;
         return $this;
     }
 }

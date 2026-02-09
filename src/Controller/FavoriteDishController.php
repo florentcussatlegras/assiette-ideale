@@ -21,22 +21,23 @@ class FavoriteDishController extends AbstractController
     {
         if ($request->query->get('ajax')) {
             return $this->render('dish/_dish_list.html.twig', [
-                    'dishes' => $this->getUser()->getFavoriteDishes(),
+                'dishes' => $this->getUser()->getFavoriteDishes(),
             ]);
         }
-        
+
         return $this->render('dish/list.html.twig', [
-                    'dishes' => $this->getUser()->getFavoriteDishes(),
-                'foodGroups' => $foodGroupRepository->findAll(),
+            'dishes' => $this->getUser()->getFavoriteDishes(),
+            'foodGroups' => $foodGroupRepository->findAll(),
         ]);
     }
 
     #[Route('/add', name: '_add')]
-    public function add(Request $request, EntityManagerInterface $em, DishRepository $dishRepository) {
+    public function add(Request $request, EntityManagerInterface $em, DishRepository $dishRepository)
+    {
 
-        if($request->query->has('dish_id')) {
+        if ($request->query->has('dish_id')) {
 
-            if(null !== $dish = $dishRepository->findOneById((int)$request->query->get('dish_id'))) {
+            if (null !== $dish = $dishRepository->findOneById((int)$request->query->get('dish_id'))) {
 
                 $user = $this->getUser();
                 $user->addFavoriteDishes($dish);
@@ -48,31 +49,29 @@ class FavoriteDishController extends AbstractController
                     'key' => 'notice',
                     'message' => sprintf('Le plat "%s" a été ajouté à vos favoris', $dish->getName()),
                 ]);
-
-            }else{
+            } else {
 
                 return new JsonResponse(['error' => sprintf('Le plat id %d n\'existe pas!', (int)$request->query->get('dish_id'))]);
-
             }
-
         }
 
         return new JsonResponse(['error' => 'Veuillez indiquer un plat!']);
     }
 
     #[Route('/remove', name: '_remove')]
-    public function remove(Request $request, EntityManagerInterface $em, DishRepository $dishRepository) {
-        
-        if($request->query->has('dish_id')) {
+    public function remove(Request $request, EntityManagerInterface $em, DishRepository $dishRepository)
+    {
 
-            if(null !== $dish = $dishRepository->findOneById((int)$request->query->get('dish_id'))) {
+        if ($request->query->has('dish_id')) {
+
+            if (null !== $dish = $dishRepository->findOneById((int)$request->query->get('dish_id'))) {
 
                 $user = $this->getUser();
                 $user->removeFavoriteDishes($dish);
                 $em->persist($user);
                 $em->flush();
 
-                if($request->query->has('ajax') && $request->query->has('from_list')) {
+                if ($request->query->has('ajax') && $request->query->has('from_list')) {
 
                     return new JsonResponse([
                         'list' => $this->renderView('dish/_dish_list.html.twig', [
@@ -83,41 +82,18 @@ class FavoriteDishController extends AbstractController
                             'message' => sprintf('Le plat "%s" a été supprimé de vos favoris', $dish->getName()),
                         ])
                     ]);
-
-                    // return $this->render('dish/_dish_list.html.twig', [
-                    //     'dishes' => $this->getUser()->getFavoriteDishes(),
-                    // ]);
-                }else{
+                } else {
                     return $this->render('partials/alert/_alert.html.twig', [
                         'key' => 'notice',
                         'message' => sprintf('Le plat "%s" a été supprimé de vos favoris', $dish->getName()),
                     ]);
                 }
-
-                // return new JsonResponse(['success' => 'Le plat a été supprimé des favoris']);
-                // return $this->render('partials/alert/_alert.html.twig', [
-                //     'key' => 'notice',
-                //     'message' => sprintf('Le plat "%s" a été supprimé de vos favoris', $dish->getName()),
-                // ]);
-
-            }else{
+            } else {
 
                 return new JsonResponse(['error' => sprintf('Le plat id %d n\'existe pas!', (int)$request->query->get('dish_id'))]);
-
             }
-
         }
 
         return new JsonResponse(['error' => 'Veuillez indiquer un plat!']);
-
     }
-
-    // #[Route('/show-alert/{id?}', name: '_show_alert')]
-    // public function showAlert(Request $request, ?Dish $dish)
-    // {
-    //     return $this->render('partials/_alert_ajax.html.twig', [
-    //         'key' => 'notice',
-    //         'message' => sprintf('Le plat %s a été ajouté à vos favoris', $dish->getName()),
-    //     ]);
-    // }
 }

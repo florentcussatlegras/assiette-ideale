@@ -8,10 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class UserController extends AbstractController
 {
-    /**
-     * @Route("api/me", name="app_user_api_me")
-     * @IsGranted("IS_AUTHENTICATED_REMEMBERED")
-     */
+    #[Route('api/me', name: 'app_user_api_me', methods: ['GET'])]
+    #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
     public function apiMe()
     {
         return $this->json($this->getUser(), 200, [], [

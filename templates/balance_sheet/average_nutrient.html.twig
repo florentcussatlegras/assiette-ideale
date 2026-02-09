@@ -10,26 +10,6 @@
                 
                 <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
 
-                    {# <div class="flex items-center">
-                        <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ nutrient|nutrient.color }}"></div>
-                        <label class="w-48 mb-0">{{ nutrient|trans({}, 'recommendations')|capitalize }}:</label>
-                    </div>
-
-                    <div class="flex gap-2 items-center justify-between w-full" style="color: {{ levelAlert.color }}">
-                    
-                        <div class="flex justify-start md:justify-center w-32 text-sm md:text-xl">
-                            <span class="bg-gray rounded-full px-2 py-1 font-semibold">{{ quantity }} g</span>
-                        </div>
-                    
-                        <div class="flex flex-row items-center">
-                            <a href="#" class="relative" data-action="click->popover-info#show">
-                                {{ include('balance_sheet/_icon_warning.html.twig', { size: 18 }) }}
-                            </a>
-                            <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-            
-                    </div> #}
-
                     <div class="flex items-center gap-2">
                         <div class="w-4 h-4 rounded-full mr-2" style="background-color: {{ nutrient|nutrient.color }}"></div>
                         <label class="w-48 mb-0">{{ nutrient|trans({}, 'recommendations')|capitalize }}</label>
@@ -60,15 +40,15 @@
 
     </div>
 
-    <div class="flex flex-row justify-center w-full flex-1 charts-container">
-        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+    <div class="my-hidden md:flex flex-row flex-1 justify-center w-full">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-0">
             {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
                 'averageNutrient': average_nutrient|serialize,
                 'title': 'Votre consommation',
                 'displayLabel': true
             })) }}
         </div>
-        <div class="chart-half flex justify-center xl:scale-90 2xl:scale-95 h-64">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-0">
             {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
                 'averageNutrient': average_nutrient_recommended|serialize,
                 'title': 'Nos recommandations',
@@ -76,4 +56,22 @@
             })) }}
         </div>
     </div>
+
+    <div class="flex md:my-hidden flex-col flex-1 justify-center w-full">
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-12">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
+                'averageNutrient': average_nutrient|serialize,
+                'title': 'Votre consommation',
+                'displayLabel': true
+            })) }}
+        </div>
+        <div class="flex w-full md:w-1/2 justify-center h-64 mt-12">
+            {{ render(controller('App\\Controller\\BalanceSheet\\ModalChartController::chartNutrient', {
+                'averageNutrient': average_nutrient_recommended|serialize,
+                'title': 'Nos recommandations',
+                'displayLabel': false
+            })) }}
+        </div>
+    </div>
+
 </div>

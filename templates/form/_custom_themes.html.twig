@@ -10,18 +10,12 @@
         <ul class="w-full list-none">
             {%- for error in errors -%}
                 <li class="{{ error_item_class|default('flex items-start text-left text-red-700 my-1') }}">
-                    {# <i class="w-4 h-4 mr-2" data-feather="alert-circle"></i> #}
                     <span>{{ error.message }}</span>
                 </li>
             {%- endfor -%}
         </ul>
     {%- endif -%}
 {%- endblock form_errors -%}
-
-{# {%- block widget_attributes -%}
-    {%- set attr = attr|merge({ class: attr.class|default(widget_class|default('mt-1 w-full form-control')) ~ (disabled ? ' ' ~ widget_disabled_class|default('border-gray-300 text-gray-500')) ~ (errors|length ? ' ' ~ widget_errors_class|default('border-2')) }) -%}
-    {{- parent() -}}
-{%- endblock widget_attributes -%} #}
 
 {%- block choice_widget_expanded -%}
     {%- set attr = attr|merge({ class: attr.class|default('mt-2') }) -%}
@@ -40,7 +34,6 @@
   
         {%- set type = type|default('text') -%}
         {%- if type == 'range' or type == 'color' -%}
-            {# Attribute "required" is not supported #}
             {%- set required = false -%}
         {%- endif -%}
 

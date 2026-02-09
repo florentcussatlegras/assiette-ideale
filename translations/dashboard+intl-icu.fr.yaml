@@ -12,4 +12,4 @@ dashboard:
         balance_sheet: Bilans
         diet_evolution: Evolution
     buttons:
-        see_profile: Voir mon profil
+        see_profile: Mon espace

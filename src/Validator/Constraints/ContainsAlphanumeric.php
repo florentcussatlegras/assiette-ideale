@@ -4,9 +4,7 @@ namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[\Attribute]
 class ContainsAlphanumeric extends Constraint
 {
     public $message = 'The value {{ string }} must only contains numbe and letters';

@@ -11,5 +11,15 @@ meal:
         import_meal: Importer
         new_meal: Nouveau
 
+meals:
+  count: >-
+    {count, plural,
+      =0 {Aucun repas}
+      =1 {repas}
+      other {repas}
+    }
+
+
+
     
 

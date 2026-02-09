@@ -10,3 +10,12 @@ meal:
     buttons:
         import_meal: Import
         new_meal: New
+
+meals:
+  count: >-
+    {count, plural,
+      =0 {Aucun repas sauvegardé}
+      =1 {repas sauvegardé}
+      other {repas sauvegardés}
+    }
+

@@ -11,10 +11,11 @@ import "./menu-mobile.js";
 import "./dish2";
 import "./navbar";
 import "./styles/modal.css"
-import "./view-mode-list"
+// import "./view-mode-list"
 import "./profile";
 import "./dish";
-import "./password-strength"
+import "./password-strength";
+import "./welcome-modals";
 // import "./date-picker-range";
 
 // import "./algolia-autocomplete";

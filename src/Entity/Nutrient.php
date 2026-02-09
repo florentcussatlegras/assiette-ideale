@@ -3,60 +3,31 @@
 namespace App\Entity;
 
 use App\Repository\NutrientRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Nutrient
- *
- * @ORM\Table(name="nutrient")
- * @ORM\Entity(repositoryClass="App\Repository\NutrientRepository")
- */
+#[ORM\Entity(repositoryClass: NutrientRepository::class)]
+#[ORM\Table(name: "nutrient")]
 class Nutrient
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer", name: "id")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string")
-     */
-    private $name;
+    #[ORM\Column(type: "string", name: "name")]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="code", type="string")
-     */
-    private $code;
+    #[ORM\Column(type: "string", name: "code")]
+    private ?string $code = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="color", type="string")
-     */
-    private $color;
+    #[ORM\Column(type: "string", name: "color")]
+    private ?string $color = null;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="description", type="text")
-     */
-    private $description;
+    #[ORM\Column(type: "text", name: "description")]
+    private ?string $description = null;
 
-    /**
-     * @var text
-     *
-     * @ORM\Column(name="order", type="integer")
-     */
-    private $order;
+    #[ORM\Column(type: "integer", name: "order")]
+    private ?int $order = null;
 
     public function getId(): ?int
     {
@@ -71,7 +42,6 @@ class Nutrient
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -83,7 +53,6 @@ class Nutrient
     public function setDescription(string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -95,7 +64,6 @@ class Nutrient
     public function setCode(string $code): static
     {
         $this->code = $code;
-
         return $this;
     }
 
@@ -107,7 +75,6 @@ class Nutrient
     public function setColor(string $color): static
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -119,9 +86,6 @@ class Nutrient
     public function setOrder(int $order): static
     {
         $this->order = $order;
-
         return $this;
     }
-
-    
 }

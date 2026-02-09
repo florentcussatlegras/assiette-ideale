@@ -1,12 +1,7 @@
 {% use 'form/_custom_themes.html.twig' %}
 
 {% block _dish_food_group_submit_widget %}
-
-    {# <div class="inline-block p-2 mr-3 mb-2 rounded-md zoom-in items-center justify-center font-bold shadow-zinc-400/50" style="border:2px solid {{ food_group.parent.degradedColor }}; color: {{ food_group.parent.color }}; background-color: {{ food_group.parent.degradedColor }}"> #}
-    <div class="goto-food inline-flex food-group h-8 font-bold items-center current-shadow rounded" style="border:2px solid {{ food_group.parent.degradedColor }}; color: {{ food_group.parent.color }}; background-color: {{ food_group.parent.degradedColor }}">
-        {# <div class="image-fit ml-2">
-            {{ include("partials/pictos/foodgroup/_picto_fg.html.twig", {fg : food_group}) }}
-        </div> #}
+     <div class="goto-food inline-flex food-group h-8 font-bold items-center current-shadow rounded" style="border:2px solid {{ food_group.parent.degradedColor }}; color: {{ food_group.parent.color }}; background-color: {{ food_group.parent.degradedColor }}">
         {% if food_group.name|length > 15 %}
             {% set label = food_group.shortName %}
         {% endif %}
@@ -14,23 +9,10 @@
         {{ block('button_widget') }}
         <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
-        </path>
-    </svg>
+            </path>
+        </svg>
     </div>
-    
 {% endblock %}
-
-{# {%- block _dish_level_widget -%}
-    {%- set attr = attr|merge({ class: attr.class|default('mt-2 flex') }) -%}
-    <div {{ block('widget_container_attributes') }}>
-        {%- for child in form %}
-            <div class="flex items-center mr-2">
-                {{- form_widget(child) -}}
-                {{- form_label(child, null, { translation_domain: choice_translation_domain, 'label_attr': {'class': 'font-normal'} }) -}}
-            </div>
-        {% endfor -%}
-    </div>
-{%- endblock _dish_level_widget -%} #}
 
 {%- block dish_horizontal_choices_widget -%}
     {%- set attr = attr|merge({ class: attr.class|default('flex') }) -%}
@@ -43,17 +25,6 @@
         {% endfor -%}
     </div>
 {%- endblock dish_horizontal_choices_widget -%}
-
-{# {% block _dish_stepRecipes_entry_rankStep_row %}
-    {%- set widget_attr = {} -%}
-    {%- if help is not empty -%}
-        {%- set widget_attr = {attr: {'aria-describedby': id ~"_help"}} -%}
-    {%- endif -%}
-    {{- form_label(form) -}}
-    {{- form_widget(form, widget_attr) -}}
-    {{- form_errors(form) -}}
-    {{- form_help(form) -}}
-{% endblock %} #}
 
 {% block _dish_stepRecipes_entry_description_row %}
     {%- set widget_attr = {} -%}

@@ -8,66 +8,39 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Diet
- *
- * @ORM\Table(name="diet")
- * @ORM\Entity(repositoryClass="App\Repository\DietRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: "App\Repository\DietRepository")]
+#[ORM\Table(name: "diet")]
+#[ORM\HasLifecycleCallbacks]
 class Diet
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(name="name", type="string", length=255, nullable=true)
-     */
-    private $name;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Food", inversedBy="diets")
-     * @ORM\JoinTable(name="diet_forbidden_food")
-     */
-    private $forbiddenFoods;
+    #[ORM\ManyToMany(targetEntity: Food::class, inversedBy: "diets")]
+    #[ORM\JoinTable(name: "diet_forbidden_food")]
+    private Collection $forbiddenFoods;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Food")
-     * @ORM\JoinTable(name="diet_authorized_food")
-     */
-    private $authorizedFoods;
+    #[ORM\ManyToMany(targetEntity: Food::class)]
+    #[ORM\JoinTable(name: "diet_authorized_food")]
+    private Collection $authorizedFoods;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\FoodGroup\FoodGroup", inversedBy="diets")
-     * @ORM\JoinTable(name="diet_forbidden_food_group")
-     */
-    private $forbiddenFoodGroups;
+    #[ORM\ManyToMany(targetEntity: FoodGroup::class, inversedBy: "diets")]
+    #[ORM\JoinTable(name: "diet_forbidden_food_group")]
+    private Collection $forbiddenFoodGroups;
 
-    /**
-     * @ORM\Column(name="description", type="string", length=255, nullable=true)
-     */
-    private $description;
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $description = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Diet\RatioQuantityFoodGroupParent")
-     */
-    private $ratios;
+    #[ORM\ManyToMany(targetEntity: RatioQuantityFoodGroupParent::class)]
+    private Collection $ratios;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Diet\SubDiet", mappedBy="diet")
-     */
-    private $subDiets;
-
-    public function __toString()
-    {
-        return $this->name;
-    }
+    #[ORM\OneToMany(mappedBy: "diet", targetEntity: SubDiet::class)]
+    private Collection $subDiets;
 
     public function __construct()
     {
@@ -76,6 +49,11 @@ class Diet
         $this->ratios = new ArrayCollection();
         $this->subDiets = new ArrayCollection();
         $this->authorizedFoods = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 
     public function getId(): ?int
@@ -91,7 +69,6 @@ class Diet
     public function setName(?string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -103,65 +80,50 @@ class Diet
     public function setDescription(?string $description): self
     {
         $this->description = $description;
-
         return $this;
     }
 
-    /**
-     * @return Collection|Food[]
-     */
+    /** @return Collection|Food[] */
     public function getForbiddenFoods(): Collection
     {
         return $this->forbiddenFoods;
     }
 
-    public function addForbiddenFood(Food $forbiddenFood): self
+    public function addForbiddenFood(Food $food): self
     {
-        if (!$this->forbiddenFoods->contains($forbiddenFood)) {
-            $this->forbiddenFoods[] = $forbiddenFood;
+        if (!$this->forbiddenFoods->contains($food)) {
+            $this->forbiddenFoods->add($food);
         }
-
         return $this;
     }
 
-    public function removeForbiddenFood(Food $forbiddenFood): self
+    public function removeForbiddenFood(Food $food): self
     {
-        if ($this->forbiddenFoods->contains($forbiddenFood)) {
-            $this->forbiddenFoods->removeElement($forbiddenFood);
-        }
-
+        $this->forbiddenFoods->removeElement($food);
         return $this;
     }
 
-    /**
-     * @return Collection|FoodGroup[]
-     */
+    /** @return Collection|FoodGroup[] */
     public function getForbiddenFoodGroups(): Collection
     {
         return $this->forbiddenFoodGroups;
     }
 
-    public function addForbiddenFoodGroup(FoodGroup $forbiddenFoodGroup): self
+    public function addForbiddenFoodGroup(FoodGroup $group): self
     {
-        if (!$this->forbiddenFoodGroups->contains($forbiddenFoodGroup)) {
-            $this->forbiddenFoodGroups[] = $forbiddenFoodGroup;
+        if (!$this->forbiddenFoodGroups->contains($group)) {
+            $this->forbiddenFoodGroups->add($group);
         }
-
         return $this;
     }
 
-    public function removeForbiddenFoodGroup(FoodGroup $forbiddenFoodGroup): self
+    public function removeForbiddenFoodGroup(FoodGroup $group): self
     {
-        if ($this->forbiddenFoodGroups->contains($forbiddenFoodGroup)) {
-            $this->forbiddenFoodGroups->removeElement($forbiddenFoodGroup);
-        }
-
+        $this->forbiddenFoodGroups->removeElement($group);
         return $this;
     }
 
-    /**
-     * @return Collection|SubDiet[]
-     */
+    /** @return Collection|SubDiet[] */
     public function getSubDiets(): Collection
     {
         return $this->subDiets;
@@ -170,29 +132,23 @@ class Diet
     public function addSubDiet(SubDiet $subDiet): self
     {
         if (!$this->subDiets->contains($subDiet)) {
-            $this->subDiets[] = $subDiet;
+            $this->subDiets->add($subDiet);
             $subDiet->setDiet($this);
         }
-
         return $this;
     }
 
     public function removeSubDiet(SubDiet $subDiet): self
     {
-        if ($this->subDiets->contains($subDiet)) {
-            $this->subDiets->removeElement($subDiet);
-            // set the owning side to null (unless already changed)
+        if ($this->subDiets->removeElement($subDiet)) {
             if ($subDiet->getDiet() === $this) {
                 $subDiet->setDiet(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @return Collection|RatioQuantityFoodGroupParent[]
-     */
+    /** @return Collection|RatioQuantityFoodGroupParent[] */
     public function getRatios(): Collection
     {
         return $this->ratios;
@@ -201,44 +157,34 @@ class Diet
     public function addRatio(RatioQuantityFoodGroupParent $ratio): self
     {
         if (!$this->ratios->contains($ratio)) {
-            $this->ratios[] = $ratio;
+            $this->ratios->add($ratio);
         }
-
         return $this;
     }
 
     public function removeRatio(RatioQuantityFoodGroupParent $ratio): self
     {
-        if ($this->ratios->contains($ratio)) {
-            $this->ratios->removeElement($ratio);
-        }
-
+        $this->ratios->removeElement($ratio);
         return $this;
     }
 
-    /**
-     * @return Collection|Food[]
-     */
+    /** @return Collection|Food[] */
     public function getAuthorizedFoods(): Collection
     {
         return $this->authorizedFoods;
     }
 
-    public function addAuthorizedFood(Food $authorizedFood): self
+    public function addAuthorizedFood(Food $food): self
     {
-        if (!$this->authorizedFoods->contains($authorizedFood)) {
-            $this->authorizedFoods[] = $authorizedFood;
+        if (!$this->authorizedFoods->contains($food)) {
+            $this->authorizedFoods->add($food);
         }
-
         return $this;
     }
 
-    public function removeAuthorizedFood(Food $authorizedFood): self
+    public function removeAuthorizedFood(Food $food): self
     {
-        $this->authorizedFoods->removeElement($authorizedFood);
-
+        $this->authorizedFoods->removeElement($food);
         return $this;
     }
-
-    
 }

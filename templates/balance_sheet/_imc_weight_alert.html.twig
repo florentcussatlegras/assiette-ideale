@@ -1,5 +1,4 @@
-
-<div class="flex items-center gap-2 text-sm md:text-base" style="color: {{ levelAlert.color }}">
+<div class="flex items-center gap-2 text-sm md:text-base font-bold" style="color: {{ levelAlert.color }}">
     {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: levelAlert, size: 5 }) }}
     {{ message|trans }}
 </div>

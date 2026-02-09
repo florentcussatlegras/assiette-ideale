@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HelpController extends AbstractController
 {
-    #[Route('/help', name: 'app_help')]
+    #[Route('/help', name: 'app_help', methods: ['GET'])]
     public function index(Request $request): Response
     {
         return $this->render('help/index.html.twig');

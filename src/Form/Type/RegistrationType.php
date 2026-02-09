@@ -37,19 +37,6 @@ class RegistrationType extends AbstractType
                     ],
                 ]
             )
-            ->add('country', CountryType::class, [
-                    'label' => 'Votre pays',
-                    'preferred_choices' => ['FR', 'GB', 'ES'],
-                    'placeholder' => 'Je ne souhaite pas le renseigner',
-                    'empty_data' => 'FR',
-                    'invalid_message' => 'Le pays est invalide',
-                    'block_name' => 'pays',
-                    'block_prefix' => 'le_pays_prefix',
-                    'attr' => [
-                        'class' => 'rounded-lg w-full',
-                    ],
-                ]
-            )
             /* ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'mapped' => false,
@@ -88,9 +75,6 @@ class RegistrationType extends AbstractType
                     'mapped' => false,
                     'label_attr' => [
                         'class' => 'font-normal'
-                    ],
-                    'attr' => [
-                        'class' => 'mt-1 mr-2 w-5 h-5 cursor-pointer border border-gray-200'
                     ],
                     'constraints' => [
                         new Assert\IsTrue([

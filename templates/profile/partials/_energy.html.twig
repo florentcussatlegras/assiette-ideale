@@ -1,68 +1,67 @@
-   <div class="bg-red-100 rounded-2xl w-full p-4 relative shadow-soft">
-                        
-    <div class="pb-2 flex items-center justify-center text-base font-medium text-red-700 border-b border-red-700 w-full">
-        <center>{% trans from 'profile' %}profile.energy.title{% endtrans %}</center>
-    </div>
+<div class="pb-2 flex items-center justify-center text-base font-medium text-red-700 border-b border-red-700 w-full">
+    <center>{% trans from 'profile' %}profile.energy.title{% endtrans %}</center>
+    {% if app.user.isWeightGoalActive is same as(false) %}
+        <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}" class="ml-4">
+            <svg class="w-5 h-5 text-red-700 hover:text-gray-500 transition-colors duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.9087 3.87352C16.4681 3.31421 17.2266 3 18.0176 3C18.4093 3 18.7971 3.07714 19.1589 3.22702C19.5208 3.3769 19.8495 3.59658 20.1265 3.87352C20.4034 4.15046 20.6231 4.47924 20.773 4.84108C20.9229 5.20292 21 5.59074 21 5.98239C21 6.37404 20.9229 6.76186 20.773 7.1237C20.6231 7.48554 20.4034 7.81432 20.1265 8.09126L19.0231 9.19466C18.6326 9.58519 17.9994 9.58519 17.6089 9.19467L14.8053 6.39114C14.4148 6.00062 14.4148 5.36745 14.8053 4.97693L15.9087 3.87352ZM13.3911 7.80536C13.0006 7.41483 12.3674 7.41483 11.9769 7.80536L5.01084 14.7714C4.37004 15.4122 3.91545 16.2151 3.69566 17.0943L3.02986 19.7575C2.94467 20.0982 3.04452 20.4587 3.2929 20.7071C3.54128 20.9555 3.90177 21.0553 4.24254 20.9701L6.90572 20.3043C7.78488 20.0846 8.58778 19.63 9.22857 18.9892L16.1946 12.0231C16.5852 11.6326 16.5852 10.9994 16.1946 10.6089L13.3911 7.80536Z" fill="currentColor"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C12 19.4477 12.4477 19 13 19L20 19C20.5523 19 21 19.4477 21 20C21 20.5523 20.5523 21 20 21L13 21C12.4477 21 12 20.5523 12 20Z" fill="currentColor"></path> </g></svg>
+        </a>
+    {% endif %}
+</div>
+
+<div class="pt-4 flex items-center justify-center my-2 text-xl text-red-700 font-bold">
+
+    <div class="flex flex-col gap-3">
     
-    <div class="pt-4 flex items-center justify-center my-2 text-xl text-red-700 font-bold">
+        {% if app.user.energy %}
 
-        <div class="flex flex-col gap-3">
+            <div class="flex flex-col">
+                {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
+                {% if app.user.automaticCalculateEnergy is same as(false) %}
+                    <span class="text-xs font-light">(calculée par vous même)</span>
+                {% endif %}
+            </div>
+
+        {% else %}
         
-            {% if app.user.energy %}
+            <div class="text-base flex flex-col items-center gap-4">
 
-                    <center>
-                        {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
-                    </center>
+                {% if app.user.automaticCalculateEnergy is same as(false) %}
 
-                    {# {% if app.user.automaticCalculateEnergy is same as(true) %}
-                        <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
-                    {% else %}
-                        <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
-                    {% endif %} #}
+                    <span>Vous n'avez pas indiqué votre besoin énergétique quotitien</span>
 
-            {% else %}
-            
-                <div class="text-base flex flex-col items-center gap-4">
+                {% endif %}
 
-                    {% if app.user.automaticCalculateEnergy is same as(false) %}
+                {% if missingElements|length > 0 %}
 
-                        <span>Vous n'avez pas indiqué votre besoin énergétique quotitien</span>
+                    <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
+                        {{ missingElements|join(',', ' et ') }}
+                        <br/>Merci de compléter ces informations ou 
+                    </p>
 
-                    {% endif %}
+                {% else %}
 
-                    {% if missingElements|length > 0 %}
+                    <a href="{{ path('app_energy_estimate') }}" 
+                            class="text-dark-blue text-black p-2 rounded-full">
+                        Laissez l'application estimer mon besoin énergétique
+                    </a>
 
-                        <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
-                            {{ missingElements|join(',', ' et ') }}
-                            <br/>Merci de compléter ces informations ou 
-                        </p>
+                {% endif %}   
 
-                    {% else %}
-
-                        <a href="{{ path('app_energy_estimate') }}" 
-                                class="text-dark-blue text-black p-2 rounded-full">
-                            Laissez l'application estimer mon besoin énergétique
-                        </a>
-
-                    {% endif %}   
-
-                    <div class="flex flex-row text-sm gap-2">
-                        <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
-                                    class="text-white bg-dark-blue p-2 rounded-full">
-                            Saisir votre besoin
-                        </a> 
-                    </div>
-
+                <div class="flex flex-row text-sm gap-2">
+                    <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
+                                class="text-white bg-dark-blue p-2 rounded-full">
+                        Saisir votre besoin
+                    </a> 
                 </div>
 
-            {% endif %}
+            </div>
 
-        </div>
+        {% endif %}
 
     </div>
 
-    {# <div class="absolute" style="top: 40px; left: 10px">
-        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceEnergyAlerts, size: 16, opacity: 0.3 }) }}
-    </div> #}
-    
 </div>
+
+{# <div class="absolute" style="top: 40px; left: 10px">
+    {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceEnergyAlerts, size: 16, opacity: 0.3 }) }}
+</div> #}
+    

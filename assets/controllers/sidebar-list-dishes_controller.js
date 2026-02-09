@@ -24,9 +24,10 @@ export default class  extends Controller {
 
         if(quantity === '' || quantity === null || quantity === 'undefined' || quantity <= 0 || quantity === 'Aucune') {
             Swal.fire({
-                title: "Ouch!",
+                title: "Attention!",
                 text: "Veuillez saisir une quantité valide",
-                icon: "warning"
+                icon: "warning",
+                confirmButtonColor: "#0284c7"
             })
     
             return;
@@ -44,27 +45,11 @@ export default class  extends Controller {
             ajax: 1
         });
 
-        console.log("j'ajoute l'element à la session");
-        console.log(`${this.urlAddItemValue}?${params.toString()}`);
-
         fetch(`${this.urlAddItemValue}?${params.toString()}`)
             .then((response) => {
                 this.toggleSlideover();
                 this.reloadMeals();
             });
-
-        // btnAdd.dataset.rankDish += 1;
-
-
-        // this.dispatch('async:reload-list', {
-        //     response
-        // });
-
-        // params = new URLSearchParams({
-        //     'ajax': 1
-        // });
-        // const response = await fetch(`${urlReloadMeals}?${params.toString()}`);
-        // document.getElementById('meals-day').innerHTML = await response.text();
     }
 
     async addPreSelect(btnAdd) {
@@ -104,22 +89,6 @@ export default class  extends Controller {
         });
 
 
-        // ON CHANGE LE SELECT QUANTITY EN "NOMBRE PORTIONS/KG/G..."
-
-        // const containerQuantity = document.getElementById("containerQuantity-" + id);
-        // const urlUnitMeasureAlias = containerQuantity.dataset.urlGetUnitmeasureAlias;
-        // params = new URLSearchParams({
-        //     'id': unitMeasureId,
-        // });
-        // // console.log(`${url}?${params.toString()}`);
-        // fetch(`${urlUnitMeasureAlias}?${params.toString()}`)
-        //     .then((response) => response.text())
-        //     .then((text) => {
-        //         document.getElementById('wrapperQuantitySelected-' + id).innnerHTML = "<div>" + quantity + " " + text + "</div>";
-        //         document.getElementById('wrapperQuantityForm-' + id).classList.add('hidden');
-        //         document.getElementById('wrapperQuantitySelected-' + id).classList.remove('hidden');
-        // });
-
     }
 
     updateItem(event) {
@@ -129,9 +98,10 @@ export default class  extends Controller {
 
         if(quantity === '' || quantity === null || quantity === 'undefined' || quantity <= 0 || quantity === 'Aucune') {
             Swal.fire({
-                title: "Ouch!",
+                title: "Attention!",
                 text: "Veuillez saisir une quantité valide",
-                icon: "warning"
+                icon: "warning",
+                confirmButtonColor: "#0284c7"
             })
     
             return;
@@ -242,8 +212,6 @@ export default class  extends Controller {
             'rankMeal': btnRemove.dataset.rankMeal,
             'rankDish': btnRemove.dataset.rankDish,
         });
-        console.log('je supprime un element de ma liste préslection');
-        console.log(`${url}?${params.toString()}`);
 
         fetch(`${url}?${params.toString()}`)
             .then((response) => response.text())
@@ -260,9 +228,6 @@ export default class  extends Controller {
     }
 
     async removeAllPreselect() {
-  
-        console.log('je supprime tous les éléments de ma liste préslection');
-        console.log(`${this.urlRemovePreselectedItemsValue}`);
 
         fetch(`${this.urlRemovePreselectedItemsValue}`)
             .then((response) => {
@@ -285,8 +250,6 @@ export default class  extends Controller {
             'ajax': 1
         });
         const url = `${this.urlReloadMealsValue}?${params.toString()}`;
-        console.log('url reload meals');
-        console.log(url);
 
         fetch(url)
             .then((response) => {

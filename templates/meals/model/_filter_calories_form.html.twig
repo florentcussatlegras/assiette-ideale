@@ -1,0 +1,34 @@
+{# meals/model/_filter_calories_form.html.twig #}
+
+{{ form_start(filterCaloriesForm) }}
+
+<div
+    {{ stimulus_controller('calories-range') }}
+    data-calories-range-min-value="0"
+    data-calories-range-max-value="50000"
+    data-action="calories-range:change->model-meal#onCaloriesChange"
+>
+
+    {{ form_widget(filterCaloriesForm.caloriesMin) }}
+    {{ form_widget(filterCaloriesForm.caloriesMax) }}
+
+    <div class="flex items-center gap-4">
+
+        <!-- slider -->
+        <div class="flex-1">
+            <div data-calories-range-target="slider"></div>
+        </div>
+
+        <!-- valeurs -->
+        <div class="text-sm whitespace-nowrap text-right min-w-[90px]">
+            <span data-calories-range-target="min"></span>
+            –
+            <span data-calories-range-target="max"></span>
+            kcal
+        </div>
+
+    </div>
+
+</div>
+
+{{ form_end(filterCaloriesForm) }}

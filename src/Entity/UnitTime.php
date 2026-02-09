@@ -4,54 +4,36 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * UnitTime
- *
- * @ORM\Table(name="unit_time")
- * @ORM\Entity(repositoryClass="App\Repository\UnitTimeRepository")
- * @ORM\Entity
- */
+#[ORM\Entity(repositoryClass: "App\Repository\UnitTimeRepository")]
+#[ORM\Table(name: "unit_time")]
 class UnitTime
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="text", type="string")
-     */
-    private $text;
-    
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string")
-     */
-    private $alias;
+    #[ORM\Column(type: "string")]
+    private string $text;
 
-    public function __toString()
+    #[ORM\Column(type: "string")]
+    private string $alias;
+
+    // ------------------- Magic Methods -------------------
+
+    public function __toString(): string
     {
         return $this->text;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    // ------------------- Getters & Setters -------------------
+
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getText(): ?string
+    public function getText(): string
     {
         return $this->text;
     }
@@ -59,11 +41,10 @@ class UnitTime
     public function setText(string $text): self
     {
         $this->text = $text;
-
         return $this;
     }
 
-    public function getAlias(): ?string
+    public function getAlias(): string
     {
         return $this->alias;
     }
@@ -71,7 +52,6 @@ class UnitTime
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
-
         return $this;
     }
 }

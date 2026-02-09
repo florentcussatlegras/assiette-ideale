@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+<div class="min-h-screen flex items-center justify-center px-4">
+
+    <div class="bg-white rounded-2xl shadow-soft max-w-3xl p-8 text-center">
+
+        <!-- Image -->
+        <div class="flex justify-center">
+            <img src="{{ asset('images/illustration_welcome_first.jpg') }}" />
+        </div>
+
+        <!-- Titre -->
+        <h1>Bienvenue sur <span class="font-bold text-sky-600">Assiette idéale</span> !</h1>
+
+        <!-- Texte -->
+        <p class="text-gray-600 leading-relaxed mb-6 mt-6">
+            Afin de vous proposer une expérience réellement personnalisée, nous avons besoin
+            de quelques informations vous concernant.
+            <br><br>
+            Ces données nous permettront notamment d' estimer vos <span class="text-sky-600">besoins énergétiques quotidiens</span>, 
+            adapter vos <span class="text-sky-600">apports caloriques</span> selon vos objectifs, 
+            ou encore vous fournir des <span class="text-sky-600">recommandations nutritionnelles personnalisées</span>
+            <br><br>
+            <span class="text-gray-700">
+                Toutes les informations renseignées sont strictement confidentielles et ne
+                seront utilisées que dans le cadre de votre accompagnement personnel.
+            </span>
+        </p>
+
+        <!-- Bouton -->
+        <form action="{{ path('app_welcome_accept') }}" method="post">
+            <button
+                type="submit"
+                class="w-full bg-sky-600 hover:bg-sky-700 transition text-white font-semibold py-3 rounded-xl shadow-md"
+            >
+                Commencer
+            </button>
+        </form>
+
+        <!-- Texte secondaire -->
+        <p class="text-xs text-gray-400 mt-6">
+            Vous pourrez modifier ou supprimer ces informations à tout moment.
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

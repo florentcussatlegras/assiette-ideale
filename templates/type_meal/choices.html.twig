@@ -1,0 +1,12 @@
+{% for typeMeal in typeMeals %}
+    <input
+        type="checkbox"
+        class="text-sky-500 mb-1"
+        value="{{ typeMeal.id }}"
+        data-model-meal-target="types"
+        data-action="change->model-meal#applyFilters"
+    >
+    <span class="leading-none">
+        {{ typeMeal.frontName }}
+    </span>    
+{% endfor %}

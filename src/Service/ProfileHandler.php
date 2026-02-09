@@ -51,7 +51,7 @@ class ProfileHandler
         $this->security = $security;
     }
 
-    public function nextElement($element)
+    public function currentStep()
     {
         $user = $this->security->getUser();
         
@@ -59,67 +59,30 @@ class ProfileHandler
             throw new \LogicException("L'utilisateur doit être un objet User");
         }
 
-        // $currentIndex = (int)array_search($element, self::STEPS);
-        // $nextIndex = $currentIndex + 1;
+        // Récupère toutes les étapes
+        $steps = ProfileHandler::STEPS;
+        $currentStep = $steps[0];
 
-        // if(array_key_exists($nextIndex, self::STEPS)) {
-        //     $accessor = PropertyAccess::createPropertyAccessor();
+        // Récupère les steps validés par l'utilisateur
+        $validSteps = $user->getValidStepProfiles();
 
-        //     if(null !== $accessor->getValue($user, self::STEPS[$nextIndex])) {
-        //         return self::STEPS[$nextIndex];
-        //     }
-        // }
+        // Dernière étape validée
+        $lastValidStep = !empty($validSteps) ? $validSteps[array_key_last($validSteps)] : null;
 
-
-        // do 
-        // {
-        //     $currentIndex = (int)array_search($element, self::STEPS);
-        //     $nextIndex = $currentIndex + 1;
-
-        //     if (array_key_exists($nextIndex, self::STEPS)) {
-        //         $element = self::STEPS[$nextIndex];
-        //         $accessor = PropertyAccess::createPropertyAccessor();
-        //         $value = $accessor->getValue($user, element);
-        //     }else{
-        //         break;
-        //     }
-        // }while(null === $value);
-
-        $value = null;
-        $index = (int)array_search($element, self::STEPS);
-
-        do {
-            $index++;
-            if($index > array_key_last(self::STEPS)) {
-                break;
+        // Parcours toutes les étapes pour déterminer la prochaine étape à remplir
+        foreach ($steps as $key => $step) {
+            if ($step === $lastValidStep) {
+                // On prend l'étape suivante si elle existe
+                $currentStep = $steps[$key + 1];
             }
-            $accessor = PropertyAccess::createPropertyAccessor();
-            $value = $accessor->getValue($user, self::STEPS[$index]);
-            if($value instanceof \Traversable){
-                $value = $value->toArray();
-            }
-        }while(!empty($value));
-
-        if(!$value && $index <= array_key_last(self::STEPS)) {
-            return self::STEPS[$index];
         }
 
-        return false;
+        return $currentStep;
     }
 
     public function proportionCompleted(): float
     {
         $user = $this->security->getUser();
-
-        // $r = 0;
-        // $countProperty = 8;
-
-        // if($user->getGender()) $r++;
-        // if($user->getAgeRange()) $r++;
-        // if($user->getHeight()) $r++;
-        // if($user->getWeight()) $r++;
-        // if($user->getSportingTime()) $r++;
-        // if($user->getWorkingType()) $r++;
         
         $q = 0;
         foreach(self::STEPS as $element) {

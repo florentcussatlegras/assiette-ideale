@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-
-
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Security\Authenticator\SocialAuthenticator;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,31 +16,49 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationsUtils, Request $request)
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
+    public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository)
     {
+        $user = $this->getUser();
+        $nonVerifiedUser = null;
+
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $error = $authenticationUtils->getLastAuthenticationError();
+
+        // Si l'utilisateur a tenté de se connecter
+        if ($lastUsername) {
+
+            $user = $userRepository->findOneBy(['email' => $lastUsername]);
+
+            if ($user && !$user->getIsVerified()) {
+                // On mémorise cet utilisateur pour le template
+                $nonVerifiedUser = $user;
+
+                // Supprime l'erreur d'authentification classique pour ne pas afficher "Identifiants invalides"
+                $error = null;
+            }
+        }
+
         return $this->render('security/login.html.twig', [
-            'error' => $authenticationsUtils->getLastAuthenticationError(),
-            'last_username' => $authenticationsUtils->getLastUsername()
+            'last_username' => $lastUsername,
+            'error' => $error,
+            'non_verified_user' => $nonVerifiedUser,
         ]);
     }
 
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
-    public function logout()
-    {
-
-    }
+    public function logout() {}
 
     // -------------------------------------------------------------------------
     // GOOGLE LOGIN
     // -------------------------------------------------------------------------
-    #[Route('/connect/google', name: 'connect_google')]
+    #[Route('/connect/google', name: 'connect_google', methods: ['GET'])]
     public function connectGoogle(ClientRegistry $clientRegistry)
     {
         return $clientRegistry->getClient('google')->redirect(['email']);
     }
 
-    #[Route('/connect/google/check', name: 'connect_google_check')]
+    #[Route('/connect/google/check', name: 'connect_google_check', methods: ['GET'])]
     public function connectGoogleCheck(
         Request $request,
         EntityManagerInterface $em,
@@ -67,6 +84,7 @@ class SecurityController extends AbstractController
                 $user->setUsername($name);
                 $user->setGoogleId($googleId);
                 $user->setPassword(''); // pas de mot de passe
+                $user->setIsVerified(true);
                 $em->persist($user);
             } else {
                 $user->setGoogleId($googleId);
@@ -79,7 +97,6 @@ class SecurityController extends AbstractController
                 $authenticator,
                 $request
             );
-
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur Google : ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
@@ -89,7 +106,7 @@ class SecurityController extends AbstractController
     // -------------------------------------------------------------------------
     // GITHUB LOGIN
     // -------------------------------------------------------------------------
-    #[Route('/connect/github', name: 'connect_github')]
+    #[Route('/connect/github', name: 'connect_github', methods: ['GET'])]
     public function connectGithub(ClientRegistry $clientRegistry)
     {
         return $clientRegistry->getClient('github')->redirect(['user:email']);
@@ -122,6 +139,7 @@ class SecurityController extends AbstractController
                 $user->setUsername($username);
                 $user->setGithubId($githubId);
                 $user->setPassword('');
+                $user->setIsVerified(true);
                 $em->persist($user);
             } else {
                 $user->setGithubId($githubId);
@@ -134,7 +152,6 @@ class SecurityController extends AbstractController
                 $authenticator,
                 $request
             );
-
         } catch (\Exception $e) {
             $this->addFlash('error', 'Erreur GitHub : ' . $e->getMessage());
             return $this->redirectToRoute('app_login');

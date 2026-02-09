@@ -1,12 +1,12 @@
 {% use 'form/_custom_themes.html.twig' %}
 
 {%- block form_label -%}
-    {%- set label_attr = label_attr|merge({ class: label_attr.class|default(label_class|default('block text-sm md:text-base uppercase mb-6')) }) -%}
+    {%- set label_attr = label_attr|merge({ class: label_attr.class|default(label_class|default('block text-sm md:text-xl uppercase mb-8')) }) -%}
     {{- parent() -}}
 {%- endblock form_label -%}
 
 {%- block form_row -%}
-    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('mb-6 text-center')) }) -%}
+    {%- set row_attr = row_attr|merge({ class: row_attr.class|default(row_class|default('mb-6 text-center flex flex-col items-center')) }) -%}
     {{- parent() -}}
 {%- endblock form_row -%}
 
@@ -15,7 +15,7 @@
         {%- for child in form %}
             <div class="flex items-center mr-4">
                 {{- form_widget(child, {'attr' : {'class' : 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'}}) -}}
-                {{- form_label(child, null, {translation_domain: choice_translation_domain, 'label_attr' : {'class' : 'ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'}}) -}}
+                {{- form_label(child, null, {translation_domain: choice_translation_domain, 'label_attr' : {'class' : 'mt-2 ml-2 text-sm font-light text-gray-900 dark:text-gray-300'}}) -}}
             </div>
         {% endfor -%}
     </div>
@@ -25,8 +25,7 @@
     {%- if errors|length > 0 -%}
         <ul class="w-full list-none">
             {%- for error in errors -%}
-                <li class="{{ error_item_class|default('flex justify-center text-red-700 my-1') }}">
-                    {# <i class="w-4 h-4 mr-2" data-feather="alert-circle"></i> #}
+                <li class="{{ error_item_class|default('flex justify-center text-red-700 my-1 py-2') }}">
                     <span>{{ error.message }}</span>
                 </li>
             {%- endfor -%}

@@ -1,38 +1,49 @@
-
 {% extends "meals/week/_layout.html.twig" %}
 
 {% block table_menu_week %}
 
-    <div 
-        id="tableMenuWeek" 
-        class="flex flex-col"
-        {{ stimulus_controller('sidebar-details-meals', {
-            url: path('menu_week_get_meals')
-        }) }}
-    >
-
-        {{ include('meals/week/_sidebar_details_meals.html.twig') }}
+    <div class="flex flex-col">
 
         <div class="grid grid-cols-7 tracking-tight text-lg ml-5">
 
             {% for date, day in days %}
-                <button 
-                    class="flex flex-col items-center text-xs md:text-sm bg-light-blue text-white uppercase justify-start py-2 {% if loop.first %}rounded-tl-2xl{% endif %} {% if loop.last %}rounded-tr-2xl{% endif %}" 
-                    data-action="sidebar-details-meals#toggleSlideover sidebar-details-meals#setMeals"
-                    data-date="{{ date }}"
-                >
-                    {{ day|dayTrans }}
-                    {% if day in energyTotalPerDays|keys %}
-                        <span>{{ render(path('menu_meals_show_total_energy', { 'energyMeals': energyTotalPerDays[day], sizeIcon: 32, fromMenuWeek: true } )) }}</span>
-                    {% else %}
-                        <div class="flex flex-row items-center gap-4 px-6 py-2 bg-light-blue">
-                            <div class="flex items-end gap-2">
-                                <span class="text-3xl font-semibold leading-none text-white">0</span>
-                                <span class="text-base">Kcal</span>
+
+                <div class="flex flex-col">
+
+                    <button 
+                        class="flex flex-col items-center text-xs md:text-sm bg-light-blue text-white uppercase justify-center py-2 {% if loop.first %}rounded-tl-2xl{% endif %} {% if loop.last %}rounded-tr-2xl{% endif %}" 
+                        style="height:90px"
+                        data-action="sidebar-details-meals#toggleSlideover sidebar-details-meals#setMeals"
+                        data-date="{{ date }}"
+                    >
+
+                        {{ day|dayTrans }}
+
+                        {% if day in energyTotalPerDays|keys %}
+                            <span>{{ render(path('menu_meals_show_total_energy', { 'energyMeals': energyTotalPerDays[day], sizeIcon: 32, fromMenuWeek: true } )) }}</span>
+                        {% else %}
+                            <div class="flex flex-row items-center gap-4 px-6 pt-2 bg-light-blue">
+                                <div class="flex items-end gap-2">
+                                    <span class="text-3xl font-semibold leading-none text-white">0</span>
+                                    <span class="text-base">Kcal</span>
+                                </div>
                             </div>
-                        </div>
-                    {% endif %}
-                </button>
+                        {% endif %}
+
+                    </button>
+
+                    <div class="border-gray-200 {% if loop.first %}border-l {% endif %}border-r border-b w-full flex justify-center items-center">
+
+                        <a href="{{ path('menu_week_get_meals', {date: date}) }}" class="flex items-center gap-2 group py-2">
+                            
+                            <svg class="w-6 h-6 text-gray-400 hover:text-gray-500 transition-colors duration-200" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M15.9087 3.87352C16.4681 3.31421 17.2266 3 18.0176 3C18.4093 3 18.7971 3.07714 19.1589 3.22702C19.5208 3.3769 19.8495 3.59658 20.1265 3.87352C20.4034 4.15046 20.6231 4.47924 20.773 4.84108C20.9229 5.20292 21 5.59074 21 5.98239C21 6.37404 20.9229 6.76186 20.773 7.1237C20.6231 7.48554 20.4034 7.81432 20.1265 8.09126L19.0231 9.19466C18.6326 9.58519 17.9994 9.58519 17.6089 9.19467L14.8053 6.39114C14.4148 6.00062 14.4148 5.36745 14.8053 4.97693L15.9087 3.87352ZM13.3911 7.80536C13.0006 7.41483 12.3674 7.41483 11.9769 7.80536L5.01084 14.7714C4.37004 15.4122 3.91545 16.2151 3.69566 17.0943L3.02986 19.7575C2.94467 20.0982 3.04452 20.4587 3.2929 20.7071C3.54128 20.9555 3.90177 21.0553 4.24254 20.9701L6.90572 20.3043C7.78488 20.0846 8.58778 19.63 9.22857 18.9892L16.1946 12.0231C16.5852 11.6326 16.5852 10.9994 16.1946 10.6089L13.3911 7.80536Z" fill="currentColor"></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 20C12 19.4477 12.4477 19 13 19L20 19C20.5523 19 21 19.4477 21 20C21 20.5523 20.5523 21 20 21L13 21C12.4477 21 12 20.5523 12 20Z" fill="currentcolor"></path> </g></svg>
+					
+                        </a>
+                            
+                    </div>
+
+                </div>
+
             {% endfor %}
 
         </div>
@@ -65,77 +76,20 @@
                 
                                 {% if meals[day] is not empty and meals[day][typeMeal.backName] is not empty %}
 
-                                    {# <div class="pt-2 {% if index_row != 4 %}border-b{% endif %} {% if not loop.last %}border-r{% endif %} {% if loop.first %}border-l{% endif %} flex h-full"> #}
-            
                                     <div class="pt-2 {% if index_row != 4 %}border-b{% endif %} border-gray-200 {% if not loop.last %}border-r{% endif %} {% if loop.first %}border-l{% endif %} flex h-full">
-
 
                                         <div class="flex flex-col justify-start w-full relative pb-12">
 
                                             {{ include("meals/week/_meals_of_a_day.html.twig", {'meals' : meals[day][typeMeal.backName]}) }}   
 
-                                            <a 
-                                                href="{{ path('menu_week_get_meals', {'date' : date}) }}" 
-                                                class="absolute bottom-2 right-2 flex items-center gap-2"
-                                            >
-                                                <svg viewBox="0 0 24 24" class="w-10 h-10 group" xmlns="http://www.w3.org/2000/svg">
-                                                    <!-- Cercle gris clair -->
-                                                    <circle cx="12" cy="12" r="10"
-                                                        class="fill-gray-200 group-hover:fill-gray-700 transition-colors duration-200">
-                                                    </circle>
-
-                                                    <!-- Crayon centré -->
-                                                    <g transform="translate(12 12) scale(0.65) translate(-12 -12)">
-                                                        <path d="M15.232 5.232l3.536 3.536-8.485 8.485H6.75v-3.536l8.482-8.485zm1.768-1.768a1.5 1.5 0 012.121 0l1.415 1.415a1.5 1.5 0 010 2.121L20 8l-3.536-3.536 0.536-0.536z"
-                                                            fill="#1A1A1A">
-                                                        </path>
-                                                    </g>
-                                                </svg>
-                                            </a>
-
-                                        </div>
-
-                                    </div>
-
-                                {% elseif app.session.has('_meal_' ~ date) %}
-
-                                    <div style="display:flex; width: 100%; font-size:0.9em; flex-direction: column">
-
-                                        {{ include("meals/week/_menu.html.twig", {'meals' : app.session.get('_meal_' ~ date)}) }}
-
-                                        {{ render(controller('App\\Controller\\meal\\MenuController::getListFgp', {'meals' : app.session.get('_meal_' ~ date)})) }}
-
-                                        <div style="display: flex; padding:10px 20px; font-weight: 500">
-                                            <a href="{{ path('menu_week_adviced_menu_save', {'date' : date}) }}" style="flex:1; border:1px solid; text-align: center">Valider</a>
-                                            <a href="{{ path('menu_week_adviced_menu_cancel', {'date' : date}) }}" style="flex:1; text-align: center">Annuler</a>
-                                        </div>
-                                            
-                                        <div style="display: flex; padding:0 20px; justify-content: center; font-weight: 500; align-items:center">
-                                            <span>{{ include("meals/pictos/refresh.xml.twig") }}</span>
-                                            <a href="{{ path('menu_week_adviced_menu', {'date' : date}) }}" style="padding-top:3px; padding-left: 10px; text-transform:uppercase; line-height: 16px">
-                                                ME SUGGERER UN MENU
-                                            </a>
                                         </div>
 
                                     </div>
 
                                 {% else %}
 
-                                    <div class=" relative {% if index_row != 4 %}border-b{% endif %} border-gray-200 {% if not loop.last %}border-r{% endif %} {% if loop.first %}border-l{% endif %} flex items-center justify-center h-full gap-2">
-
-                                        <div class="flex absolute bottom-0 right-0 mr-2 mb-2">
-
-                                            <a href="{{ path('menu_get_by_date_and_type', {'date' : date, 'id': typeMeal.id}) }}" class="flex items-center gap-2 group">
-                                                <svg viewBox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
-                                                    <!-- Fond gris clair -->
-                                                    <circle cx="12" cy="12" r="10" class="fill-gray-200 group-hover:fill-gray-700 transition-colors duration-200"></circle>
-                                                    <!-- Icône + noir doux foo -->
-                                                    <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17" fill="#1A1A1A"></path>
-                                                </svg>
-                                            </a>
-                                                
-                                        </div>
-
+                                    <div class=" relative border-b border-gray-200 border-r {% if loop.first %}border-l{% endif %} flex items-center justify-center h-full gap-2">
+                                        
                                     </div>
                                 
                                 {% endif %}

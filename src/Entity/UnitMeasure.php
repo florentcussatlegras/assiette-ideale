@@ -5,90 +5,60 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * UnitMeasure
- *
- * @ORM\Table(name="unit_measure")
- * @ORM\Entity(repositoryClass="App\Repository\UnitMeasureRepository")
- * @ORM\HasLifecycleCallbacks()
- * @UniqueEntity("alias")
- */
-// class UnitMeasure implements UnitMeasureInterface
+#[ORM\Entity(repositoryClass: "App\Repository\UnitMeasureRepository")]
+#[ORM\Table(name: "unit_measure")]
+#[ORM\HasLifecycleCallbacks]
+#[UniqueEntity("alias")]
 class UnitMeasure
 {
-	/**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
 
-	/**
-	 * @ORM\Column(name="name", type="string", length=255)
-	 */
-	private $name;
+    #[ORM\Column(type: "string", length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(name="alias", type="string", length=10)
-     */
-    private $alias;
+    #[ORM\Column(type: "string", length: 10)]
+    private ?string $alias = null;
 
-    /**
-     * @ORM\Column(name="gram_ratio", type="float", nullable=true)
-     */
-    private $gramRatio;
+    #[ORM\Column(type: "float", nullable: true)]
+    private ?float $gramRatio = null;
 
-    /**
-     * @ORM\Column(name="is_unit", type="boolean")
-     */
-    private $isUnit;
-    
+    #[ORM\Column(type: "boolean")]
+    private bool $isUnit = false;
 
-    public function __toString()
+    // ------------------- Constructor -------------------
+    public function __construct(?string $name = null, ?string $alias = null, ?float $gramRatio = null, bool $isUnit = false)
     {
-        if(null === $this->name)
-            return 'NULL';
-
-        return $this->name;
+        $this->name = $name;
+        $this->alias = $alias;
+        $this->gramRatio = $gramRatio;
+        $this->isUnit = $isUnit;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
+    // ------------------- Magic Methods -------------------
+    public function __toString(): string
+    {
+        return $this->name ?? 'NULL';
+    }
+
+    // ------------------- Getters & Setters -------------------
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return UnitMeasure
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
 
     public function getAlias(): ?string
     {
@@ -98,7 +68,6 @@ class UnitMeasure
     public function setAlias(string $alias): self
     {
         $this->alias = $alias;
-
         return $this;
     }
 
@@ -110,21 +79,17 @@ class UnitMeasure
     public function setGramRatio(?float $gramRatio): self
     {
         $this->gramRatio = $gramRatio;
-
         return $this;
     }
 
-    public function isIsUnit(): ?bool
+    public function isIsUnit(): bool
     {
         return $this->isUnit;
     }
 
-    public function setIsUnit(bool $isUnit): static
+    public function setIsUnit(bool $isUnit): self
     {
         $this->isUnit = $isUnit;
-
         return $this;
     }
-
-   
 }

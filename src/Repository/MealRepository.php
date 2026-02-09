@@ -50,4 +50,20 @@ class MealRepository extends ServiceEntityRepository
 	    
 	    return $result->fetchAllAssociative();
 	}
+
+	public function hasMealsToday(UserInterface $user): int
+	{
+		$today = (new \DateTime())->format('Y-m-d');
+
+		$count = $this->createQueryBuilder('m')
+			->select('COUNT(m.id)')
+			->andWhere('m.user = :user')
+			->andWhere('m.eatedAt = :today')
+			->setParameter('user', $user)
+			->setParameter('today', $today)
+			->getQuery()
+			->getSingleScalarResult();
+
+		return $count;
+	}
 }

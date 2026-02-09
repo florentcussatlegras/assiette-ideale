@@ -4,65 +4,37 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * Hours
- *
- * @ORM\Table(name="hour")
- * @ORM\Entity
- */
+#[ORM\Table(name: "hour")]
+#[ORM\Entity]
 class Hour
 {
-    const NORMAL = 'NORMAL_H';
+    public const NORMAL = 'NORMAL_H';
+    public const STAGGERED = 'STAGGERED_H';
+    public const HALF_TIME = 'HALF_TIME_H';
+    public const NONE = 'NONE_H';
 
-    const STAGGERED = 'STAGGERED_H';
-
-    const HALF_TIME = 'HALF_TIME_H';
-
-    const NONE = 'NONE_H';
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(name: "id", type: "integer")]
     private $id;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, unique=true, nullable=true)
-     */
-    private $title = null;
+    #[ORM\Column(name: "title", type: "string", length: 255, unique: true, nullable: true)]
+    private ?string $title = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="details", type="string", length=255, nullable=true)
-     */
-    private $details;
+    #[ORM\Column(name: "details", type: "string", length: 255, nullable: true)]
+    private ?string $details = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="alias", type="string", length=255, unique=true)
-     */
-    private $alias;
+    #[ORM\Column(name: "alias", type: "string", length: 255, unique: true)]
+    private string $alias;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function getTitle(): ?string
@@ -70,7 +42,7 @@ class Hour
         return $this->title;
     }
 
-    public function setTitle(string $title): self
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
@@ -82,7 +54,7 @@ class Hour
         return $this->details;
     }
 
-    public function setDetails(string $details): self
+    public function setDetails(?string $details): self
     {
         $this->details = $details;
 

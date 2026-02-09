@@ -3,8 +3,6 @@
 
     <h1 class="text-xl md:text-2xl xl:text-3xl mb-4">Votre évolution sur la période du {{ start|date('d/m/Y') }} au {{ end|date('d/m/Y') }}</h1>
 
-    {# <div class="w-full lg:w-3/4 xl:w-1/2 mt-4 bg-white current-shadow"> #}
-        {{ render_chart(chart) }}
-    {# </div> #}
+    {{ render_chart(chart) }}
 
 </div>

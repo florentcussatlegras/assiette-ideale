@@ -1,46 +1,7 @@
-{# <div class="search search_food_recipe">
-    {{ include('food/_input_search_food.html.twig') }}
-    <div id="autocomplete"></div>
-</div> #}
+<div {{ stimulus_controller('autocomplete', { url: path('meal_day_list_ajax'), skipHiddenProperty: true } ) | stimulus_controller('autocomplete-transition', {}) }} data-action="toggle->autocomplete-transition#toggle">
 
-{# {{ component('food_search_choice') }} #}
+	<input name="q" type="search" class="block p-4 w-full rounded-lg border border-slate-800" placeholder="Aliment, plat..." data-autocomplete-target="input">
 
-<div 
-    {{ stimulus_controller('autocomplete', { url: path('meal_day_list_ajax'), skipHiddenProperty: true }) | stimulus_controller('autocomplete-transition', {}) }}
-    data-action="toggle->autocomplete-transition#toggle"
->
+	<div class="search-preview border rounded overflow-y-auto" data-autocomplete-target="results" data-autocomplete-transition-target="results"></div>
 
-                <input 
-                    name="q"
-                    type="search" 
-                    class="block p-4 w-full rounded-lg border border-slate-800"
-                    placeholder="Aliment, plat..."
-                    data-autocomplete-target="input"
-                >
-                
-                <div 
-                    class="search-preview border rounded overflow-y-auto"
-                    data-autocomplete-target="results"
-                    data-autocomplete-transition-target="results"
-                >
-                    {# <div class="search-result__content">
-                        <div class="search-result__content__title">Pages</div>
-                        <div class="mb-5">
-                            <a href="" class="flex items-center">
-                                <div class="w-8 h-8 bg-theme-29 text-theme-10 flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-feather="inbox"></i> </div>
-                                <div class="ml-3">Mail Settings</div>
-                            </a>
-                            <a href="" class="flex items-center mt-2">
-                                <div class="w-8 h-8 bg-theme-30 text-theme-24 flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-feather="users"></i> </div>
-                                <div class="ml-3">Users & Permissions</div>
-                            </a>
-                            <a href="" class="flex items-center mt-2">
-                                <div class="w-8 h-8 bg-theme-31 text-theme-26 flex items-center justify-center rounded-full"> <i class="w-4 h-4" data-feather="credit-card"></i> </div>
-                                <div class="ml-3">Transactions Report</div>
-                            </a>
-                        </div>
-                    
-                    </div> #}
-                </div>
-
-            </div>
+</div>

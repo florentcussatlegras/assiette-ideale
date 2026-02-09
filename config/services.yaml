@@ -52,6 +52,10 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.controller }
 
+    App\EventListener\WeightUpdateCheckListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
 
     # Symfony\Component\ExpressionLanguage\ExpressionLanguage:
     #     alias: '@security.expression_language'

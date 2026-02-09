@@ -18,11 +18,9 @@
                 class="absolute left-4 flex items-center"
             >
                 <button 
-                        {# data-modal-target="alert-energy-modal" 
-                        data-modal-toggle="alert-energy-modal" #}
-                        data-action="click->popover-info#show"
-                        data-energy="{{ mealDayEnergy }}"
-                        class="cursor-pointer {{ bgColor }} overflow-hidden"
+                    data-action="click->popover-info#show"
+                    data-energy="{{ mealDayEnergy }}"
+                    class="cursor-pointer {{ bgColor }} overflow-hidden"
                 >
                     {% if alert.code in allowedCodes %}
                         {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(7), opacity: 1 }) }}
@@ -36,19 +34,6 @@
             {% endif %}
             {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
         {% endif %}
-
-        {# {% else %}
-
-            {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') or
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') or 
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS') or
-                        alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')
-                    %}
-            
-                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(26), opacity: 1 }) }}
-            {% endif %}
-
-        {% endif %} #}
 
     {% endif %}
 

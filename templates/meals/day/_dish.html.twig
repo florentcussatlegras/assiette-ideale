@@ -1,4 +1,4 @@
-<div class="flex flex-col w-full py-2 relative">
+<div class="flex flex-col w-full py-2 relative rounded-2xl shadow-soft">
 
 	{% if instanceOf(item, 'App\\Entity\\Dish') %}
 		{% set type = 'Dish' %}
@@ -34,7 +34,7 @@
 				</div>
 			{% endif %}
 
-			<div id="containerQuantity-{{ item.id }}" {# class="flex lg:flex-col xl:flex-row items-center mb-2 font-normal text-gray-700 dark:text-gray-400 gap-2 border" #} class="flex flex-col items-start mb-2 font-normal text-gray-700 dark:text-gray-400 gap-2" data-url-get-unitmeasure-alias="{{ path('meal_get_unitmeasure_alias') }}">
+			<div id="containerQuantity-{{ item.id }}" class="flex flex-col items-start mb-2 font-normal text-gray-700 dark:text-gray-400 gap-2" data-url-get-unitmeasure-alias="{{ path('meal_get_unitmeasure_alias') }}">
 
 				<div>
 					{% if instanceOf(item, 'App\\Entity\\Dish') %}
@@ -46,7 +46,6 @@
 							{% endfor %}
 						</select>
 
-						{# <span name="unitMeasure" class="show-quantities">portion(s)</span> #}
 						<span name="unitMeasure" class="w-20 text-sm">portion(s)</span>
 						<input type="hidden" name="unitMeasure" class="unit-measure unitMeasure-{{ item.id }}" value="95"/>
 
@@ -66,41 +65,17 @@
 
 				</div>
 
-                <div class="flex items-center gap-2 mt-2">
+				<div class="flex items-center gap-2 mt-2">
 
-                    <button type="button" style="z-index: 0" class="rounded-lg text-white bg-light-blue px-4 py-2" {% if update is same as(false) %} data-action="sidebar-list-dishes#addItem" {% else %} data-action="sidebar-list-dishes#updateItem" {% endif %} data-item-id="{{ item.id }}" data-item-type="{{ type }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}" {# data-url-add-item="{{ path('meal_day_add_dish_or_food', { id: item.id, type: type }) }}" data-url-reload-meals="{{ path('meal_day') }}" #} data-url-add-preselect-item="{{ path('meal_sidebar_preselect_item', { id: item.id, type: type }) }}" {# data-url-reload-list="{{ path('meal_day_list_ajax') }}" #}>
-                     
-					 	Ajouter
-						{# <svg
-                            viewbox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg"> <!-- Fond gris clair -->
-                            <circle
-                            cx="12" cy="12" r="10" fill="#EFEFEF"/>
+					<button type="button" style="z-index: 0" class="rounded-lg text-white bg-light-blue px-4 py-2" {% if update is same as(false) %} data-action="sidebar-list-dishes#addItem" {% else %} data-action="sidebar-list-dishes#updateItem" {% endif %} data-item-id="{{ item.id }}" data-item-type="{{ type }}" data-rank-meal="{{ rankMeal }}" data-rank-dish="{{ rankDish }}" {# data-url-add-item="{{ path('meal_day_add_dish_or_food', { id: item.id, type: type }) }}" data-url-reload-meals="{{ path('meal_day') }}" #} data-url-add-preselect-item="{{ path('meal_sidebar_preselect_item', { id: item.id, type: type }) }}" {# data-url-reload-list="{{ path('meal_day_list_ajax') }}" #}>
+						Ajouter
+					</button>
 
-                            <!-- Icône + noir doux -->
-                            <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17" fill="#1A1A1A"/>
-                        </svg> #}
-
-                    </button>
-
-                    <button type="button" class="text-light-blue" data-action="sidebar-list-dishes#resetSelection" data-item-id="{{ item.id }}" data-item-type="{{ type }}">
-
+					<button type="button" class="text-light-blue" data-action="sidebar-list-dishes#resetSelection" data-item-id="{{ item.id }}" data-item-type="{{ type }}">
 						Annuler
-                        {# <svg
-                            viewbox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Annulation">
-                            <!-- Fond gris clair -->
-                            <circle
-                            cx="12" cy="12" r="10" fill="#EFEFEF"/>
+					</button>
 
-                            <!-- Croix rouge -->
-                            <g stroke="#E53935" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none">
-                                <line x1="8" y1="8" x2="16" y2="16"/>
-                                <line x1="16" y1="8" x2="8" y2="16"/>
-                            </g>
-                        </svg> #}
-
-                    </button>
-
-                </div>
+				</div>
 
 
 			</div>

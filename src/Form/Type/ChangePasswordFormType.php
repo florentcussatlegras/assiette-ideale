@@ -46,7 +46,7 @@ class ChangePasswordFormType extends AbstractType
                 'constraints' => [
                     new Assert\Regex([
                         'pattern' => "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/",
-                        'message' => 'Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters'
+                        'message' => 'Le mot de passe doit contenir au moins un chiffre, une lettre majuscule et une lettre minuscule, et comporter au minimum 8 caractères'
                     ])
                 ]
             ])

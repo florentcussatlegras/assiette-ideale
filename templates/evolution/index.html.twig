@@ -4,9 +4,11 @@
 
 {% block body %}
 
-	<main role="main">
+	<div class="py-12">
 
-		{{ include('partials/_header.html.twig', { h1_content: 'Evolution de mon alimentation' }) }}
+		<h1 class="text-2xl md:text-4xl mb-8 font-bold">
+			Evolution de mon alimentation
+		</h1>
 
 		<div class="my-4 text-xl">
 
@@ -17,7 +19,7 @@
 
 				<div class="content my-8 text-gray-500 text-sm md:text-base mt-0 md:mt-16 w-full min-h-64 flex items-center justify-center" data-evolution-target="content"></div>
 
-				<div class="h-96 my-8 flex items-center justify-center hidden" data-evolution-target="loader">
+				<div class="h-64 my-8 md:mt-16 flex items-center justify-center hidden" data-evolution-target="loader">
 					<div class="loader"></div>
 				</div>
 
@@ -25,6 +27,6 @@
 
 		</div>
 
-	</main>
+	</div>
 
 {% endblock %}

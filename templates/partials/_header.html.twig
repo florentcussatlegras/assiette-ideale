@@ -1,42 +1,20 @@
-<div id="header" class="flex w-full justify-between">
-    {# <p class="breadcrumb__span text-sm leading-6 font-light flex items-center mb-7">
-    
-        <a href="{{ path('app_dashboard_index') }}">
-            <i data-feather="home" class="breadcrumb__icon w-4"></i>
-        </a>
-        <i data-feather="chevron-right" class="breadcrumb__icon w-6 h-6"></i>
-        <span class="font-extrabold">{{ spanHeader|default('Titre') }}</span>
+<div class="flex flex-row items-center">
 
-    </p> #}
+    {% if urlIntermediates is defined %}
+        {% for title, url in urlIntermediates %}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <a href="{{ url }}" class="text-md" title="{{ title }}">{{ title }}</a>
+        {% endfor %}
+    {% endif %}
 
-    <div class="flex flex-row items-center">
-
-        <a href="{{ path('app_dashboard_index') }}" class="text-md" title="My Dashboard"><i class="fa fa-home text-gray-700" aria-hidden="true"></i></a>
-    
-        {% if urlIntermediates is defined %}
-            {% for title, url in urlIntermediates %}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                <a href="{{ url }}" class="text-md" title="{{ title }}">{{ title }}</a>
-                {# <a href="#" class="text-md" title="{{ title }}">{{ title }}</a> #}
-            {% endfor %}
-            {# <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg> #}
-        {% endif %}
-
-        {% if routeIntermediates is defined %}
-            {% for title, url in routeIntermediates %}
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                <a href="{{ path(url) }}" class="text-md" title="{{ title }}">{{ title }}</a>
-                {# <a href="#" class="text-md" title="{{ title }}">{{ title }}</a> #}
-            {% endfor %}
-            {# <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="28" width="28" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg> #}
-        {% endif %}
-
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-        
-        <span class="tracking-tight text-slate-600 text-base md:text-xl">{{ h1_content|default('Titre') }}</span>
-
-    </div>
-
-    {# <h1 class="text-lg md:text-3xl font-bold ml-auto" style="color: #25465F">{{ h1_content|default('Titre') }}</h1> #}
+    {% if routeIntermediates is defined %}
+        {% for title, url in routeIntermediates %}
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewBox="0 0 24 24" class="text-slate-400" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <a href="{{ path(url) }}" class="text-md" title="{{ title }}">{{ title }}</a>
+        {% endfor %}
+    {% endif %}
 
 </div>
+
+<h1 class="text-2xl md:text-4xl mb-8 font-bold">{{ h1_content|default('Titre') }}</h1>
+

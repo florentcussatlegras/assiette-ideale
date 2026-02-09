@@ -29,7 +29,7 @@ class DishExtension extends AbstractExtension
 		{
 			$search = substr($name, $start, strlen($keyword));
 
-			return str_replace ($search, '<span class="text-dark-blue font-weight-800">' . $search .'</span>', $name);
+			return str_replace ($search, '<span class="text-light-blue">' . $search .'</span>', $name);
 		}
 
 		return $name;

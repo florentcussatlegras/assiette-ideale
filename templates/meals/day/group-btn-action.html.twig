@@ -5,7 +5,7 @@
 		{% if app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not empty %}
 			<input 
 				type="checkbox" 
-				class="cursor-pointer w-6 ml-2" 
+				class="cursor-pointer ml-2" 
 				data-action="meal#selectAllDishes" 
 				data-meal-target="selectAllDishes" 
 				data-rank-meal="{{ rankMeal }}"
@@ -63,27 +63,21 @@
 		<button 
 			data-action="sidebar-list-dishes#toggleSlideover reload-content#openSidebarList"
 			data-type-meal-target="btnOpenSlidebar"
-			{# class="add-dish border-2 border-dark-blue p-4 flex items-center gap-2 font-bold mr-4 rounded-lg text-sm md:text-base"  #}
 			class="add-dish p-2 md:p-4 flex items-center gap-2 font-bold text-sm md:text-base cursor-pointer mr-2" 
-			{# style="box-shadow: 0 1px 1px 0 rgba(0,0,0,.1); border: 1px solid #f1f1f1" #}
 			data-rank-meal="{{ rankMeal }}" 
 			data-rank-dish="{{ rankDish }}"
 			data-update-dish="none"
 			data-type-dish="{{ app.session.get('_meal_day_' ~ rankMeal)['type']|trans({}, 'meal') }}"
 		>
-			<div class="inline-block rounded-sm group">
-				{# <svg viewBox="0 0 24 24" class="w-10 h-10 transition duration-300" xmlns="http://www.w3.org/2000/svg">
-					<rect x="0" y="0" width="24" height="24" rx="2" fill="#EFEFEF" />
-					<path d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z" fill="#1A1A1A"/>
-				</svg> #}
+			<div class="inline-block rounded-full group shadow-soft">
 				<svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
 					<rect
 					x="0"
 					y="0"
 					width="24"
 					height="24"
-					rx="2"
-					class="fill-gray-400 group-hover:fill-gray-500 transition-colors duration-300"
+					rx="12"
+					class="fill-gray-400 group-hover:fill-gray-500 transition-colors duration-300 rounded-full"
 					/>
 					<path
 					d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
@@ -92,8 +86,6 @@
 				</svg>
 			</div>
 
-			{# <span>Aliment / plat</span> #}
-			{# <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="external-link" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg> #}
 		</button>
 
 	</div>

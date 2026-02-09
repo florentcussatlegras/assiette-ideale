@@ -1,52 +1,22 @@
-{# <div class="intro-y col-span-12 md:col-span-6 lg:col-span-4 report-box zoom-in">
+<a href="{{ path(category.route) }}" class="dashboard_category-grid col-span-6 xl:col-span-2 relative">
 
-    <div class="box">
-        <div class="flex items-start px-10 py-8">
-            <div class="w-full flex flex-col lg:flex-row items-center">
-                <div class="w-16 h-16 image-fit flex flex-col lg:flex-row items-center pl-5">
-                   
-                    {{ include("dashboard/pictos/picto_#{category.picto}.xml.twig") }}
-                </div>
-                <div class="lg:ml-4 text-center lg:text-left mt-3 lg:mt-0">
-                    <a class="font-medium text-lg" href="#">
-                        {{ category.title }}
-                    </a>
-                   
-                </div>
+    <div class="card-wrapper card-space-user flex flex-col items-center justify-between gap-4 relative py-8 px-4 h-full bg-white border-gray-200 rounded-2xl shadow-soft">
+
+        {# Badge statut repas du nour saisi/pas saisi #}
+        {% if category.title == 'dashboard.category.meal_day' %}
+            <div class="absolute top-3 right-3">
+                {% if countMealsDay > 0 %}
+                    <span class="status-badge status-done">{{ countMealsDay }} saisi{{ countMealsDay > 1 ? 's' }}</span>
+                {% else %}
+                    <span class="status-badge status-pending">À saisir</span>
+                {% endif %}
             </div>
-            <div class="absolute right-0 top-0 mr-5 mt-3 dropdown">
-                <a class="dropdown-toggle w-5 h-5 block" href="javascript:;" aria-expanded="false"> <i data-feather="more-horizontal" class="w-5 h-5 text-gray-600 dark:text-gray-300"></i> </a>
-                <div class="dropdown-menu w-40">
-                    <div class="dropdown-menu__content box dark:bg-dark-1 p-2">
-                        <a href="" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"> <i data-feather="edit-2" class="w-4 h-4 mr-2"></i> Edit </a>
-                        <a href="" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white dark:bg-dark-1 hover:bg-gray-200 dark:hover:bg-dark-2 rounded-md"> <i data-feather="trash" class="w-4 h-4 mr-2"></i> Delete </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% if principal is defined %}
-            <div class="text-center lg:text-left px-10 py-8 border-t border-gray-200 dark:border-dark-5">
-                <div>It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem </div>
-          </div>
         {% endif %}
-      
-    </div>
-</div> #}
 
-{# <a href="{{ path(category.route) }}" class="dashboard_category-grid col-span-12 sm:col-span-6 xl:col-span-4 border relative"> #}
-<a href="{{ path(category.route) }}" class="dashboard_category-grid col-span-12 sm:col-span-6 xl:col-span-4 relative">
-
-    <div class="card-wrapper flex items-center gap-4 relative py-8 px-4 h-full bg-white border-gray-200 rounded-2xl shadow-soft">
-
-        <div class="rounded-full flex items-center justify-center bg-sky-600 w-20 h-20 p-3.5 text-dark-blue">
-            {{ include("dashboard/pictos/picto_#{category.picto}.xml.twig") }}
-        </div>
-        {# {% set path = path(category.route) %} #}
+        <img src={{ asset("images/#{category.picto}") }} />
+       
         <span class="flex gap-2 font-bold items-center text-base text-center text-sky-600">
-            {# <div style="color: #20194e; font-size:18px" class="font-extrabold tracking-tight">{{ category.picto }}</div> #}
-            {# <div class="font-extrabold" style="font-size:1.3rem">Manifeste</div> #}
             {{ category.title|trans({}, 'dashboard')|upper }}
-            {# <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" id="chevron-right" class="w-6 h-6 text-cool-gray-800 dark:text-cool-gray-200 group-hover:text-purple-600 group-focus:text-purple-600 dark:group-hover:text-purple-50 dark:group-focus:text-purple-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg> #}
         </span>
 
     </div>

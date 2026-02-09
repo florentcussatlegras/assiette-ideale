@@ -8,14 +8,10 @@
         {% endif %}
         <div class="absolute left-0">
             <div 
-                {# data-modal-target="alert-imc-weight-modal" 
-                data-modal-toggle="alert-imc-weight-modal"  #}
                 class="flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
                 data-action="click->alert-imc-weight-modal#showMessages"
                 type="button"
                 data-item="weight"
-                {# data-alert-color="{{ alerts.higher_level.color }}"
-                data-alert-text="{{ alerts.higher_level.text }}" #}
             >
                 {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceWeightAlerts, size: 5, opacity: 0.2 }) }}
             </div>

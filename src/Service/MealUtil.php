@@ -43,7 +43,7 @@ class MealUtil
 						}
 						break;
 					default:
-						$fgp = $this->manager->getRepository(Food::class)->findOneById((int)$element['id'])->getFoodGroup()->getParent();
+						$fgp = $this->manager->getRepository(Food::class)->find((int)$element['id'])->getFoodGroup()->getParent();
 						if(!in_array($fgp->getId(), $results) && true === $fgp->getIsPrincipal())
 						{
 							$results[] = $fgp->getId();
@@ -110,7 +110,6 @@ class MealUtil
 	{	
 		$energy = 0;
 		foreach($meal->getDishAndFoods() as $element) {
-			// dump($this->energyHandler->getEnergyForDishOrFoodSelected($element['id'], $element['type'], $element['quantity'], $element['unitMeasureAlias']));
 			$energy += $this->energyHandler->getEnergyForDishOrFoodSelected($element['id'], $element['type'], $element['quantity'], $element['unitMeasureAlias']);
 		}
 

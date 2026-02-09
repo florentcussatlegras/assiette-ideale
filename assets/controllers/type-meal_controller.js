@@ -10,20 +10,6 @@ export default class extends Controller {
     };
     static targets = ['typeMealOption', 'typeMealButton', 'btnOpenSlidebar'];
 
-    // connect() {
-    //     this.typeMealOptionTargets.forEach((element) => {
-    //         if(element.value == this.currentTypeMealValue && element.dataset.disabled == "0") {
-    //             element.checked = true;
-    //             element.nextElementSibling.classList.add('selected');
-    //             document.getElementById('modalAddModelMeal-' + this.rankMealValue).querySelector('input.typeMeal').value = element.value;
-    //             document.getElementById('typeModelMeal').value = element.value;
-    //         }else{
-    //             element.checked = false;
-    //         }
-    //     });
-
-    // }
-
     async onSelectType(event) {
       
         const element = event.currentTarget;
@@ -47,7 +33,7 @@ export default class extends Controller {
                     type: element.value,
                     ajax: 1
                 });
-                console.log(`${this.urlValue}?${params.toString()}`);
+                
                 fetch(`${this.urlValue}?${params.toString()}`)
                     .then((response) => {
                         fetch(this.urlReloadValue)

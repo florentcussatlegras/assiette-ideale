@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class RecommendationController extends AbstractController
 {
     // INDEX
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(NutrientRepository $nutrientRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -28,7 +28,7 @@ class RecommendationController extends AbstractController
     // GROUPES ALIMENTAIRES
 
     // new route for 'app_recommended_quantity_edit':
-    #[Route('/foodgroup/edit', name: 'foodgroup_edit')]
+    #[Route('/foodgroup/edit', name: 'foodgroup_edit', methods: ['GET'])]
     public function edit(EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -57,7 +57,7 @@ class RecommendationController extends AbstractController
     }
 
     // ENERGY
-    #[Route('/energy', name: 'energy_index')]
+    #[Route('/energy', name: 'energy_index', methods: ['GET'])]
     public function energy(EnergyHandler $energyHandler)
     {
         return $this->render('profile/partials/_energy.html.twig', [
@@ -65,7 +65,7 @@ class RecommendationController extends AbstractController
         ]);
     }
 
-    #[Route('/energy/calculate', name: 'energy_estimate')]
+    #[Route('/energy/calculate', name: 'energy_estimate', methods: ['POST'])]
     public function calculateEnergy(EnergyHandler $energyHandler, EntityManagerInterface $manager)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -84,17 +84,7 @@ class RecommendationController extends AbstractController
     }
 
     // NUTRIENT
-
-    // #[Route('/nutrient/list', name: 'nutrient_list')]
-    // public function nutritionList()
-    // {
-    //     $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
-    //     return $this->render('recommendations/nutrient/_list.html.twig');
-    // }
-
-
-    #[Route('/nutrient/calculate', name: 'nutrient_estimate')]
+    #[Route('/nutrient/calculate', name: 'nutrient_estimate', methods: ['POST'])]
     public function calculateNutrientRecommendations(
             NutrientHandler $nutrientHandler, 
             EntityManagerInterface $manager, 

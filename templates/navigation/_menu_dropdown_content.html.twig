@@ -1,79 +1,12 @@
-{# <div class="py-1">
-    <a href="{{ path('app_dashboard_index') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <i class="fa fa-home text-dark-blue font-bold mr-2" aria-hidden="true"></i>
-        <span>Accueil</span>
-    </a>
-    <a href="{{ path('meal_day') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <svg class="w-5 h-5 mr-2" version="1.1" id="Layer_1" fill="#25465F" stroke="#25465F" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M44,0c-3.07,0-5.875,1.16-8,3.063C33.875,1.16,31.07,0,28,0s-5.875,1.16-8,3.063C17.875,1.16,15.07,0,12,0 C5.383,0,0,5.383,0,12v32c0,9.656,5.086,14.742,9.172,18.828C12.988,66.645,16,69.656,16,76v40c0,6.617,5.383,12,12,12 s12-5.383,12-12V76c0-6.344,3.012-9.355,6.828-13.172C50.914,58.742,56,53.656,56,44V12C56,5.383,50.617,0,44,0z M48,44 c0,6.344-3.012,9.355-6.828,13.172C37.086,61.258,32,66.344,32,76v40c0,2.211-1.789,4-4,4s-4-1.789-4-4V76 c0-9.656-5.086-14.742-9.172-18.828C11.012,53.355,8,50.344,8,44V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4 s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4V44z M118.828,65.172C115.012,61.355,112,58.344,112,52V12c0-6.617-5.383-12-12-12S88,5.383,88,12v40 c0,6.344-3.012,9.355-6.828,13.172C77.086,69.258,72,74.344,72,84c0,1.797,0.316,44,28,44s28-42.203,28-44 C128,74.344,122.914,69.258,118.828,65.172z M100,120c-19.711,0-20-35.609-20-36c0-6.344,3.012-9.355,6.828-13.172 C90.914,66.742,96,61.656,96,52V12c0-2.211,1.789-4,4-4s4,1.789,4,4v40c0,9.656,5.086,14.742,9.172,18.828 C116.988,74.645,120,77.656,120,84C120,84.359,119.77,120,100,120z"></path> </g> </g> </g></svg>
-        <span>Repas du jour</span>
-    </a>
-    <a href="{{ path('menu_week_menu') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <svg class="w-6 h-6" fill="none" stroke="#25465F" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        <span>Repas de la semaine</span>
-    </a>
-    <a href="{{ path('app_balance_sheet_index') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <svg class="w-6 h-6" fill="none" stroke="#25465F" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-        <span>Mes bilans</span>
-    </a>
-    <a href="{{ path('app_evolution_index') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <svg class="w-6 h-6" fill="#25465F" viewBox="-32 0 512 512" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM160 368c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16V240c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v128zm96 0c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16V144c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v224zm96 0c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16v-64c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v64z"></path></g></svg>
-        <span>L'évolution de mon alimentation</span>
-    </a>
-    <a href="{{ path('app_profile_index') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <svg width="20px" height="20px" fill="none" viewBox="0 0 24 24" stroke="#25465F" id="user" class="text-cool-gray-800 dark:text-cool-gray-200 group-hover:text-purple-600 group-focus:text-purple-600 dark:group-hover:text-purple-50 dark:group-focus:text-purple-50"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span>Mon profil</span> 
-    </a>
-    <a href="{{ path('app_help') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2"> 
-        <svg class="w-6 h-6" stroke="#25465F"  viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill="#25465F" fill-rule="evenodd" d="M10 3a7 7 0 100 14 7 7 0 000-14zm-9 7a9 9 0 1118 0 9 9 0 01-18 0zm8.423-3a.923.923 0 00-.923.923v.385a1 1 0 11-2 0v-.385A2.923 2.923 0 019.423 5H10c1.941 0 3.5 1.591 3.5 3.516 0 .927-.48 1.8-1.276 2.29l-1.7 1.046a1 1 0 01-1.048-1.704l1.7-1.046a.691.691 0 00.324-.586C11.5 7.679 10.82 7 10 7h-.577zm.587 8a1 1 0 100-2H10a1 1 0 100 2h.01z"></path> </g></svg>
-        <span>Aide</span> 
-    </a>
-    <a href="{{ path('app_logout') }}" class="px-4 py-2 text-sm text-gray-700 focus:bg-gray-100 focus:text-gray-900 focus:outline-hidden flex gap-2">
-        <div class="flex w-6 h-6 justify-center items-center">
-            <svg fill="#25465F" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" enable-background="new 0 0 52 52" xml:space="preserve" class="w-5 h-5"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M36.2,11.6c0,0-0.1-0.1-0.1-0.1c-0.6-0.5-1.5-0.5-2,0.1l-2.2,2.1c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l5.6,5.6 c0.2,0.2,0.3,0.4,0.3,0.7c0,0.6-0.4,1.1-1,1.1H15.6c-0.8,0-1.5,0.6-1.5,1.4v3c0.1,0.8,0.7,1.5,1.5,1.6h21.3c0.2,0,0.4,0.1,0.5,0.2 c0.5,0.4,0.5,1,0.2,1.5L32,36.5c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l2.1,2.2c0,0,0,0,0,0c0.6,0.6,1.5,0.5,2,0l13.5-13.5c0,0,0,0,0,0 c0.6-0.6,0.5-1.5,0-2L36.2,11.6z"></path> <path d="M21.1,17.2L21.1,17.2h3c0.8,0,1.5-0.7,1.5-1.5V6.1c0-2.2-1.8-4-4-4h-1.9H9.1H6.1c-2.2,0-4,1.8-4,4v40 c0,2.2,1.8,4,4,4h2.9h10.6h1.9c2.2,0,4-1.8,4-4v-9.5c0-0.8-0.7-1.5-1.5-1.5h-3l0,0c-0.8,0-1.5,0.7-1.5,1.5v5.9 c0,0.8-0.7,1.5-1.5,1.5H9.6c-0.8,0-1.5-0.7-1.5-1.5v-33c0-0.8,0.7-1.5,1.5-1.5H18c0.8,0,1.5,0.7,1.5,1.5v6.1 C19.6,16.5,20.2,17.2,21.1,17.2z"></path> </g></svg>
-        </div>
-        <span>Déconnexion</span>
-    </a>
-</div> #}
-
 <div class="py-1">
 
     <a href="{{ path('app_dashboard_index') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <i class="fa fa-home font-bold w-6 text-center" aria-hidden="true"></i>
-        <span class="ml-2 flex-1">Accueil</span>
-    </a>
-
-    <a href="{{ path('app_profile_index') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="#25465F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span class="ml-2 flex-1">Mon profil</span>
-    </a>
-
-    <a href="{{ path('meal_day') }}" class="px-5 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-5 h-5 mr-2" version="1.1" id="Layer_1" fill="#25465F" stroke="#25465F" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M44,0c-3.07,0-5.875,1.16-8,3.063C33.875,1.16,31.07,0,28,0s-5.875,1.16-8,3.063C17.875,1.16,15.07,0,12,0 C5.383,0,0,5.383,0,12v32c0,9.656,5.086,14.742,9.172,18.828C12.988,66.645,16,69.656,16,76v40c0,6.617,5.383,12,12,12 s12-5.383,12-12V76c0-6.344,3.012-9.355,6.828-13.172C50.914,58.742,56,53.656,56,44V12C56,5.383,50.617,0,44,0z M48,44 c0,6.344-3.012,9.355-6.828,13.172C37.086,61.258,32,66.344,32,76v40c0,2.211-1.789,4-4,4s-4-1.789-4-4V76 c0-9.656-5.086-14.742-9.172-18.828C11.012,53.355,8,50.344,8,44V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4 s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4V44z M118.828,65.172C115.012,61.355,112,58.344,112,52V12c0-6.617-5.383-12-12-12S88,5.383,88,12v40 c0,6.344-3.012,9.355-6.828,13.172C77.086,69.258,72,74.344,72,84c0,1.797,0.316,44,28,44s28-42.203,28-44 C128,74.344,122.914,69.258,118.828,65.172z M100,120c-19.711,0-20-35.609-20-36c0-6.344,3.012-9.355,6.828-13.172 C90.914,66.742,96,61.656,96,52V12c0-2.211,1.789-4,4-4s4,1.789,4,4v40c0,9.656,5.086,14.742,9.172,18.828 C116.988,74.645,120,77.656,120,84C120,84.359,119.77,120,100,120z"></path> </g> </g> </g></svg>
-        <span class="ml-1 flex-1">Repas du jour</span>
-    </a>
-
-    <a href="{{ path('menu_week_menu') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="#25465F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-        <span class="ml-2 flex-1">Repas de la semaine</span>
-    </a>
-
-    <a href="{{ path('app_balance_sheet_index') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="#25465F" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-        <span class="ml-2 flex-1">Mes bilans</span>
-    </a>
-
-    <a href="{{ path('app_evolution_index') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-6 h-6 text-dark-blue" fill="#25465F" viewBox="-32 0 512 512"><path d="M400 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zM160 368c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16V240c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v128zm96 0c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16V144c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v224zm96 0c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16v-64c0-8.84 7.16-16 16-16h32c8.84 0 16 7.16 16 16v64z"></path></svg>
-        <span class="ml-2 flex-1">Mes évolutions</span>
-    </a>
-
-    <a href="{{ path('app_help') }}" class="px-4 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-6 h-6 text-dark-blue" fill="none" stroke="#25465F" viewBox="0 0 20 20"><path fill="#25465F" fill-rule="evenodd" d="M10 3a7 7 0 100 14 7 7 0 000-14zm-9 7a9 9 0 1118 0 9 9 0 01-18 0zm8.423-3a.923.923 0 00-.923.923v.385a1 1 0 11-2 0v-.385A2.923 2.923 0 019.423 5H10c1.941 0 3.5 1.591 3.5 3.516 0 .927-.48 1.8-1.276 2.29l-1.7 1.046a1 1 0 01-1.048-1.704l1.7-1.046a.691.691 0 00.324-.586C11.5 7.679 10.82 7 10 7h-.577zm.587 8a1 1 0 100-2H10a1 1 0 100 2h.01z"></path></svg>
-        <span class="ml-2 flex-1">Aide</span>
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5"></circle> <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" stroke="currentColor" stroke-width="1.5"></path> </g></svg>					
+        <span class="ml-2 flex-1">Mon espace</span>
     </a>
 
     <a href="{{ path('app_logout') }}" class="px-5 py-2 text-sm text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-        <svg class="w-5 h-5 text-dark-blue" fill="#25465F" viewBox="0 0 52 52"><path d="M36.2,11.6c0,0-0.1-0.1-0.1-0.1c-0.6-0.5-1.5-0.5-2,0.1l-2.2,2.1c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l5.6,5.6 c0.2,0.2,0.3,0.4,0.3,0.7c0,0.6-0.4,1.1-1,1.1H15.6c-0.8,0-1.5,0.6-1.5,1.4v3c0.1,0.8,0.7,1.5,1.5,1.6h21.3c0.2,0,0.4,0.1,0.5,0.2 c0.5,0.4,0.5,1,0.2,1.5L32,36.5c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l2.1,2.2c0,0,0,0,0,0c0.6,0.6,1.5,0.5,2,0l13.5-13.5c0,0,0,0,0,0 c0.6-0.6,0.5-1.5,0-2L36.2,11.6z"></path><path d="M21.1,17.2L21.1,17.2h3c0.8,0,1.5-0.7,1.5-1.5V6.1c0-2.2-1.8-4-4-4h-1.9H9.1H6.1c-2.2,0-4,1.8-4,4v40 c0,2.2,1.8,4,4,4h2.9h10.6h1.9c2.2,0,4-1.8,4-4v-9.5c0-0.8-0.7-1.5-1.5-1.5h-3l0,0c-0.8,0-1.5,0.7-1.5,1.5v5.9 c0,0.8-0.7,1.5-1.5,1.5H9.6c-0.8,0-1.5-0.7-1.5-1.5v-33c0-0.8,0.7-1.5,1.5-1.5H18c0.8,0,1.5,0.7,1.5,1.5v6.1 C19.6,16.5,20.2,17.2,21.1,17.2z"></path></svg>
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 52 52"><path d="M36.2,11.6c0,0-0.1-0.1-0.1-0.1c-0.6-0.5-1.5-0.5-2,0.1l-2.2,2.1c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l5.6,5.6 c0.2,0.2,0.3,0.4,0.3,0.7c0,0.6-0.4,1.1-1,1.1H15.6c-0.8,0-1.5,0.6-1.5,1.4v3c0.1,0.8,0.7,1.5,1.5,1.6h21.3c0.2,0,0.4,0.1,0.5,0.2 c0.5,0.4,0.5,1,0.2,1.5L32,36.5c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l2.1,2.2c0,0,0,0,0,0c0.6,0.6,1.5,0.5,2,0l13.5-13.5c0,0,0,0,0,0 c0.6-0.6,0.5-1.5,0-2L36.2,11.6z"></path><path d="M21.1,17.2L21.1,17.2h3c0.8,0,1.5-0.7,1.5-1.5V6.1c0-2.2-1.8-4-4-4h-1.9H9.1H6.1c-2.2,0-4,1.8-4,4v40 c0,2.2,1.8,4,4,4h2.9h10.6h1.9c2.2,0,4-1.8,4-4v-9.5c0-0.8-0.7-1.5-1.5-1.5h-3l0,0c-0.8,0-1.5,0.7-1.5,1.5v5.9 c0,0.8-0.7,1.5-1.5,1.5H9.6c-0.8,0-1.5-0.7-1.5-1.5v-33c0-0.8,0.7-1.5,1.5-1.5H18c0.8,0,1.5,0.7,1.5,1.5v6.1 C19.6,16.5,20.2,17.2,21.1,17.2z"></path></svg>
         <span class="ml-2 flex-1">Déconnexion</span>
     </a>
 

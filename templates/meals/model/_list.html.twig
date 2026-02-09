@@ -1,143 +1,168 @@
-
 {% if modelMeals is empty %}
 
-    <div class="flex items-center gap-4">
-        <span class="font-bold text-sm bg-gray rounded-lg p-3">Aucun repas trouvés</span>
-        <a href="{{ path('model_meal_new') }}" class="flex p-4 bg-white text-light-blue font-bold gap-2 items-center rounded-lg text-xl ml-auto">
-            {# <svg viewBox="0 0 24 24" class="w-4 h-4" fill="#ffffff" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg> #}
-            {# <span>Ajouter un repas</span> #}
-            <svg viewBox="0 0 24 24" class="w-10 h-10" xmlns="http://www.w3.org/2000/svg">
-                <!-- Fond gris clair -->
-                <circle cx="12" cy="12" r="10" fill="#EFEFEF"></circle>
-
-                <!-- Icône + noir doux -->
-                <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17" fill="#1A1A1A"></path>
-            </svg>
-        </a>
+    <div class="flex items-center justify-center text-gray-500" style="height: 240px">
+        Aucun repas
     </div>
 
 {% else %}
 
-    <div class="flex mb-8 items-center border-bottom-gray-200 pb-4">
-        <span class="font-bold py-1 text-base">{{ modelMeals|length }} repas sauvegardé{{ (modelMeals|length > 1) ? 's' }}</span>
-        <a href="{{ path('model_meal_new') }}" class="ml-auto group">
-            {# <svg viewBox="0 0 24 24" class="w-6 h-6" fill="#ffffff" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg> #}
-            {# <svg viewBox="0 0 24 24" class="w-10 h-10" fill="#0EA5E9" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg> #}
-            {# <span>Ajouter un repas</span> #}
-            {# <div class="inline-block rounded-sm"> #}
-                <svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
-                    <rect
-                    x="0"
-                    y="0"
-                    width="24"
-                    height="24"
-                    rx="2"
-                    class="fill-sky-600 group-hover:fill-sky-700 transition-colors duration-300"
-                    />
-                    <path
-                    d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
-                    fill="white"
-                    />
-                </svg>
-            {# </div> #}
-        </a>
-    </div>
+    <div {{ stimulus_controller('menu-accordion') }}>
 
-    {% for modelMeal in modelMeals %}
-
-        <div class="flex items-center mb-2">
-
-            <div class="flex flex-col w-3/4 lg:w-1/3 mb-2">
-                <h1 class="text-sm uppercase leading-4 mb-0">
-                    {{ modelMeal.name }}
-                </h1>
-                {% if modelMeal.type is not null %}
-                    <span class="text-neutral-500 text-xs">
-                        {{ modelMeal.type.frontName }}
-                    </span>
-                {% endif %}
-            </div>
-
-            <div class="hidden lg:flex flex-row gap-2 ml-40 mr-10">
-                {{ render(controller("App\\Controller\\meal\\ModelController::getListFgp", { 'id': modelMeal.id })) }}
-            </div>
-
-            <div class="mr-8 ml-auto leading-3 font-bold px-2 py-0 text-sm w-1/4 text-center md:w-auto">
-                {# <span class="flex items-center bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24"><path d="M..."/></svg>
-                    {{ render(controller("App\\Controller\\meal\\DefaultController::getEnergy", { 'id': modelMeal.id })) }}
-                </span> #}
-
-                <span class="flex items-center bg-yellow-400 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    <!-- Icône flamme -->
-                    {# <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 2C12 2 8 10 12 14C16 18 12 22 12 22C12 22 16 18 14 12C12 6 12 2 12 2Z" />
-                    </svg> #}
-                    {{ render(controller("App\\Controller\\meal\\DefaultController::getEnergy", { 'id': modelMeal.id })) }}
-                </span>
-
-            </div>
-
-            <button
-                type="button"
-                data-action="model-meal#onRemoveMeal"
-                class="mr-2 mt-0"
-                data-model-meal-id="{{ modelMeal.id }}"
-                data-csrf="{{ csrf_token('delete_meal_' ~ modelMeal.id) }}"
-            >
-                {{ include("partials/svg/remove.html.twig") }}
-            </button>
-
+        <div class="flex items-center gap-3 mb-8">
+            <span class="badge text-lg">
+                {{ modelMeals|length }} {{ 'meals.count'|trans({ '%count%': modelMeals|length }, "meal") }}
+            </span>
         </div>
 
-        <ul id="list-model-meal-{{ modelMeal.id }}-{{ loop.index0 }}" class="ml-4 text-sm mb-8">
+        {% for modelMeal in modelMeals %}
 
-            {% for dishAndFood in modelMeal.dishAndFoods %}
+            <div
+                class="card-model-meal flex flex-col items-center mb-2 bg-white rounded-2xl shadow-soft p-4 cursor-pointer transition-colors"
+                data-action="click->model-meal-select#toggleSelect"
+                data-model-meal-select-target="card"
+                data-meal-id="{{ modelMeal.id }}"
+            >
 
-                <li class="flex gap-2 w-auto mb-2 items-center">								
+                <div class="w-full flex flex-row items-center justify-between">
 
-                    {% if dishAndFood['type'] == 'Dish' %}
-
-                        {% set element = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
-
-                        <div class="flex flex-col md:flex-row md:items-center md:gap-4 mr-6">
-
-                            <span class="flex flex-row items-center gap-2">
-                                {{ include('meals/model/_picture_element.html.twig') }}
-                                <a href="{{ path('app_dish_show', {'id' : element.id, 'slug' : element.slug}) }}" class="text-sky-600 text-sm leading-4">
-                                    {{ element.name }}
-                                </a>
+                    <div class="flex flex-col w-1/4 flex-wrap">
+                        {% if modelMeal.type is not null %}
+                            <span class="text-neutral-500 text-base">
+                                {{ modelMeal.type.frontName }}
                             </span>
+                        {% endif %}
+                        <h1 class="text-base uppercase leading-4 mb-0">
+                            {{ modelMeal.name }}
+                        </h1>
+                    </div>
 
-                            <span class="text-neutral-500 text-sm ml-8 md:ml-2">{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
+                    <div class="my-hidden lg:flex flex-row gap-2">
+                        {{ render(controller("App\\Controller\\meal\\ModelController::getListFgp", { 'id': modelMeal.id })) }}
+                    </div>
 
-                        </div>
+                    <div class="flex items-center bg-gray-400 text-white text-sm font-bold px-2 py-1 rounded-full">
+                        {{ render(controller("App\\Controller\\meal\\DefaultController::getEnergy", { 'id': modelMeal.id })) }}
+                    </div>
 
-                    {% else %}
+                    <div class="flex items-center">
 
-                        {% set element = object(dishAndFood['id'], 'App\\Entity\\Food') %}
+                        <button
+                            type="button"
+                            class="mr-2 mt-0 btn-edit-model-meal"
+                            data-action="click->model-meal-select#ignore click->model-meal-select#redirect"
+                            data-href="{{ path('model_meal_edit', {'idMealModel': modelMeal.id}) }}"
+                        >
+                            <svg viewBox="0 0 24 24" class="text-gray-500 w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 8.25C9.92893 8.25 8.25 9.92893 8.25 12C8.25 14.0711 9.92893 15.75 12 15.75C14.0711 15.75 15.75 14.0711 15.75 12C15.75 9.92893 14.0711 8.25 12 8.25ZM9.75 12C9.75 10.7574 10.7574 9.75 12 9.75C13.2426 9.75 14.25 10.7574 14.25 12C14.25 13.2426 13.2426 14.25 12 14.25C10.7574 14.25 9.75 13.2426 9.75 12Z" fill="currentColor"></path>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 3.25C7.48587 3.25 4.44529 5.9542 2.68057 8.24686L2.64874 8.2882C2.24964 8.80653 1.88206 9.28392 1.63269 9.8484C1.36564 10.4529 1.25 11.1117 1.25 12C1.25 12.8883 1.36564 13.5471 1.63269 14.1516C1.88206 14.7161 2.24964 15.1935 2.64875 15.7118L2.68057 15.7531C4.44529 18.0458 7.48587 20.75 12 20.75C16.5141 20.75 19.5547 18.0458 21.3194 15.7531L21.3512 15.7118C21.7504 15.1935 22.1179 14.7161 22.3673 14.1516C22.6344 13.5471 22.75 12.8883 22.75 12C22.75 11.1117 22.6344 10.4529 22.3673 9.8484C22.1179 9.28391 21.7504 8.80652 21.3512 8.28818L21.3194 8.24686C19.5547 5.9542 16.5141 3.25 12 3.25ZM3.86922 9.1618C5.49864 7.04492 8.15036 4.75 12 4.75C15.8496 4.75 18.5014 7.04492 20.1308 9.1618C20.5694 9.73159 20.8263 10.0721 20.9952 10.4545C21.1532 10.812 21.25 11.2489 21.25 12C21.25 12.7511 21.1532 13.188 20.9952 13.5455C20.8263 13.9279 20.5694 14.2684 20.1308 14.8382C18.5014 16.9551 15.8496 19.25 12 19.25C8.15036 19.25 5.49864 16.9551 3.86922 14.8382C3.43064 14.2684 3.17374 13.9279 3.00476 13.5455C2.84684 13.188 2.75 12.7511 2.75 12C2.75 11.2489 2.84684 10.812 3.00476 10.4545C3.17374 10.0721 3.43063 9.73159 3.86922 9.1618Z" fill="currentColor"></path>
+                                </g>
+                            </svg>
+                        </button>
 
-                        <div class="flex flex-col md:flex-row md:items-center md:gap-4 mr-6">
-                        
-                            <span class="flex flex-row items-center gap-2">
-                                {{ include('meals/model/_picture_element.html.twig') }}
-                                <a href="{{ path('app_food_show', {'slug' : element.slug}) }}" class="text-sky-600 text-sm leading-4">
-                                    {{ element.name }}
-                                </a>
-                            </span>
-                        
-                            <span class="text-neutral-500 text-sm ml-8 md:ml-2">{{ dishAndFood['quantity'] }} {{ object(dishAndFood.unitMeasure, 'App\\Entity\\UnitMeasure').alias }}</span>
-                        
-                        </div>
+                        <button
+                            type="button"
+                            data-action="click->model-meal#onRemoveMeal click->model-meal-select#ignore"
+                            class="mr-2 mt-0 btn-remove-model-meal"
+                            data-model-meal-id="{{ modelMeal.id }}"
+                            data-csrf="{{ csrf_token('delete_meal_' ~ modelMeal.id) }}"
+                        >
+                            {{ include("partials/svg/remove.html.twig") }}
+                        </button>
 
-                    {% endif %}
+                    </div>
 
-                </li>
-            
-            {% endfor %}
+                    <button type="button"
+                    class="ml-4"
+                    data-action="click->menu-accordion#toggle click->model-meal-select#ignore"
+                    data-day="{{ modelMeal.id }}-{{ loop.index0 }}">
+                
+                        <svg data-menu-accordion-target="arrowDown"
+                            data-day-arrow="{{ modelMeal.id }}-{{ loop.index0 }}"
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="w-6 h-6 text-gray-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7"/>
+                        </svg>
 
-        </ul>
+                        <svg data-menu-accordion-target="arrowUp"
+                            data-day-arrow="{{ modelMeal.id }}-{{ loop.index0 }}"
+                            class="w-6 h-6 text-gray-500 my-hidden"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 15l7-7 7 7"/>
+                        </svg>
 
-    {% endfor %}
+                    </button>
+
+                </div>
+
+                <ul 
+                    id="list-model-meal-{{ modelMeal.id }}-{{ loop.index0 }}" 
+                    class="text-sm w-full overflow-hidden max-h-0 transition-[max-height] duration-300" 
+                    data-menu-accordion-target="panel"
+                    data-day-panel="{{ modelMeal.id }}-{{ loop.index0 }}"
+                >
+
+                    {% for dishAndFood in modelMeal.dishAndFoods %}
+
+                        <li class="flex gap-2 w-auto mb-2 items-center px-4 {% if loop.first %}mt-4{% endif %}">								
+
+                            {% if dishAndFood['type'] == 'Dish' %}
+
+                                {% set element = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
+
+                                <div class="flex flex-col md:flex-row md:items-center md:gap-4 mr-6">
+
+                                    <span class="flex flex-row items-center gap-2">
+                                        {{ include('meals/model/_picture_element.html.twig') }}
+                                        <a href="{{ path('app_dish_show', {'id' : element.id, 'slug' : element.slug}) }}" class="text-sky-600 text-sm leading-4 font-semibold">
+                                            {{ element.name }}
+                                        </a>
+                                    </span>
+
+                                    <span class="text-neutral-500 text-sm ml-8 md:ml-2">{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
+
+                                </div>
+
+                            {% else %}
+
+                                {% set element = object(dishAndFood['id'], 'App\\Entity\\Food') %}
+
+                                <div class="flex flex-col md:flex-row md:items-center md:gap-4 mr-6">
+                                
+                                    <span class="flex flex-row items-center gap-2">
+                                        {{ include('meals/model/_picture_element.html.twig') }}
+                                        <a href="{{ path('app_food_show', {'slug' : element.slug}) }}" class="text-sky-600 text-sm leading-4 font-semibold">
+                                            {{ element.name }}
+                                        </a>
+                                    </span>
+                                
+                                    <span class="text-neutral-500 text-sm ml-8 md:ml-2">{{ dishAndFood['quantity'] }} {{ object(dishAndFood.unitMeasure, 'App\\Entity\\UnitMeasure').alias }}</span>
+                                
+                                </div>
+
+                            {% endif %}
+
+                        </li>
+                    
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
 
 {% endif %}
+

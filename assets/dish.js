@@ -80,7 +80,7 @@ $(function(){
     };
 
     url = Routing.generate('dish_form_set_in_session', params);
-    console.log(url);
+    // console.log(url);
 
     $.ajax({
       url : url,

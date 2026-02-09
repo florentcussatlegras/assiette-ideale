@@ -1,0 +1,58 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ group.name }}{% endblock %}
+
+{% block body %}
+
+<div class="container mx-auto py-12">
+
+    <a href="{{ path('app_food_groups_index') }}" class="text-sky-600">
+        ← Retour aux groupes
+    </a>
+
+    <div class="mt-6 p-8 rounded-xl text-white"
+         style="background: linear-gradient(135deg, {{ group.color }}, {{ group.degradedColor }})">
+
+        <h1>{{ group.name }}</h1>
+
+    </div>
+
+     <div class="prose my-8">
+        {{ group.content|raw|nl2br }}
+    </div>
+
+    {# <div class="mt-10">
+
+        <h2 class="text-2xl font-bold mb-4">
+            Sous-groupes
+        </h2>
+
+        <div class="responsive-grid">
+
+            {% for foodGroup in group.foodGroups %}
+
+                <div class="border rounded-lg p-4">
+
+                    <h3 class="font-bold">
+                        {{ foodGroup.name }}
+                    </h3>
+
+                    <p class="text-sm">
+                        {{ foodGroup.description|default('') }}
+                    </p>
+
+                </div>
+
+            {% else %}
+
+                <p>Aucun sous-groupe pour le moment.</p>
+
+            {% endfor %}
+
+        </div>
+
+    </div> #}
+
+</div>
+
+{% endblock %}

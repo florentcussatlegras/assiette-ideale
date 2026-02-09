@@ -204,20 +204,20 @@ class ProfileType extends AbstractType
                     // ]
                 ]);
 
-                $builder->add('archived_weight', CheckboxType::class, [
-                    'label' => 'Archiver afin de suivre votre évolution',
-                    'required' => false,
-                    'mapped' => false,
-                    'attr' => [
-                        'class' => 'w-4 h-4 md:w-5 md:h-5 mr-2 cursor-pointer' 
-                    ],
-                    'row_attr' => [
-                        'class' => 'flex items-center h-10 mx-auto justify-center'
-                    ],
-                    'label_attr' => [
-                        'class' => 'text-sm font-medium leading-4 pt-2 ml-2'
-                    ]
-                ]);
+                // $builder->add('archived_weight', CheckboxType::class, [
+                //     'label' => 'Archiver afin de suivre votre évolution',
+                //     'required' => false,
+                //     'mapped' => false,
+                //     'attr' => [
+                //         'class' => 'w-4 h-4 md:w-5 md:h-5 mr-2 cursor-pointer' 
+                //     ],
+                //     'row_attr' => [
+                //         'class' => 'flex items-center h-10 mx-auto justify-center'
+                //     ],
+                //     'label_attr' => [
+                //         'class' => 'text-sm font-light leading-4 pt-2 ml-2'
+                //     ]
+                // ]);
 
                 break;
 
@@ -330,7 +330,7 @@ class ProfileType extends AbstractType
                                 'required' => false,
                                 // 'disabled' => ($user->getAutomaticCalculateEnergy() || null === $user->getAutomaticCalculateEnergy()),
                                 'row_attr' => [
-                                    'class' => 'w-1/2 mb-2 energy flex flex-col'
+                                    'class' => 'w-full mb-2 energy flex flex-col'
                                 ],
                             ]
                         )
@@ -405,7 +405,7 @@ class ProfileType extends AbstractType
                             'label' => false,
                             'required' => false,
                             'row_attr' => [
-                                'class' => 'w-1/2 mb-2 energy flex flex-col'
+                                'class' => 'w-full mb-2 energy flex flex-col'
                             ],
                             'constraints' => [
                                 new AppAssert\IsEnergyValid([

@@ -1,8 +1,6 @@
-
-
 {% set is_single_day = date(start_date) == date(end_date) %}
 
-<h1 class="text-xl lg:text-4xl title-date-range pt-4 mt-0 font-bold">
+<h1 class="text-xl lg:text-3xl title-date-range pt-4 mt-0 font-bold">
     {% if is_single_day %}
         Mes bilans pour la journée du {{ start_date|format_date('full', locale='fr') }}
     {% else %}
@@ -10,7 +8,6 @@
         au {{ end_date|format_date('full', locale='fr') }}
     {% endif %}
 </h1>
-
 
 <span class="text-base">(moyenne journalière pour cette période)</span>
 

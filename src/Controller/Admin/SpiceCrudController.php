@@ -13,7 +13,6 @@ class SpiceCrudController extends AbstractCrudController
         return Spice::class;
     }
 
-    
     public function configureFields(string $pageName): iterable
     {
         return [

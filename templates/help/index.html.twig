@@ -4,11 +4,9 @@
 
 {% block body %}
 
-	<main role="main">
+	<div class="py-12">
 
 		{{ include("partials/_header.html.twig", { h1_content: 'Une question?' }) }}
-
-		{# {{ include("partials/_alert.html.twig") }} #}
 
 		<div class="flex justify-center">
 
@@ -47,6 +45,6 @@
 
 		</div>
 
-	</main>
+	</div>
 
-</main>{% endblock %}
+{% endblock %}

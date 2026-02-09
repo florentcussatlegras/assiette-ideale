@@ -3,36 +3,24 @@
 namespace App\Controller\meal;
 
 use App\Repository\FoodGroupParentRepository;
-use App\Entity\Dish;
-use App\Entity\Food;
-use App\Entity\User;
 use App\Entity\TypeMeal;
 use App\Entity\MealModel;
 use App\Service\MealUtil;
-use App\Service\AlertFeature;
-use App\Form\Type\ParameterType;
-use App\Service\QuantityTreatment;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\FoodGroup\FoodGroupParent;
+use App\Form\Type\MealFilterType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\MealModelRepository;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
-/**
- * @author Florent Cussatlegras <florent.cussatlegras@gmail.com>
- */
 
 #[Route('/mes-repas-type')]
 class ModelController extends AbstractController
 {
-	#[Route('/add', name: 'model_meal_add', methods: ['POST'], options: ['expose' => true])]
-	public function add(Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorageInterface)
+	#[Route('/add/{idMealModel?}', name: 'model_meal_add', methods: ['POST'], requirements: ['idMealModel' => '\d+'], options: ['expose' => true])]
+	public function add(Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorageInterface, MealUtil $mealUtil, MealModelRepository $mealModelRepository, ?int $idMealModel)
 	{
 		$session = $request->getSession();
 
@@ -43,9 +31,17 @@ class ModelController extends AbstractController
 		$dishAndFood = $session->get('_meal_day_' . $rankMeal)['dishAndFoods'];
 		$typeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($type);
 		
+
 		$mealModel = new MealModel($name, $typeMeal, $dishAndFood, $tokenStorageInterface->getToken()->getUser());
+		$mealModel->setEnergy($mealUtil->getEnergy($mealModel));
 
 		$manager->persist($mealModel);
+
+		if($idMealModel) {
+			$oldMealModelToRemove = $mealModelRepository->findOneById($idMealModel);
+			$manager->remove($oldMealModelToRemove);
+		}
+
 		$manager->flush();
 
 		$this->addFlash('info', 'Votre repas a bien été sauvegardé');
@@ -57,7 +53,7 @@ class ModelController extends AbstractController
 		return $this->redirectToRoute('meal_day');
 	}
 
-	#[Route('/remove/{id?}', name: 'model_meal_remove')]
+	#[Route('/remove/{id?}', name: 'model_meal_remove', methods: ['GET'], requirements: ['id' => '\d+'])]
 	public function remove(EntityManagerInterface $manager, Request $request, MealModelRepository $mealModelRepository, ?MealModel $mealModel)
 	{
 		$submittedToken = $request->query->get('_token');
@@ -80,7 +76,7 @@ class ModelController extends AbstractController
 		return $this->redirectToRoute('model_meal_list');
 	}
 
-	#[Route('/new', name: 'model_meal_new')]
+	#[Route('/new', name: 'model_meal_new', methods: ['GET'])]
 	public function new(Request $request, MealUtil $mealUtil)
 	{
 		$mealUtil->removeMealsSession();
@@ -89,30 +85,64 @@ class ModelController extends AbstractController
 		return $this->redirectToRoute('meal_day_add');
 	}
 
-	#[Route('/list', name: 'model_meal_list', options: ['expose' => true])]
-	public function list(MealModelRepository $mealModelRepository)
+	#[Route('/edit/{idMealModel}', name: 'model_meal_edit', methods: ['GET'], requirements: ['idMealModel' => '\d+'])]
+	public function edit(Request $request, MealUtil $mealUtil, ?int $idMealModel)
+	{
+		$mealUtil->removeMealsSession();
+		$request->getSession()->set('_meal_day_date', 'model');
+
+		return $this->redirectToRoute('meal_day_add', [
+			'idMealModel' => $idMealModel,
+		]);
+	}
+
+	#[Route('/list', name: 'model_meal_list', methods: ['GET'], options: ['expose' => true])]
+	public function list(MealModelRepository $mealModelRepository, Request $request)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+
+		$filters = [
+			'minCalories' => $request->query->getInt('minCalories'),
+			'maxCalories' => $request->query->getInt('maxCalories'),
+			'search'      => $request->query->get('search'),
+			'types'       => $request->query->all('types'),
+			'sort'        => $request->query->get('sort', 'asc'),
+		];
+
+		$modelMeals = $mealModelRepository->findFilteredByUser($filters);
+
+		// appel AJAX
+		if ($request->isXmlHttpRequest()) {
+			return $this->render('meals/model/_list.html.twig', [
+				'modelMeals' => $modelMeals,
+			]);
+		}
+
+		$modelMeals = $mealModelRepository->myFindByUser();
 
 		return $this->render("meals/model/list.html.twig", [
-		    		    // "modelMeals" => $manager->getRepository(MealModel::class)->myFindByUserGroupByType()
-		    		    "modelMeals" => $mealModelRepository->myFindByUser()
+				'modelMeals' => $modelMeals,
+				'filterCaloriesForm' => $this->createForm(MealFilterType::class)->createView(),
 		    ]
         );
 	}
 
-	#[Route('/list-modal-meal-type', name: 'modal_meal_type_list', options: ['expose' => true])]
-	public function listModalMealType(MealModelRepository $mealModelRepository)
+	#[Route('/list-model-meal-modal', name: 'model_meal_list_modal', methods: ['GET'], options: ['expose' => true])]
+	public function listModelMealModal(MealModelRepository $mealModelRepository)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
 
-		return $this->render("meals/day/_list_model_meals.html.twig", [
-		    		    "modelMeals" => $mealModelRepository->myFindByUser()
+		$modelMeals = $mealModelRepository->myFindByUser();
+
+		return $this->render("meals/model/_wrapper_list.html.twig", [
+				'modelMeals' => $modelMeals,
+				'filterCaloriesForm' => $this->createForm(MealFilterType::class)->createView(),
+				'listModal' => true,
 		    ]
         );
 	}
 
-	#[Route('/listfgp/{id}', name: 'model_meal_list_fgp', options: ['expose' => true])]
+	#[Route('/listfgp/{id}', name: 'model_meal_list_fgp', methods: ['GET'], requirements: ['id' => '\d+'], options: ['expose' => true])]
 	public function getListFgp(Request $request, MealUtil $mealUtil, FoodGroupParentRepository $foodGroupParentRepository, 
 				EntityManagerInterface $manager, MealModel $meal, int $sizeTabletColorFgp = 5)
 	{
@@ -123,5 +153,19 @@ class ModelController extends AbstractController
 				"size" => $sizeTabletColorFgp
 			]
 		);
+	}
+
+	#[Route('/update-energy', name: 'model_meal_update_energy_one_shot', methods: ['GET'])]
+	public function updateEnergyOneShot(MealModelRepository $mealModelRepository, MealUtil $mealUtil, EntityManagerInterface $entityManager)
+	{
+		$meals = $mealModelRepository->findAll();
+
+		foreach ($meals as $meal) {
+			$meal->setEnergy($mealUtil->getEnergy($meal));
+		}
+
+		$entityManager->flush();
+
+		return new Response('Energy repas type modifiée');
 	}
 }

@@ -4,126 +4,121 @@
 
 {% block body %}
     
-    <main role="main">
+    <div class="py-12">
 
-        {# <div class="w-1/3 bg-green-100 rounded-lg">
-            {{ include('recommendations/foodgroup/_list.html.twig') }}
-        </div> #}
-        {# <div class="w-1/3 bg-cyan-100 rounded-lg">
-            {{ include('recommendations/nutrient/_list.html.twig') }}    
-        </div> #}
+        <h1 class="text-2xl md:text-4xl mb-8 font-bold">
+            Vos recommandations journalières
+        </h1>
 
-            {{ include("partials/_header.html.twig", { h1_content: 'Vos recommandations nutritionnelles journalières' }) }}
+        <div class="flex flex-col lg:flex-row gap-4 items-start text-base">
 
-            <div class="flex flex-col lg:flex-row gap-4 items-start text-base">
-
-                <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
-                                
-                    <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins par groupes alimentaires</span>
-                    
-                    <div class="flex items-center justify-center font-bold">
-
-                        <ul class="flex flex-col py-4">
-                        
-                            {% for fgp, quantity in app.user.recommendedQuantities %}
-
-                                <li class="px-6 py-2 font-medium flex flex-row gap-2 items-start">
-                                    <div class="flex rounded-full w-4 h-4 mt-1" style="background-color: {{ fgp|foodGroupParent.color }}"></div>
-                                    <div class="flex flex-col">
-                                        <span>
-                                            {{ fgp|foodGroupParent.name|capitalize }}
-                                        </span>
-                                        <span class="text-neutral-500 text-sm">
-                                            {{ "%s g"|format(quantity) }}
-                                        </span>
-                                    </div>
-                                </li>
-
-                            {% endfor %}
-
-                        </ul>
-
-                    </div>  
-                    
-                </div>
-
-                <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
-                                
-                    <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins en nutriments</span>
-                    
-                    <div class="flex my-2 font-bold justify-center items-center">
-
-                        {{ include('recommendations/nutrient/_list.html.twig') }}
-
-                    </div>  
-                    
-                </div>
-
-                <div class="w-full lg:w-1/3 bg-white h-auto rounded-2xl shadow-soft">
-                                
-                    <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Votre besoin énergétique</span>
-                    
-                    <div class="flex items-center justify-center font-bold h-28">
-
-                        <div class="flex flex-col gap-3 items-center">
-                        
-                            {% if app.user.energy %}
-
-                                    <span class="text-xl">
-                                        {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
-                                    </span>
-
-                                    {# {% if app.user.automaticCalculateEnergy is same as(true) %}
-                                        <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
-                                    {% else %}
-                                        <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
-                                    {% endif %} #}
-
-                            {% else %}
+            <div class="w-full lg:w-1/3 bg-white h-auto rounded-2xl shadow-soft">
                             
-                                <div class="text-sm flex flex-col items-center gap-4">
+                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Votre besoin énergétique</span>
+                
+                <div class="flex items-center justify-center font-bold h-28">
 
-                                    {% if app.user.automaticCalculateEnergy is same as(false) %}
+                    <div class="flex flex-col gap-3 items-center">
+                    
+                        {% if app.user.energy %}
 
-                                        <span>Vous n'avez pas indiqué votre besoin énergétique quotitien</span>
+                                <span class="text-xl">
+                                    {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
+                                </span>
 
-                                    {% endif %}
+                                {# {% if app.user.automaticCalculateEnergy is same as(true) %}
+                                    <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
+                                {% else %}
+                                    <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
+                                {% endif %} #}
 
-                                    {% if missingElements|length > 0 %}
+                        {% else %}
+                        
+                            <div class="text-sm flex flex-col items-center gap-4">
 
-                                        <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
-                                            {{ missingElements|join(',', ' et ') }}
-                                            <br/>Merci de compléter ces informations ou 
-                                        </p>
+                                {% if app.user.automaticCalculateEnergy is same as(false) %}
 
-                                    {% else %}
+                                    <span>Vous n'avez pas indiqué votre besoin énergétique quotitien</span>
 
-                                        <a href="{{ path('app_energy_estimate') }}" 
-                                                    class="text-dark-blue text-black p-2 rounded-full">
-                                                Laissez l'application estimer mon besoin énergétique
-                                        </a>
+                                {% endif %}
 
-                                    {% endif %}   
+                                {% if missingElements|length > 0 %}
 
-                                    <div class="flex flex-row text-sm gap-2">
-                                        <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
-                                                    class="text-white bg-dark-blue p-2 rounded-full">
-                                            Saisir votre besoin
-                                        </a> 
-                                    </div>
+                                    <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
+                                        {{ missingElements|join(',', ' et ') }}
+                                        <br/>Merci de compléter ces informations ou 
+                                    </p>
 
+                                {% else %}
+
+                                    <a href="{{ path('app_energy_estimate') }}" 
+                                                class="text-dark-blue text-black p-2 rounded-full">
+                                            Laissez l'application estimer mon besoin énergétique
+                                    </a>
+
+                                {% endif %}   
+
+                                <div class="flex flex-row text-sm gap-2">
+                                    <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
+                                                class="text-white bg-dark-blue p-2 rounded-full">
+                                        Saisir votre besoin
+                                    </a> 
                                 </div>
 
-                            {% endif %}
+                            </div>
 
-                        </div>
+                        {% endif %}
 
-                    </div>  
-                    
-                </div>
+                    </div>
 
+                </div>  
+                
             </div>
 
-    </main>
+            <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
+                            
+                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins par groupes alimentaires</span>
+                
+                <div class="flex items-center justify-center font-bold">
+
+                    <ul class="flex flex-col py-4">
+                    
+                        {% for fgp, quantity in app.user.recommendedQuantities %}
+
+                            <li class="px-6 py-2 font-medium flex flex-row gap-2 items-start">
+                                <div class="flex rounded-full w-4 h-4 mt-1" style="background-color: {{ fgp|foodGroupParent.color }}"></div>
+                                <div class="flex flex-col">
+                                    <span>
+                                        {{ fgp|foodGroupParent.name|capitalize }}
+                                    </span>
+                                    <span class="text-neutral-500 text-sm">
+                                        {{ "%s g"|format(quantity) }}
+                                    </span>
+                                </div>
+                            </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                </div>  
+                
+            </div>
+
+            <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
+                            
+                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins en nutriments</span>
+                
+                <div class="flex my-2 font-bold justify-center items-center">
+
+                    {{ include('recommendations/nutrient/_list.html.twig') }}
+
+                </div>  
+                
+            </div>
+
+        </div>
+
+    </div>
 
 {% endblock %}

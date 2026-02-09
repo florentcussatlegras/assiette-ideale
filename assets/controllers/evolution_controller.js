@@ -74,30 +74,25 @@ export default class extends Controller {
       const tabs = document.querySelectorAll(".tabs-content-evolution_tab");
 
       tabs.forEach((tab) => {
-        tab.classList.replace("text-white", "text-dark-blue");
-        tab.classList.replace("bg-light-blue", "bg-white");
+        tab.classList.replace("text-white", "text-gray-900");
+        tab.classList.remove("hover:text-white");
+        tab.classList.add("hover:text-gray-900");
+        tab.classList.replace("bg-sky-600", "bg-gray-100");
+        tab.classList.remove("hover:bg-sky-600");
+        tab.classList.add("hover:bg-gray-900");
       });
 
-      currentTab.classList.replace("text-dark-blue", "text-white");
-      currentTab.classList.replace("bg-white", "bg-light-blue");
+      currentTab.classList.replace("text-gray-900", "text-white");
+      currentTab.classList.remove("hover:text-gray-900");
+      currentTab.classList.add("hover:text-white");
+      currentTab.classList.replace("bg-gray-100", "bg-sky-600");
+      currentTab.classList.remove("hover:bg-gray-900");
+      currentTab.classList.add("hover:bg-sky-600");
 
       this.loadContent();
   }
 
   setDates(event) {
-    // const target = event.currentTarget;
-
-    // if (target.hasAttribute("data-start") && target.hasAttribute("data-end")) {
-    //   this.startValue = target.dataset.start;
-    //   this.endValue = target.dataset.end;
-    //   this.startTarget.value = this.startValue;
-    //   this.endTarget.value = this.endValue;
-    // } else {
-    //   this.startValue = this.startTarget.value;
-    //   this.endValue = this.endTarget.value;
-    // }
-
-    // this.loadContent();
     const target = event.currentTarget;
     
         // Si bouton rapide → utilise ses dates prédéfinies
@@ -137,14 +132,6 @@ export default class extends Controller {
         this.loadContent();
   }
 
-  // startValueChanged() {
-  //     this.loadContent();
-  // }
-
-  // endValueChanged() {
-  //     this.loadContent();
-  // }
-
   // ------------------------------------------------------
   // 📌 3) Initialisation affichage et valeurs par défaut
   // ------------------------------------------------------
@@ -173,13 +160,21 @@ export default class extends Controller {
     tabs.forEach((tab) => {
       tab.addEventListener("click", (e) => {
         tabs.forEach((t) => {
-          t.classList.replace("text-white", "text-dark-blue");
-          t.classList.replace("bg-light-blue", "bg-white");
+          t.classList.replace("text-white", "text-gray-900");
+          t.classList.remove("hover:text-white");
+          t.classList.add("hover:text-gray-900");
+          t.classList.replace("bg-sky-600", "bg-gray-100");
+          t.classList.remove("hover:bg-gray-600");
+          t.classList.add("hover:bg-gray-900");
         });
 
         if (!tab.classList.contains("date-picker")) {
-          tab.classList.replace("text-dark-blue", "text-white");
-          tab.classList.replace("bg-white", "bg-light-blue");
+          tab.classList.replace("text-gray-900", "text-white");
+          tab.classList.remove("hover:text-gray-900");
+          tab.classList.add("hover:text-white");
+          tab.classList.replace("bg-gray-100", "bg-sky-600");
+          tab.classList.remove("hover:bg-gray-900");
+          tab.classList.add("hover:bg-sky-600");
         }
       });
     });
@@ -202,56 +197,41 @@ export default class extends Controller {
         return response.text();
       })
       .then((text) => {
-        // this.titleDateRangeTarget.innerHTML = `Mes bilans pour la période du ${this.startValue} au ${this.endValue}`;
         this.contentTarget.classList.remove("hidden");
         this.contentTarget.innerHTML = text;
         this.loaderTarget.classList.add("hidden");
       });
-
-    // fetch(`${this.urlLoadDailyNutrientValue}?${params.toString()}`)
-    //     .then((response) => {
-    //         return response.text()
-    //     })
-    //     .then((text) => {
-    //         this.averageNutrientTarget.innerHTML = text;
-    //     });
-
-    // fetch(`${this.urlLoadDailyFgpValue}?${params.toString()}`)
-    //     .then((response) => {
-    //         return response.text()
-    //     })
-    //     .then((text) => {
-    //         this.averageFgpTarget.innerHTML = text;
-    //     });
   }
 
-  
   activateMatchingTab() {
     const tabs = document.querySelectorAll(".tabs-date-range_tab");
 
     const currentStart = this.startValue;
     const currentEnd = this.endValue;
 
-    console.log(currentStart);
-    console.log(currentEnd);
-
     let matched = false;
 
     tabs.forEach((tab) => {
         const tabStart = tab.dataset.start;
         const tabEnd = tab.dataset.end;
-        console.log(tabStart);
-        console.log(tabEnd);
 
         // reset styles
-        tab.classList.replace("text-white", "text-dark-blue");
-        tab.classList.replace("bg-light-blue", "bg-white");
+        tab.classList.replace("text-white", "text-gray-900");
+        tab.classList.remove("hover:text-white");
+        tab.classList.add("hover:text-gray-900");
+        tab.classList.replace("bg-sky-600", "bg-gray-100");
+        tab.classList.remove("hover:bg-sky-600");
+        tab.classList.add("hover:bg-gray-900");
 
         // match exact dates
         if (tabStart === currentStart && tabEnd === currentEnd) {
-            console.log('ça match');
-            tab.classList.replace("text-dark-blue", "text-white");
-            tab.classList.replace("bg-white", "bg-light-blue");
+            tab.classList.replace("text-gray-900", "text-white");
+            tab.classList.remove("hover:text-gray-900");
+            tab.classList.add("hover:text-white");
+            tab.classList.replace("bg-gray-100", "bg-sky-600");
+            tab.classList.remove("hover:bg-gray-900");
+            tab.classList.add("hover:bg-sky-600");
+
             matched = true;
         }
     });

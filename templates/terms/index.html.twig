@@ -7,7 +7,7 @@
 
 {% block body %}
 
-	<main role="main">
+	<div class="py-12">
 
 		{{ include("partials/_header.html.twig", { h1_content: 'Termes et conditions d’utilisation' }) }}
 
@@ -17,8 +17,6 @@
 
 				<div class="p-10">
 
-					<h1>Termes et Conditions d’Utilisation (TCU)</h1>
-					
 					<p>
 						Assiette idéale est un
 						<strong>projet fictif à vocation démonstrative</strong>, destiné à illustrer des compétences techniques, produit, UX et architecture applicative.<br>
@@ -114,7 +112,7 @@
 
 
 					<h2 class="my-4">8. Évolution des conditions</h2>
-                    
+					
 					<p>Les présentes Conditions peuvent être modifiées à tout moment afin de refléter :</p>
 
 					<ul class="list-disc ml-8 mb-2">
@@ -144,6 +142,6 @@
 
 		</div>
 
-	</main>
+	</div>
 
 {% endblock %}

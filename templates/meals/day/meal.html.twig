@@ -1,124 +1,70 @@
+<div class="flex w-full">
 
-	{# {% if app.session.get('_meal_day_date') != 'model-meal' %}
+	{% if app.session.get('_meal_day_date') != 'model' %}
+		<div style="width: 2%"></div>
+	{% endif %}
 
-		<div class="flex w-6 ml-2 mr-4 relative">
+	<div 
+		id="meal-{{ rankMeal }}" 
+		class="meal flex flex-col"
+		{% if app.session.get('_meal_day_date') != 'model' %}style="width: 98%"{% else %}style="width: 100%"{% endif %}
+		{{ stimulus_controller('type-meal', {
+			url: path('meal_day_update_type_meal'),
+			urlReload: path('meal_day', { ajax: 1 }),
+			rankMeal: rankMeal
+		}) }}
+	>
+	
+		<div class="container-list-meal-model"></div>
 
-			<div class="relative" style="width:20px; display: flex; align-items: center; flex-direction: column; align-content: flex-start">
-
-				{# {% if loop.first %}
-
-					<div style="height: calc(50% - 20px)"></div>
-
-				{% else %}
-
-					{% if loop.last %}
-
-						<div style="border:1px solid #357cc3; height: calc(50% - 20px)"></div>
-
-					{% else %}
-
-						<div style="border:1px solid #56c5a0; height: calc(50% - 20px)"></div>
-
-					{% endif %}
-
-				{% endif %} #}
-
-				{# <div class="flex rounded-full w-7 h-7 justify-center items-center text-white {% if loop.last %}bg-sky-400{% else %}bg-green-400{% endif %}">
-
-					{{ loop.index }}
-
-				</div> #}
-
-				{# <div class="absolute w-14 h-8 inset-y-1/2 bg-indigo-500 text-white font-bold text-center rounded-lg shadow-lg top-2" style="left:-40px">
-					{{ loop.index }}
-				</div> #}
-
-				{# {% if loop.last %}
-
-					<div class="border border-sky-400" style="height: calc(30% - 20px)"></div>
-					<div class="border-dashed border border-sky-400" style="height: 10%"></div>
-
-				{% else %}
-
-					<div style="border:1px solid #56c5a0; height: calc(50%)"></div>
-
-				{% endif %}	 #}
-
-			{# </div> #}
-
-		{# </div> #}
-
-	{# {% endif %} #}
-
-	{# <div class="meal card flex flex-col mb-2 relative px-12" data-rank-meal="{{ rankMeal }}" data-rank-dish=""> #}
-
-	<div class="flex w-full">
-		{% if app.session.get('_meal_day_date') != 'model' %}
-		<div style="width: 2%">
-		{# <div class="flex items-start mt-9 md:mt-0 justify-center mr-2 lg:mr-0" style="width: 3%"> #}
-			{# <input
-				type="checkbox" 
-				class="cursor-pointer w-6 rounded text-dark-blue bg-gray-300 border-gray-300 dark:focus:ring-blue-500"
-				data-meal-target="selectMeal"
-				data-action="meal#selectMeal"
-				value="{{ rankMeal }}"
-			/> #}
-		</div>
-		{% endif %}
-
-		<div 
-			id="meal-{{ rankMeal }}" 
-			class="meal flex flex-col"
-			{% if app.session.get('_meal_day_date') != 'model' %}style="width: 98%"{% else %}style="width: 100%"{% endif %}
-			{{ stimulus_controller('type-meal', {
-				url: path('meal_day_update_type_meal'),
-				urlReload: path('meal_day', { ajax: 1 }),
-				rankMeal: rankMeal
-			}) }}
-		>
-		
-			<div class="container-list-meal-model"></div>
-
-			<div class="relative">
+		<div class="relative">
 			{% if app.session.get('_meal_day_date') != 'model' %}
-				<div class="absolute -left-6 md:-left-8 xl:-left-10 w-5 items-center flex h-full">
+				<div class="flex md:my-hidden absolute -left-4 top-6 items-center h-full justify-center">
 					<input
 						type="checkbox" 
-						{# class="cursor-pointer w-4 md:w-6 rounded text-dark-blue bg-gray-300 border-gray-300 dark:focus:ring-blue-500 m-0" #}
-						class="cursor-pointer"
+						class="cursor-pointer mt-0 mb-2"
 						data-meal-target="selectMeal"
 						data-action="meal#selectMeal"
 						value="{{ rankMeal }}"
 					/>
-				</div>						
+				</div>
+				<div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
+					<input
+						type="checkbox" 
+						class="cursor-pointer mt-0 mb-2"
+						data-meal-target="selectMeal"
+						data-action="meal#selectMeal"
+						value="{{ rankMeal }}"
+					/>
+				</div>							
 			{% endif %}
-				{{ include('meals/day/type_meal.html.twig') }}
-			</div>
+			{{ include('meals/day/type_meal.html.twig') }}
+		</div>
 
-			<div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-soft rounded-2xl rounded-tl-none">
+		<div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-soft rounded-2xl">
 
-				{% if app.session.has('_meal_day_' ~ rankMeal) 
-					and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys 
-					and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not null 
-				%}
-					{% set rankDish = app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods']|length %}
-				{% else %}
-					{% set rankDish = 0 %}
-				{% endif %}
-				
-				{% if rankDish > 0 %}
-					{{ include('meals/day/list-dishes.html.twig') }}
-					{{ include('meals/day/group-btn-action.html.twig') }}
-				{% else %}
-					<div class="flex items-center pl-4">
-						<span class="text-xs md:text-sm text-gray-400 rounded-lg p-2">Aucun aliments/plats choisis</span>
-						<div class="ml-auto">{{ include('meals/day/group-btn-action.html.twig') }}</div>
-					</div>
-				{% endif %}
-
-			</div>
+			{% if app.session.has('_meal_day_' ~ rankMeal) 
+				and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys 
+				and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not null 
+			%}
+				{% set rankDish = app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods']|length %}
+			{% else %}
+				{% set rankDish = 0 %}
+			{% endif %}
+			
+			{% if rankDish > 0 %}
+				{{ include('meals/day/list-dishes.html.twig') }}
+				{{ include('meals/day/group-btn-action.html.twig') }}
+			{% else %}
+				<div class="flex items-center pl-4">
+					<span class="text-xs md:text-sm text-neutral-400 rounded-lg p-2">Aucun aliments/plats choisis</span>
+					<div class="ml-auto">{{ include('meals/day/group-btn-action.html.twig') }}</div>
+				</div>
+			{% endif %}
 
 		</div>
 
 	</div>
+
+</div>
 

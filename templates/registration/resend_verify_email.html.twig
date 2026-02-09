@@ -6,7 +6,7 @@
 
     <div class="flex flex-col gap-2">
 
-        <h1 class="text-xl font-bold">
+        <h1 class="text-3xl font-bold text-sky-600">
             Renvoyer l'email d'activation
         </h1>
 
@@ -17,13 +17,13 @@
 
         {{ form_start(form) }}
 
-            <button class="bg-light-blue text-white w-full font-bold p-2 text-base cursor-pointer rounded-lg mt-8">Renvoyer l'email</button>
+            <button class="bg-security text-white w-full font-bold py-3 font-semibold text-base cursor-pointer rounded-lg mt-8">Renvoyer l'email</button>
 
         {{ form_end(form) }}
 
         <br />
 
-        <a class="text-light-blue text-sm" href="{{ path('app_login') }}">Revenir au formulaire de connexion</a>
+        <a class="text-security text-sm" href="{{ path('app_login') }}">Revenir au formulaire de connexion</a>
 
     </div>
 

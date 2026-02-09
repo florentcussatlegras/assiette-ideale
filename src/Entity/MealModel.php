@@ -2,51 +2,42 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\MealModelRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * MealModel
- *
- * @ORM\Table(name="meal_model")
- * @ORM\Entity(repositoryClass="App\Repository\MealModelRepository")
- */
+#[ORM\Entity(repositoryClass: MealModelRepository::class)]
+#[ORM\Table(name: "meal_model")]
 class MealModel
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    private ?int $id = null;
+
+    #[ORM\Column(type: "string")]
+    private string $name;
+
+    #[ORM\ManyToOne(targetEntity: TypeMeal::class)]
+    private ?TypeMeal $type = null;
+
+    #[ORM\Column(type: "array")]
+    private array $dishAndFoods = [];
+
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ["persist"])]
+    private ?User $user = null;
 
     /**
-     * @ORM\Column(name="name", type="string")
+     * Énergie calorique calculée
      */
-    private $name;
+    #[ORM\Column(type: "integer", options: ["default" => 0])]
+    private int $energy = 0;
 
-     /**
-     * @var \Entity
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\TypeMeal")
-     */
-    private $type;  
-
-    /**
-     * @ORM\Column(name="dish_and_foods", type="array")
-     */
-    private $dishAndFoods;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", cascade={"persist"})
-     */
-    private $user;
-
-    public function __construct($name, $type, $dishAndFoods, $user)
-    {
+    public function __construct(
+        string $name,
+        ?TypeMeal $type,
+        array $dishAndFoods,
+        User $user
+    ) {
         $this->name = $name;
         $this->type = $type;
         $this->dishAndFoods = $dishAndFoods;
@@ -58,7 +49,7 @@ class MealModel
         return $this->id;
     }
 
-    public function getDishAndFoods(): ?array
+    public function getDishAndFoods(): array
     {
         return $this->dishAndFoods;
     }
@@ -82,7 +73,7 @@ class MealModel
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -102,6 +93,18 @@ class MealModel
     public function setType(?TypeMeal $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getEnergy(): int
+    {
+        return $this->energy;
+    }
+
+    public function setEnergy(int $energy): self
+    {
+        $this->energy = $energy;
 
         return $this;
     }

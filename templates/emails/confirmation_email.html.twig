@@ -1,17 +1,26 @@
-{% extends 'emails/emailBase.html.twig' %}
+<div style="margin-top:32px; text-align:center; font-weight:bold; font-size:32px; color:#0ea5e9; font-family: 'Poppins', Arial, sans-serif;">
+    <span>Assiette&nbsp;</span>
+    <span>idé<span style="color:#84cc16;">a</span>le</span>
+</div>
 
-{% block content %}
+<h1>Bonjour!</h1>
 
-    <h1>Welcome {{ email.toName }}!</h1>
+<p>Voici votre code de confirmation :</p>
 
-    <p>
-        You signed up as {{ username }} the following email:
-    </p>
+<h1 style="letter-spacing:6px">
+    {{ confirmationCode }}
+</h1>
 
-    <p><code>{{ email.to[0].address }}</code></p>
+<p>
+    Ce code est valable pendant <strong>15 minutes</strong>.
+</p>
 
-    <p>
-        <a href="{{ signedUrl }}">Click here to activate your account</a>
-    </p>
+<p>
+    Si vous n’êtes pas à l’origine de cette demande, ignorez cet email.
+</p>
 
-{% endblock %}
+<p>Salutations!</p>
+
+<div style="margin-top:32px; text-align:center; color:#6B7280; font-size:14px; font-family:Arial, sans-serif;">
+    Assiette idéale © 2025 Copyright
+</div>

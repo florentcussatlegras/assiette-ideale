@@ -7,42 +7,35 @@ use App\Repository\MealRepository;
 use App\Repository\NutrientRepository;
 use Symfony\UX\Chartjs\Model\Chart;
 use App\Service\BalanceSheetFeature;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FoodGroupParentRepository;
+use App\Repository\WeightLogRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/evolution/chart', name: 'app_evolution_chart_')]
 class ChartController extends AbstractController
 {
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index', methods: ['GET'], requirements: ['category' => 'energy|nutrient|weight|fgp'])]
     public function index(Request $request)
     {
-        if($request->query->has('start')) {
+        if ($request->query->has('start')) {
             $start = \DateTime::createFromFormat('Y-m-d', $request->query->get('start'));
-            // $start = $start->format('Y-m-d');
-        }else{
+        } else {
             $start = new \DateTime('-1 day');
         }
 
-        if($request->query->has('end')) {
+        if ($request->query->has('end')) {
             $end = \DateTime::createFromFormat('Y-m-d', $request->query->get('end'));
-            // $end = $end->format('Y-m-d');
-        }else{
+        } else {
             $end = new \DateTime('-1 day');
         }
         $start = $start->format('Y-m-d');
         $end = $end->format('Y-m-d');
-        // $response = $this->forward('App\Controller\Evolution\ChartController::chart'.$request->query->get('category'), [], [
-        //     'start' => $request->query->get('start') ?? null,
-        //     'end' => $request->query->get('end') ?? null,
-        // ]);
 
-        $response = $this->forward('App\Controller\Evolution\ChartController::chart'.$request->query->get('category'), [], [
+        $response = $this->forward('App\Controller\Evolution\ChartController::chart' . $request->query->get('category'), [], [
             'start' => $start,
             'end' => $end,
         ]);
@@ -50,17 +43,18 @@ class ChartController extends AbstractController
         return $response;
     }
 
-    #[Route('/energy', name: 'energy')]
+    #[Route('/energy', name: 'energy', methods: ['GET'])]
     public function chartEnergy(Request $request, ChartBuilderInterface $chartBuilder, MealUtil $mealUtil, BalanceSheetFeature $balanceSheetFeature)
     {
+        /** @var \App\Entity\User|null $user */ 
         $user = $this->getUser();
-      
+
         $start = \DateTime::createFromFormat('Y-m-d', !empty($request->query->get('start')) ? $request->query->get('start') : $user->getRegisterAt());
         $end = \DateTime::createFromFormat('Y-m-d', !empty($request->query->get('end')) ? $request->query->get('end') : date('m/d/Y'));
 
         $meals = $balanceSheetFeature->getMealsForAPeriod($start, $end);
-        if(empty($meals)) {
-            return new Response('Aucun repas trouvés pour cette période');    
+        if (empty($meals)) {
+            return new Response('Aucun repas trouvés pour cette période');
         }
 
         $results = [];
@@ -68,13 +62,13 @@ class ChartController extends AbstractController
         foreach ($meals as $dateDay => $list) {
             $tabDates[] = $dateDay;
             $results[$dateDay] = 0;
-            foreach($list as $meal) {
+            foreach ($list as $meal) {
                 $results[$dateDay] += $mealUtil->getEnergy($meal);
             }
-        }     
-        
+        }
+
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
-    
+
         $chart->setData([
             'labels' => $tabDates,
             'datasets' => [
@@ -83,7 +77,7 @@ class ChartController extends AbstractController
                     'data' => $results,
                 ]
             ],
-        ]);  
+        ]);
 
         return $this->render('evolution/charts/_chart_energy_evolution.html.twig', [
             'chart' => $chart,
@@ -92,7 +86,7 @@ class ChartController extends AbstractController
         ]);
     }
 
-    #[Route('/nutrient', name: 'nutrient')]
+    #[Route('/nutrient', name: 'nutrient', methods: ['GET'])]
     public function chartNutrient(Request $request, ChartBuilderInterface $chartBuilder, NutrientRepository $nutrientRepository, BalanceSheetFeature $balanceSheetFeature, MealUtil $mealUtil)
     {
         $user = $this->getUser();
@@ -101,17 +95,17 @@ class ChartController extends AbstractController
         $end = \DateTime::createFromFormat('Y-m-d', !empty($request->query->get('end')) ? $request->query->get('end') : date('m/d/Y'));
 
         $meals = $balanceSheetFeature->getMealsForAPeriod($start, $end);
-        if(empty($meals)) {
-            return new Response('Aucun repas trouvés pour cette période');    
+        if (empty($meals)) {
+            return new Response('Aucun repas trouvés pour cette période');
         }
 
         foreach ($meals as $dateDay => $list) {
-            $tabDates[] = $dateDay; 
+            $tabDates[] = $dateDay;
             $results['protein'][$dateDay] = 0;
             $results['lipid'][$dateDay] = 0;
             $results['carbohydrate'][$dateDay] = 0;
             $results['sodium'][$dateDay] = 0;
-            foreach($list as $meal) {
+            foreach ($list as $meal) {
                 $nutrientsValues = $mealUtil->getNutrients($meal);
                 $results['protein'][$dateDay] += $nutrientsValues['protein'];
                 $results['lipid'][$dateDay] += $nutrientsValues['lipid'];
@@ -119,8 +113,8 @@ class ChartController extends AbstractController
                 $results['sodium'][$dateDay] += $nutrientsValues['sodium'];
             }
         }
- 
-        foreach($results as $nutrientAlias => $values) {
+
+        foreach ($results as $nutrientAlias => $values) {
             $nutrient = $nutrientRepository->findOneByCode($nutrientAlias);
             $datasets[$nutrientAlias] = [
                 'label' => $nutrient->getName(),
@@ -129,18 +123,17 @@ class ChartController extends AbstractController
                 'data' => array_values($values),
             ];
         }
-  
-        foreach($datasets as $nutrientAlias => $dataset) {
+
+        foreach ($datasets as $nutrientAlias => $dataset) {
             $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
             $chart->setData(
                 [
                     'labels' => $tabDates,
                     'datasets' => [$dataset],
                 ],
-            ); 
-            // ${'chart'.$fgpAlias} = $chart;
+            );
             $charts[$nutrientAlias] = $chart;
-        }    
+        }
 
         return $this->render('evolution/charts/_chart_nutrient_evolution.html.twig', [
             'charts' => $charts,
@@ -149,38 +142,53 @@ class ChartController extends AbstractController
         ]);
     }
 
-    #[Route('/weight', name: 'weight')]
-    public function chartWeight(Request $request, ChartBuilderInterface $chartBuilder)
-    {
+    #[Route('/weight', name: 'weight', methods: ['GET'])]
+    public function chartWeight(
+        Request $request,
+        ChartBuilderInterface $chartBuilder,
+        WeightLogRepository $weightLogRepository
+    ) {
+        /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
 
-        if(empty($user->getWeightEvolution())) {
-            return new Response('<span class="text-center">Vous n\'avez archivé aucune valeur de poids sur cette période</span>');
-        }
+        $start = null;
+        $end = null;
 
-        if($request->query->has('start') && $request->query->has('end') && !empty($request->query->get('start')) && !empty($request->query->get('end'))) {
-
+        // 1️⃣ Récupération des logs selon présence des filtres
+        if (
+            $request->query->has('start') &&
+            $request->query->has('end') &&
+            !empty($request->query->get('start')) &&
+            !empty($request->query->get('end'))
+        ) {
             $start = \DateTime::createFromFormat('Y-m-d', $request->query->get('start'));
             $end = \DateTime::createFromFormat('Y-m-d', $request->query->get('end'));
 
-            $datas = array_filter($user->getWeightEvolution(), function($date) use ($start, $end) {
-                $date = \DateTime::createFromFormat('y-m-d', $date);
-                return ($date->diff($start)->format('%R%a') <= 0 && $date->diff($end)->format('%R%a') >= 0);
-            }, ARRAY_FILTER_USE_KEY);
-
-            $dates = array_keys($datas);
-            $weights = array_values($datas);
-
-        }else{
+            $logs = $weightLogRepository->findByUserBetweenDates($user, $start, $end);
+        } else {
+            $logs = $weightLogRepository->findByUserOrdered($user);
 
             $start = $user->getRegisterAt();
-            $end = date('m/d/Y');
-
-            $dates = array_keys($user->getWeightEvolution());
-            $weights = array_values($user->getWeightEvolution());
-
+            $end = new \DateTime();
         }
-    
+
+        // 2️⃣ Vérification si aucun log
+        if (empty($logs)) {
+            return new Response(
+                '<span class="text-center">Vous n\'avez archivé aucune valeur de poids sur cette période</span>'
+            );
+        }
+
+        // 3️⃣ Transformation des données pour le graphique
+        $dates = [];
+        $weights = [];
+
+        foreach ($logs as $log) {
+            $dates[] = $log->getCreatedAt()->format('d/m/Y');
+            $weights[] = $log->getWeight();
+        }
+
+        // 4️⃣ Création du graphique
         $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
 
         $chart->setData([
@@ -191,7 +199,7 @@ class ChartController extends AbstractController
                     'data' => $weights,
                 ]
             ],
-        ]);      
+        ]);
 
         return $this->render('evolution/charts/_chart_weight_evolution.html.twig', [
             'chart' => $chart,
@@ -200,7 +208,7 @@ class ChartController extends AbstractController
         ]);
     }
 
-    #[Route('/fgp/{start?}/{end?}', name: 'fgp')]
+    #[Route('/fgp/{start?}/{end?}', name: 'fgp', methods: ['GET'], requirements: ['start' => '\d{4}-\d{2}-\d{2}', 'end'   => '\d{4}-\d{2}-\d{2}'])]
     public function chartFgp(Request $request, ChartBuilderInterface $chartBuilder, BalanceSheetFeature $balanceSheetFeature, MealRepository $mealRepository, FoodGroupParentRepository $foodGroupParentRepository, MealUtil $mealUtil, ?string $start, ?string $end)
     {
         $user = $this->getUser();
@@ -209,27 +217,27 @@ class ChartController extends AbstractController
         $end = \DateTime::createFromFormat('Y-m-d', !empty($request->query->get('end')) ? $request->query->get('end') : date('m/d/Y'));
 
         $meals = $balanceSheetFeature->getMealsForAPeriod($start, $end);
-        if(empty($meals)) {
-            return new Response('Aucun repas trouvés pour cette période');    
+        if (empty($meals)) {
+            return new Response('Aucun repas trouvés pour cette période');
         }
 
         $results = [];
 
         foreach ($meals as $dateDay => $list) {
-            $tabDates[] = $dateDay; 
-            foreach($foodGroupParentRepository->findAll() as $fgp) {
+            $tabDates[] = $dateDay;
+            foreach ($foodGroupParentRepository->findAll() as $fgp) {
                 $results[$fgp->getAlias()][$dateDay] = 0;
             }
-            foreach($list as $meal) {
+            foreach ($list as $meal) {
                 $fgpValues = $mealUtil->getFoodGroupParents($meal);
 
-                foreach($fgpValues as $fgpAlias => $value) {
+                foreach ($fgpValues as $fgpAlias => $value) {
                     $results[$fgpAlias][$dateDay] += $value;
                 }
             }
         }
- 
-        foreach($results as $fgpAlias => $values) {
+
+        foreach ($results as $fgpAlias => $values) {
             $fgp = $foodGroupParentRepository->findOneByAlias($fgpAlias);
             $datasets[$fgpAlias] = [
                 'label' => $fgp->getName(),
@@ -238,18 +246,18 @@ class ChartController extends AbstractController
                 'data' => array_values($values),
             ];
         }
-  
-        foreach($datasets as $fgpAlias => $dataset) {
+
+        foreach ($datasets as $fgpAlias => $dataset) {
             $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
             $chart->setData(
                 [
                     'labels' => $tabDates,
                     'datasets' => [$dataset],
                 ],
-            ); 
+            );
             $charts[$fgpAlias] = $chart;
         }
-        
+
         return $this->render('evolution/charts/_chart_fgp_evolution.html.twig', [
             'charts' => $charts,
             'start' => $start,

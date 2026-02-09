@@ -3,68 +3,35 @@ import Swal from "sweetalert2";
 
 export default class extends Controller {
   static values = {
-    url: String,
+    urlList: String,
+    urlListModal: String,
     urlRemove: String,
   };
-  static targets = ["content", "background", "container"];
+  static targets = ["content", "modalContent", "background", "container", "search", "types", "sort", "loader", "chooseButton"];
 
   connect() {
     console.log("connect to model meal controller");
+
+    this.filters = {
+      minCalories: null,
+      maxCalories: null,
+    };
   }
 
   async show(event) {
-    this.url = event.currentTarget.dataset.url;
-    console.log("je suis ici");
-    console.log(this.url);
-    this.urlRedirect = event.currentTarget.dataset.urlRedirect;
+    if (!this.hasModalContentTarget) {
+      return;
+    }
 
-    // const rankMeal = event.currentTarget.dataset.rankMeal;
+    const target = this.modalContentTarget;
 
-    // if(rankMeal !== "none") {
+    target.innerHTML = '<div class="loader"></div>';
 
-    //     const lastMealElement = document.getElementById('meal-' + rankMeal);
+    const response = await fetch(this.urlListModalValue, {
+      headers: { "X-Requested-With": "XMLHttpRequest" }
+    });
 
-    //     // On vérifie que le dernier repas a bien un type
-    //     const types = lastMealElement.getElementsByClassName('type-meal');
-    //     let typeChecked = false;
-
-    //     Array.from(types).forEach((element) => {
-    //         if(element.checked == true) {
-    //             typeChecked = true;
-    //         }
-    //     });
-
-    //     if(typeChecked == false) {
-    //         Swal.fire({
-    //             title: "Ouch!",
-    //             text: "Vous n'avez pas précisé de type pour votre dernier repas",
-    //             icon: "warning"
-    //         })
-
-    //         return;
-    //     }
-
-    //     // On vérifie que le dernier repas contient bien des plats/aliments
-    //     const dishes = lastMealElement.getElementsByClassName('row-dish');
-    //     if (dishes.length === 0 ) {
-    //         Swal.fire({
-    //             title: "Ouch!",
-    //             text: "Vous n'avez pas saisis de plats pour votre dernier repas",
-    //             icon: "warning"
-    //         })
-
-    //         return;
-    //     }
-    // }
-
-    const target = this.hasContentTarget ? this.contentTarget : this.element;
-
-    // document.getElementById('model-meal').classList.replace('hidden', 'flex');
-
-    target.style.opacity = 0.5;
-    const response = await fetch(this.urlValue);
     target.innerHTML = await response.text();
-    target.style.opacity = 1;
   }
 
   async onRemoveMeal(event) {
@@ -113,23 +80,85 @@ export default class extends Controller {
           this.contentTarget.innerHTML = html;
         }
       } catch (error) {
-        console.error(error);
         alert("Impossible de supprimer le repas, veuillez réessayer.");
-      }
+      } 
     });
 
   }
 
-  // hideMeals() {
-  //     document.getElementById('model-meal').classList.replace('flex', 'hidden');
-  // }
+  onCaloriesChange(event) {
+    this.filters.minCalories = event.detail.min;
+    this.filters.maxCalories = event.detail.max;
+    this.applyFilters();
+  }
 
-  // async refreshContent(event) {
-  //     const target = this.hasContentTarget ? this.contentTarget : this.element;
+  async applyFilters() {
+    const params = new URLSearchParams();
 
-  //     target.style.opacity = .5;
-  //     const response = await fetch(this.urlValue);
-  //     target.innerHTML = await response.text();
-  //     target.style.opacity = 1;
-  // }
+    // calories
+    if (this.filters.minCalories !== null) {
+      params.append("minCalories", this.filters.minCalories);
+    }
+    if (this.filters.maxCalories !== null) {
+      params.append("maxCalories", this.filters.maxCalories);
+    }
+
+    // recherche texte
+    if (this.hasSearchTarget && this.searchTarget.value.trim() !== "") {
+      params.append("search", this.searchTarget.value.trim());
+    }
+
+    // types
+    const selectedTypes = this.typesTargets
+      .filter(input => input.checked)
+      .map(input => input.value);
+
+    selectedTypes.forEach(type =>
+      params.append("types[]", type)
+    );
+
+    // tri
+    if (this.hasSortTarget) {
+      params.append("sort", this.sortTarget.value);
+    }
+
+    // 🔄 AJAX
+    this.loaderTarget.classList.remove("hidden");
+    this.contentTarget.classList.add("hidden");
+    this.contentTarget.style.opacity = 0.5;
+
+    try {
+
+      this.disableButton();
+
+      const response = await fetch(`${this.urlListValue}?${params.toString()}`, {
+        headers: { "X-Requested-With": "XMLHttpRequest" },
+      });
+      const html = await response.text();
+      this.contentTarget.innerHTML = html;
+
+    } catch (e) {
+
+      console.error(e);
+      this.contentTarget.innerHTML = "<p>Erreur lors du filtrage.</p>";
+
+    } finally {
+
+      this.loaderTarget.classList.add("hidden");
+      this.contentTarget.classList.remove("hidden");
+      this.contentTarget.style.opacity = 1;
+
+    }
+
+  }
+
+  disableButton() {
+    this.chooseButtonTarget.disabled = true;
+    this.chooseButtonTarget.classList.add("opacity-50", "cursor-not-allowed");
+    this.chooseButtonTarget.classList.remove("hover:bg-sky-700");
+
+    // this.removeButtonTarget.disabled = false;
+    // this.removeButtonTarget.classList.add("opacity-30", "cursor-not-allowed");
+    // this.removeButtonTarget.classList.remove("hover:bg-red-900");
+  }
 }

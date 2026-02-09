@@ -5,27 +5,18 @@ namespace App\Controller\meal;
 use App\Repository\FoodGroupParentRepository;
 use App\Repository\TypeMealRepository;
 use App\Repository\MealRepository;
-use App\Entity\Dish;
-use App\Entity\Food;
 use App\Entity\Meal;
 use App\Entity\TypeMeal;
-use App\Entity\MealModel;
 use App\Service\DishUtil;
-use App\Service\FoodUtil;
 use App\Service\MealUtil;
-use App\Entity\UnitMeasure;
 use App\Service\MenuFeature;
 use App\Service\AlertFeature;
 use App\Service\BalanceSheetFeature;
 use App\Service\WeekAlertFeature;
 use App\Service\QuantityTreatment;
-use App\Entity\RecommendedQuantity;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\FoodGroup\FoodGroupParent;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -33,8 +24,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 #[Route('/mes-menus')]
 class MenuController extends AbstractController
 {
-	#[Route('/add', name: 'menu_add', options: ['expose' => true])]
-	public function add(Request $request, EntityManagerInterface $manager, WeekAlertFeature $weekAlertFeature)
+	#[Route('/add', name: 'menu_add', options: ['expose' => true], methods: ['GET', 'POST'])]
+	public function add(Request $request, EntityManagerInterface $manager, WeekAlertFeature $weekAlertFeature, AlertFeature $alertFeature)
 	{
 		$session = $request->getSession();
 
@@ -66,9 +57,11 @@ class MenuController extends AbstractController
 				}
 
 				$meal = new Meal('nom', $n, $mealDayDate, $session->get('_meal_day_' . $n)['dishAndFoods'], $typeMeal, $this->getUser(), $alertOnDishes, $alertOnFoods);
+				
 				if($session->has('_meal_day_alerts/_final_list')) {
 					$meal->setAlertsAllMealsDay($session->get('_meal_day_alerts/_final_list'));
 				}
+
 				$meal->setEnergyAllMealsDay($session->get('_meal_day_energy'));
 				$meal->setListFgpAllMealsDay($session->get('_meal_day/_list_fgp'));
 				$meal->setListFgpRemainingAbsentAllMealsDay($session->get('_meal_day/_list_fgp_remaining_absent'));
@@ -86,19 +79,16 @@ class MenuController extends AbstractController
 		]);
 	}
 
-	#[Route('/week', name: 'menu_week_menu')]
+	#[Route('/week', name: 'menu_week_menu', methods: ['GET'])]
 	public function week(Request $request, QuantityTreatment $quantityTreatment, WeekAlertFeature $weekAlertFeature, TypeMealRepository $typeMealRepository, BalanceSheetFeature $balanceSheetFeature)
 	{
-		// dd($request->getSession()->all());
 		$startingDate = $request->query->get('startingDate');
-		// dd($quantityTreatment->getMealsPerDay());
 
 		$mealsPerDay = $quantityTreatment->getMealsPerDay($startingDate);
 		
 		$energyTotalPerDays = [];
 		$averageDailyNutrientPerDays = [];
 		foreach($mealsPerDay as $day => $mealsOfTheDayPerType) {
-			// $averageDailyNutrientPerDays[$day] = $balanceSheetFeature->averageDailyNutrientForAPeriod($day, $day);
 			foreach($mealsOfTheDayPerType as $typeMeal => $meals) {
 				if(!empty($meals)) {
 					$energyTotalPerDays[$day] = $meals[0]->getEnergyAllMealsDay();
@@ -137,12 +127,11 @@ class MenuController extends AbstractController
            "quantitiesConsumed" => $quantityTreatment->getQuantitiesConsumedOnWeek($startingDate),
 				    "typeMeals" => $typeMealRepository->findAll(),
 	       "energyTotalPerDays" => $energyTotalPerDays,
-//   "averageDailyNutrientPerDays" => $averageDailyNutrientPerDays,
 			    ]
 		    );
 	}
 
-	#[Route('/get/{date}', name: 'menu_week_get_meals')]
+	#[Route('/get/{date}', name: 'menu_week_get_meals', methods: ['GET'], requirements: ['date' => '\d{4}-\d{2}-\d{2}'])]
 	public function getMeals(Request $request, EntityManagerInterface $manager, MealUtil $mealUtil, BalanceSheetFeature $balanceSheetFeature, AlertFeature $alertFeature, $date = null)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -188,8 +177,7 @@ class MenuController extends AbstractController
 		return $this->redirectToRoute('meal_day');
 	}
 
-
-	#[Route('/get/{id}/{date}', name: 'menu_get_by_date_and_type')]
+	#[Route('/get/{id}/{date}', name: 'menu_get_by_date_and_type', methods: ['GET'], requirements: ['id' => '\d+','date' => '\d{4}-\d{2}-\d{2}'])]
 	public function getMeal(Request $request, EntityManagerInterface $manager, TypeMealRepository $typeMealRepository, MealRepository $mealRepository, MealUtil $mealUtil, TypeMeal $typeMealToAdd, string $date)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
@@ -219,37 +207,12 @@ class MenuController extends AbstractController
 			}
 		}
 		$session->set('_meal_day_range', $range - 1);
-		// dd($request->getSession()->all());
-
-		// foreach($typeMeals as $type) {
-		// 	if( null !== $meal = $mealRepository->findOneBy([
-		// 			'eatedAt' => $date,
-		// 			'user' => $this->getUser(),
-		// 			'type' => $type,
-		// 		])) 
-		// 	{
-		// 		dump($meal);
-		// 		// if($typeMeal == $type) {
-		// 		// 	$session->set('_meal_day_' . $range, ['type' => $typeMeal->getBackName(), 'dishAndFoods' => []]);
-		// 		// }else{
-		// 		$session->set('_meal_day_' . $meal->getRankView(), ['type' => $meal->getType()->getBackName(), 'dishAndFoods' => $meal->getDishAndFoods()]);
-		// 		$session->set('_meal_day_range', (int)$meal->getRankView());
-		// 		// // }
-		// 		// $range++;
-		// 	}
-		// }
-
-		
-		// $session->set('_meal_day_0', ['type' => $typeMeal->getBackName(), 'dishAndFoods' => []]);
-
-
 		$session->set('_meal_day_date', $date);
 
 		return $this->redirectToRoute('meal_day');
 	}
 
-
-	#[Route('/remove/{date}/{id?}', name: 'menu_week_remove_meals')]
+	#[Route('/remove/{date}/{id?}', name: 'menu_week_remove_meals', methods: ['GET', 'POST'], requirements: ['date' => '\d{4}-\d{2}-\d{2}', 'id' => '\d+'])]
 	public function removeMeals(?TypeMeal $typeMeal, Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage, MealUtil $mealUtil, string $date)
 	{
 		$mealUtil->removeMealsSession();
@@ -289,7 +252,7 @@ class MenuController extends AbstractController
 		return $this->redirectToRoute('meal_day');
 	}
 
-	 #[Route('/listfgp/{meals}', name: 'menu_week_list_fgp')]
+	 #[Route('/listfgp/{meals}', name: 'menu_week_list_fgp', methods: ['GET'])]
 	public function getListFgpMeals(Request $request, MealUtil $mealUtil, FoodGroupParentRepository $foodGroupParentRepository, EntityManagerInterface $manager, $meals)
 	{
 		$listFgp = [];
@@ -328,7 +291,7 @@ class MenuController extends AbstractController
 		);
 	}
 
-	#[Route('/listfgp/{id}', name: 'menu_week_meal_list_fgp')]
+	#[Route('/listfgp/{id}', name: 'menu_week_meal_list_fgp', methods: ['GET'], requirements: ['id' => '\d+'])]
 	public function getListFgpMeal(Request $request, MealUtil $mealUtil, FoodGroupParentRepository $foodGroupParentRepository, EntityManagerInterface $manager, Meal $meal, int $sizeTabletColorFgp = 5)
 	{
 		return $this->render("meals/partials/_list_fgp.html.twig", 
@@ -340,7 +303,7 @@ class MenuController extends AbstractController
 		);
 	}
 
-	 #[Route('/adviced-menu/{date}', name: 'menu_week_adviced_menu')]
+	 #[Route('/adviced-menu/{date}', name: 'menu_week_adviced_menu', methods: ['GET'], requirements: ['date' => '\d{4}-\d{2}-\d{2}'])]
 	public function getAdvicedMenu(Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage, QuantityTreatment $quantityTreatment, DishUtil $dishUtil, MenuFeature $menuFeature, $date)
 	{
 		$user = $tokenStorage->getToken()->getUser();
@@ -454,7 +417,7 @@ class MenuController extends AbstractController
 	  	return $this->redirectToRoute('menu_week_menu');
 	}
 
-	 #[Route('/adviced-menu/cancel/{date}', name: 'menu_week_adviced_menu_cancel')]
+	 #[Route('/adviced-menu/cancel/{date}', name: 'menu_week_adviced_menu_cancel', methods: ['POST'], requirements: ['date' => '\d{4}-\d{2}-\d{2}'])]
 	public function cancelAdvicedMenu(Request $request, $date)
 	{
 		$request->getSession()->remove('_meal_' . $date);
@@ -462,7 +425,7 @@ class MenuController extends AbstractController
 		return $this->redirectToRoute('menu_week_menu');
 	}
 
-	 #[Route('/adviced-menu/save/{date}', name: 'menu_week_adviced_menu_save')]
+	 #[Route('/adviced-menu/save/{date}', name: 'menu_week_adviced_menu_save', methods: ['POST'], requirements: ['date' => '\d{4}-\d{2}-\d{2}'])]
 	public function saveAdvicedMenu(Request $request, EntityManagerInterface $manager, TokenStorageInterface $tokenStorage, $date)
 	{
 		$user = $tokenStorage->getToken()->getUser();
@@ -486,22 +449,19 @@ class MenuController extends AbstractController
 		return $this->redirectToRoute('menu_week_menu');
 	}
 
-	#[Route('/meals-energy/{energyMeals}', name: 'menu_meals_show_total_energy')]
+	#[Route('/meals-energy/{energyMeals}', name: 'menu_meals_show_total_energy', methods: ['GET'], requirements: ['energyMeals' => '\d+(\.\d+)?'])]
 	public function mealsEnergy(Request $request, AlertFeature $alertFeature, $energyMeals)
 	{
 		$session = $request->getSession();
-	
-		// $mealDayEnergy = $energyMeals;
-		// $remainingMealDayEnergy = abs(round($this->getUser()->getEnergy() - $mealDayEnergy));
 
 		return $this->render('meals/week/_show_total_energy.html.twig', [
 			         'mealDayEnergy' => $energyMeals,
-			// 'remainingMealDayEnergy' => $remainingMealDayEnergy,
 			'alert' => $alertFeature->isWellBalanced($energyMeals, $this->getUser()->getEnergy()),
 			'sizeIcon' => $request->query->get('sizeIcon'),
 			'fromMenuWeek' => $request->query->has('fromMenuWeek') ? true : false,
 			'page' => 'menu_detail',
 			'bgColor' => $request->query->get('bgColor', 'light-blue'),
+			'showDetails' => $request->query->get('showDetails', false),
 		]);
 	}
 }
