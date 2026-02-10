@@ -25,9 +25,7 @@ export default class extends Controller {
     }
 
     loadTrackingScripts() {
-        // Ici tu mets le code qui charge Google Analytics, etc.
-
-        console.log("Cookies acceptés → chargement des scripts");
+        console.log("Cookies acceptés");
     }
     
 }
