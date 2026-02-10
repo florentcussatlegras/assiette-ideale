@@ -8,34 +8,20 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory:
-            memory:
-                users:
-                    florent_admin : { password: 1234, roles: 'ROLE_ADMIN' }
-                    florent_user: { password: 1234, roles: 'ROLE_USER' }
+        # users_in_memory:
+        #     memory:
+        #         users:
+        #             florent_admin : { password: 1234, roles: 'ROLE_ADMIN' }
+        #             florent_user: { password: 1234, roles: 'ROLE_USER' }
 
         user_provider:
             entity:
                 class: App\Entity\User
 
-        # app_user_provider:
-        #     id: App\Security\UserProvider
-
-        # all_users:
-        #     chain:
-        #         providers: ['users_in_memory', 'user_provider', 'app_user_provider']
-
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-
-        api:
-            pattern: ^/api
-            custom_authenticators:
-                - App\Security\Authenticator\ApiKeyAuthenticator
-            # entry_point: App\Security\ApiAuthenticationEntryPoint
-            provider: user_provider
 
         main:
             lazy: true
@@ -44,16 +30,8 @@ security:
             
             provider: user_provider
 
-            # stateless: true
-            
-            # access_denied_handler: App\Security\AccessDeniedHandler
-
             custom_authenticators:
                 - App\Security\Authenticator\SocialAuthenticator
-            #     - App\Security\Authenticator\ApiKeyAuthenticator
-            # entry_point: App\Security\AuthenticationEntryPoint
-            # entry_point: App\Security\Authenticator\LoginFormAuthenticator
-
               
             remember_me:
                 name: REMEMBERME #nom du cookie
@@ -65,34 +43,18 @@ security:
                 check_path: app_login
                 username_parameter: usernameOrEmail
                 password_parameter: password
-                # default_target_path: /dashboard
-                # always_use_default_target_path: true
                 use_referer: true
                 enable_csrf: true
-
-                # target_path_parameter: go_to
-                # failure_path_parameter: back_to
 
             logout:
                 path: app_logout
                 target: app_homepage
-                # csrf_parameter: _csrf_token_toto
-                # csrf_token_id: authenticate2
                 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-
-        # form:
-        #     pattern: '^/form'
-
-        #     provider: user_provider
-
-        #     form_login:
-        #         login_path: app_login
-        #         check_path: app_login
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
