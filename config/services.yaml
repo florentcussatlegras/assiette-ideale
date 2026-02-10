@@ -15,7 +15,13 @@ parameters:
     asset.request_context.secure: false
     default_admin_email: florent.cussatlegras@gmail.com
     json_subject_contact: subject-contact.json
-    routes_without_header_nav: '%env(default::csv:ROUTES_WITHOUT_HEADER_NAV)%'
+    routes_without_header_nav:
+        - app_login
+        - app_register
+        - app_forgot_password_request
+        - app_verify_resend_email
+        - app_check_email
+        - app_confirmation_code
 
 services:
     # default configuration for services in *this* file
