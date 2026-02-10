@@ -37,7 +37,7 @@
 
 				<a 
 					class="text-sm font-semibold tracking-tight text-sky-600 hover:text-sky-700 transition duration-300"
-					style="line-height: 10px"
+					style="line-height: 13px"
 					{% if instanceOf(element, 'App\\Entity\\Dish') %}
 						href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}"
 					{% else %}
@@ -48,7 +48,7 @@
 					{{ element.name }}
 				</a>
 
-				<span class="text-xs text-gray-600">
+				<span class="text-xs text-neutral-500">
 					{{ item['quantity'] }} 
 					{% if item['type'] == 'Dish' %}portion{{ item['quantity'] > 1 ? "s" : ""}}{% else %}{{ item['unitMeasureAlias'] }}{% endif %}
 				</span>

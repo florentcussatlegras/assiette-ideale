@@ -18,7 +18,12 @@
                     <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
                 {% endif %}
                 <div class="flex flex-col leading-4">
-                    <a href="" class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm">{{ element.name }}</a>
+                    <a 
+                        href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}" 
+                        class="text-sky-600 hover:text-sky-700 font-semibold transition duration-300 text-sm tracking-tight"
+                    >
+                        {{ element.name }}
+                    </a>
                     <div class="text-neutral-500 text-xs">
                         {{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}
                     </div>
@@ -36,7 +41,12 @@
                         <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
                     {% endif %}
                     <div class="flex flex-col leading-4 mt-1">
-                        <a href="" class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm">{{ element.name }}</a>
+                        <a 
+                            href="{{ path('app_food_show', { slug: element.slug }) }}" 
+                            class="text-sky-600 hover:text-sky-700 font-semi-bold transition duration-300 text-sm tracking-tight"
+                        >
+                            {{ element.name }}
+                        </a>
                         <span class="text-xs text-neutral-500">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}</span>
                     </div>
                 </div>

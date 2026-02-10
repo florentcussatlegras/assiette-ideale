@@ -48,4 +48,5 @@ when@prod:
             enabled: true
             debug: true
             trace_level: full
+        profiler: { enabled: false }
             
