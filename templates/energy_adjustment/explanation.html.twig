@@ -13,19 +13,19 @@
 		{% set isLack = imcAlert.isLack() %}
 		{% set isWell = imcAlert.isWell() %}
 
-		<h1 class="text-2xl md:text-4xl mb-0 font-bold">
-			{% if isExcess %}
-				Réduction des apports caloriques
-			{% elseif isLack %}
-				Augmentation des apports caloriques
-			{% else %}
-				Maintien de l’équilibre calorique
-			{% endif %}
-		</h1>
+		{% if isExcess %}
+			{% set title = "Réduction des apports caloriques" %}
+		{% elseif isLack %}
+			{% set title = "Augmentation des apports caloriques" %}
+		{% else %}
+			{% set title = "Maintien de l’équilibre calorique" %}
+		{% endif %}
 
-		<div class="flex flex-col items-start mt-8 p-8 mx-auto max-w-4xl bg-white shadow-soft rounded-2xl gap-4 relative">
+		{{ include('navigation/_header_page.html.twig') }}
 
-			<p class="text-lg" style="color: {{ imcAlert.color }}">
+		<div class="flex flex-col items-start mt-8 p-8 mx-auto max-w-4xl bg-white shadow-lg rounded-xl gap-4 relative">
+
+			<p class="text-2xl" style="color: {{ imcAlert.color }}">
 				Votre IMC actuel est de
 				<span class="font-semibold">{{ app.user.imc|round }}</span>
 				pour un IMC recommandé de
@@ -44,13 +44,13 @@
 						|raw
 					}}
 				{% else %}
-					{{ imcMessage.explanationWithoutDiet|nl2br }}
+					{{ imcMessage.explanationWithoutDiet|raw|nl2br }}
 				{% endif %}
 			</p>
 
 			{% if app.user.isWeightGoalActive %}
 
-				<div class="flex justify-end w-full mt-4">
+				<div class="flex justify-end w-full mt-2">
 					{# <a href="{{ path('app_energy_adjustment_remove') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow"> #}
 					<a href="{{ path('app_energy_adjustment_stop') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow">
 						Annuler le suivi
@@ -76,6 +76,9 @@
 				</p>
 
 				<div class="flex justify-end w-full mt-4">
+					<a href="{{ path('app_dashboard_index') }}" class="text-sky-600 hover:text-sky-700 font-semibold py-4 px-6 transition duration-300">
+						Revenir à mon espace
+					</a>
 					<a href="{{ path('app_energy_adjustment_accept') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow">
 						J’ai compris et j’accepte
 					</a>

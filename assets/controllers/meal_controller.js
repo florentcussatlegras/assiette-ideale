@@ -238,6 +238,7 @@ export default class extends Controller {
             this.selectAllDishesTargets[parseInt(rankMeal)].checked = false;
         }
 
+        
     }
 
     selectAllDishes(event) {
@@ -306,35 +307,79 @@ export default class extends Controller {
     }
 
     selectMeal(event) {
-        var displayBtnRemoveSelection = false;
-        this.selectMealTargets.forEach((element) => {
-            if(element.checked == true) {
-                displayBtnRemoveSelection = true;
-            }
-        });
+        // var displayBtnRemoveSelection = false;
+        // this.selectMealTargets.forEach((element) => {
+        //     if(element.checked == true) {
+        //         displayBtnRemoveSelection = true;
+        //     }
+        // });
 
-        if(displayBtnRemoveSelection == true) {
-            this.btnRemoveMealSelectionTarget.classList.remove('hidden');
-        }else{
-            this.btnRemoveMealSelectionTarget.classList.add('hidden');
-            this.selectAllMealsTarget.checked = false;
-        }
+        // if(displayBtnRemoveSelection == true) {
+        //     this.btnRemoveMealSelectionTarget.classList.remove('hidden');
+        // }else{
+        //     this.btnRemoveMealSelectionTarget.classList.add('hidden');
+        //     this.selectAllMealsTarget.checked = false;
+        // }
+
+        // On vérifie si au moins un meal est coché
+    const anyChecked = this.selectMealTargets.some(el => el.checked);
+    
+    // Affiche ou cache le bouton de suppression
+    if (anyChecked) {
+        this.btnRemoveMealSelectionTarget.classList.remove('hidden');
+    } else {
+        this.btnRemoveMealSelectionTarget.classList.add('hidden');
+        // Décoche toutes les "select all" si aucun meal n'est sélectionné
+        this.selectAllMealsTargets.forEach(el => el.checked = false);
     }
 
-    selectAllMeals(event) {
-        if(event.currentTarget.checked == true) {
-            this.btnRemoveMealSelectionTarget.classList.remove('hidden');
-        }else{
-            this.btnRemoveMealSelectionTarget.classList.add('hidden');
-        }
+    // Synchronise la checkbox "tous" : si tout est coché -> cochée, sinon décochée
+    const allChecked = this.selectMealTargets.every(el => el.checked);
+    this.selectAllMealsTargets.forEach(el => el.checked = allChecked);
+        
+    }
 
-        this.selectMealTargets.forEach((element) => {
-            if(event.currentTarget.checked == true) {
-                element.checked = true;
-            } else {
-                element.checked = false;
-            }
-        });
+    testToggleSelectAll() {
+        console.log("test toggle select all");
+        console.log(this.selectAllMealsTarget);
+        this.selectAllMealsTarget.checked = true;
+    }
+
+    forceCheck() {
+        alert("Je tente de cocher");
+        this.selectAllMealsTarget.checked = true;
+    }
+
+
+    selectAllMeals(event) {
+        // if(event.currentTarget.checked == true) {
+        //     this.btnRemoveMealSelectionTarget.classList.remove('hidden');
+        // }else{
+        //     this.btnRemoveMealSelectionTarget.classList.add('hidden');
+        // }
+
+        // this.selectMealTargets.forEach((element) => {
+        //     if(event.currentTarget.checked == true) {
+        //         element.checked = true;
+        //     } else {
+        //         element.checked = false;
+        //     }
+        // });
+
+        const checked = event.currentTarget.checked;
+
+    // Coche ou décoche tous les meals
+    this.selectMealTargets.forEach(el => el.checked = checked);
+
+    // Affiche ou cache le bouton de suppression
+    if (checked) {
+        this.btnRemoveMealSelectionTarget.classList.remove('hidden');
+    } else {
+        this.btnRemoveMealSelectionTarget.classList.add('hidden');
+    }
+
+    // Synchronise toutes les checkboxes "select all" avec celle qui a déclenché l'événement
+    this.selectAllMealsTargets.forEach(el => el.checked = checked);
     }
 
     onRemoveMealSelection(event) {

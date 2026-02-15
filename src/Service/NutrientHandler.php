@@ -1,10 +1,8 @@
 <?php
 namespace App\Service;
 
-use App\Repository\NutrientRepository;
-use App\Entity\NutrientRecommendationUser;
 use Symfony\Component\Security\Core\Security;
-
+use App\Service\EnergyHandler;
 
 class NutrientHandler
 {
@@ -14,8 +12,8 @@ class NutrientHandler
     const SODIUM = 'sodium';
 
     public function __construct(
-        private NutrientRepository $nutrientRepository,
-        private Security $security
+        private Security $security,
+        private EnergyHandler $energyHandler,
     ){}
 
     public function getRecommendations()
@@ -23,28 +21,38 @@ class NutrientHandler
         return $this->calculateRecommendations();
     }
 
-    private function calculateRecommendations()
+    private function calculateRecommendations(): array
     {
+        /** @var App\Entity\User $user */
         $user = $this->security->getUser();
-        // $recommendations = [];
 
-        // foreach($this->nutrientRepository->findAll() as $nutrient) {
-        //     $nutrientRecommendationUser = new NutrientRecommendationUser();
-        //     $nutrientRecommendationUser->setUser($user);
-        //     $nutrientRecommendationUser->setNutrient($nutrient);
+        $energy = $this->energyHandler->evaluateEnergy($user);
 
-        //     // ALGORITHME DE CALCUL DES QUANTITES RECOMMENDEES A ECRIRE
-        //     $nutrientRecommendationUser->setRecommendedQuantity(165);
+        $weight = $user->getWeight();
+        $activity = $user->getPhysicalActivity();
 
-        //     $recommendations[] = $nutrientRecommendationUser;
-        // };
+        // 1️⃣ Protéines
+        $proteinPerKg = match(true) {
+            $activity <= 1.0 => 0.9,
+            $activity <= 1.2 => 1.1,
+            default => 1.3,
+        };
 
-        // ALGO CALCUL DES RECOMMENDATIONS EN FONCTION DES DONNEES DE L'UTILISATEUR A ECRIRE !!
-        $recommendations[self::PROTEIN] = 165;
-        $recommendations[self::LIPID] = 165;
-        $recommendations[self::CARBOHYDRATE] = 165;
-        $recommendations[self::SODIUM] = 2;
+        $proteinGrams = $weight * $proteinPerKg;
+        $proteinKcal = $proteinGrams * 4;
 
-        return $recommendations;
+        // 2️⃣ Lipides (30%)
+        $fatKcal = $energy * 0.30;
+        $fatGrams = $fatKcal / 9;
+
+        // 3️⃣ Glucides = reste
+        $carbKcal = $energy - ($proteinKcal + $fatKcal);
+        $carbGrams = $carbKcal / 4;
+
+        return [
+            'protein_g' => round($proteinGrams),
+            'fat_g' => round($fatGrams),
+            'carb_g' => round($carbGrams),
+        ];
     }
 }

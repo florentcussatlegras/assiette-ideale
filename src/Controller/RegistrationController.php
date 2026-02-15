@@ -32,7 +32,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'], defaults: ['no_header' => true])]
     public function register(Request $request, EntityManagerInterface $manager, UserPasswordHasherInterface $passwordHasher, MailerInterface $mailer, LoggerInterface $logger)
     {
         if ($this->isGranted('IS_AUTHENTICATED_REMEMBERED'))
@@ -164,7 +164,7 @@ class RegistrationController extends AbstractController
         return $response;
     }
 
-    #[Route('/verify/resend/{id}', name: 'app_verify_resend_email', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/verify/resend/{id}', name: 'app_verify_resend_email', methods: ['GET', 'POST'], requirements: ['id' => '\d+'], defaults: ['no_header' => true])]
     public function resendVerifyEmail(User $user, Request $request, UserRepository $userRepository, VerifyEmailHelperInterface $verifyEmailHelper)
     {
         if (!$user) {

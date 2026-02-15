@@ -29,6 +29,19 @@ class LevelAlert
     public const BALANCE_VERY_EXCESS = 'balance_very_excess';
     public const BALANCE_CRITICAL_EXCESS = 'balance_critical_excess';
 
+    // Regroupements par catégorie
+    public const LOW_ALERTS = [
+        self::BALANCE_LACK,
+        self::BALANCE_VERY_LACK,
+        self::BALANCE_CRITICAL_LACK,
+    ];
+
+    public const HIGH_ALERTS = [
+        self::BALANCE_EXCESS,
+        self::BALANCE_VERY_EXCESS,
+        self::BALANCE_CRITICAL_EXCESS,
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]

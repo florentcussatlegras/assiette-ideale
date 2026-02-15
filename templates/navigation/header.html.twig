@@ -16,6 +16,8 @@
                         <a href="{{ path('menu_week_menu') }}" class="text-gray-600 hover:text-gray-500">Mes repas de la semaine</a>
                     </div>
 
+                    {% if app.user.isWeightGoalActive %}énergie réajustée{% else %}énergie non réajustée{% endif %}
+
                     <div class="flex justify-end">
 
                         {{ include("partials/_search.html.twig") }}

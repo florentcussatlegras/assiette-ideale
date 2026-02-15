@@ -1,4 +1,4 @@
-<div class="card-wrapper p-0 shadow-soft rounded-2xl overflow-hidden">
+<div class="card-wrapper p-0 shadow-lg rounded-xl overflow-hidden">
 
     <div class="absolute top-6 pl-4">
         {{ include('dish/_list_fgp_colors.html.twig') }}
@@ -28,7 +28,7 @@
                 data-action="favorite-dishes#remove"
                 data-dish-id="{{ dish.id }}"
             >
-                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <svg class="w-3 h-3 text-sky-600 hover:text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
                 </svg>
             </button>
@@ -36,7 +36,7 @@
 
     {% endif %}
     
-    <div class="flex w-full rounded-t-2xl border-white overflow-hidden">
+    <div class="flex w-full rounded-t-xl border-white overflow-hidden">
 
         <a href="{{ path('app_dish_show', { id : dish.id, slug : dish.slug }) }}" class="w-full">
             {% if dish.picture is empty %}

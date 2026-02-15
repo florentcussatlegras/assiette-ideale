@@ -74,11 +74,12 @@ export default class extends Controller {
           throw new Error("Erreur lors de la suppression du repas");
         }
 
-        const html = await response.text();
+        // const html = await response.text();
 
-        if (this.hasContentTarget) {
-          this.contentTarget.innerHTML = html;
-        }
+        // if (this.hasContentTarget) {
+        //   this.contentTarget.innerHTML = html;
+        // }
+        await this.applyFilters();
       } catch (error) {
         alert("Impossible de supprimer le repas, veuillez réessayer.");
       } 

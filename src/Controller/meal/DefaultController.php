@@ -33,7 +33,7 @@ class DefaultController extends AbstractController
 	public function menu(Request $request, EntityManagerInterface $manager, AlertFeature $alertFeature, EnergyHandler $energyHandler, DishRepository $dishRepository, FoodGroupParentRepository $foodGroupParentRepository, FoodRepository $foodRepository, MealUtil $mealUtil)
 	{
 		$this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-		
+	
 		$session = $request->getSession();
 			
 		// On liste les fgp présents dans les plats/aliments des repas
@@ -55,16 +55,17 @@ class DefaultController extends AbstractController
 					
 					if($i === 0) {
 						$meal['rankPreviousType'] = null;
+						$previousTypeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($session->get('_meal_day_0')['type']);
 					}
 
-					if(null === $previousTypeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($session->get('_meal_day_0')['type']))
-					{
-						// dump()
-						$meal = $session->get('_meal_day_0');
-						$meal['type'] = null;
-						$meal['rankPreviousType'] = null;
-						$session->set('_meal_day_0', $meal);
-					}
+					// if(null === $previousTypeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($session->get('_meal_day_0')['type']))
+					// {
+					// 	dump('toto');
+					// 	$meal = $session->get('_meal_day_0');
+					// 	$meal['type'] = null;
+					// 	$meal['rankPreviousType'] = null;
+					// 	// $session->set('_meal_day_0', $meal);
+					// }
 					
 					$typeMeal = $manager->getRepository(TypeMeal::class)->findOneByBackName($session->get('_meal_day_' . $i)['type']);
 
@@ -109,6 +110,7 @@ class DefaultController extends AbstractController
 
 			$session->set('_meal_day_energy_evolution', $energies);
 			$session->set('_meal_day_energy', $energyDay);
+
 
 		}else{
 
@@ -180,7 +182,7 @@ class DefaultController extends AbstractController
 			$modelMeal = $manager->getRepository(MealModel::class)->findOneById($idMealModel);
 			$meal['id'] = $modelMeal->getId();
 			$meal['name'] = $modelMeal->getName();
-			$meal['type'] = $modelMeal->getType() !== null ? $modelMeal->getType()->getBackName() : null;
+			$meal['type'] = $modelMeal->getType()->getBackName();
 			$meal['dishAndFoods'] = $modelMeal->getDishAndFoods();
 
 			$session->set('_meal_day_' . $rangeMeal, $meal);

@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'])]
+    #[Route('/login', name: 'app_login', methods: ['GET', 'POST'], defaults: ['no_header' => true])]
     public function login(AuthenticationUtils $authenticationUtils, UserRepository $userRepository)
     {
         $user = $this->getUser();

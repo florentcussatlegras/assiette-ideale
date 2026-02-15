@@ -2,7 +2,7 @@
     {% trans from 'profile' %}profile.imc.title{% endtrans %}
 </div>
 
-<div class="pt-4 flex items-center justify-center my-2 text-xl text-green-700 font-bold relative w-full px-16">
+<div class="pt-4 flex items-center justify-center my-2 text-xl text-green-700 font-bold relative w-full h-full px-16">
     {% if app.user.imc %}
         {{ app.user.imc|round }}
     {% else %}
@@ -10,17 +10,4 @@
             <a href="#" class="text-sm text-dark-blue">En savoir plus</a>
         </span>
     {% endif %}
-    {# <div class="absolute left-0">
-        <div 
-            data-toggle="modal"
-            data-target="#alertImcModal"
-            class="flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
-            data-item="imc"
-            type="button"
-        >
-            {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: balanceImcAlerts, size: 7, opacity: 0.2 }) }}
-        </div>
-    </div> #}
 </div>
-
-{# {{ include('profile/partials/modals/_alert_imc_modal.html.twig', {'alerts': balanceImcAlerts}) }} #}

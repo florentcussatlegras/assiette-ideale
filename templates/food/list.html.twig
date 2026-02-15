@@ -13,12 +13,11 @@
 
         <form action="{{ app.session.get('route_referer') }}" method="POST">
         
-            <h1 class="flex items-end text-2xl md:text-4xl mb-8 font-bold gap-6">
-                Les aliments 
-                {% if app.session.has('recipe_dish') is same as(true) %}
-                    <span class="text-2xl text-sky-600">{{ app.request.query.get('fg')|foodgroupnameFromId }}</h2>
-                {% endif %}
-            </h1>
+            {% if app.session.has('recipe_dish') is same as(true) %}
+                {% set subtitle = app.request.query.get('fg')|foodgroupnameFromId %}
+            {% endif %}
+
+            {{ include('navigation/_header_page.html.twig', {title: 'Les aliments'}) }}
             
             <div>
 

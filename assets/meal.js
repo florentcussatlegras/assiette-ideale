@@ -582,14 +582,27 @@ $(function(){
 
         console.log('change portion');
 
-        let nPortion = ($(this).val() === "Aucune") ? 0 : parseInt($(this).val(), 10);
+        $('.wrapper-dishOrFood').removeClass('border-2 border-sky-600');
+
+        // Remonter jusqu'au wrapper parent
+        const wrapper = $(this).closest('.wrapper-dishOrFood');
+
+        // Si une valeur est saisie
+        if ($(this).val() && $(this).val() !== "Aucune") {
+            wrapper.addClass('border-2 border-sky-600');
+        } else {
+            // Si champ vide → on enlève la bordure
+            wrapper.removeClass('border-2 border-sky-600');
+        }
+
+        let nPortion = ($(this).val() === "Aucune") ? 1 : parseInt($(this).val(), 10);
 
         // On met à jour l'energie total après la séelection de l'aliment/plat
         // Container qui affiche l'énergie totale
         const $containerEnergyTotalMobile= $("#sidebarTotalEnergyMobile");
         const $containerEnergyTotalDesktop = $("#sidebarTotalEnergyDesktop");
         const urlEnergyTotal = Routing.generate('meal_day_energy_estimate_with_new_selection', {
-            'typeAddItem': 'dish',
+            'typeAddItem' : 'dish',
              'id' : $(this).data('dish-id'), 
              'nPortion' : nPortion, 
              'rankDish' : $(this).data('rank-dish'), 
@@ -679,6 +692,19 @@ $(function(){
 
         console.log('change quantity food 1');
 
+        const currentWrapper = $(this).closest('.wrapper-dishOrFood');
+
+        // On enlève la bordure uniquement aux AUTRES wrappers
+        $('.wrapper-dishOrFood').not(currentWrapper).removeClass('border-2 border-sky-600');
+
+        // Si une valeur est saisie
+        if ($(this).val() && $(this).val() !== '') {
+            currentWrapper.addClass('border-2 border-sky-600');
+        } else {
+            // Si champ vide → on enlève la bordure
+            currentWrapper.removeClass('border-2 border-sky-600');
+        }
+
         // if($(this).val() != '' && $(this).val() > 0)
         // {
             let newValue = this.value;
@@ -699,6 +725,30 @@ $(function(){
     $(document).on('keyup', '.quantity-food', function(){
 
         console.log('change quantity food 2');
+
+        const currentWrapper = $(this).closest('.wrapper-dishOrFood');
+
+        // On enlève la bordure uniquement aux AUTRES wrappers
+        $('.wrapper-dishOrFood').not(currentWrapper).removeClass('border-2 border-sky-600');
+
+        // Si une valeur est saisie
+        if ($(this).val() && $(this).val() !== '') {
+            currentWrapper.addClass('border-2 border-sky-600');
+        } else {
+            // Si champ vide → on enlève la bordure
+            currentWrapper.removeClass('border-2 border-sky-600');
+        }
+
+        // Remonter jusqu'au wrapper parent
+        const wrapper = $(this).closest('.wrapper-dishOrFood');
+
+        // Si une valeur est saisie
+        if ($(this).val() && $(this).val() !== "Aucune") {
+            wrapper.addClass('border border-sky-600');
+        } else {
+            // Si champ vide → on enlève la bordure
+            wrapper.removeClass('border border-sky-600');
+        }
 
         // if($(this).val() != '' && $(this).val() > 0)
         // {

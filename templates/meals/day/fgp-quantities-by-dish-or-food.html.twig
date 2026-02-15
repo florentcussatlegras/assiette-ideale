@@ -1,6 +1,6 @@
 {% for foodGroupParent in foodGroupParents %}
 
-    <div class="flex items-center justify-center w-8">
+    <div class="flex items-center justify-center w-8 fgp-wrapper">
 
         {% set in = false %}
 
@@ -35,6 +35,15 @@
         {% if in == false %}
             <div style="background-color: {{ foodGroupParent.color }}" class="text-white font-bold w-5 h-5 rounded-full opacity-20"></div>
         {% endif %}
+
+         <div class="fgp-tooltip">
+            <div class="fgp-tooltip-content" style="background-color: {{ foodGroupParent.degradedColor }}">
+                <a style="color: {{ foodGroupParent.color }}" href="{{ path('app_food_groups_show', { slug: foodGroupParent.slug }) }}">
+                    <strong>{{ foodGroupParent.name }}</strong>
+                </a>
+            </div>
+            <div class="fgp-arrow" style="background-color: {{ foodGroupParent.degradedColor }}"></div>
+        </div>
 
     </div>
 

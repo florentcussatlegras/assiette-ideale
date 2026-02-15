@@ -1,11 +1,20 @@
-
-
 {% for foodGroupParent in foodGroupParents %}
-    <div class="flex items-center justify-center w-8">
-        {% if foodGroupParent.id in listFgp %}
-            <div style="background-color: {{ foodGroupParent.color }}" class="flex text-white text-sm font-bold w-5 h-5 rounded-full justify-center items-center"></div>
-        {% else %}
-            <div style="background-color: {{ foodGroupParent.color }}" class="text-white font-bold w-5 h-5 rounded-full opacity-20"></div>
-        {% endif %}
+    <div class="fgp-wrapper">
+
+        <div 
+            class="fgp-dot {% if foodGroupParent.id not in listFgp %}fgp-inactive{% endif %}"
+            style="background-color: {{ foodGroupParent.color }}">
+        </div>
+
+        <div class="fgp-tooltip">
+            <div class="fgp-tooltip-content" style="background-color: {{ foodGroupParent.degradedColor }}">
+                <a style="color: {{ foodGroupParent.color }}" href="{{ path('app_food_groups_show', { slug: foodGroupParent.slug }) }}">
+                    <strong>{{ foodGroupParent.name }}</strong>
+                </a>
+            </div>
+            <div class="fgp-arrow" style="background-color: {{ foodGroupParent.degradedColor }}"></div>
+        </div>
+
     </div>
 {% endfor %}
+

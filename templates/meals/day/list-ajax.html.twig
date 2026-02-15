@@ -1,7 +1,7 @@
 {% for item in results %}
 	{{ include("meals/day/_dish.html.twig") }}	
 {% else %}
-	<h1 class="mt-32 text-gray-400 text-xl">Aucun plats trouvés</h1>
+    <h1 class="empty-title">Aucun plats trouvés</h1>
 {% endfor %}
 
 <input 

@@ -4,44 +4,23 @@
 		<div style="width: 2%"></div>
 	{% endif %}
 
-	<div 
-		id="meal-{{ rankMeal }}" 
-		class="meal flex flex-col"
-		{% if app.session.get('_meal_day_date') != 'model' %}style="width: 98%"{% else %}style="width: 100%"{% endif %}
-		{{ stimulus_controller('type-meal', {
-			url: path('meal_day_update_type_meal'),
-			urlReload: path('meal_day', { ajax: 1 }),
-			rankMeal: rankMeal
-		}) }}
-	>
-	
+	<div id="meal-{{ rankMeal }}" class="meal flex flex-col" {% if app.session.get('_meal_day_date') != 'model' %} style="width: 98%" {% else %} style="width: 100%" {% endif %} {{ stimulus_controller('type-meal', { url: path('meal_day_update_type_meal'), urlReload: path('meal_day', { ajax: 1 } ), rankmeal: rankmeal }) }}>
+
 		<div class="container-list-meal-model"></div>
 
 		<div class="relative">
 			{% if app.session.get('_meal_day_date') != 'model' %}
 				<div class="flex md:my-hidden absolute -left-4 top-6 items-center h-full justify-center">
-					<input
-						type="checkbox" 
-						class="cursor-pointer mt-0 mb-2"
-						data-meal-target="selectMeal"
-						data-action="meal#selectMeal"
-						value="{{ rankMeal }}"
-					/>
+					<input type="checkbox" class="cursor-pointer mt-0 mb-2" data-meal-target="selectMeal" data-action="meal#selectMeal" value="{{ rankMeal }}"/>
 				</div>
 				<div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
-					<input
-						type="checkbox" 
-						class="cursor-pointer mt-0 mb-2"
-						data-meal-target="selectMeal"
-						data-action="meal#selectMeal"
-						value="{{ rankMeal }}"
-					/>
-				</div>							
+					<input type="checkbox" class="cursor-pointer mt-0 mb-2" data-meal-target="selectMeal" data-action="meal#selectMeal" value="{{ rankMeal }}"/>
+				</div>
 			{% endif %}
 			{{ include('meals/day/type_meal.html.twig') }}
 		</div>
 
-		<div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-soft rounded-2xl">
+		<div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-lg rounded-xl">
 
 			{% if app.session.has('_meal_day_' ~ rankMeal) 
 				and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys 
@@ -51,7 +30,7 @@
 			{% else %}
 				{% set rankDish = 0 %}
 			{% endif %}
-			
+
 			{% if rankDish > 0 %}
 				{{ include('meals/day/list-dishes.html.twig') }}
 				{{ include('meals/day/group-btn-action.html.twig') }}
@@ -67,4 +46,3 @@
 	</div>
 
 </div>
-

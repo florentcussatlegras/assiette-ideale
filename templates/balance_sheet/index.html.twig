@@ -6,9 +6,7 @@
 
 	<div class="py-12">
 
-		<h1 class="text-2xl md:text-4xl mb-8 font-bold">
-			Mes bilans
-		</h1>
+		{{ include('navigation/_header_page.html.twig', {title: 'Mes bilans'}) }}
 
 		<div class="my-4">
 
@@ -19,7 +17,7 @@
 				<div class="flex flex-col 2xl:flex-row w-full lg:w-10-12 gap-2 2xl:gap-4 mt-6">
 
 					<div class="w-full 2xl:w-4/5">
-						<div class="content bg-white px-6 rounded-2xl shadow-soft" data-balance-sheet-target="content"></div>
+						<div class="content bg-white px-6 rounded-xl shadow-lg" data-balance-sheet-target="content"></div>
 						<div class="flex my-2 h-[200px] items-center justify-center hidden" data-balance-sheet-target="loader">
 							<div class="loader"></div>
 						</div>
@@ -27,7 +25,7 @@
 
 					<div class="w-full 2xl:w-1/5 mt-0">
 
-						<div class="flex flex-col gap-2 items-start font-medium bg-white p-4 rounded-2xl shadow-soft" data-balance-sheet-target="contentFavorite">
+						<div class="flex flex-col gap-2 items-start font-medium bg-white p-4 rounded-xl shadow-lg" data-balance-sheet-target="contentFavorite">
 
 							<span class="text-base">Votre plat favori</span>
 

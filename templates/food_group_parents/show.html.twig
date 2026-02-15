@@ -4,54 +4,32 @@
 
 {% block body %}
 
-<div class="container mx-auto py-12">
+<div class="py-12">
 
-    <a href="{{ path('app_food_groups_index') }}" class="text-sky-600">
-        ← Retour aux groupes
-    </a>
+    {{ include('navigation/_header_page.html.twig', {title: 'Les groupes alimentaires'}) }}
 
-    <div class="mt-6 p-8 rounded-xl text-white"
-         style="background: linear-gradient(135deg, {{ group.color }}, {{ group.degradedColor }})">
+    <div class="flex justify-center">
 
-        <h1>{{ group.name }}</h1>
+        <div class="bg-white w-full lg:w-2/3 shadow-lg rounded-xl p-12">
 
-    </div>
+            <a href="{{ path('app_food_groups_index') }}" class="flex gap-2 items-center">
+                <svg class="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 7L10 12L15 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                Revenir aux groupes
+            </a>
 
-     <div class="prose my-8">
-        {{ group.content|raw|nl2br }}
-    </div>
+            <div class="mt-6 p-8 rounded-xl text-white relative border"
+                style="background: linear-gradient(135deg, {{ group.color }}, {{ group.degradedColor }})">
+                <h1>{{ group.name }}</h1>
+                <img src="{{ asset('/images/vegetables_photo.png') }}" width="300px" class="absolute right-0 border my-hidden md:flex" style="top: -150px" />
+            </div>
 
-    {# <div class="mt-10">
-
-        <h2 class="text-2xl font-bold mb-4">
-            Sous-groupes
-        </h2>
-
-        <div class="responsive-grid">
-
-            {% for foodGroup in group.foodGroups %}
-
-                <div class="border rounded-lg p-4">
-
-                    <h3 class="font-bold">
-                        {{ foodGroup.name }}
-                    </h3>
-
-                    <p class="text-sm">
-                        {{ foodGroup.description|default('') }}
-                    </p>
-
-                </div>
-
-            {% else %}
-
-                <p>Aucun sous-groupe pour le moment.</p>
-
-            {% endfor %}
+            <div class="my-8">
+                {{ group.content|raw|nl2br }}
+            </div>
 
         </div>
 
-    </div> #}
+    </div>
 
 </div>
 

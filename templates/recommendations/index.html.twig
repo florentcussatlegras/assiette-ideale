@@ -1,20 +1,18 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }} - Mes recommandations{% endblock %}
+{% block title %}{{ parent() }} - Nos recommandations journalières{% endblock %}
 
 {% block body %}
     
     <div class="py-12">
 
-        <h1 class="text-2xl md:text-4xl mb-8 font-bold">
-            Vos recommandations journalières
-        </h1>
+        {{ include('navigation/_header_page.html.twig', {title: 'Nos recommandations journalières'}) }}
 
         <div class="flex flex-col lg:flex-row gap-4 items-start text-base">
 
-            <div class="w-full lg:w-1/3 bg-white h-auto rounded-2xl shadow-soft">
+            <div class="w-full lg:w-1/3 bg-white h-auto rounded-xl shadow-lg">
                             
-                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Votre besoin énergétique</span>
+                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-xl uppercase">Votre besoin énergétique</span>
                 
                 <div class="flex items-center justify-center font-bold h-28">
 
@@ -75,9 +73,9 @@
                 
             </div>
 
-            <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
+            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-lg">
                             
-                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins par groupes alimentaires</span>
+                <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-xl uppercase">Vos besoins par groupes alimentaires</span>
                 
                 <div class="flex items-center justify-center font-bold">
 
@@ -105,7 +103,7 @@
                 
             </div>
 
-            <div class="w-full lg:w-1/3 bg-white rounded-2xl shadow-soft">
+            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-lg">
                             
                 <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase">Vos besoins en nutriments</span>
                 

@@ -1,0 +1,387 @@
+<section 
+    class="flex flex-col items-center justify-center py-10 md:py-20 md:px-16 xl:px-18 w-full xl:max-w-[1100px] 2xl:max-w-[1536px] mx-auto"
+    {{ stimulus_controller('reviews') }}
+>
+
+    <div class="flex flex-col items-center gap-2">
+        <span class="text-sky-600 uppercase font-semibold text-xs leading-3 tracking-widest">Validé par plus de 150000 utilisateurs</span>
+        <h2 class="text-2xl md:text-4xl xl:text-6xl font-bold text-center mb-10"> 
+            Nos utilisateurs nous <span class="text-sky-600">adorent</span> !
+        </h2>
+    </div>
+    
+    <div class="flex items-center justify-center py-10">
+
+        <div class="flex rounded-2xl shadow-soft border border-gray-200 px-8 py-5 gap-4">
+
+            <svg class="w-20 h-20" viewBox="-3 0 262 262" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027" fill="#4285F4"></path><path d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1" fill="#34A853"></path><path d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782" fill="#FBBC05"></path><path d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251" fill="#EB4335"></path></g></svg>
+
+            <div class="flex flex-col items-center gap-2">
+                <span class="font-bold text-3xl">
+                    Noté 4,9/5
+                </span>
+                <span class="text-yellow-400 text-3xl">
+                    ★★★★★
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div 
+        class="relative"
+    >
+
+        <!-- Bouton gauche -->
+        <button
+            data-action="click->reviews#prev"
+            class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2
+                    w-12 h-12 bg-gray-200 hover:bg-gray-300
+                    rounded-full shadow-md flex items-center justify-center
+                    transition z-10">
+            ←
+        </button>
+
+        <!-- Slider -->
+        <div
+            data-reviews-target="slider"
+            class="flex items-start gap-6 overflow-x-auto scroll-smooth no-scrollbar px-10"
+        >
+
+            <!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-green-500 text-white flex items-center justify-center text-sm font-semibold">
+            L
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Lucas Martin</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 2 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Franchement bluffé par la simplicité de l’application. Tout est clair,
+        rapide et intuitif. J’ai gagné un temps fou dans l’organisation de mes repas.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-purple-500 text-white flex items-center justify-center text-sm font-semibold">
+            S
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Sophie Bernard</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 1 semaine</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Très bonne application dans l’ensemble. J’aimerais juste un peu plus
+        d’options de personnalisation, mais sinon elle fait parfaitement le job.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-red-500 text-white flex items-center justify-center text-sm font-semibold">
+            A
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Antoine Leroy</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 5 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★☆☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Bonne base et concept intéressant. Il y a encore quelques petits bugs
+        à corriger, mais je vois un vrai potentiel.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-indigo-500 text-white flex items-center justify-center text-sm font-semibold">
+            C
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Camille Rousseau</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 4 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Interface moderne, rapide et efficace. Tout est fluide et agréable à
+        utiliser au quotidien. Je recommande sans hésiter !
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-yellow-500 text-white flex items-center justify-center text-sm font-semibold">
+            J
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Julie Morel</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 6 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Application très pratique et intuitive. Quelques fonctionnalités
+        supplémentaires seraient un plus, mais l’expérience reste très positive.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-pink-500 text-white flex items-center justify-center text-sm font-semibold">
+            T
+        </div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Thomas Girard</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 3 semaines</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Super outil pour mieux planifier mes repas. C’est simple, efficace et
+        vraiment bien pensé. Une vraie aide au quotidien.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button"
+        class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-teal-500 text-white flex items-center justify-center text-sm font-semibold">E</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Emma Laurent</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 2 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Application ultra intuitive ! J’ai pris l’habitude de planifier toute ma semaine en quelques minutes seulement.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm font-semibold">N</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Nicolas Petit</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 4 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Très satisfait dans l’ensemble. Quelques petites améliorations seraient les bienvenues, mais c’est déjà très complet.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-cyan-500 text-white flex items-center justify-center text-sm font-semibold">A</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Amélie Garnier</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 1 semaine</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Enfin une application claire et agréable à utiliser. On sent que tout a été pensé pour aller droit au but.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-rose-500 text-white flex items-center justify-center text-sm font-semibold">R</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Romain Chevalier</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 3 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★☆☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Concept intéressant et utile. L’ergonomie pourrait être encore améliorée, mais l’idée est excellente.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-lime-500 text-white flex items-center justify-center text-sm font-semibold">C</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Claire Dubois</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 5 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Très pratique au quotidien. J’apprécie particulièrement la rapidité d’exécution et la simplicité.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-sky-500 text-white flex items-center justify-center text-sm font-semibold">D</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">David Renault</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 6 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Simple, efficace et moderne. Exactement ce que je recherchais pour mieux m’organiser.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-fuchsia-500 text-white flex items-center justify-center text-sm font-semibold">M</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Manon Lefèvre</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 1 semaine</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Application très agréable visuellement. Encore quelques détails à peaufiner mais très prometteur.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm font-semibold">P</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Paul Mercier</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 2 semaines</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★☆☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Bonne application dans l’ensemble. Elle répond à mes besoins, même si certaines fonctions pourraient être plus poussées.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-violet-500 text-white flex items-center justify-center text-sm font-semibold">O</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Olivier Fontaine</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 8 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★★</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Excellente surprise ! L’application est fluide, claire et vraiment pratique au quotidien.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+<!-- REVIEW -->
+<div class="w-68 bg-white p-5 flex-shrink-0" {{ stimulus_controller('review') }}>
+    <div class="flex items-start gap-3 mb-2">
+        <div class="w-9 h-9 rounded-full bg-emerald-500 text-white flex items-center justify-center text-sm font-semibold">H</div>
+        <div>
+            <p class="font-semibold text-sm leading-tight">Hélène Caron</p>
+            <p class="text-neutral-500 text-xs leading-tight">Il y a 9 jours</p>
+        </div>
+    </div>
+    <div class="text-yellow-400 text-sm mb-2">★★★★☆</div>
+    <p data-review-target="text" class="text-gray-600 text-sm line-clamp-3 transition-all duration-300">
+        Très bonne expérience globale. L’application est fiable et simple à prendre en main.
+    </p>
+    <button data-action="click->review#toggle" data-review-target="button" class="text-xs text-neutral-500 mt-1 hover:underline">
+        Lire la suite
+    </button>
+</div>
+
+
+
+        </div>
+
+        <!-- Bouton droite -->
+        <button
+            data-action="click->reviews#next"
+            class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2
+                    w-12 h-12 bg-gray-200 hover:bg-gray-300
+                    rounded-full shadow-md flex items-center justify-center
+                    transition z-10">
+            →
+        </button>
+
+    </div>
+
+    <div 
+        data-reviews-target="dots"
+        class="flex justify-center items-center gap-2 mt-6" style="height: 30px"
+    ></div>
+
+</section>
+
+

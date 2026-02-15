@@ -815,6 +815,12 @@ class AlertFeature
 	{
 		$user = $this->security->getUser();
 
+		if ($user->isAutomaticCalculateEnergy()) {
+			return $this->manager
+				->getRepository(LevelAlert::class)
+				->findOneByCode(LevelAlert::BALANCE_WELL);
+		}
+
 		return $this->isWellBalanced($user->getEnergy(), $user->getEnergyCalculate());
 	}
 

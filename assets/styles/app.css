@@ -3027,6 +3027,8 @@ btn {
     line-height: 2rem; /* 32px */
 }
 
+
+
 .text-3xl {
     font-size: 1.875rem; /* 30px */
     line-height: 2.25rem; /* 36px */
@@ -3290,6 +3292,10 @@ btn {
     height: 11rem; /* 176px */
 }
 
+.w-68 {
+    width: 16rem; /* 248px */
+}
+
 .w-72 {
     width: 18rem; /* 288px */
 }
@@ -3297,6 +3303,52 @@ btn {
 .modal-nav-header {
     transition: opacity 0.25s ease;
 
+}
+
+.opacity-25 {
+    opacity: 0.25;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.three-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.three-dots span {
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: bounceDots 1.4s infinite ease-in-out both;
+}
+
+/* Décalage d’animation */
+.three-dots span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.three-dots span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+.three-dots span:nth-child(3) {
+    animation-delay: 0s;
+}
+
+@keyframes bounceDots {
+    0%, 80%, 100% {
+        transform: scale(0);
+        opacity: 0.3;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-nav-header-active {
@@ -3731,6 +3783,38 @@ btn {
     line-height: 1rem; /* 16px */
 }
 
+.tracking-tighter {
+    letter-spacing: -0.05em;
+}
+
+.tracking-tight	{
+    letter-spacing: -0.025em;
+}
+
+.tracking-normal {
+    letter-spacing: 0em;
+}
+
+.tracking-wide {
+    letter-spacing: 0.025em;
+}
+
+.tracking-wider	{
+    letter-spacing: 0.05em;
+}
+
+.tracking-widest {
+    letter-spacing: 0.1em;
+}
+
+.text-yellow-400 {
+    color: #facc15;
+}
+
+.text-[\#\39434D] {
+    color: #39434D;
+}
+
 .w-1-12 {
     width: 8.333333%;
 }
@@ -4097,13 +4181,6 @@ btn {
     }
 }
 
-.md\:text-4xl {
-    @media (width >= 48rem /* 768px */) {
-        font-size: var(--text-4xl) /* 2.25rem = 36px */;
-        line-height: var(--tw-leading, var(--text-4xl--line-height) /* calc(2.5 / 2.25) ≈ 1.111111 */);
-    }
-}
-
 .xl\:mb-16 {
     @media (width >= 80rem /* 1280px */) {
         margin-bottom: calc(var(--spacing) * 16) /* 4rem = 64px */;
@@ -4118,9 +4195,19 @@ btn {
 
 .xl\:text-6xl {
     @media (width >= 80rem /* 1280px */) {
-        font-size: var(--text-6xl) /* 3.75rem = 60px */;
-        line-height: var(--tw-leading, var(--text-6xl--line-height) /* 1 */);
+        font-size: 60px !important;
+        line-height: 1 !important;
     }
+}
+
+.md\:pb-20 {
+    @media (min-width: 768px) {
+        padding-bottom: 5rem !important; /* 80px */
+    }
+}
+
+.pb-10 {
+    padding-bottom: 2.5rem; /* 40px */
 }
 
 .\32 xl\:text-7xl {
@@ -4307,6 +4394,95 @@ btn {
     syntax: "*";
     inherits: false;
     initial-value: solid;
+}
+
+/* Wrapper */
+.fgp-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+}
+
+/* Pastille */
+.fgp-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Pastille inactive */
+.fgp-inactive {
+    opacity: 0.2;
+}
+
+/* Tooltip */
+.fgp-tooltip {
+    position: absolute;
+    bottom: 35px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    opacity: 0;
+    visibility: hidden;
+    
+    transition: all 0.2s ease;
+    z-index: 100;
+}
+
+/* Contenu tooltip */
+.fgp-tooltip-content {
+    font-size: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    text-align: center;
+}
+
+/* Lien */
+.fgp-tooltip-content a {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.fgp-tooltip-content a:hover {
+    text-decoration: underline;
+}
+
+/* Petite flèche */
+.fgp-arrow {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 8px;
+    height: 8px;
+}
+
+/* Affichage au survol */
+.fgp-wrapper:hover .fgp-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.empty-state {
+    position: relative;
+    min-height: 300px; /* ou 100% si tu veux plein écran */
+}
+
+.empty-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    color: #9ca3af;      /* text-gray-400 */
+    font-size: 1.25rem;  /* text-xl */
 }
 
 /* .grid {
@@ -4587,7 +4763,7 @@ opacity: 1;
   .ts-wrapper.multi .ts-control [data-value] {
     box-shadow: none;
     border-radius: 9px;
-    background-color: #0c7b91 !important;
+    background-color: #0284c7 !important;
     background-image: none;
     text-shadow: none;
   }
@@ -4600,6 +4776,22 @@ opacity: 1;
     line-height: 1;
     border: none;
   }
+
+.ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
+    color: #ffffff !important;
+    border-left: 1px solid #ffffff;
+    margin-left: 6px;
+}
+
+.ts-wrapper.plugin-remove_button .item .remove {
+    border-radius: 0 2px 2px 0;
+    box-sizing: border-box;
+    color: #ffffff !important;
+    display: inline-block;
+    padding: 0 6px;
+    text-decoration: none;
+    vertical-align: middle;
+}
 
 .show-pass{
     position: absolute;
@@ -5500,6 +5692,20 @@ transform-origin: 0 0; /* see note above */
     }
 }
 
+@media (min-width: 1536px) {
+  .\2xl\:my-hidden {
+    display: none !important;
+  }
+}
+
+.bg-yellow-500 {
+    background-color: #eab308;
+}
+
+.bg-pink-500 {
+    background-color: #ec4899;
+}
+
 /* Scale à 90% sur écrans XL (1280px à 1535px) */
 @media (min-width: 1280px) and (max-width: 1535px) {
     .xl\:scale-90 {
@@ -5510,6 +5716,9 @@ transform-origin: 0 0; /* see note above */
 
 /* Scale à 95% sur écrans 2XL (1536px et plus) */
 @media (min-width: 1536px) {
+    .\2xl\:my-hidden {
+        display: hidden !important;
+    }
     .2xl\:scale-95 {
         transform: scale(0.95);
         transform-origin: top center; /* garde le chart centré */
@@ -6162,6 +6371,10 @@ canvas {
     }
 }
 
+.text-red-700 {
+    color: #b91c1c !important;
+}
+
 .text-red-900 {
     color: #82181a !important;
 }
@@ -6175,6 +6388,13 @@ canvas {
     @media (width >= 48rem /* 768px */) {
         font-size: 30px !important;
         line-height: calc(2.25 / 1.875) !important;
+    }
+}
+
+.md\:text-4xl {
+    @media (width >= 48rem /* 768px */) {
+        font-size: 36px !important;
+        line-height: calc(2.5 / 2.25) !important;
     }
 }
 

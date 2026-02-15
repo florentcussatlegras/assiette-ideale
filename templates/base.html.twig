@@ -63,15 +63,13 @@
 
 		{% include 'components/cookie_banner.html.twig' %}
 	
-		{% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (false) %}
-
-		{% elseif app.request.attributes.get('_route') not in routes_without_header_nav %}
-			{{ include("navigation/header.html.twig") }}
+		{% if not (is_granted('IS_AUTHENTICATED_REMEMBERED') and not app.user.firstFillProfile) and not app.request.attributes.get('no_header') %}
+			{{ include('navigation/header.html.twig') }}
 		{% endif %}
 
 		{{ include("partials/alert/alert.html.twig") }}
 
-		{% set show_layout = not (app.request.attributes.get('_route') in routes_without_header_nav) %}
+		{% set show_layout = not (app.request.attributes.get('no_header')) %}
 
 		{% if show_layout %}
 			<main role="main" class="flex-1">

@@ -17,9 +17,7 @@
 
 			{% if app.user.hasFirstFillProfile is same as(true) %}
 
-				<h1 class="text-2xl md:text-4xl mb-8 font-bold">
-					Mes informations
-				</h1>
+				{{ include('navigation/_header_page.html.twig', {title: "Mes informations"}) }}
 
 				<div class="flex justify-center items-center">
 
@@ -136,9 +134,14 @@
 
 						<div class="flex-1 flex items-start lg:items-center">
 
-							<div class="p-6 profileForm mx-auto my-5 bg-white flex flex-col justify-center mt-0 rounded-2xl shadow-soft" {{ stimulus_controller('profile') }}>
+							<div class="p-6 profileForm mx-auto my-5 bg-white flex flex-col justify-center mt-0 rounded-xl shadow-lg" {{ stimulus_controller('profile') }}>
 
-								{{ form_start(profileForm, {'attr': {'action' : path('app_profile_edit', { element }), 'data-turbo' : 'false', 'class' : 'w-full'}}) }}
+								{{ form_start(profileForm, {'attr': {
+										'action' : path('app_profile_edit', { element }),
+										'data-controller': 'form-loader',
+										'data-turbo' : 'false', 
+										'class' : 'w-full'}
+								}) }}
 
 								{{ form_widget(profileForm) }}
 

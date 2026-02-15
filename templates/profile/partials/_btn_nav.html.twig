@@ -1,17 +1,35 @@
-
 <div class="flex justify-center items-center gap-6">
+
     {% if app.user.firstFillProfile is same as (false) %}
-        <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg">
-            Suivant
+
+        <button 
+            type="submit" 
+            class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg flex justify-center items-center gap-4" 
+            data-form-loader-target="button"
+            style="height: 40px"
+        >
+            <span data-form-loader-target="label">Suivant</span>
+
+            <!-- Loader, caché par défaut -->
+            <span class="three-dots hidden" data-form-loader-target="spinner">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
         </button>
+
     {% else %}
-        <a href="{{ path('app_profile_index') }}" class="text-sky-600 hover:text-sky-700 font-bold text-base">
+
+        <a href="{{ backRoute }}" class="text-sky-600 hover:text-sky-700 font-bold text-base">
             Annuler
         </a>
+
         <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg">
             Valider
         </button>
+
     {% endif %}
+
 </div>
 
 

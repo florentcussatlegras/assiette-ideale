@@ -181,10 +181,6 @@ class ProfileType extends AbstractType
                         'class' => 'w-1/3 ml-2'
                     ],
                     'block_prefix' => 'profile_weight_height'
-                    // 'required' => false,
-                    // 'row_attr' => [
-                    //     'class' => 'w-1/3'
-                    // ]
                 ]);
 
                 break;
@@ -198,26 +194,7 @@ class ProfileType extends AbstractType
                         'class' => 'w-1/3 ml-2'
                     ],
                     'block_prefix' => 'profile_weight_height'
-                    // 'required' => false,
-                    // 'row_attr' => [
-                    //     'class' => 'w-1/3'
-                    // ]
                 ]);
-
-                // $builder->add('archived_weight', CheckboxType::class, [
-                //     'label' => 'Archiver afin de suivre votre évolution',
-                //     'required' => false,
-                //     'mapped' => false,
-                //     'attr' => [
-                //         'class' => 'w-4 h-4 md:w-5 md:h-5 mr-2 cursor-pointer' 
-                //     ],
-                //     'row_attr' => [
-                //         'class' => 'flex items-center h-10 mx-auto justify-center'
-                //     ],
-                //     'label_attr' => [
-                //         'class' => 'text-sm font-light leading-4 pt-2 ml-2'
-                //     ]
-                // ]);
 
                 break;
 
@@ -304,16 +281,12 @@ class ProfileType extends AbstractType
 
             case ProfileHandler::ENERGY:
 
-                // $energy = ($user->getEnergy() && !$user->getAutomaticCalculateEnergy()) ? $user->getEnergy() : null;
                 $builder->add('automaticCalculateEnergy', ChoiceType::class, [
                                 'label' => 'profile.energy_needs.label2',
                                 'choices' => [
                                     'profile.energy_needs.value.automatic' => true,
                                     'profile.energy_needs.value.personal' => false,
                                 ],
-                                // 'attr' => [
-                                //     'class' => 'custom-select-profiles',
-                                // ],
                                 'choice_attr' => [
                                     'profile.energy_needs.value.automatic' => ['id' => 'energy_calculator_auto'],
                                     'profile.energy_needs.value.personal' => ['id' => 'energy_calculator_perso'],
@@ -321,14 +294,12 @@ class ProfileType extends AbstractType
                                 'translation_domain' => 'profile',
                                 'choice_translation_domain' => 'profile',
                                 'expanded' => false,
-                                //'disabled' => !$user->getHasCompleteProfil()
                                 'data' => null !== $user->getAutomaticCalculateEnergy() ? $user->getAutomaticCalculateEnergy() : true
                             ]
                         )
                         ->add('energy', IntegerType::class, [
                                 'label' => false,
                                 'required' => false,
-                                // 'disabled' => ($user->getAutomaticCalculateEnergy() || null === $user->getAutomaticCalculateEnergy()),
                                 'row_attr' => [
                                     'class' => 'w-full mb-2 energy flex flex-col'
                                 ],
@@ -359,33 +330,6 @@ class ProfileType extends AbstractType
 
         }
 
-        // $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event))
-
-        // $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) {
-        //     $form = $event->getForm();
-        //     $data = $event->getData();
-
-        //     if(!array_key_exists('automaticCalculateEnergy', $data) && 
-        //             array_key_exists('energyFields', $data) &&
-        //             array_key_exists('unitMeasureEnergy', $data['energyFields'])
-        //     )
-        //     {
-
-        //         // $constraintsEnergy = new ProfileAssert\IsEnergyValid([
-        //         //         'groups' => ['profile_energy'],
-        //         //         'unitMeasure' => $data['unitMeasureEnergy']
-        //         //     ]
-        //         // );
-        //         $form->remove('energyFields');
-     
-        //         $form->add('energyFields', EnergyType::class, [
-        //                 'mapped' => false,
-        //                 'unit_measure_selected' => $data['energyFields']['unitMeasureEnergy'],
-        //                 'validation_groups' => ['profile_energy']
-        //             ]
-        //         );
-        //     }
-        // });
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use($options){
 
             if (ProfileHandler::ENERGY == $options["element"]) {
@@ -457,7 +401,7 @@ class ProfileType extends AbstractType
             }
 
             if(in_array($options["element"], EnergyHandler::PROFILE_LIST_NEEDED) || ProfileHandler::ENERGY == $options["element"]) {
-
+               
                 if(count($this->energyHandler->profileMissingForEnergy()) == 0) {
 
                     // on (re)calcule l'energie

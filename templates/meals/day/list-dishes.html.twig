@@ -12,7 +12,7 @@
 
 		<div class="dish flex relative items-center w-1/2">
 			
-			<div class="w-6 h-6 ml-4 md:mr-4">
+			<div class="h-6 ml-4 md:mr-4 flex items-center justify-center">
 				<input
 					type="checkbox" 
 					data-meal-target="selectDish"
@@ -23,7 +23,7 @@
 				/>
 			</div>
 
-			<div class="text-slate-300 font-bold pl-2 w-4">{{ loop.index }}</div>
+			<div class="text-base text-slate-300 font-bold pl-2 w-4">{{ loop.index }}</div>
 			
 			<div>
 				{% if element.picture is not null and element.picturePath is not null %}
@@ -65,7 +65,7 @@
 
 		<div class="flex relative items-center w-1/5 md:w-1/2">
 
-			<div class="list-fgp items-center justify-center my-hidden xl:flex">
+			<div class="list-fgp items-center justify-center my-hidden lg:flex">
 				{{ render(controller("App\\Controller\\meal\\DefaultController::fgpQuantitiesByDishOrFood", { item: item })) }}
 			</div>
 

@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Entity\WeightLog;
 use App\Service\EnergyHandler;
 use App\Service\AlertFeature;
 use App\Service\ProfileHandler;
@@ -147,12 +146,17 @@ class ProfileController extends AbstractController implements AlertUserControlle
 
             $this->addFlash('success', 'Vos informations ont bien été enregistrées.');
 
+            if ($element === ProfileHandler::ENERGY) {
+                return $this->redirectToRoute('app_dashboard_index');
+            }
+
             return $this->redirectToRoute('app_profile_index');
         }
 
         return $this->render("profile/forms.html.twig", [
                 'profileForm' => $form->createView(),
                 'element' => $element,
+                'backRoute' => $element === ProfileHandler::ENERGY ? $this->generateUrl('app_dashboard_index') : $this->generateUrl('app_profile_index'),
                 // 'steps' => ProfileHandler::STEPS,
                 // 'nextElement' => $nextElement,
             ]

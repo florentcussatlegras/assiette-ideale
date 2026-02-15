@@ -17,7 +17,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class EmailConfirmationCodeController extends AbstractController
 {
-    #[Route('/confirmation-code', name: 'app_confirmation_code', methods: ['GET', 'POST'])]
+    #[Route('/confirmation-code', name: 'app_confirmation_code', methods: ['GET', 'POST'], defaults: ['no_header' => true])]
     public function confirm(
         Request $request,
         EntityManagerInterface $entityManager,

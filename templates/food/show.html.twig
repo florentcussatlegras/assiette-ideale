@@ -7,9 +7,7 @@
     <div class="py-12">
 
         <div class="flex">
-            <h1 class="text-2xl md:text-4xl mb-8 font-bold">
-                {{ food.name }}
-            </h1>
+            {{ include('navigation/_header_page.html.twig', {title: food.name}) }}
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_food_add', { slug : food.slug }) }}">
                     <i data-feather="edit" class="w-6 h-6"></i>
@@ -17,7 +15,7 @@
             {% endif %}
         </div>
 
-        <div class="flex bg-white shadow-soft rounded-2xl pt-6 text-sm relative">
+        <div class="flex bg-white shadow-lg rounded-xl pt-6 text-sm relative">
 
             <div class="font-bold px-4 py-1 rounded uppercase absolute z-5 left-6 text-sm" style="background-color: {{ food.foodGroup.parent.degradedColor }}; color: {{ food.foodGroup.parent.color }}">
                 {{ food.foodGroup.name }}
