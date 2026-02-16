@@ -50,9 +50,10 @@ class NutrientHandler
         $carbGrams = $carbKcal / 4;
 
         return [
-            'protein_g' => round($proteinGrams),
-            'fat_g' => round($fatGrams),
-            'carb_g' => round($carbGrams),
+            'protein' => round($proteinGrams),
+            'lipid' => round($fatGrams),
+            'carbohydrate' => round($carbGrams),
+            'sodium' => 2,
         ];
     }
 }

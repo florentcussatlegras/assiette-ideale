@@ -25,9 +25,9 @@ class FoodGroupHandler
         $energy = $user->getEnergy();
         $macros = $this->nutrientHandler->getRecommendations();
 
-        $protein = $macros['protein_g'];
-        $fat = $macros['fat_g'];
-        $carb = $macros['carb_g'];
+        $protein = $macros['protein'];
+        $fat = $macros['lipid'];
+        $carb = $macros['carbohydrate'];
 
         // 🥩 VPO
         $vpo = (($protein * 0.6) / 20) * 100;

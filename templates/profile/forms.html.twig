@@ -31,104 +31,7 @@
 
 						{% if app.user.firstFillProfile is same as (false) %}
 
-							<ol class="flex xl:my-hidden flex-row w-full h-12 text-xs md:text-sm font-medium text-gray-700 mx-auto lg:mt-6 pb-6 gap-2 lg:gap-0 mb-8 md:mb-18 overflow-x-auto whitespace-nowrap">
-								{% set steps, lastValidStep = constant('App\\Service\\ProfileHandler::STEPS'), app.user.validStepProfiles|last %}
-								{% set currentStep = element %}
-								{% for key, step in steps %}
-									{% if step == lastValidStep %}
-										{% set currentStep = steps[key + 1] %}
-									{% endif %}
-								{% endfor %}
-
-								{% for key, step in steps %}
-
-									<li class="flex items-start lg:items-center leading-4 justify-center flex-shrink-0">
-										{% if loop.index0 %}
-											<div class="flex items-center justify-center px-2 flex">
-												<svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewbox="0 0 24 24" class="text-slate-400" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-												</svg>
-											</div>
-										{% endif %}
-
-										{% if step is same as (element) %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl text-sky-500 font-bold uppercase text-center flex items-center">
-												{% if step in app.user.validStepProfiles %}
-													<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-													</svg>
-												{% endif %}
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% elseif step in app.user.validStepProfiles %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl font-bold uppercase text-center flex items-center">
-												<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-												</svg>
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% elseif step == currentStep %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl font-bold uppercase text-center flex items-center">
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% else %}
-											<span class="text-base xl:text-xl font-bold uppercase text-center">{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}</span>
-										{% endif %}
-									</li>
-
-								{% endfor %}
-
-							</ol>
-
-							<ol class="my-hidden xl:flex flex-row w-full justify-center h-12 text-xs md:text-sm font-medium text-gray-700 mx-auto lg:mt-6 pb-6 gap-2 lg:gap-0 mb-8 md:mb-18 overflow-x-auto whitespace-nowrap">
-								{% set steps, lastValidStep = constant('App\\Service\\ProfileHandler::STEPS'), app.user.validStepProfiles|last %}
-								{% set currentStep = element %}
-								{% for key, step in steps %}
-									{% if step == lastValidStep %}
-										{% set currentStep = steps[key + 1] %}
-									{% endif %}
-								{% endfor %}
-
-								{% for key, step in steps %}
-
-									<li class="flex items-start lg:items-center leading-4 justify-center flex-shrink-0">
-
-										{% if loop.index0 %}
-											<div class="flex items-center justify-center px-2 flex">
-												<svg xmlns="http://www.w3.org/2000/svg" fill="none" height="20" width="20" viewbox="0 0 24 24" class="text-slate-400" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-												</svg>
-											</div>
-										{% endif %}
-
-										{% if step is same as (element) %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl text-sky-500 font-bold uppercase text-center flex items-center">
-												{% if step in app.user.validStepProfiles %}
-													<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-													</svg>
-												{% endif %}
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% elseif step in app.user.validStepProfiles %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl font-bold uppercase text-center flex items-center">
-												<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-												</svg>
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% elseif step == currentStep %}
-											<a href="{{ path('app_profile_edit', { element: step }) }}" class="text-base xl:text-xl font-bold uppercase text-center flex items-center">
-												{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}
-											</a>
-										{% else %}
-											<span class="text-base xl:text-xl font-bold uppercase text-center">{{ "profile.stepper_registration.#{step}"|trans({}, 'profile') }}</span>
-										{% endif %}
-									</li>
-
-								{% endfor %}
-
-							</ol>
+							{{ include('profile/registration_steps.html.twig') }}
 
 						{% endif %}
 
@@ -140,10 +43,67 @@
 										'action' : path('app_profile_edit', { element }),
 										'data-controller': 'form-loader',
 										'data-turbo' : 'false', 
-										'class' : 'w-full'}
+										'class' : 'w-full relative'}
 								}) }}
 
-								{{ form_widget(profileForm) }}
+								{% if element == constant('App\\Service\\ProfileHandler::ENERGY') %}
+
+									{{ form_label(profileForm.automaticCalculateEnergy) }}
+
+									<div class="flex flex-col items-center justify-center">
+
+										<div class="space-y-6 mb-8">
+
+											{{ form_errors(profileForm) }}
+											{{ form_errors(profileForm.energy) }}
+
+											<div class="flex items-center gap-3">
+
+												{{ form_widget(profileForm.automaticCalculateEnergy.0, {
+													attr: { 'class': '-mt-1' }
+												}) }}
+
+												<label for="{{ profileForm.automaticCalculateEnergy.0.vars.id }}" class="font-normal flex items-center">
+													Laisser le programme calculer mes besoins
+													<span class="text-red-700 font-semibold">
+														({{ app.user.energyCalculate|round }} kcal)
+													</span>
+												</label>
+
+											</div>
+
+											<div class="flex items-center gap-3">
+
+												{{ form_widget(profileForm.automaticCalculateEnergy.1, {
+													attr: { 'class': '-mt-1' }
+												}) }}
+
+												<label for="{{ profileForm.automaticCalculateEnergy.1.vars.id }}" class="font-normal">
+													Je connais mes besoins
+												</label>
+
+												<div class="flex items-center gap-2">
+													{{ form_widget(profileForm.energy, {
+														attr: { class: 'w-28 border rounded px-2 py-1' }
+													}) }}
+
+													{{ form_widget(profileForm.unitMeasureEnergy) }}
+												</div>
+
+											</div>
+
+										</div>
+
+									</div>
+
+									{{ form_widget(profileForm._token_profile) }}
+
+								{% else %}
+
+									{{ form_widget(profileForm) }}
+
+								{% endif %}
+
 
 								{% if app.session.has('user_error_pic') %}
 									<span class="text-red-700">

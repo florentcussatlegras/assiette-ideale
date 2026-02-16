@@ -1,77 +1,66 @@
-{% extends "base.html.twig" %}
+<div class="flex flex-col text-base font-normal">
 
-{% block body %}
+	<div class="flex flex-col w-full items-center justify-center text-lg font-bold text-xl text-red-600 my-8">
+		<span>Votre énergie quotidienne recommandée est</span>
+		<span>{{ energyKcal }} kcal / {{ energyJ }} Kj</span>
+		<span class="text-sm">(1Kcal = 4,184Kj)</span>
+	</div>
 
-	<div class="py-12">
+	<p>
+		Nous estimons votre
+		<span class="font-bold text-sky-600">apport calorique quotidien</span>
+		en fonction de votre profil personnel : sexe, âge, taille, poids, activité physique et type de travail.
+	</p>
 
-		{{ include('navigation/_header_page.html.twig', {title: 'Votre besoin énergétique journalier'}) }}
+	<div class="flex italic text-2xl my-8 font-bold border border-gray-500 justify-center p-4">
+		Énergie (kj/jour) = coeffPI × coeffAge × poids utilisé × coeffActivité
+	</div>
 
-		<div class="flex justify-center">
+	<ul class="list-disc mx-8">
+		<li>Sexe :
+			<strong>{{ app.user.gender == 'MALE' ? 'Homme' : 'Femme' }}</strong>
+			→ coeffPI =
+			<strong>{{ user.gender == 'MALE' ? 110 : 100 }}</strong>
+		</li>
+		<li>Âge :
+			<strong>{{ app.user.ageRange }}
+				ans</strong>
+			→ coeffAge =
+			<strong>{{ ageCoeff }}</strong>
+		</li>
+		<li>Taille :
+			<strong>{{ app.user.height }}
+				cm</strong>
+		</li>
+		<li>Poids :
+			<strong>{{ app.user.weight }}
+				kg</strong>
+		</li>
+		<li>Poids utilisé pour le calcul :
+			<strong>{{ weightForEnergy }}
+				kg</strong>
+			(max entre poids réel et poids idéal de
+			{{ perfectWeight }}
+			kg)</li>
+		<li>Activité physique :
+			<strong>
+				{% if workingType.id == 16 %}métier physique{% else %}pas de métier physique
+				{% endif %}
+			</strong>
+			+
+			<strong>
+				{% if sportingTime.id == 22 %}pas de sport{% elseif sportingTime.id == 23 %}moins de 5h de sport{% else %}plus de 5h de sport
+				{% endif %}
+			</strong>
+			→ coeffActivité =
+			<strong>{{ physicalActivityCoeff }}</strong>
+		</li>
+	</ul>
 
-			<div class="bg-white w-full lg:w-2/3 shadow-lg rounded-xl p-8">
+	<p class="mt-4 text-sm text-gray-600">
+		Ce calcul ajuste vos besoins énergétiques selon vos caractéristiques personnelles pour mieux répondre à vos objectifs et votre mode de vie.
+	</p>
 
-                <div class="text-lg font-bold text-2xl text-red-600 mb-8">
-					Votre énergie quotidienne recommandée est
-					<strong>{{ energyKcal }} kcal / {{ energyJ }} Kj</strong>
-                    <span class="text-sm">(1Kcal = 4,184Kj)</span>
-				</div>
+</div>
 
-				<p>
-					Nous estimons votre
-					<span class="font-bold text-sky-600">apport calorique quotidien</span>
-					en fonction de votre profil personnel : sexe, âge, taille, poids, activité physique et type de travail.
-				</p>
 
-				<div class="flex italic text-2xl my-8 font-bold border border-gray-500 justify-center p-4">
-					Énergie (kj/jour) = coeffPI × coeffAge × poids utilisé × coeffActivité
-				</div>
-
-				<ul class="list-disc mx-8">
-					<li>Sexe :
-						<strong>{{ app.user.gender == 'MALE' ? 'Homme' : 'Femme' }}</strong>
-						→ coeffPI =
-						<strong>{{ user.gender == 'MALE' ? 110 : 100 }}</strong>
-					</li>
-					<li>Âge :
-						<strong>{{ app.user.ageRange }}
-							ans</strong>
-						→ coeffAge =
-						<strong>{{ ageCoeff }}</strong>
-					</li>
-					<li>Taille :
-						<strong>{{ app.user.height }}
-							cm</strong>
-					</li>
-					<li>Poids :
-						<strong>{{ app.user.weight }}
-							kg</strong>
-					</li>
-					<li>Poids utilisé pour le calcul :
-						<strong>{{ weightForEnergy }}
-							kg</strong>
-						(max entre poids réel et poids idéal de
-						{{ perfectWeight }}
-						kg)</li>
-					<li>Activité physique :
-						<strong>
-							{% if workingType.id == 16 %}métier physique{% else %}pas de métier physique
-							{% endif %}
-						</strong>
-						+
-						<strong>
-							{% if sportingTime.id == 22 %}pas de sport{% elseif sportingTime.id == 23 %}moins de 5h de sport{% else %}plus de 5h de sport
-							{% endif %}
-						</strong>
-						→ coeffActivité =
-						<strong>{{ physicalActivityCoeff }}</strong>
-					</li>
-				</ul>
-
-				<p class="mt-4 text-sm text-gray-600">
-					Ce calcul ajuste vos besoins énergétiques selon vos caractéristiques personnelles pour mieux répondre à vos objectifs et votre mode de vie.
-				</p>
-			</div>
-
-		</div>
-
-	{% endblock %}

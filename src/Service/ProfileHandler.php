@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\User;
-use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 

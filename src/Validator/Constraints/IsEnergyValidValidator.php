@@ -10,6 +10,13 @@ class IsEnergyValidValidator extends ConstraintValidator
 {
     public function validate($value, Constraint $constraint)
     {
+        // 🔥 équivalent NotBlank
+        if ($value === null || $value === '') {
+            $this->context->buildViolation('Veuillez saisir une valeur d\'énergie.')
+                ->addViolation();
+            return; // important pour stopper ici
+        }
+
         switch ($constraint->unitMeasure) {
             case EnergyHandler::KCAL:
                 if ($value >= $constraint->maxKcal || $value < $constraint->minKcal) {

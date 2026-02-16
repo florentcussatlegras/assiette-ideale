@@ -148,6 +148,7 @@ class ChartController extends AbstractController
         ChartBuilderInterface $chartBuilder,
         WeightLogRepository $weightLogRepository
     ) {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED');
         /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
 

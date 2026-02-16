@@ -7,16 +7,11 @@ use App\Entity\Hour;
 use App\Entity\User;
 use App\Entity\Gender;
 use App\Entity\AgeRange;
-use App\Entity\TypeMeal;
 use App\Entity\Diet\Diet;
 use App\Entity\WorkingType;
-use App\Form\Type\DietType;
-use App\Entity\Diet\SubDiet;
 use App\Entity\SportingTime;
-use App\Form\Type\EnergyType;
 use App\Service\EnergyHandler;
 use App\Service\ProfileHandler;
-use App\Entity\PhysicalActivity;
 use App\Service\NutrientHandler;
 use App\Service\FoodGroupHandler;
 use App\Repository\HourRepository;
@@ -25,80 +20,48 @@ use App\Repository\GenderRepository;
 use Symfony\Component\Form\FormEvent;
 use App\Repository\AgeRangeRepository;
 use Symfony\Component\Form\FormEvents;
-use App\Form\Type\PhysicalActivityType;
-use App\Validator\Constraints\IsUnique;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use App\Repository\WorkingTypeRepository;
 use App\Repository\SportingTimeRepository;
-use Symfony\UX\Dropzone\Form\DropzoneType;
 use App\Validator\Constraints as AppAssert;
-use App\Validator\Constraints\IsWeightValid;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\PhysicalActivityRepository;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Form\Type\VichFileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
-use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use App\Exception\MissingElementForEnergyEstimationException;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ProfileType extends AbstractType
 {
-    private $genderRepository;
-    private $physicalActivityRepository;
-    private $session;
-    private $security;
-    private $request;
-    private $energyHandler;
 
     public function __construct(
-            GenderRepository $genderRepository, 
-            AgeRangeRepository $ageRangeRepository,
-            HourRepository $hourRepository,
-            WorkingTypeRepository $workingTypeRepository,
-            SportingTimeRepository $sportingTimeRepository,
-            PhysicalActivityRepository $physicalActivityRepository, 
-            RequestStack $requestStack, 
-            Security $security, 
-            EnergyHandler $energyHandler,
-            NutrientHandler $nutrientHandler,
-            FoodGroupHandler $foodGroupHandler,
+            private GenderRepository $genderRepository, 
+            private AgeRangeRepository $ageRangeRepository,
+            private HourRepository $hourRepository,
+            private WorkingTypeRepository $workingTypeRepository,
+            private SportingTimeRepository $sportingTimeRepository,
+            private PhysicalActivityRepository $physicalActivityRepository, 
+            private RequestStack $requestStack, 
+            private Security $security, 
+            private EnergyHandler $energyHandler,
+            private NutrientHandler $nutrientHandler,
+            private FoodGroupHandler $foodGroupHandler,
     )
-    {
-        $this->genderRepository = $genderRepository;
-        $this->ageRangeRepository = $ageRangeRepository;
-        $this->hourRepository = $hourRepository;
-        $this->workingTypeRepository = $workingTypeRepository;
-        $this->sportingTimeRepository = $sportingTimeRepository;
-        $this->request = $requestStack->getCurrentrequest();
-        $this->session = $requestStack->getSession();
-        $this->security = $security;
-        $this->physicalActivityRepository = $physicalActivityRepository;
-        $this->energyHandler = $energyHandler;
-        $this->nutrientHandler = $nutrientHandler;
-        $this->foodGroupHandler = $foodGroupHandler;
-    }
+    {}
 
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var App\Entity\User $user */
         $user = $this->security->getUser();
 
         $validationGroups = sprintf('profile_%s', $options['element']);
@@ -293,7 +256,7 @@ class ProfileType extends AbstractType
                                 ],
                                 'translation_domain' => 'profile',
                                 'choice_translation_domain' => 'profile',
-                                'expanded' => false,
+                                'expanded' => true,
                                 'data' => null !== $user->getAutomaticCalculateEnergy() ? $user->getAutomaticCalculateEnergy() : true
                             ]
                         )

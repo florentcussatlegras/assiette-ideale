@@ -1,13 +1,44 @@
 <div class="pb-2 flex items-center justify-center text-base font-medium text-green-700 border-b border-green-700 w-full">
-    {% trans from 'profile' %}profile.imc.title{% endtrans %}
+	{% trans from 'profile' %}profile.imc.title{% endtrans %}
 </div>
 
-<div class="pt-4 flex items-center justify-center my-2 text-xl text-green-700 font-bold relative w-full h-full px-16">
-    {% if app.user.imc %}
-        {{ app.user.imc|round }}
-    {% else %}
-        <span class="text-sm">Il nous manque des informations afin que nous puissions calculer votre IMC. 
-            <a href="#" class="text-sm text-dark-blue">En savoir plus</a>
-        </span>
-    {% endif %}
+<div class="pt-4 flex items-center justify-center my-2 text-xl text-green-700 font-bold w-full h-full px-16 gap-2">
+
+	{% if app.user.imc %}
+
+		<div class="relative inline-block">
+
+			<span class="block text-center">
+				{{ app.user.imc|round }}
+			</span>
+
+			<div {{ stimulus_controller('imc-explanation-modal') }}>
+
+				{{ include('profile/partials/modals/_imc_explanation_modal.html.twig') }}
+
+                <button class="absolute right-full mr-2 top-adjust-i" data-action="click->imc-explanation-modal#open">
+                    <svg 
+                        class="w-6 h-6 text-green-700" fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 416.979 416.979" xml:space="preserve">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <g>
+                                <path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85 c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786 c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576 c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765 c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"></path>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+
+			</div>
+
+		</div>
+
+	{% else %}
+
+		<span class="text-sm">Il nous manque des informations afin que nous puissions calculer votre IMC.
+			<a href="#" class="text-sm text-dark-blue">En savoir plus</a>
+		</span>
+
+	{% endif %}
+
 </div>
