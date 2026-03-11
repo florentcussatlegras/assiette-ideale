@@ -34,6 +34,10 @@ class LevelAlert
     public const BALANCE_VERY_EXCESS = 'balance_very_excess';
     public const BALANCE_CRITICAL_EXCESS = 'balance_critical_excess';
 
+    public const WELL_ALERTS_LABEL = 'well';
+    public const LOW_ALERTS_LABEL = 'low';
+    public const HIGH_ALERTS_LABEL = 'high';
+
     // Regroupements par catégorie
     public const LOW_ALERTS = [
         self::BALANCE_LACK,

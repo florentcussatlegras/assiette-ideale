@@ -1,54 +1,34 @@
 {# Container principal du résumé nutritionnel du repas #}
-<div 
-    {{ stimulus_controller('modal-meal-nutrition-summary') }}
->
+<div
+	{{ stimulus_controller('modal-meal-nutrition-summary') }}>
 
-    {# Bouton pour ouvrir le modal nutritionnel #}
-    <button
-        {{ stimulus_controller('ripple') }} {# Ajoute l'effet visuel ripple #}
-        data-action="click->modal-meal-nutrition-summary#open click->ripple#ripple" {# Ouvre le modal et déclenche l'effet #}
-        {% if isFullyBalanced %}
-            {# Bouton vert si le repas est complètement équilibré #}
-            class="rounded-full p-3 bg-green-500 hover:bg-green-600 transition duration-300"
-        {% else %}
-            {# Bouton gris si le repas n’est pas équilibré #}
-            class="rounded-full p-3 bg-gray-400 hover:bg-gray-500 transition duration-300"
-        {% endif %}
-    >
-        {# Icône SVG de check / validation #}
-        <svg class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-			<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-		</svg>
-    </button>
+	{# Bouton pour ouvrir le modal nutritionnel #}
+	<button {{ stimulus_controller('ripple') }} data-action="click->modal-meal-nutrition-summary#open click->ripple#ripple" class="btn-final-alerts rounded-full bg-gray-100 hover:bg-gray-200 p-3 transition duration-300">
+		{% if isFullyBalanced %}
+			{# équilibré #}
+			<svg class="w-10 h-10 text-green-300" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+				<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+			</svg>
+		{% else %}
+			{% if highest_alert is null %}
+				{# pas d'excés #}
+				<svg class="w-10 h-10 text-gray-400" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+				</svg>
+			{% else %}
+				{# excés #}
+				<svg class="w-10 h-10" style="color: {{ highest_alert.color }}" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+					<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+						           M9 5a2 2 0 002 2h2a2 2 0 002-2
+						           M9 5a2 2 0 012-2h2a2 2 0 012 2
+						           M10 10l4 4
+						           M14 10l-4 4"></path>
+				</svg>
+			{% endif %}
+		{% endif %}
+	</button>
 
-    {# Inclusion du modal complet de résumé nutritionnel #}
-    {{ include('meals/day/modals/_modal_nutrition_summary.html.twig') }}
+	{# Inclusion du modal complet de résumé nutritionnel #}
+	{{ include('meals/day/modals/_modal_nutrition_summary.html.twig') }}
 
 </div>
-
-{# Bouton et modal d'alertes finales si des alertes sont présentes dans la session #}
-{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
-
-    {# Bouton pour ouvrir le modal des alertes finales #}
-    <button 
-        type="button"
-        data-toggle="modal" 
-        data-target="#finalAlertModal" {# ID du modal à ouvrir #}
-        class="p-3 flex items-center gap-2 cursor-pointer rounded-full"
-        style="background-color: {{ highest_alert.color }}" {# Couleur selon la gravité de l'alerte #}
-    >
-        {# Icône SVG représentant une alerte / attention #}
-        <svg class="text-white w-10 h-10" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier"> 
-                <path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> 
-                <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="currentColor"></path> 
-            </g>
-        </svg>
-    </button>
-
-    {# Inclusion du modal contenant la liste des alertes finales #}
-	{{ include('meals/day/modals/_modal_list_final_alerts.html.twig') }}
-
-{% endif %}

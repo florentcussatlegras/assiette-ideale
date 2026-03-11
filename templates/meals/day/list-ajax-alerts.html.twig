@@ -23,7 +23,7 @@
         type="button" 
         data-toggle="modal" 
         data-target="#alertMealModal"
-        class="alert-{{ dishOrFoodId }} flex justify-start advice text-sm font-bold w-full text-left cursor-pointer"
+        class="btn-alert-meal-modal  alert-{{ dishOrFoodId }} flex justify-start advice text-sm font-bold w-full text-left cursor-pointer transition duration-300"
         data-action="click->alert-meal-modal#showMessages"
         data-url="{{ path('alert_meal_list', {
             'class': class,

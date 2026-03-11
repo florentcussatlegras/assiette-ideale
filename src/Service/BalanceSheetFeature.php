@@ -344,6 +344,64 @@ class BalanceSheetFeature
     }
 
     /**
+     * Retourne l'ensemble des messages de suggestions pour les alertes nutritionnelles.
+     *
+     * Cette méthode construit un tableau associatif contenant les messages à afficher
+     * selon le type d'alerte (équilibré, manque ou excès) pour :
+     *  - les nutriments (via la constante NutrientHandler::MESSAGES_SUGGESTIONS)
+     *  - les groupes alimentaires parents (Food Group Parents)
+     *  - l'énergie totale du repas
+     *
+     * Structure du tableau retourné :
+     * [
+     *     'protein' => [
+     *         'well' => 'message',
+     *         'low'  => 'message',
+     *         'high' => 'message'
+     *     ],
+     *     'lipid' => [...],
+     *     'vegetables' => [...],
+     *     'energy' => [...]
+     * ]
+     *
+     * Les clés 'well', 'low' et 'high' correspondent aux constantes :
+     *  - LevelAlert::WELL_ALERTS_LABEL
+     *  - LevelAlert::LOW_ALERTS_LABEL
+     *  - LevelAlert::HIGH_ALERTS_LABEL
+     *
+     * Ce tableau est utilisé dans les templates Twig afin d'afficher dynamiquement
+     * le message correspondant au niveau d'alerte calculé pour chaque nutriment
+     * ou groupe alimentaire.
+     *
+     * @return array|null Tableau associatif des messages de suggestions.
+     */
+    public function getMessageSuggestions(): ?array
+    {
+        // ===== NUTRIENT =====
+        $allMessages = NutrientHandler::MESSAGES_SUGGESTIONS;
+
+        // ===== FOOD GROUP PARENTS =====
+        $aliasNameMap = $this->foodGroupParentRepository->getAliasNameMap();
+        foreach ($aliasNameMap as $fgpAlias => $fgpName) {
+            $fgpNameLower = strtolower($fgpName);
+            $allMessages[$fgpAlias] = [
+                LevelAlert::WELL_ALERTS_LABEL  => "Votre consommation de {$fgpNameLower} est bonne.",
+                LevelAlert::LOW_ALERTS_LABEL  => "Ajoutez davantage de {$fgpNameLower} à votre repas.",
+                LevelAlert::HIGH_ALERTS_LABEL => "Essayez de réduire les {$fgpNameLower} dans ce repas.",
+            ];
+        }
+
+        // ===== ENERGY =====
+        $allMessages['energy'] = [
+            LevelAlert::WELL_ALERTS_LABEL  => "Votre consommation calorique est bonne.",
+            LevelAlert::LOW_ALERTS_LABEL  => "Votre consommation calorique est trop faible, consommez plus!",
+            LevelAlert::HIGH_ALERTS_LABEL => "Votre consommation calorique est trop forte, consommez moins!",
+        ];
+
+        return $allMessages;
+    }
+
+    /**
      * Récupère les repas de l'utilisateur pour une date précise.
      *
      * @param string $dateStr Date au format 'YYYY-MM-DD'

@@ -3731,7 +3731,9 @@ btn {
     gap: 1rem;
 }
 
-.card-wrapper:hover {
+.card-wrapper:hover,
+.btn-final-alerts:hover,
+.btn-alert-meal-modal:hover {
   transform: scale(1.02);
 }
 
