@@ -1,0 +1,108 @@
+{% macro accordion(title, data, suggestion, valueUnit, recommendedUnit, type) %}
+
+	{% set direction = data.level.code in constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS')
+    ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
+    : data.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS')
+        ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
+        : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL')
+%}
+
+	<div {{ stimulus_controller('meal-day-report-section') }} class="border-b border-gray-200">
+
+		<div data-action="click->meal-day-report-section#toggle" class="flex justify-between items-center py-2 cursor-pointer hover:bg-gray-100 transition duration-300">
+
+			<div class="flex flex-row items-center gap-2">
+
+				<div class="rounded-full p-2 ml-2" style="background-color: {{ data.level.color }}">
+
+					{% if data.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
+
+						<svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 32 32">
+							<path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"/>
+						</svg>
+
+					{% else %}
+
+						<svg class="text-white w-5 h-5" viewbox="0 0 24 24" fill="currentColor">
+							<path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+							<circle cx="12" cy="18.8" r="1.8" fill="currentColor"/>
+						</svg>
+
+					{% endif %}
+
+				</div>
+
+				<span>{{ title }}</span>
+
+			</div>
+
+			<div class="ml-auto mr-6" style="color: {{ data.level.color }}">
+				{{ data.consumed|round }}
+				{{ valueUnit }}
+				/
+				{{ data.recommended|round }}
+				{{ recommendedUnit }}
+			</div>
+
+			<svg data-meal-day-report-section-target="icon" class="w-4 h-4 transition-transform duration-300 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+			</svg>
+
+		</div>
+
+		<div data-meal-day-report-section-target="content" class="overflow-hidden transition-all duration-300" style="height:0px;">
+
+			<div class="pb-4 pt-2 px-8 text-sm text-gray-600">
+
+				{{ suggestion[direction] }}
+
+				<ul class="list-disc pl-5 space-y-1 ml-6 mt-2">
+
+					<li>Consommé :
+						{{ data.consumed|round }}
+						{{ valueUnit }}</li>
+
+					{% if type == 'fgp' %}
+
+						{% if data.isPrincipal %}
+							<li>Recommandé :
+								{{ data.recommended|round }}
+								{{ recommendedUnit }}</li>
+							<li>Niveau :
+								{{ data.level.placeholderText ?? data.level.code }}</li>
+						{% else %}
+							<li>Maximum recommandé :
+								{{ data.recommended|round }}
+								{{ recommendedUnit }}</li>
+
+							{% if data.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
+								<li>
+									Ce groupe alimentaire est
+									<strong>optionnel</strong>.
+										            Il n’existe
+									<strong>pas de minimum recommandé</strong>,
+										            mais une consommation excessive peut être signalée.
+								</li>
+							{% else %}
+								<li>Niveau :
+									{{ data.level.placeholderText ?? data.level.code }}</li>
+							{% endif %}
+						{% endif %}
+
+					{% else %}
+
+						<li>Recommandé :
+							{{ data.recommended|round }}
+							{{ recommendedUnit }}</li>
+						<li>Niveau :
+							{{ data.level.placeholderText ?? data.level.code }}</li>
+
+					{% endif %}
+
+				</ul>
+
+			</div>
+		</div>
+	</div>
+
+{% endmacro %}

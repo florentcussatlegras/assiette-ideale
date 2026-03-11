@@ -1,284 +1,82 @@
+{% import 'macros/nutrition.twig' as nutrition %}
+
 <!-- MODAL : Bilan nutritionnel   -->
 <div
-    data-modal-meal-nutrition-summary-target="modal"
-    class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
->
+	data-modal-meal-nutrition-summary-target="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
-    <!-- Conteneur principal de la modal -->
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-4 relative max-h-[90vh] flex flex-col">
+	<!-- Conteneur principal de la modal -->
+	<div
+		class="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-4 relative max-h-[90vh] flex flex-col">
 
-        <!-- Bouton de fermeture de la modal -->
-        <div class="flex items-center justify-end">
-            <button 
-                type="button"
-                data-action="click->modal-meal-nutrition-summary#close"
-                class="flex items-center justify-center rounded-full text-sky-600 transition duration-300 hover:bg-gray-100 rounded-full p-3 cursor-pointer" 
-                aria-label="Close"
-            >
-                <!-- Icône croix -->
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                    <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
-                </svg>
-            </button>
-        </div>
+		<!-- Bouton de fermeture de la modal -->
+		<div class="flex items-center justify-end">
+			<button
+				type="button" data-action="click->modal-meal-nutrition-summary#close" class="flex items-center justify-center rounded-full text-sky-600 transition duration-300 hover:bg-gray-100 rounded-full p-3 cursor-pointer" aria-label="Close">
+				<!-- Icône croix -->
+				<svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
+					<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+				</svg>
+			</button>
+		</div>
 
-        <!-- Titre de la fenêtre -->
-        <div class="p-2 border-b border-gray-200">
-             <h2 class="text-xl font-bold">
-                Bilan nutritionnel de vos repas
-            </h2>
-        </div>
+		<!-- Titre de la fenêtre -->
+		<div class="p-2 border-b border-gray-200">
+			<h2 class="text-xl font-bold">
+				Bilan nutritionnel de vos repas
+			</h2>
+		</div>
 
-        <!-- Contenu scrollable de la modal -->
-        <div class="flex-1 overflow-y-auto min-h-0 p-5">
+		<!-- Contenu scrollable de la modal -->
+		<div class="flex-1 overflow-y-auto min-h-0 p-5">
 
-            {# ====================================================== #}
-            {# SECTION : ENERGY (Calories totales du repas)          #}
-            {# ====================================================== #}
+			{# ====================================================== #}
+			{# SECTION : ENERGY (Calories totales du repas)          #}
+			{# ====================================================== #}
 
-            {# Récupération des données d'énergie depuis les alertes #}
-            {% set energy = alerts.energy %}
+                {{ nutrition.accordion(
+                    'Energie',
+                    alerts.energy,
+                    messageSuggestions['energy'],
+                    'Kcal',
+                    'Kcal'
+                ) }}
 
-            {# Détermination de la direction de l'alerte :
-               low / high / well selon le code LevelAlert #}
-            {% set direction = energy.level.code in constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
-                     : energy.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
-                     : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL') %}
+			{# ====================================================== #}
+			{# SECTION : NUTRIMENTS                                  #}
+			{# Exemple : protéines, lipides, glucides, sodium       #}
+				{# ====================================================== #}
 
-            <!-- Bloc accordéon pour l'énergie -->
-            <div
-                {{ stimulus_controller('meal-day-report-section') }}
-                class="border-b border-gray-200"
-            >
+                {% for nutrient, data in alerts.nutrients %}
 
-                <!-- En-tête cliquable de l'accordéon -->
-                <div 
-                    data-action="click->meal-day-report-section#toggle"
-                    class="flex justify-between items-center py-2 cursor-pointer hover:bg-gray-100 transition duration-300"
-                >
+                    {{ nutrition.accordion(
+                        data.nutrientName|capitalize,
+                        data,
+                        messageSuggestions[nutrient],
+                        'g',
+                        'g'
+                    ) }}
 
-                    <!-- Icône + titre -->
-                    <div class="flex flex-row items-center gap-2">
+                {% endfor %}
 
-                        <!-- Icône colorée selon le niveau d'alerte -->
-                        <div class="rounded-full p-2 ml-2" style="background-color: {{ energy.level.color }}">
-
-                            {# Si l'équilibre est bon → icône check #}
-                            {% if energy.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
-                                <!-- Icône validation -->
-                                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 32 32">
-                                    <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"></path>
-                                </svg>
-
-                            {% else %}
-                                <!-- Icône attention -->
-                                <svg class="text-white w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                                    <circle cx="12" cy="18.8" r="1.8" fill="currentColor"/>
-                                </svg>
-                            {% endif %}
-                        </div>
-
-                        <span class="font-medium">Energie</span>
-                    </div>
-
-                    <!-- Valeurs consommées vs recommandées -->
-                    <div class="ml-auto mr-6" style="color: {{ energy.level.color }}">
-                        {{ energy.consumed }} Kcal / {{ energy.recommended|round }} Kcal
-                    </div>
-
-                    <!-- Chevron animé pour l'accordéon -->
-                    <svg
-                        data-meal-day-report-section-target="icon"
-                        class="w-4 h-4 transition-transform duration-300 group-open:rotate-180 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                    >
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                    </svg>
-                 
-                </div>
-
-                <!-- ============================= -->
-                <!-- Contenu de l'accordéon       -->
-                <!-- ============================= -->
-                <div 
-                    data-meal-day-report-section-target="content"
-                    class="overflow-hidden transition-all duration-300"
-                    style="height: 0px;"
-                >
-                    <div class="pb-4 pt-2 px-8 text-sm text-gray-600">
-
-                        {# Message de suggestion dynamique #}
-                        {{ messageSuggestions['energy'][direction] }}
-
-                        <!-- Détails nutritionnels -->
-                        <ul class="list-disc pl-5 space-y-1 ml-6 mt-2">
-                            <li>Consommé : {{ energy.consumed|round }} Kcal</li>
-                            <li>Recommandé : {{ energy.recommended|round }} Kcal</li>
-                            <li>Niveau : {{ energy.level.placeholderText ?? energy.level.code }}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            {# ====================================================== #}
-            {# SECTION : NUTRIMENTS                                  #}
-            {# Exemple : protéines, lipides, glucides, sodium       #}
+			{# ====================================================== #}
+			{# SECTION : FOOD GROUP PARENTS (FGP)                    #}
+			{# Groupes alimentaires principaux : fruits, légumes...  #}
             {# ====================================================== #}
 
-            {% for nutrient, data in alerts.nutrients %}
+				{% for fgp, data in alerts.food_groups %}
 
-                {# Détermination du type d'alerte (low / high / well) #}
-                {% set direction = data.level.code in constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
-                     : data.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
-                     : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL') %}
+                    {{ nutrition.accordion(
+                        data.fgpName,
+                        data,
+                        messageSuggestions[fgp],
+                        'g',
+                        'g'
+                    ) }}
 
-                {# Bloc accordéon identique à celui de l'énergie #}
-                {# Il affiche les informations et suggestions pour chaque nutriment #}
+                {% endfor %}
 
-                <div
-                    {{ stimulus_controller('meal-day-report-section') }}
-                    class="border-b border-gray-200"
-                >
-                    <div 
-                        data-action="click->meal-day-report-section#toggle"
-                        class="flex justify-between items-center py-2 cursor-pointer hover:bg-gray-100 transition duration-300"
-                    >
+		</div>
 
-                        <div class="flex flex-row items-center gap-2">
-                            <div class="rounded-full p-2 ml-2" style="background-color: {{ data.level.color }}">
-                                {% if data.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"></path> </g></svg>
-                                {% else %}
-                                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="currentColor"></path> </g></svg>
-                                {% endif %}
-                            </div>
-                            <span>{{ data.nutrientName|capitalize }}</span>
-                        </div>
-
-                        <div class="ml-auto mr-6" style="color: {{ data.level.color }}">{{ data.consumed }} g / {{ data.recommended }} g</div>
-
-                        <!-- Chevron animé -->
-                        <svg
-                            data-meal-day-report-section-target="icon"
-                            class="w-4 h-4 transition-transform duration-300 group-open:rotate-180 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-
-                    </div>
-
-                    <!-- Contenu accordéon -->
-                    <div 
-                        data-meal-day-report-section-target="content"
-                        class="overflow-hidden transition-all duration-300"
-                        style="height: 0px;"
-                    >
-                        <div class="pb-4 pt-2 px-8 text-sm text-gray-600">
-
-                            {{ messageSuggestions[nutrient][direction] }}
-
-                            <ul class="list-disc pl-5 space-y-1 ml-6 mt-2">
-                                <li>Consommé : {{ data.consumed|round }} g</li>
-                                <li>Recommandé : {{ data.recommended|round }} g</li>
-                                <li>Niveau : {{ data.level.placeholderText ?? data.level.code }}</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-
-            {% endfor %}
-
-            {# ====================================================== #}
-            {# SECTION : FOOD GROUP PARENTS (FGP)                    #}
-            {# Groupes alimentaires principaux : fruits, légumes...  #}
-            {# ====================================================== #}
-
-            {% for fgp, data in alerts.food_groups %}
-
-                {# Détermination du type d'alerte #}
-                {% set direction = data.level.code in constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
-                     : data.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS') ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
-                     : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL') %}
-
-                <div
-                    {{ stimulus_controller('meal-day-report-section') }}
-                    class="border-b border-gray-200"
-                >
-                    <div 
-                        data-action="click->meal-day-report-section#toggle"
-                        class="flex justify-between items-center py-2 cursor-pointer hover:bg-gray-100 transition duration-300"
-                    >
-
-                        <div class="flex flex-row items-center gap-2">
-                            <div class="rounded-full p-2 ml-2" style="background-color: {{ data.level.color }}">
-                                {% if data.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
-                                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>checkmark2</title> <path d="M28.998 8.531l-2.134-2.134c-0.394-0.393-1.030-0.393-1.423 0l-12.795 12.795-6.086-6.13c-0.393-0.393-1.029-0.393-1.423 0l-2.134 2.134c-0.393 0.394-0.393 1.030 0 1.423l8.924 8.984c0.393 0.393 1.030 0.393 1.423 0l15.648-15.649c0.393-0.392 0.393-1.030 0-1.423z"></path> </g></svg>
-                                {% else %}
-                                    <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="currentColor"></path> </g></svg>
-                                {% endif %}
-                            </div>
-                            <span>{{ data.fgpName }}</span>
-                        </div>
-
-                        <div class="ml-auto mr-6" style="color: {{ data.level.color }}">{{ data.consumed|round }} g / {{ data.recommended }} g</div>
-
-                         <!-- Chevron animé -->
-                        <svg
-                            data-meal-day-report-section-target="icon"
-                            class="w-4 h-4 transition-transform duration-300 group-open:rotate-180 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
-
-                    </div>
-
-                    <!-- Contenu accordéon -->
-                    <div 
-                        data-meal-day-report-section-target="content"
-                        class="overflow-hidden transition-all duration-300"
-                        style="height: 0px;"
-                    >
-                        <div class="pb-4 pt-2 px-8 text-sm text-gray-600">
-
-                            {{ messageSuggestions[fgp][direction] }}
-                            
-                            <ul class="list-disc pl-5 space-y-1 ml-6 mt-2">
-                                <li>Consommé : {{ data.consumed|round }} g</li>
-
-                                {% if data.isPrincipal %}
-                                    <li>Recommandé : {{ data.recommended|round }} g</li>
-                                    <li>Niveau : {{ data.level.placeholderText ?? data.level.code }}</li>
-                                {% else %}
-                                    <li>Maximum recommandé : {{ data.recommended|round }} g</li>
-                                    {% if data.level.code is same as(constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL')) %}
-                                        <li>
-                                            Ce groupe alimentaire est <strong>optionnel</strong>.  
-                                            Il n’existe <strong>pas de minimum recommandé</strong>, mais une consommation
-                                            excessive peut être signalée.
-                                        </li>
-                                    {% else %}
-                                        <li>Niveau : {{ data.level.placeholderText ?? data.level.code }}</li>
-                                    {% endif %}
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    </div>
+	</div>
 
 </div>
