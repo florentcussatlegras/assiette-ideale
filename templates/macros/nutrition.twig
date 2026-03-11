@@ -1,11 +1,11 @@
 {% macro accordion(title, data, suggestion, valueUnit, recommendedUnit, type) %}
 
 	{% set direction = data.level.code in constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS')
-    ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
-    : data.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS')
-        ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
-        : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL')
-%}
+        ? constant('App\\Entity\\Alert\\LevelAlert::LOW_ALERTS_LABEL')
+        : data.level.code in constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS')
+            ? constant('App\\Entity\\Alert\\LevelAlert::HIGH_ALERTS_LABEL')
+            : constant('App\\Entity\\Alert\\LevelAlert::WELL_ALERTS_LABEL')
+    %}
 
 	<div {{ stimulus_controller('meal-day-report-section') }} class="border-b border-gray-200">
 
