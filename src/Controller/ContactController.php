@@ -19,7 +19,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
  * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
  * Date : 2026-03-09
  * Projet : Assiette idéale
- * 
  */
 #[Route('/contact')]
 class ContactController extends AbstractController
