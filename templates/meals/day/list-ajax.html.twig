@@ -1,12 +1,26 @@
+{# Récupération de l’ID correspondant à l’unité "g" (grammes) dans la liste des unités #}
+{% set grammeId = null %}
+{% for id, alias in unitMeasures %}
+    {% if alias|trim == 'g' %}
+        {% set grammeId = id %}
+    {% endif %}
+{% endfor %}
+
+{# On récupère le repas courant depuis la session, en fonction du rang #}
+{% set currentMeal = app.session.get('_meal_day_' ~ rankMeal) %}
+
+{# Boucle sur les résultats de plats ou aliments à afficher #}
 {% for item in results %}
-	{{ include("meals/day/_dish.html.twig") }}	
+    {# Inclut le template qui rend un plat individuel #}
+    {{ include("meals/day/_dish.html.twig") }}
 {% else %}
+    {# Si la liste results est vide #}
     <h1 class="empty-title">Aucun plats trouvés</h1>
 {% endfor %}
 
+{# Stockage des derniers résultats pour la recherche ou pagination (utilisé en JS) #}
 <input 
     type="hidden"
     data-reload-content-target="lastResults"
     value="{{ lastResults|default(false) }}"
 />
-

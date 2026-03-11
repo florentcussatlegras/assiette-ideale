@@ -1,11 +1,21 @@
+{# Début du formulaire de recherche de menu de la semaine #}
 {{ form_start(searchWeekMenuForm, {'attr' : {'class': 'ml-auto flex items-center gap-2'}}) }}
 
+    {# Champ de sélection de la semaine avec un contrôleur Stimulus pour le datepicker #}
     {{ form_widget(searchWeekMenuForm.week, {'attr': {'data-controller': 'datepicker'}}) }}
 
-    <button type="submit" class="flex items-center font-bold rounded-full bg-sky-600 hover:bg-sky-700 text-current-color text-sm gap-2 cursor-pointer justify-center transition duration-300 shadow-soft" style="width: 40px; height: 40px; min-width: 40px; min-height: 40px;">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-    </button>
+    <div class="w-12">
+        {# Bouton de soumission du formulaire #}
+        <button type="submit" 
+                class="flex items-center font-bold rounded-full w-12 h-12 bg-sky-600 hover:bg-sky-700 text-current-color text-sm gap-2 cursor-pointer justify-center transition duration-300 shadow-soft">
+            {# Icône de calendrier #}
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                </path>
+            </svg>
+        </button>
+    </div>
 
+{# Fin du formulaire #}
 {{ form_end(searchWeekMenuForm) }}

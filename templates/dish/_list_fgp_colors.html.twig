@@ -1,5 +1,29 @@
+{# Conteneur pour afficher les indicateurs des groupes alimentaires parents #}
 <div class="list-fgp flex flex-row gap-2">
-    {% for fgp in dish.dishFoodGroupParents %}
-        <div class="w-3 h-3 rounded-lg" style="border: 1px solid {{ fgp.foodGroupParent.color }}; background-color: {{ fgp.foodGroupParent.color }}"></div>
-    {% endfor %}
+
+    {# Cas où l’objet Dish contient les objets complets des groupes parents #}
+    {% if dish.dishFoodGroupParents is defined and dish.dishFoodGroupParents|length > 0 %}
+        {% for fgp in dish.dishFoodGroupParents %}
+            {# Petit carré coloré représentant le groupe alimentaire parent #}
+            <div class="w-3 h-3 rounded-lg" 
+                 style="border: 1px solid {{ fgp.foodGroupParent.color }}; 
+                        background-color: {{ fgp.foodGroupParent.color }}">
+            </div>
+        {% endfor %}
+
+    {# Cas où on récupère uniquement les IDs et couleurs depuis la requête SQL #}
+    {% elseif dish.dish_food_group_parent_ids is defined and dish.dish_food_group_parent_ids %}
+        {# Transformation des chaînes CSV en listes #}
+        {% set ids = dish.dish_food_group_parent_ids|split(',') %}
+        {% set colors = dish.dish_food_group_parent_colors|split(',') %}
+
+        {# Boucle sur chaque ID pour afficher les carrés colorés correspondants #}
+        {% for i in 0..(ids|length - 1) %}
+            <div class="w-3 h-3 rounded-lg" 
+                 style="border: 1px solid {{ colors[i] }}; 
+                        background-color: {{ colors[i] }}">
+            </div>
+        {% endfor %}
+    {% endif %}
+
 </div>

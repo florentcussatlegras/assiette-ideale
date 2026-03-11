@@ -1,6 +1,5 @@
-
+{# Définition des codes d'alerte autorisés (excès calorique) #}
 {% set allowedCodes = [
-    constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL'),
     constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS'),
     constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS'),
     constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS'),
@@ -8,65 +7,63 @@
 
 <div class="flex flex-row items-center justify-start md:justify-end gap-4 px-{{paddingX|default(6)}} py-4 {{ bgColor }} relative {% if alert is defined and alert.code in allowedCodes %}pl-18{% endif %}">
 
+    {# Affichage du bouton popover si on a une alerte et que ce n'est pas un modèle #}
     {% if alert is defined and app.session.get('_meal_day_date') != 'model' %}
-        
-        {% if showPopover is true %}
-            <div 
-                {{ stimulus_controller('popover-info', {
-                    url: path('meal_popover_energy')
-                }) }}
-                class="absolute left-4 flex items-center"
-            >
-                <button 
-                    data-action="click->popover-info#show"
-                    data-energy="{{ mealDayEnergy }}"
-                    class="cursor-pointer {{ bgColor }} overflow-hidden"
-                >
-                    {% if alert.code in allowedCodes %}
-                        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(7), opacity: 1 }) }}
-                    {% endif %}
-                </button>
-                {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
-            </div>
-         {% else %}
-            {% if alert.code in allowedCodes %}
-                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(7), opacity: 1 }) }}
-            {% endif %}
-            {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
-        {% endif %}
+        {% set showButtonPopover = showPopover is same as(true) and alert.code in allowedCodes %}
 
+        <div 
+            {% if showPopover is same as(true) %} 
+                {{ stimulus_controller('popover-info', { url: path('meal_popover_energy') } ) }} 
+                class="absolute left-4 flex items-center" 
+            {% endif %}
+        >
+            {# Icône d'alerte si le code est dans allowedCodes #}
+            {% if alert.code in allowedCodes %}
+                {% if showPopover is same as(true) %}
+                    <button 
+                        data-action="click->popover-info#show" 
+                        data-energy="{{ mealDayEnergy }}" 
+                        class="cursor-pointer {{ bgColor }} overflow-hidden"
+                    >
+                        {{ include('partials/svg/warning.html.twig', { color: alert.color, size: sizeIcon|default(7) }) }}
+                    </button>
+                {% else %}
+                    {{ include('partials/svg/warning.html.twig', { color: alert.color, size: sizeIcon|default(7) }) }}
+                {% endif %}
+            {% endif %}
+
+            {# Modal énergie liée à l'alerte #}
+            {{ include('meals/day/modals/_modal_energy_alert.html.twig') }}
+        </div>
     {% endif %}
 
+    {# Couleur du texte selon le code d'alerte #}
     {% if alert.code in allowedCodes %}
         {% set color = alert.color %}
     {% else %}
         {% set color = "#1A1A1A" %}
     {% endif %}
 
+    {# Affichage de la valeur d'énergie journalière #}
     <div class="flex items-end gap-2">
         <span class="text-3xl font-semibold leading-none" style="color: {{ color }}">{{ mealDayEnergy|round }}</span>
         <span class="text-base" style="color: {{ color }}">Kcal</span>
     </div>
 
-    <input 
-        type="hidden" 
-        data-meal-target="alertEnergy"
-        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_LACK') or
-            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_LACK') or 
-            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_LACK')
-        %}
-            value="-1"
-        {% endif %}
-        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') or
-            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') or 
-            alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS')
-        %}
-            value="1"
-        {% endif %}
-        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL') %}
-            value="0"
+    {# Input caché pour indiquer le type d'alerte énergétique (-1, 0, 1) #}
+    <input type="hidden" data-meal-target="alertEnergy" 
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_LACK') 
+              or alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_LACK') 
+              or alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_LACK') %} 
+            value="-1" 
+        {% endif %} 
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') 
+              or alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') 
+              or alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS') %} 
+            value="1" 
+        {% endif %} 
+        {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL') %} 
+            value="0" 
         {% endif %}
     />
-
-</div> 
-
+</div>

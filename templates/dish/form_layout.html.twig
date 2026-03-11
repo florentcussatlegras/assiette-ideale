@@ -1,33 +1,38 @@
 {% extends "base.html.twig" %}
 
+{# Thème personnalisé pour le formulaire de plat #}
 {% form_theme dishForm 'form/_custom_dish_themes.html.twig' %}
 
 {% block title %}
-	{{ parent() }}
-	- Nouvelle recette
+    {{ parent() }}  {# Conserve le titre défini dans base.html.twig #}
+    - Nouvelle recette
 {% endblock %}
 
 {% block body %}
 
-	<div class="py-12">
+    <div class="py-12">
 
-		{% if dish is defined %}
-			{% set idDish, title = dish.id, "#{dish.name}" %}
-		{% else %}
-			{% set idDish, title = null, "Nouvelle recette" %}
-		{% endif %}
+        {# Détermine l'ID et le titre de la recette selon si un plat existe ou non #}
+        {% if dish is defined %}
+            {% set idDish, title = dish.id, "#{dish.name}" %}
+        {% else %}
+            {% set idDish, title = null, "Nouvelle recette" %}
+        {% endif %}
 
-		{{ form_start(dishForm, {'attr': {'novalidate': 'novalidate', 'id': 'form_dish', 'class': 'm-0 p-0'}}) }}
+        {# Début du formulaire Symfony pour le plat, avec désactivation de la validation HTML et identifiant personnalisé #}
+        {{ form_start(dishForm, {'attr': {'novalidate': 'novalidate', 'id': 'form_dish', 'class': 'm-0 p-0'}}) }}
 
-		<div class="flex flex-col items-start md:flex-row md:items-center">
-			{{ include('navigation/_header_page.html.twig') }}
-			<div class="ml-auto md:mt-5">
-				{{ include("dish/_button_group.html.twig") }}
-			</div>
-		</div>
+        {# Header du formulaire avec navigation et boutons d'actions #}
+        <div class="flex flex-col items-start md:flex-row md:items-center">
+            {{ include('navigation/_header_page.html.twig') }}  {# Header de la page, titre et fil d’Ariane #}
+            <div class="ml-auto md:mt-5">
+                {{ include("dish/_button_group.html.twig") }}  {# Boutons de sauvegarde, annuler ou actions supplémentaires #}
+            </div>
+        </div>
 
-		{{ include('dish/_form.html.twig') }}
+        {# Inclusion du formulaire principal pour créer ou éditer un plat #}
+        {{ include('dish/_form.html.twig') }}
 
-	</div>
+    </div>
 
 {% endblock %}

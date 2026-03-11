@@ -35,7 +35,6 @@ class WeightUpdateCheckListener
         // Si l'utilisateur suit un régime et n'a pas mis à jour son poids depuis 7 jours
         // if ($user->isWeightGoalActive() && $this->energyAdjustmentManager->needsWeeklyUpdate($user)) {
         /** @var \App\Entity\User|null $user */
-
         if ($user->isWeightGoalActive() && $this->energyAdjustmentManager->needsWeeklyUpdate($user)) {
             // Flag à récupérer dans Twig
             $currentRoute = $request->attributes->get('_route');

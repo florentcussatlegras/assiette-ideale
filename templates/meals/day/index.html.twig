@@ -1,39 +1,21 @@
+{# Étend le layout de base de l’application #}
 {% extends "base.html.twig" %}
 
+{# Titre de la page, hérite du titre parent et ajoute “- Repas du jour” #}
 {% block title %}
-	{{ parent() }}
-	- Repas du jour
+    {{ parent() }}
+    - Repas du jour
 {% endblock %}
 
+{# Contenu principal de la page #}
 {% block body %}
 
-	<div id="meals-day">
+    {# Conteneur principal pour la vue des repas du jour #}
+    <div id="meals-day">
 
-		{{ include('meals/day/_meals_day.html.twig') }}
+        {# Inclusion du template qui contient toute la logique et l’affichage des repas du jour #}
+        {{ include('meals/day/_meals_day.html.twig') }}
 
-	</div>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', () => {
-
-			const btn = document.getElementById('scrollTopBtn');
-
-			window.addEventListener('scroll', () => {
-			if (window.scrollY > 300) {
-			btn.classList.remove('opacity-0', 'pointer-events-none');
-			btn.classList.add('opacity-100');
-			} else {
-			btn.classList.add('opacity-0', 'pointer-events-none');
-			btn.classList.remove('opacity-100');
-			}
-			});
-
-			btn.addEventListener('click', () => {
-			window.scrollTo({top: 0, behavior: 'smooth'});
-			});
-
-		});
-	</script>
-
+    </div>
 
 {% endblock %}

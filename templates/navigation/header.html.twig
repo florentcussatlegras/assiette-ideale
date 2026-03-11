@@ -1,201 +1,177 @@
 <nav role="main" class="py-6 shadow-soft z-50">
 
-	<div class="w-full h-full flex flex-row items-center justify-between">
+    <div class="w-full h-full flex flex-row items-center justify-between">
 
-		<a href="{{ path('app_homepage') }}" class="flex items-center gap-4 text-xl md:text-3xl">
+        {# === Logo / Marque === #}
+        <a href="{{ path('app_homepage') }}" class="flex items-center gap-4 text-xl md:text-3xl">
             {{ include('/partials/_brand.html.twig') }}
-		</a>
+        </a>
 
-			{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
-				{% if app.user.firstFillProfile is same as(true) %}
+            {% if app.user.firstFillProfile is same as(true) %}
+                {# === Menu principal pour utilisateurs ayant rempli leur profil === #}
+                <div class="my-hidden xl:flex justify-center gap-4 font-semibold">
+                    <a href="{{ path('app_dashboard_index') }}" class="text-sky-600 hover:text-sky-700">Mon espace</a>
+                    <a href="{{ path('menu_week_get_meals') }}" class="text-sky-600 hover:text-sky-700">Mon repas du jour</a>
+                    <a href="{{ path('menu_week_menu') }}" class="text-sky-600 hover:text-sky-700">Mes repas de la semaine</a>
+                </div>
 
-                    <div class="my-hidden xl:flex justify-center gap-4 font-semibold">
-                        <a href="{{ path('app_dashboard_index') }}" class="text-gray-600 hover:text-gray-500">Mon espace</a>
-                        <a href="{{ path('menu_week_get_meals') }}" class="text-gray-600 hover:text-gray-500">Mon repas du jour</a>
-                        <a href="{{ path('menu_week_menu') }}" class="text-gray-600 hover:text-gray-500">Mes repas de la semaine</a>
-                    </div>
+                <div class="flex justify-end">
+                    {# === Barre de recherche === #}
+                    {{ include("partials/_search.html.twig") }}
 
-                    {% if app.user.isWeightGoalActive %}énergie réajustée{% else %}énergie non réajustée{% endif %}
+                    <ul class="flex items-center gap-4 ml-0 lg:ml-auto mr-0">
 
-                    <div class="flex justify-end">
+                        {# === Recherche menu semaine (desktop) === #}
+                        <li class="nav-item my-hidden lg:flex">
+                            {{ render(controller('App\\Controller\\meal\\SearchController::searchWeekMenu')) }}
+                        </li>
 
-                        {{ include("partials/_search.html.twig") }}
+                        <div class="relative">
 
-                        <ul class="flex items-center gap-4 ml-0 lg:ml-auto mr-0">
+                            {# === Desktop: icône utilisateur avec dropdown === #}
+                            <div class="my-hidden xl:block z-50" {{ stimulus_controller('dropdown') }}>
+                                <button data-action="click->dropdown#toggle" class="w-12 h-12 rounded-full flex items-center justify-center bg-sky-600 hover:bg-sky-700 transition duration-300 text-white text-xl font-bold hover-shadow-2xl" aria-label="Ouvrir le menu utilisateur">
+                                    <svg class="w-7 h-7 font-bold" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Icône utilisateur -->
+                                    </svg>
+                                </button>
 
-                            <li class="nav-item my-hidden lg:flex">
-                                {{ render(controller('App\\Controller\\meal\\SearchController::searchWeekMenu')) }}
-                            </li>
-
-                            <div class="relative">
-
-                                {# === Desktop: icône utilisateur === #}
-                                <div class="my-hidden xl:block z-50" {{ stimulus_controller('dropdown') }}>
-                                    <button data-action="click->dropdown#toggle" class="w-10 h-10 rounded-full flex items-center justify-center bg-sky-600 hover:bg-sky-700 transition duration-300 text-white text-xl font-bold hover-shadow-2xl" aria-label="Ouvrir le menu utilisateur">
-                                        <svg class="w-6 h-6 font-bold" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5"></circle> <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" stroke="currentColor" stroke-width="1.5"></path> </g></svg>
-                                    </button>
-
-                                    <div data-dropdown-target="menu" class="absolute right-0 top-full mt-2 bg-white shadow-lg rounded-lg
-                                                            opacity-0 invisible translate-y-2 transition-all duration-200" style="z-index: 100">
-                                        <div class="p-4">
-                                            {{ include('navigation/_menu_dropdown_content.html.twig') }}
-                                        </div>
+                                {# Contenu du menu dropdown utilisateur #}
+                                <div data-dropdown-target="menu" class="absolute w-56 right-0 top-full mt-2 bg-white shadow-lg rounded-lg
+                                                        opacity-0 invisible translate-y-2 transition-all duration-200" style="z-index: 100">
+                                    <div class="p-4">
+                                        {{ include('navigation/_menu_dropdown_content.html.twig') }}
                                     </div>
                                 </div>
+                            </div>
 
-                                {# === Mobile / Tablette: volet latéral === #}
-                                <div class="block xl:my-hidden" {{ stimulus_controller('drawer') }}>
-                                    <button data-action="click->drawer#toggle" class="px-0 py-2 rounded" aria-label="Ouvrir le menu">
-                                        <svg width="24" height="24" fill="none" viewbox="0 0 24 24" stroke="currentColor" class="text-light-blue">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                                        </svg>
-                                    </button>
+                            {# === Mobile / Tablette: menu drawer latéral === #}
+                            <div class="block xl:my-hidden" {{ stimulus_controller('drawer') }}>
+                                {# Bouton ouvrir menu #}
+                                <button data-action="click->drawer#toggle" class="px-0 py-2 hover:text-sky-700 transition duration-300" aria-label="Ouvrir le menu">
+                                    <svg width="24" height="24" fill="none" viewbox="0 0 24 24" stroke="currentColor" class="text-light-blue">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                    </svg>
+                                </button>
 
-                                    {# Overlay #}
-                                    <div data-drawer-target="overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 invisible transition-opacity duration-300" data-action="click->drawer#close"></div>
+                                {# Overlay sombre derrière le drawer #}
+                                <div data-drawer-target="overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 invisible transition-opacity duration-300" data-action="click->drawer#close"></div>
 
-                                    {# Volet latéral #}
-                                    <div data-drawer-target="menu" class="fixed top-0 left-0 h-full bg-white shadow-lg z-50
-                                                            w-full md:w-1/2
-                                                            transform -translate-x-full
-                                                            transition-transform duration-300 ease-in-out">
+                                {# Volet latéral avec liens du menu utilisateur #}
+                                <div data-drawer-target="menu" class="fixed top-0 left-0 h-full bg-white shadow-lg z-50
+                                                        w-full md:w-1/2
+                                                        transform -translate-x-full
+                                                        transition-transform duration-300 ease-in-out">
 
-                                        <div class="p-4 mt-2 flex justify-end items-center">
-                                            <button data-action="click->drawer#close" aria-label="Fermer le menu">
-                                                <svg class="w-5 h-5 text-sky-600" fill="none" viewBox="0 0 14 14" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
-                                                </svg>
-                                            </button>
-                                        </div>
+                                    {# Bouton fermer le menu drawer #}
+                                    <div class="p-4 mt-2 flex justify-end items-center">
+                                        <button data-action="click->drawer#close" class="rounded-full p-3 hover:bg-gray-200 transition duration-300" aria-label="Fermer le menu">
+                                            <svg class="w-5 h-5 text-sky-600" fill="none" viewBox="0 0 14 14" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
 
-                                        <div class="px-8 text-3xl">
-                                            <a href="{{ path('app_homepage') }}">
-                                                {{ include('/partials/_brand.html.twig') }}
-                                            </a>
-                                        </div>
+                                    {# Logo dans le drawer #}
+                                    <div class="px-8 text-3xl">
+                                        <a href="{{ path('app_homepage') }}">
+                                            {{ include('/partials/_brand.html.twig') }}
+                                        </a>
+                                    </div>
 
-                                        <div class="p-4">
-                                            
-                                            <a href="{{ path('app_dashboard_index') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-                                                <span class="w-8 flex justify-center items-center shrink-0">
-                                                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5"></circle> <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" stroke="currentColor" stroke-width="1.5"></path> </g></svg>					
-                                                </span>
-                                                <span class="ml-2 flex-1">Mon espace</span>
-                                            </a>
-
-                                            <a href="{{ path('meal_day') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-                                                <span class="w-8 flex justify-center items-center shrink-0">
-                                                    <svg class="w-5 h-5" fill="currentColor" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M483.871,301.511c3.569-16.755,5.374-33.897,5.374-51.2c0-65.341-25.445-126.771-71.648-172.974 S309.964,5.689,244.622,5.689S117.851,31.134,71.648,77.337S0,184.97,0,250.311s25.445,126.771,71.648,172.974 c46.203,46.203,107.633,71.648,172.974,71.648c13.379,0,26.704-1.108,39.822-3.255v14.633h170.667v-73.956h-0.094 C489.594,406.387,512,365.05,512,318.578v-17.067H483.871z M284.444,432.356v24.669c-13.064,2.497-26.409,3.775-39.822,3.775 c-116.064,0-210.489-94.425-210.489-210.489S128.559,39.822,244.622,39.822c116.065,0,210.489,94.425,210.489,210.489 c0,17.368-2.108,34.537-6.27,51.2H413.43c5.005-16.484,7.548-33.617,7.548-51.2c0-97.242-79.112-176.356-176.356-176.356 c-97.242,0-176.356,79.113-176.356,176.356s79.113,176.356,176.356,176.356c10.053,0,20.084-0.857,29.936-2.541 c3.201,2.89,6.529,5.637,9.981,8.23H284.444z M248.307,392.482c-1.228,0.032-2.455,0.051-3.685,0.051 c-78.421,0-142.222-63.801-142.222-142.222s63.801-142.222,142.222-142.222s142.222,63.801,142.222,142.222 c0,17.752-3.197,34.925-9.496,51.2H227.556v17.067C227.556,345.625,235.147,370.932,248.307,392.482z M420.978,472.178h-102.4 v-20.917c15.896,6.154,33.159,9.539,51.2,9.539s35.304-3.385,51.2-9.539V472.178z M369.778,426.667 c-53.794,0-98.537-39.501-106.743-91.022h213.487C468.314,387.165,423.572,426.667,369.778,426.667z"></path> </g> </g> </g></svg>	
-                                                </span>
-                                                <span class="ml-2 flex-1">Mon repas du jour</span>
-                                            </a>
-
-                                            <a href="{{ path('menu_week_menu') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-                                                <span class="w-8 flex justify-center items-center shrink-0">
-                                                    <svg class="w-5 h-5" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve" stroke="currentColor" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path fill="currentColor" d="M44,0c-3.07,0-5.875,1.16-8,3.063C33.875,1.16,31.07,0,28,0s-5.875,1.16-8,3.063C17.875,1.16,15.07,0,12,0 C5.383,0,0,5.383,0,12v32c0,9.656,5.086,14.742,9.172,18.828C12.988,66.645,16,69.656,16,76v40c0,6.617,5.383,12,12,12 s12-5.383,12-12V76c0-6.344,3.012-9.355,6.828-13.172C50.914,58.742,56,53.656,56,44V12C56,5.383,50.617,0,44,0z M48,44 c0,6.344-3.012,9.355-6.828,13.172C37.086,61.258,32,66.344,32,76v40c0,2.211-1.789,4-4,4s-4-1.789-4-4V76 c0-9.656-5.086-14.742-9.172-18.828C11.012,53.355,8,50.344,8,44V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4 s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4v24c0,2.211,1.789,4,4,4s4-1.789,4-4V12c0-2.211,1.789-4,4-4s4,1.789,4,4V44z M118.828,65.172C115.012,61.355,112,58.344,112,52V12c0-6.617-5.383-12-12-12S88,5.383,88,12v40 c0,6.344-3.012,9.355-6.828,13.172C77.086,69.258,72,74.344,72,84c0,1.797,0.316,44,28,44s28-42.203,28-44 C128,74.344,122.914,69.258,118.828,65.172z M100,120c-19.711,0-20-35.609-20-36c0-6.344,3.012-9.355,6.828-13.172 C90.914,66.742,96,61.656,96,52V12c0-2.211,1.789-4,4-4s4,1.789,4,4v40c0,9.656,5.086,14.742,9.172,18.828 C116.988,74.645,120,77.656,120,84C120,84.359,119.77,120,100,120z"></path> </g> </g> </g></svg>
-                                                </span>
-                                                <span class="ml-2 flex-1">Mes repas de la semaine</span>
-                                            </a>
-
-                                            <a href="{{ path('app_logout') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 focus:bg-gray-100 focus:text-gray-900 transition duration-300 rounded-lg cursor-pointer">
-                                                <span class="w-8 flex justify-center items-center shrink-0">
-                                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 52 52"><path d="M36.2,11.6c0,0-0.1-0.1-0.1-0.1c-0.6-0.5-1.5-0.5-2,0.1l-2.2,2.1c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l5.6,5.6 c0.2,0.2,0.3,0.4,0.3,0.7c0,0.6-0.4,1.1-1,1.1H15.6c-0.8,0-1.5,0.6-1.5,1.4v3c0.1,0.8,0.7,1.5,1.5,1.6h21.3c0.2,0,0.4,0.1,0.5,0.2 c0.5,0.4,0.5,1,0.2,1.5L32,36.5c0,0,0,0,0,0c-0.6,0.6-0.5,1.5,0,2l2.1,2.2c0,0,0,0,0,0c0.6,0.6,1.5,0.5,2,0l13.5-13.5c0,0,0,0,0,0 c0.6-0.6,0.5-1.5,0-2L36.2,11.6z"></path><path d="M21.1,17.2L21.1,17.2h3c0.8,0,1.5-0.7,1.5-1.5V6.1c0-2.2-1.8-4-4-4h-1.9H9.1H6.1c-2.2,0-4,1.8-4,4v40 c0,2.2,1.8,4,4,4h2.9h10.6h1.9c2.2,0,4-1.8,4-4v-9.5c0-0.8-0.7-1.5-1.5-1.5h-3l0,0c-0.8,0-1.5,0.7-1.5,1.5v5.9 c0,0.8-0.7,1.5-1.5,1.5H9.6c-0.8,0-1.5-0.7-1.5-1.5v-33c0-0.8,0.7-1.5,1.5-1.5H18c0.8,0,1.5,0.7,1.5,1.5v6.1 C19.6,16.5,20.2,17.2,21.1,17.2z"></path></svg>
-                                                </span>
-                                                <span class="ml-2 flex-1">Déconnexion</span>
-                                            </a>
-
-                                        </div>
-
+                                    {# Liens menu drawer mobile #}
+                                    <div class="p-4">
+                                        <a href="{{ path('app_dashboard_index') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 rounded-lg cursor-pointer">
+                                            <!-- Icone + texte Mon espace -->
+                                        </a>
+                                        <a href="{{ path('meal_day') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 rounded-lg cursor-pointer">
+                                            <!-- Icone + texte Mon repas du jour -->
+                                        </a>
+                                        <a href="{{ path('menu_week_menu') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 rounded-lg cursor-pointer">
+                                            <!-- Icone + texte Mes repas de la semaine -->
+                                        </a>
+                                        <a href="{{ path('app_logout') }}" class="px-4 py-2 text-xl text-gray-700 flex items-center hover:bg-gray-100 rounded-lg cursor-pointer">
+                                            <!-- Icone + texte Déconnexion -->
+                                        </a>
                                     </div>
 
                                 </div>
 
                             </div>
 
-                        </ul>
-
-                    </div>
-
-				{% else %}
-
-					<ul class="navbar-navflex flex items-center text-base uppercase gap-4 font-bold ml-auto">
-
-						<li class="text-light-blue my-hidden md:flex">
-							{{ app.user.email }}
-						</li>
-
-						<li>
-							<a href="{{ path('app_logout') }}" class="flex w-8 h-8">
-								<svg viewbox="0 -0.5 25 25" fill="#0EA5E9" xmlns="http://www.w3.org/2000/svg">
-									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-									<g id="SVGRepo_iconCarrier">
-										<path d="M11.75 9.874C11.75 10.2882 12.0858 10.624 12.5 10.624C12.9142 10.624 13.25 10.2882 13.25 9.874H11.75ZM13.25 4C13.25 3.58579 12.9142 3.25 12.5 3.25C12.0858 3.25 11.75 3.58579 11.75 4H13.25ZM9.81082 6.66156C10.1878 6.48991 10.3542 6.04515 10.1826 5.66818C10.0109 5.29121 9.56615 5.12478 9.18918 5.29644L9.81082 6.66156ZM5.5 12.16L4.7499 12.1561L4.75005 12.1687L5.5 12.16ZM12.5 19L12.5086 18.25C12.5029 18.25 12.4971 18.25 12.4914 18.25L12.5 19ZM19.5 12.16L20.2501 12.1687L20.25 12.1561L19.5 12.16ZM15.8108 5.29644C15.4338 5.12478 14.9891 5.29121 14.8174 5.66818C14.6458 6.04515 14.8122 6.48991 15.1892 6.66156L15.8108 5.29644ZM13.25 9.874V4H11.75V9.874H13.25ZM9.18918 5.29644C6.49843 6.52171 4.7655 9.19951 4.75001 12.1561L6.24999 12.1639C6.26242 9.79237 7.65246 7.6444 9.81082 6.66156L9.18918 5.29644ZM4.75005 12.1687C4.79935 16.4046 8.27278 19.7986 12.5086 19.75L12.4914 18.25C9.08384 18.2892 6.28961 15.5588 6.24995 12.1513L4.75005 12.1687ZM12.4914 19.75C16.7272 19.7986 20.2007 16.4046 20.2499 12.1687L18.7501 12.1513C18.7104 15.5588 15.9162 18.2892 12.5086 18.25L12.4914 19.75ZM20.25 12.1561C20.2345 9.19951 18.5016 6.52171 15.8108 5.29644L15.1892 6.66156C17.3475 7.6444 18.7376 9.79237 18.75 12.1639L20.25 12.1561Z" fill="#0EA5E9"></path>
-									</g>
-								</svg>
-							</a>
-						</li>
-
-					</ul>
-
-				{% endif %}
-
-			{% else %}
-
-				<div class="my-hidden ml-auto md:flex flex-row font-bold justify-end items-center gap-4">
-					{% if app.request.attributes.get('_route') != 'app_login' %}
-                        <a href="{{ path('app_login') }}" class="text-sm md:text-base bg-sky-600 text-white flex items-center px-4 py-2 gap-2 rounded-lg link-white hover:bg-sky-700 transition duration-300">
-							<span>Connexion</span>
-						</a>
-						<a href="{{ path('app_register') }}" class="text-sm md:text-base text-sky-600 hover:text-sky-700 transition duration-300 border rounded-lg px-4 py-2">
-							{{ 'link.signup'|trans({}, 'security') }}
-						</a>
-					{% endif %}
-				</div>
-
-                <div class="block md:my-hidden" {{ stimulus_controller('drawer') }}>
-
-                    <button data-action="click->drawer#toggle" class="px-0 py-2 rounded" aria-label="Ouvrir le menu">
-                        <svg width="24" height="24" fill="none" viewbox="0 0 24 24" stroke="currentColor" class="text-light-blue">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
-
-                    {# Overlay #}
-                    <div data-drawer-target="overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 invisible transition-opacity duration-300" data-action="click->drawer#close"></div>
-
-                    {# Volet latéral #}
-                    <div data-drawer-target="menu" class="fixed top-0 left-0 h-full bg-white shadow-lg z-50
-                                                w-full sm:w-1/2
-                                                transform -translate-x-full
-                                                transition-transform duration-300 ease-in-out">
-                        <div class="p-4 flex justify-end items-center">
-                            <button data-action="click->drawer#close" aria-label="Fermer le menu">
-                                ✕
-                            </button>
                         </div>
-                        <div class="px-8 text-3xl">
-                            <a href="{{ path('app_homepage') }}">
-                                {{ include('/partials/_brand.html.twig') }}
-                            </a>
-                        </div>
-                        <div class="flex flex-col p-8 gap-4">
-                            {% if app.request.attributes.get('_route') != 'app_login' %}
-                                <a href="{{ path('app_register') }}" class="text-sm">
-                                    {{ 'link.signup'|trans({}, 'security') }}
-                                </a>
-                                <a href="{{ path('app_login') }}" class="text-sm">
-                                    <span>Se connecter</span>
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
+
+                    </ul>
 
                 </div>
 
-			{% endif %}
+            {% else %}
+                {# === Utilisateur connecté mais profil non rempli === #}
+                <ul class="navbar-navflex flex items-center text-base uppercase gap-4 font-bold ml-auto">
+                    <li class="text-light-blue my-hidden md:flex">
+                        {{ app.user.email }}
+                    </li>
+                    <li>
+                        <a href="{{ path('app_logout') }}" class="flex w-8 h-8">
+                            <!-- Icône déconnexion -->
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
 
-	</div>
+        {% else %}
+            {# === Utilisateur non connecté: liens connexion / inscription === #}
+            <div class="my-hidden ml-auto md:flex flex-row font-bold justify-end items-center gap-4">
+                {% if app.request.attributes.get('_route') != 'app_login' %}
+                    <a href="{{ path('app_login') }}" class="text-sm md:text-base bg-sky-600 text-white flex items-center px-4 py-2 gap-2 rounded-lg hover:bg-sky-700 transition duration-300">
+                        <span>Connexion</span>
+                    </a>
+                    <a href="{{ path('app_register') }}" class="text-sm md:text-base text-sky-600 hover:text-sky-700 transition duration-300 border rounded-lg px-4 py-2">
+                        {{ 'link.signup'|trans({}, 'security') }}
+                    </a>
+                {% endif %}
+            </div>
+
+            {# === Drawer mobile pour utilisateur non connecté === #}
+            <div class="block md:my-hidden" {{ stimulus_controller('drawer') }}>
+                <button data-action="click->drawer#toggle" class="px-0 py-2 rounded" aria-label="Ouvrir le menu">
+                    <!-- Icône hamburger -->
+                </button>
+
+                {# Overlay drawer #}
+                <div data-drawer-target="overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 invisible transition-opacity duration-300" data-action="click->drawer#close"></div>
+
+                {# Contenu drawer mobile non connecté #}
+                <div data-drawer-target="menu" class="fixed top-0 left-0 h-full bg-white shadow-lg z-50
+                                            w-full sm:w-1/2
+                                            transform -translate-x-full
+                                            transition-transform duration-300 ease-in-out">
+                    <div class="p-4 flex justify-end items-center">
+                        <button data-action="click->drawer#close" aria-label="Fermer le menu">✕</button>
+                    </div>
+                    <div class="px-8 text-3xl">
+                        <a href="{{ path('app_homepage') }}">
+                            {{ include('/partials/_brand.html.twig') }}
+                        </a>
+                    </div>
+                    <div class="flex flex-col p-8 gap-4">
+                        {% if app.request.attributes.get('_route') != 'app_login' %}
+                            <a href="{{ path('app_register') }}" class="text-sm">
+                                {{ 'link.signup'|trans({}, 'security') }}
+                            </a>
+                            <a href="{{ path('app_login') }}" class="text-sm">
+                                <span>Se connecter</span>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </nav>

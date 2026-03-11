@@ -1,0 +1,11 @@
+<div class="flex gap-2 mt-2 text-xs">
+    {# Indicateur pour le gluten #}
+    <span class="font-bold bg-yellow-100 text-yellow-800 px-4 py-1 rounded uppercase">
+        {{ results.gluten ? 'Avec' : 'Sans' }} gluten
+    </span>
+
+    {# Indicateur pour le lactose #}
+    <span class="font-bold bg-slate-100 text-sky-800 px-4 py-1 rounded uppercase">
+        {{ results.lactose ? 'Avec' : 'Sans' }} lactose
+    </span>
+</div>

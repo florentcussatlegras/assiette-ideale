@@ -1,71 +1,85 @@
-<div class="flex items-center justify-end py-2.5 gap-2 ml-auto">
+{# Conteneur principal des boutons fixes liés aux repas #}
+<div class="ml-auto">
 
-    <div class="container-list-meal-model">
+    {# Container interne pour l’alignement à droite et l’espacement des boutons #}
+    <div data-fixed-buttons-meals-target="container" class="flex items-center justify-end py-2.5 gap-2 ml-auto">
 
-    </div>
+        {# Boutons uniquement si ce n’est pas un modèle de repas #}
+        {% if app.session.get('_meal_day_date') != 'model' %}
 
-    {% if app.session.get('_meal_day_date') != 'model' %}
+            {# Container pour les boutons liés à l’ajout de repas #}
+            <div data-fixed-buttons-meals-target="buttons" class="btn-add-meal flex items-center gap-4">
 
-        <div class="btn-add-meal flex items-center gap-4 w-full">
-
-            <div 
-                {{ stimulus_controller('model-meal', {
-                    urlList: path('model_meal_list'),
-                    urlListModal: path('model_meal_list_modal'),
-                    urlRemove: path('model_meal_remove'),
-                    lastRankMeal: app.session.get('_meal_day_range')|default("none")
-                }) }}
-                data-action="keydown.esc->model-meal#hideMeals"
-            >
-
-                <button 
-                    type="button" 
-                    data-toggle="modal"
-                    data-action="click->model-meal#show"
-                    data-target="#modelMeal"
-                    class="font-bold p-2 md:p-4 flex items-center gap-2 rounded-full"
-                    type="button"
+                {# Bouton d’ouverture du modal de repas modèles #}
+                <div 
+                    {{ stimulus_controller('model-meal', {
+                        urlList: path('model_meal_list'),              # URL pour récupérer la liste des repas modèles
+                        urlListModal: path('model_meal_list_modal'),  # URL pour récupérer la liste dans le modal
+                        urlRemove: path('model_meal_remove'),         # URL pour supprimer un repas modèle
+                        lastRankMeal: app.session.get('_meal_day_range')|default("none") # Dernier rang de repas
+                    }) }}
+                    data-action="keydown.esc->model-meal#hideMeals" # Fermer le modal si la touche ESC est pressée
                 >
-                    <svg class="w-10 h-10 text-sky-600 hover:text-sky-700 transition duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 14L11.2929 14.7071L12 15.4142L12.7071 14.7071L12 14ZM13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44771 11 5L13 5ZM6.29289 9.70711L11.2929 14.7071L12.7071 13.2929L7.70711 8.29289L6.29289 9.70711ZM12.7071 14.7071L17.7071 9.70711L16.2929 8.29289L11.2929 13.2929L12.7071 14.7071ZM13 14L13 5L11 5L11 14L13 14Z" fill="currentColor"></path> <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16" stroke="currentColor" stroke-width="2"></path> </g></svg>
-                </button>
 
-                {{ include('meals/day/_modal_list_model_meals.html.twig') }}
+                    {# Bouton visible pour ouvrir le modal #}
+                    <button 
+                        type="button" 
+                        data-toggle="modal"
+                        data-action="click->model-meal#show"   # Stimulus : afficher le modal
+                        data-target="#modelMeal"              # Cible du modal
+                        class="font-bold p-2 md:p-4 flex items-center gap-2 rounded-full"
+                        style="z-index: 10"
+                    >
+                        {# Icône SVG représentant le modal repas modèles #}
+                        <svg class="w-10 h-10 text-sky-600 hover:text-sky-700 transition duration-300" 
+                             viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor">
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                            <g id="SVGRepo_iconCarrier"> 
+                                <path d="M12 14L11.2929 14.7071L12 15.4142L12.7071 14.7071L12 14ZM13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44771 11 5L13 5ZM6.29289 9.70711L11.2929 14.7071L12.7071 13.2929L7.70711 8.29289L6.29289 9.70711ZM12.7071 14.7071L17.7071 9.70711L16.2929 8.29289L11.2929 13.2929L12.7071 14.7071ZM13 14L13 5L11 5L11 14L13 14Z" fill="currentColor"></path> 
+                                <path d="M5 16L5 17C5 18.1046 5.89543 19 7 19L17 19C18.1046 19 19 18.1046 19 17V16" stroke="currentColor" stroke-width="2"></path> 
+                            </g>
+                        </svg>
+                    </button>
 
-            </div>
+                    {# Inclusion du modal listant les repas modèles #}
+                    {{ include('meals/day/_modal_list_model_meals.html.twig') }}
 
+                </div>
+
+                {# Bouton d’ajout d’un nouveau repas vide #}
                 <button 
                     type="submit" 
                     class="new-meal flex items-center p-2 md:p-4 font-bold gap-2 cursor-pointer mr-2"
-                    data-action="meal#onAddMeal"
-                    data-url="{{ path('meal_day_add') }}"
-                    data-url-redirect="{{ path('meal_day') }}"
+                    data-action="meal#onAddMeal"                       # Stimulus : ajouter un nouveau repas
+                    data-url="{{ path('meal_day_add') }}"              # URL pour ajouter le repas
+                    data-url-redirect="{{ path('meal_day') }}"         # URL de redirection après ajout
                 >
+
+                    {# SVG stylisé du bouton “+” #}
                     <div class="inline-block rounded-full group shadow-soft">
-                        <svg viewBox="0 0 24 24" class="w-10 h-10 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
+                        <svg viewBox="0 0 24 24" class="w-12 h-12 transition-colors duration-300" xmlns="http://www.w3.org/2000/svg">
                             <rect
-                            x="0"
-                            y="0"
-                            width="24"
-                            height="24"
-                            rx="12"
-                            class="fill-sky-600 group-hover:fill-sky-700 transition-colors duration-300"
+                                x="0"
+                                y="0"
+                                width="24"
+                                height="24"
+                                rx="12"
+                                class="fill-sky-600 group-hover:fill-sky-700 transition-colors duration-300"
                             />
                             <path
-                            d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
-                            fill="white"
+                                d="M17 13H13V17H11V13H7V11H11V7H13V11H17Z"
+                                fill="white"
                             />
                         </svg>
                     </div>
+
                 </button>
 
-        
-        </div>
+            </div>
 
-        
-            
-        </div>
+        {% endif %}
 
-    {% endif %}
-
+    </div>
 
 </div>

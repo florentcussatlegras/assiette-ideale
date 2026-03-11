@@ -3,82 +3,129 @@
     {{ stimulus_controller('modal-nav-search') }}
 >
     
-    <a class="flex modal-nav-search-open modal-nav-search-open-mobile rounded-full w-12 h-12 items-center cursor-pointer" title="Cherchez des aliments ou des plats" alt="Cherchez des aliments ou des plats">
+    <a 
+        class="flex modal-nav-search-open modal-nav-search-open-mobile rounded-full w-12 h-12 items-center cursor-pointer" 
+        title="Cherchez des aliments ou des plats" alt="Cherchez des aliments ou des plats"
+        data-action="click->modal-nav-search#open"
+    >
         <svg class="w-8 h-8 text-sky-600 hover:text-sky-700" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
     </a>  
 
     <!-- start modal-->
-    <div class="modal-nav-search opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex p-18 justify-center z-50 border">
+    <div class="modal-nav-search opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex p-18 justify-center" style="z-index: 101">
+
         <div class="modal-nav-search-overlay absolute w-full h-full bg-gray-900 opacity-60"></div>
+
         <div class="modal-nav-search-container bg-white mx-auto rounded shadow-lg z-50 overflow-y-auto w-1/3">
         
-        <!-- start close button -->
-        <div class="modal-nav-search-close top-0 right-0 cursor-pointer flex flex-col items-center mt-2 mr-8">
+            <!-- start close button -->
+            <div 
+                class="modal-nav-search-close top-0 right-0 cursor-pointer flex flex-col items-center mt-2 mr-8"
+                data-action="click->modal-nav-search#close"
+            >
 
-            <!-- Bouton Fermer dans le flux -->
-        <div class="p-4 flex absolute right-0 top-2">
-            <button class="font-semibold text-light-blue flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 14 14" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                </svg>
-            </button>
-        </div>
+                <!-- Bouton Fermer dans le flux -->
+                <div class="p-4 flex absolute right-0 top-0">
+                    <button class="font-semibold text-sky-600 flex items-center gap-2 rounded-full p-3 hover:bg-gray-100 transition duration-300">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 14 14" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
 
-        </div>
-        <!-- end close button -->
-    
-        <div class="modal-nav-search-content py-4 text-left px-4 relative mt-12 overflow-auto flex-1">
+            </div>
+            <!-- end close button -->
+        
+            <div class="modal-nav-search-content py-4 text-left px-4 relative mt-12 overflow-auto flex-1">
 
-            <div class="flex justify-between pb-3">
-            <!-- Yext Answers Search Bar -->
-            <div class="search_form w-full">
+                <div class="flex justify-between pb-3">
 
-                <form>
+                    <!-- Yext Answers Search Bar -->
+                    <div class="search_form w-full">
 
-                    <div 
-                        {{ stimulus_controller('autocomplete', { url: path('meal_day_list_ajax'), skipHiddenProperty: true }) | stimulus_controller('autocomplete-transition', {}) }}
-                        data-action="toggle->autocomplete-transition#toggle"
-                        class="flex flex-col h-screen"
-                    >
+                        <form>
 
-                        <input 
-                            id="input--search-bar"
-                            name="q"
-                            type="search" 
-                            class="block w-full rounded-xl border border-gray-300 text-3xl bg-white z-20"
-                            placeholder="Aliment, plat..."
-                            style="padding-left: 70px"
-                            data-autocomplete-target="input"
-                            data-autocomplete-transition-target="input"
-                        >
-                        
-                        <div 
-                            class="absolute top-28 left-0 h-9-10 w-full"
-                            data-autocomplete-target="results"
-                            data-autocomplete-transition-target="results"
-                        >
-                        
-                        </div>
+                            <div 
+                                {{ stimulus_controller('search-items', {
+                                    url: path('meal_day_list_ajax')
+                                }) }}
+                                class="flex flex-col"
+                            >
 
-                        <div 
-                            class="nav-search-illustration"
-                            data-autocomplete-transition-target="illustration"
-                        ></div>
+                                <div class="relative flex items-center">
+                                    <svg class="absolute left-4 h-8 w-8 text-gray-400" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                    <input
+                                        type="search"
+                                        class="block w-full rounded-xl border border-gray-300 text-3xl bg-white pl-16 h-16 leading-none"
+                                        data-search-items-target="input"
+                                        data-action="input->search-items#search"
+                                        placeholder="Aliments, plats..."
+                                    />
+                                    <button
+                                        type="button"
+                                        class="absolute right-4 text-gray-400 hover:text-gray-700 text-3xl hidden"
+                                        data-search-items-target="clearButton"
+                                        data-action="click->search-items#clearSearch"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+        
+                                <div 
+                                    class="mt-6 w-full"
+                                    data-search-items-target="results"
+                                >        
+                                </div>
 
-                        <div 
-                            class="loader hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" 
-                            data-autocomplete-transition-target="loader">
-                        </div>
+                                <div class="flex w-full justify-center items-center my-8"
+                                    data-search-items-target="loadMoreWrapper">
+                                    <button
+                                        type="button"
+                                        class="px-6 py-3 bg-gray-200 text-gray-500 hover:text-gray-900 rounded-lg hover:bg-hover-300"
+                                        data-action="click->search-items#loadMore"
+                                    >
+                                        Afficher plus de résultats
+                                    </button>
+                                    <button class="loader-type hidden bg-gray-200 flex text-white px-6 py-3 justify-center items-center rounded-lg" style="width: 245px; height: 48px">
+                                        <svg width="30" height="10" viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg">
+                                            <circle cx="5" cy="5" r="3" fill="#6B7280">
+                                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0s"/>
+                                            </circle>
 
+                                            <circle cx="15" cy="5" r="3" fill="#6B7280">
+                                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
+                                            </circle>
+
+                                            <circle cx="25" cy="5" r="3" fill="#6B7280">
+                                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
+                                            </circle>
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div 
+                                    class="nav-search-illustration"
+                                    data-search-items-target="illustration"
+                                ></div>
+
+                                {# <div 
+                                    class="loader hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" 
+                                    data-autocomplete-transition-target="loader">
+                                </div> #}
+
+                                {% if lastResults is defined and lastResults %}
+                                    <div data-last-results="true"></div>
+                                {% endif %}
+
+                            </div>
+
+                        </form>
+                    
                     </div>
 
-                </form>
-            
-            </div>
+                </div>
 
             </div>
-
-        </div>
 
         </div>
 

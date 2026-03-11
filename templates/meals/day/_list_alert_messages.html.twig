@@ -1,19 +1,47 @@
-
+{# ------------------------------------------------------------------------ #}
+{# Container principal pour l'affichage d'une alerte liée au niveau le plus  #}
+{# élevé dans le repas                                                       #}
+{# ------------------------------------------------------------------------ #}
 <div class="flex flex-col items-center gap-4 mb-2">
 
+    {# -------------------------------------------------------------------- #}
+    {# Cercle avec icône représentant visuellement le niveau d'alerte       #}
+    {# - La couleur du contour et des éléments SVG correspond à l'alerte    #}
+    {# -------------------------------------------------------------------- #}
     <span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid {{  alerts.higher_level.color }}">
-        <svg class="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5L12 14" stroke="{{  alerts.higher_level.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{  alerts.higher_level.color }}"></path> </g></svg>			{# <span class="flex md:uppercase px-2 py-1 text-xs md:text-xs font-bold mr-3 text-white bg-opacity-70 rounded-lg" style="background-color: {{ alerts.higher_level.color }}">{{ alerts.higher_level.text }}</span> #}
+        <svg class="w-20 h-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                {# Ligne verticale indiquant l'alerte #}
+                <path d="M12 5L12 14" stroke="{{  alerts.higher_level.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                {# Point ou cercle représentant l'extrémité de l'alerte #}
+                <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{  alerts.higher_level.color }}"></path>
+            </g>
+        </svg>
+
+        {# Optionnel : label texte dans le cercle (commenté ici) #}
+        {# <span class="flex md:uppercase px-2 py-1 text-xs md:text-xs font-bold mr-3 text-white bg-opacity-70 rounded-lg" style="background-color: {{ alerts.higher_level.color }}">{{ alerts.higher_level.text }}</span> #}
     </span>
 
-
+    {# -------------------------------------------------------------------- #}
+    {# Message principal expliquant pourquoi cet item est considéré comme    #}
+    {# un niveau élevé dans le repas                                         #}
+    {# - Le texte est centré et en gras                                      #}
+    {# - La partie variable est colorée en fonction du niveau d'alerte       #}
+    {# -------------------------------------------------------------------- #}
     <div class="font-bold text-3xl leading-tight text-center">
         Ce choix est <span style="color:{{ alerts.higher_level.color }}">{{ alerts.higher_level.text|lower }}</span> à cette position du repas car avec lui
     </div>
 
 </div>
 
+{# ------------------------------------------------------------------------ #}
+{# Liste des messages détaillant les raisons de l'alerte                     #}
+{# - Chaque message est un <li> dans une <ul> centrée avec marge et padding #}
+{# ------------------------------------------------------------------------ #}
 <ul class="text-center my-4 mx-8 pl-12 text-base">
     {% for message in alerts.messages %}
         <li>{{ message }}</li>
     {% endfor %}
-</ul>	
+</ul>

@@ -1,12 +1,15 @@
-
+{# Boucle sur la liste des aliments #}
 {% for food in foods %}
+    {# Inclusion du template de carte d’aliment #}
     {{ include("food/_food.html.twig") }}
-{% else %}
+{% else %} 
+    {# Message affiché si aucun aliment ne correspond à la recherche #}
     <div class="absolute flex items-center justify-center text-center h-64 text-lg text-gray-400 w-full">
         <span>Aucun aliment ne correspond à votre recherche</span>
     </div>
 {% endfor %}
 
+{# Stockage des derniers résultats pour le rechargement dynamique via Stimulus #}
 <input 
     type="hidden"
     data-reload-content-target="lastResults"

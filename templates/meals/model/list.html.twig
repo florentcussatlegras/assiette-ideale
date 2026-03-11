@@ -4,28 +4,31 @@
 
 {% block body %}
 
-	<div
-		{{ stimulus_controller('model-meal', {
-			urlList: path('model_meal_list'),
-			urlListModal: path('model_meal_list_modal'),
-			urlRemove: path('model_meal_remove'),
-		}) }}
-		class="py-12"
-	>
+<div
+    {{ stimulus_controller('model-meal', {
+        urlList: path('model_meal_list'),
+        urlListModal: path('model_meal_list_modal'),
+        urlRemove: path('model_meal_remove'),
+    }) }}
+    class="py-12"
+>
+    {# Conteneur principal avec Stimulus pour gérer la liste, modal et suppression de repas #}
 
-		<div class="flex w-full justify-between items-center">
+    <div class="flex w-full justify-between items-center">
+        {# Header de la page #}
+        {{ include('navigation/_header_page.html.twig', {title: 'Mes repas'}) }}
 
-			{{ include('navigation/_header_page.html.twig', {title: 'Mes repas'}) }}
+        {# Bouton pour ajouter un nouveau repas #}
+        <a href="{{ path('model_meal_new') }}" class="inline-flex items-center bg-sky-600 text-white hover:text-white py-2 px-4 rounded-lg font-bold gap-2 hover:bg-sky-700 transition duration-300">
+            <svg viewBox="0 0 24 24" class="w-7 h-7" fill="#ffffff">
+                <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+            </svg>
+            <span class="my-hidden md:flex">Ajouter un repas</span>
+        </a>
+    </div>
 
-			<a href="{{ path('model_meal_new') }}" class="inline-flex items-center bg-sky-600 text-white hover:text-white py-2 px-4 rounded-lg font-bold gap-2 hover:bg-sky-700 transition duration-300">
-				<svg viewBox="0 0 24 24" class="w-7 h-7" fill="#ffffff" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
-				<span class="my-hidden md:flex">Ajouter un repas</span>
-			</a>
-
-		</div>
-
-		{{ include('meals/model/_wrapper_list.html.twig') }}
-
-	</div>
+    {# Liste des repas avec filtres, recherche et sélection #}
+    {{ include('meals/model/_wrapper_list.html.twig') }}
+</div>
 
 {% endblock %}

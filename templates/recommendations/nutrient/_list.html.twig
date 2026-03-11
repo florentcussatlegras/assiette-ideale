@@ -1,13 +1,23 @@
+{# Liste des nutriments avec leurs quantités pour l'utilisateur #}
 <ul class="flex flex-col py-4">
 
+    {# Boucle sur chaque nutriment défini dans la variable nutrients #}
     {% for nutrient in nutrients %}
 
         <li class="px-6 py-2 font-medium flex flex-row gap-2 items-start">
+            
+            {# Pastille colorée correspondant au nutriment #}
             <div class="flex rounded-full w-4 h-4 mt-1" style="background-color: {{ nutrient.color }}"></div>
+            
+            {# Nom du nutriment et quantité correspondante #}
             <div class="flex flex-col">
+                
+                {# Nom du nutriment avec la première lettre en majuscule #}
                 <span>
                     {{ nutrient.name|capitalize }}
                 </span>
+                
+                {# Quantité de ce nutriment pour l'utilisateur, formatée en grammes #}
                 <span class="text-neutral-500 text-sm">
                     {{ "%s g"|format(attribute(app.user, nutrient.code)) }}
                 </span>
@@ -17,4 +27,3 @@
     {% endfor %}
         
 </ul>
-

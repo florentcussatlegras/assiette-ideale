@@ -1,16 +1,20 @@
+{# Conteneur des boutons de navigation du formulaire ou de la page profil #}
 <div class="flex justify-center items-center gap-6">
 
+    {# Si l'utilisateur est en cours de remplissage initial du profil #}
     {% if app.user.firstFillProfile is same as (false) %}
 
+        {# Bouton "Suivant" pour passer à l'étape suivante #}
         <button 
             type="submit" 
-            class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg flex justify-center items-center gap-4" 
-            data-form-loader-target="button"
+            class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg flex justify-center items-center gap-4 duration-300 transition" 
+            data-form-loader-target="button"  {# Stimulus: référence pour le bouton #}
             style="height: 40px"
         >
+            {# Label du bouton #}
             <span data-form-loader-target="label">Suivant</span>
 
-            <!-- Loader, caché par défaut -->
+            {# Loader animé (trois points) affiché pendant la soumission #}
             <span class="three-dots hidden" data-form-loader-target="spinner">
                 <span></span>
                 <span></span>
@@ -20,16 +24,16 @@
 
     {% else %}
 
+        {# Lien "Annuler" renvoyant à la route précédente #}
         <a href="{{ backRoute }}" class="text-sky-600 hover:text-sky-700 font-bold text-base">
             Annuler
         </a>
 
-        <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg">
+        {# Bouton "Valider" pour soumettre le formulaire #}
+        <button class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 text-base cursor-pointer rounded-lg duration-300 transition">
             Valider
         </button>
 
     {% endif %}
 
 </div>
-
-

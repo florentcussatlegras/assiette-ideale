@@ -1,36 +1,44 @@
 <div class="flex flex-col lg:flex-row gap-6 bg-white shadow-soft rounded-2xl p-4 text-sm">
 
+    {# Colonne gauche : informations principales du plat #}
     <div class="flex flex-col gap-3 lg:w-1/2">
 
+        {# Champ caché pour l'ID du plat si défini #}
         <input type="hidden" name="dish[dish_id]" value="{{ dish is defined ? dish.id : null }}" />
 
+        {# Nom du plat #}
         <div>
             {{ form_label(dishForm.name, 'Nom du plat', {'label_attr' : {'class' : 'form-label text-lg'}}) }}
             {{ form_errors(dishForm.name) }}
             {{ form_widget(dishForm.name) }}
         </div>
 
+        {# Type du plat #}
         <div class="mt-2">
             {{ form_label(dishForm.type, 'Type du plat', {'label_attr' : {'class' : 'form-label text-lg'}}) }}
             {{ form_errors(dishForm.type) }}
             {{ form_widget(dishForm.type) }}
         </div>
 
+        {# Niveau de difficulté #}
         <div class="mt-2">
             {{ form_label(dishForm.level, null, {'label_attr' : {'class' : 'form-label text-lg'}}) }}
             {{ form_errors(dishForm.level) }}
             {{ form_widget(dishForm.level) }}
         </div>
 
+        {# Bloc pour nombre de personnes et temps de préparation/cuisson #}
         <div class="form-group flex flex-col md:flex-row gap-4 mt-2">
             <div class="col-span-4 flex flex-col">
+                {# Nombre de personnes #}
                 {{ form_label(dishForm.lengthPersonForRecipe, 'Nombre de personnes', {'label_attr' : {'class' : 'form-label'}}) }}
                 {{ form_errors(dishForm.lengthPersonForRecipe) }}
                 <div>
                 {{ form_widget(dishForm.lengthPersonForRecipe) }}
                 </div>
             </div>
-                <div class="col-span-4 flex flex-col">
+            <div class="col-span-4 flex flex-col">
+                {# Temps de préparation #}
                 {{ form_label(dishForm.preparationTime, 'Temps de préparation', {'label_attr': {'class' : 'form-label'}}) }}
                 {{ form_errors(dishForm.preparationTime) }}
                 <div class="flex flex-row gap-2">
@@ -39,6 +47,7 @@
                 </div>
             </div>
             <div class="col-span-4 flex flex-col">
+                {# Temps de cuisson #}
                 {{ form_label(dishForm.cookingTime, 'Temps de cuisson', {'label_attr': {'class' : 'form-label'}}) }}
                 {{ form_errors(dishForm.cookingTime) }}
                 <div class="flex flex-row gap-2">
@@ -48,10 +57,11 @@
             </div>
         </div>
 
+        {# Section photo du plat #}
         <div>
-
             <label class="text-lg">Photo</label>
 
+            {# Si une photo existe, affichage de la miniature et bouton supprimer #}
             {% if dish.picture is defined and dish.picturePath is not null %}
                 <div class="w-24 h-24 relative image-fit cursor-pointer zoom-in">
                     <a href="{{ uploaded_asset(dish.picturePath) }}">
@@ -65,6 +75,7 @@
                 </div>
             {% endif %}
 
+            {# Gestion des erreurs liées à la photo #}
             {% if app.session.has('recipe_error_pic') %}
                 <span class="text-red-700">
                     {{ render(controller('App\\Controller\\DishController::showErrorPicture')) }}
@@ -74,16 +85,15 @@
             {{ form_label(dishForm.pictureFile) }}
             {{ form_errors(dishForm.pictureFile) }}
             {{ form_widget(dishForm.pictureFile, {'attr': {'class': 'bg-white'}}) }}
-
         </div>
 
+        {# Section étapes de préparation #}
         <div class="mt-2">
-            
             {{ form_label(dishForm.stepRecipes, 'Etapes de préparation', {'label_attr': {'class': 'text-lg'}}) }}
             {{ form_errors(dishForm.stepRecipes) }}
             
             <div>
-
+                {# Liste des étapes avec prototype pour ajout dynamique #}
                 <ul class="step-recipes"
                     data-index="{{ dishForm.stepRecipes|length > 0 ? dishForm.stepRecipes|last.vars.name + 1 : 0 }}"
                     data-prototype="{{ form_widget(dishForm.stepRecipes.vars.prototype)|e('html_attr') }}"
@@ -95,79 +105,42 @@
                     {% endfor %}
                 </ul>
 
+                {# Bouton pour ajouter une étape #}
                 <button type="button" class="add_item_link mt-3 flex flex-row items-center gap-2 bg-light-blue text-white font-bold py-1 px-4 rounded-lg" data-collection-holder-class="step-recipes">
-                    <svg viewBox="0 0 24 24"  class="w-5 h-5" fill="#ffffff" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
+                    <svg viewBox="0 0 24 24"  class="w-5 h-5" fill="#ffffff"><path ...></path></svg>
                     <span>Ajouter une étape</span>
                 </button>
 
+                {# Script JS pour ajouter/supprimer dynamiquement les étapes #}
                 <script>
+                    const addFormToCollection = (e) => { ... }
+                    const addTagFormDeleteLink = (item) => { ... }
 
-                    const addFormToCollection = (e) => {
-                        const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+                    document.querySelectorAll('ul.step-recipes li').forEach((stepRecipe) => {
+                        addTagFormDeleteLink(stepRecipe)
+                    });
 
-                        const item = document.createElement('li');
-
-                        item.innerHTML = collectionHolder
-                            .dataset
-                            .prototype
-                            .replace(
-                                /__name__/g,
-                                collectionHolder.dataset.index
-                            );
-
-                        collectionHolder.appendChild(item);
-
-                        collectionHolder.dataset.index++;                        
-
-                        addTagFormDeleteLink(item);
-                    }
-
-                    const addTagFormDeleteLink = (item) => {
-                        const removeFormButton = document.createElement('button');
-                        removeFormButton.innerHTML = `
-                            <div class="flex items-center">
-                                <svg width="20px" height="20px" fill="#334155" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M10.3094 2.25002H13.6908C13.9072 2.24988 14.0957 2.24976 14.2737 2.27819C14.977 2.39049 15.5856 2.82915 15.9146 3.46084C15.9978 3.62073 16.0573 3.79961 16.1256 4.00494L16.2373 4.33984C16.2562 4.39653 16.2616 4.41258 16.2661 4.42522C16.4413 4.90933 16.8953 5.23659 17.4099 5.24964C17.4235 5.24998 17.44 5.25004 17.5001 5.25004H20.5001C20.9143 5.25004 21.2501 5.58582 21.2501 6.00004C21.2501 6.41425 20.9143 6.75004 20.5001 6.75004H3.5C3.08579 6.75004 2.75 6.41425 2.75 6.00004C2.75 5.58582 3.08579 5.25004 3.5 5.25004H6.50008C6.56013 5.25004 6.5767 5.24998 6.59023 5.24964C7.10488 5.23659 7.55891 4.90936 7.73402 4.42524C7.73863 4.41251 7.74392 4.39681 7.76291 4.33984L7.87452 4.00496C7.94281 3.79964 8.00233 3.62073 8.08559 3.46084C8.41453 2.82915 9.02313 2.39049 9.72643 2.27819C9.90445 2.24976 10.093 2.24988 10.3094 2.25002ZM9.00815 5.25004C9.05966 5.14902 9.10531 5.04404 9.14458 4.93548C9.1565 4.90251 9.1682 4.86742 9.18322 4.82234L9.28302 4.52292C9.37419 4.24941 9.39519 4.19363 9.41601 4.15364C9.52566 3.94307 9.72853 3.79686 9.96296 3.75942C10.0075 3.75231 10.067 3.75004 10.3553 3.75004H13.6448C13.9331 3.75004 13.9927 3.75231 14.0372 3.75942C14.2716 3.79686 14.4745 3.94307 14.5842 4.15364C14.605 4.19363 14.626 4.2494 14.7171 4.52292L14.8169 4.82216L14.8556 4.9355C14.8949 5.04405 14.9405 5.14902 14.992 5.25004H9.00815Z"></path> <path d="M5.91509 8.45015C5.88754 8.03685 5.53016 7.72415 5.11686 7.7517C4.70357 7.77925 4.39086 8.13663 4.41841 8.54993L4.88186 15.5017C4.96736 16.7844 5.03642 17.8205 5.19839 18.6336C5.36679 19.4789 5.65321 20.185 6.2448 20.7385C6.8364 21.2919 7.55995 21.5308 8.4146 21.6425C9.23662 21.7501 10.275 21.7501 11.5606 21.75H12.4395C13.7251 21.7501 14.7635 21.7501 15.5856 21.6425C16.4402 21.5308 17.1638 21.2919 17.7554 20.7385C18.347 20.185 18.6334 19.4789 18.8018 18.6336C18.9638 17.8206 19.0328 16.7844 19.1183 15.5017L19.5818 8.54993C19.6093 8.13663 19.2966 7.77925 18.8833 7.7517C18.47 7.72415 18.1126 8.03685 18.0851 8.45015L17.6251 15.3493C17.5353 16.6971 17.4713 17.6349 17.3307 18.3406C17.1943 19.025 17.004 19.3873 16.7306 19.6431C16.4572 19.8989 16.083 20.0647 15.391 20.1552C14.6776 20.2485 13.7376 20.25 12.3868 20.25H11.6134C10.2626 20.25 9.32255 20.2485 8.60915 20.1552C7.91715 20.0647 7.54299 19.8989 7.26958 19.6431C6.99617 19.3873 6.80583 19.025 6.66948 18.3406C6.52892 17.6349 6.46489 16.6971 6.37503 15.3493L5.91509 8.45015Z"></path> <path d="M9.42546 10.2538C9.83762 10.2125 10.2052 10.5133 10.2464 10.9254L10.7464 15.9254C10.7876 16.3376 10.4869 16.7051 10.0747 16.7463C9.66256 16.7875 9.29503 16.4868 9.25381 16.0747L8.75381 11.0747C8.7126 10.6625 9.01331 10.295 9.42546 10.2538Z"></path> <path d="M14.5747 10.2538C14.9869 10.295 15.2876 10.6625 15.2464 11.0747L14.7464 16.0747C14.7052 16.4868 14.3376 16.7875 13.9255 16.7463C13.5133 16.7051 13.2126 16.3376 13.2538 15.9254L13.7538 10.9254C13.795 10.5133 14.1626 10.2125 14.5747 10.2538Z"></path> </g></svg>
-                                <span>Supprimer</span>
-                            </div>`;
-
-                        item.append(removeFormButton);
-
-                        removeFormButton.addEventListener('click', (e) => {
-                            e.preventDefault();
-
-                            item.remove();
-                        })
-                    }
-
-                    document
-                        .querySelectorAll('ul.step-recipes li')
-                        .forEach((stepRecipe) => {
-                            addTagFormDeleteLink(stepRecipe)
-                        });
-
-                    document
-                        .querySelectorAll('.add_item_link')
-                        .forEach(btn => {
-                            btn.addEventListener("click", addFormToCollection)
-                        });
-
+                    document.querySelectorAll('.add_item_link').forEach(btn => {
+                        btn.addEventListener("click", addFormToCollection)
+                    });
                 </script>
-                
             </div>
-
         </div>
 
         {{ form_widget(dishForm._token) }}
         
     </div>
 
+    {# Colonne droite : valeurs nutritionnelles et ingrédients #}
     <div class="flex flex-col lg:w-1/2 items-start">
 
+        {# Modal pour ajouter des valeurs nutritionnelles #}
         {{ include('dish/_modal_add_nutrional_values.html.twig') }}
 
+        {# Affichage des valeurs nutritionnelles #}
         <div class="flex w-full">
             <div class="flex w-1/3 gap-2">
-                <span>Proteines</label>
+                <span>Proteines</span>
                 <span id="protein-value"></span>
             </div>
             <div class="flex w-1/3 gap-2">
@@ -210,43 +183,43 @@
             </div>
         </div>
 
+        {# Section ingrédients avec autocomplete Stimulus #}
         <label class="mt-2 text-lg">Ingrédients</label>
     
-            <div 
-                class="w-full"
-                {{ stimulus_controller(
-                        'autocomplete', { 
-                            url: path('app_dish_food_list_preview', {idDish: idDish}),
-                            skipHiddenProperty: true 
-                        }
-                    ) 
-                | 
-                    stimulus_controller('autocomplete-transition')
-                    }}
-                data-action="toggle->autocomplete-transition#toggle"
+        <div 
+            class="w-full"
+            {{ stimulus_controller(
+                    'autocomplete', { 
+                        url: path('app_dish_food_list_preview', {idDish: idDish}),
+                        skipHiddenProperty: true 
+                    }
+                ) 
+            | 
+                stimulus_controller('autocomplete-transition')
+            }}
+            data-action="toggle->autocomplete-transition#toggle"
+        >
+            {# Affichage des erreurs si quantité incorrecte #}
+            {% if app.session.has('food_error_quantity') %}
+                <span class="text-red-700">
+                    {{ render(controller('App\\Controller\\DishController::showErrorFoodQuantity')) }}
+                </span>
+            {% endif %}
+
+            <input
+                name="q"
+                placeholder="Miel, côte de porc..."
+                type="search"
+                class="form-control w-full rounded-lg" style="height: 50px"
+                data-autocomplete-target="input"
             >
+            <div 
+                data-autocomplete-target="results"
+                data-autocomplete-transition-target="results"
+            ></div>
+        </div>
 
-                {% if app.session.has('food_error_quantity') %}
-                    <span class="text-red-700">
-                        {{ render(controller('App\\Controller\\DishController::showErrorFoodQuantity')) }}
-                    </span>
-                {% endif %}
-
-                <input
-                    name="q"
-                    placeholder="Miel, côte de porc..."
-                    type="search"
-                    class="form-control w-full rounded-lg" style="height: 50px"
-                    {# data-action="search-preview#onSearchInput" #}
-                    data-autocomplete-target="input"
-                >
-                <div 
-                    data-autocomplete-target="results"
-                    data-autocomplete-transition-target="results"
-                ></div>
-            </div>
-
-
+        {# Liste des aliments ajoutés avec leurs quantités #}
         <div class="my-4">
             {{ form_errors(dishForm.dishFoodList) }}
             {% for field in dishForm %}
@@ -256,18 +229,15 @@
             {% endfor %}
         </div>          
 
-        {# <div>
-            {{ form_label(dishForm.spices, 'Epices', {'label_attr' : {'class' : 'form-label'}}) }}
-            {{ form_widget(dishForm.spices, {'attr': {'data-placeholder': 'Sélectionnez vos épices'}}) }}
-        </div> #}
-
+        {# Modal pour ajouter/modifier la quantité d'un aliment #}
         {{ include('dish/_modal_add_quantity_food.html.twig') }}
 
+        {# Fin du formulaire Symfony #}
         {{ form_end(dishForm, {render_rest: false}) }}
             
+        {# Liste des aliments déjà ajoutés #}
         {{ include("dish/_list_foods.html.twig") }}
     
     </div>
 
 </div>
-

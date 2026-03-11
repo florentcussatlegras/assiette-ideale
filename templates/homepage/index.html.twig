@@ -1,110 +1,126 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	{{ parent() }}
-	- Bienvenue
+    {{ parent() }}
+    - Bienvenue {# Titre de la page #}
 {% endblock %}
 
 {% block body %}
 
-	<div class="banner-homepage">
+    {# Bannière principale de la homepage #}
+    <div class="banner-homepage">
 
-		<div class="w-full flex flex-col">
+        <div class="w-full flex flex-col">
 
-			<div class="flex flex-row items-center justify-center md:justify-start gap-4 md:gap-0 lg:flex-row py-10 w-full xl:max-w-[1100px] 2xl:max-w-[1536px] mx-auto relative">
-			
-				{% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
-					{{ render(path('app_energy_adjustment_message')) }}
-				{% endif %}
+            {# Conteneur central avec texte + image, responsive #}
+            <div class="flex flex-row items-center justify-center md:justify-start gap-4 md:gap-0 lg:flex-row py-10 w-full xl:max-w-[1100px] 2xl:max-w-[1536px] mx-auto relative">
 
-				<div class="w-full 2xl:w-1/2 py-8 md:px-16 xl:pr-0">
+                {# Message conditionnel pour utilisateur connecté avec profil complet #}
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
+                    {{ render(path('app_energy_adjustment_message')) }}
+                {% endif %}
 
-					<h1 class="hero-text">
-						Rééquilibrez <br>votre <span class="text-sky-600">alimentation</span><br>et votre <span class="text-sky-600">bien-être</span>
-					</h1>
+                {# Partie gauche : texte, CTA et liens sociaux #}
+                <div class="w-full 2xl:w-1/2 py-8 md:px-16 xl:pr-0">
 
-					<p class="text-gray-400 text-lg font-normal leading-[27px] mt-4">
-						Rejoignez plus de <span class="text-sky-600">150 000 Français</span> qui nous font confiance pour rééquilibrer leur alimentation et améliorer leur santé.
-					</p>
+                    {# Titre principal avec mise en avant des mots-clés en couleur #}
+                    <h1 class="hero-text">
+                        Rééquilibrez <br>votre <span class="text-sky-600">alimentation</span><br>et votre <span class="text-sky-600">bien-être</span>
+                    </h1>
 
-					<a href="{{ path('app_dashboard_index') }}" class="link-white inline-flex w-full justify-center items-center bg-sky-600 px-4 py-3 font-bold text-opacity-0 mt-8 text-base cursor-pointer rounded-lg hover:bg-sky-700 shadow-soft transition duration-300">
-						<div>
-							{% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (false) %}
-								Poursuivre mon inscription
-							{% elseif is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
-								Mon espace
-							{% else %}
-								Commencer votre rééquilibrage
-							{% endif %}
-						</div>
-						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-						</svg>
-					</a>
+                    {# Paragraphe descriptif #}
+                    <p class="text-gray-400 text-lg font-normal leading-[27px] mt-4">
+                        Rejoignez plus de <span class="text-sky-600">150 000 Français</span> qui nous font confiance pour rééquilibrer leur alimentation et améliorer leur santé.
+                    </p>
 
-					<div class="font-bold text-sm md:text-lg text-sky-600 mt-4">🌱 Améliorez votre santé en quelques semaines</div>
+                    {# Bouton principal avec texte dynamique selon état de l'utilisateur #}
+                    <a href="{{ path('app_dashboard_index') }}" class="link-white inline-flex w-full justify-center items-center bg-sky-600 px-4 py-3 font-bold text-opacity-0 mt-8 text-xl cursor-pointer rounded-lg hover:bg-sky-700 shadow-soft transition duration-300">
+                        <div>
+                            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (false) %}
+                                Poursuivre mon inscription
+                            {% elseif is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
+                                Mon espace
+                            {% else %}
+                                Commencer votre rééquilibrage
+                            {% endif %}
+                        </div>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
 
-					<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-4">
+                    {# Slogan ou accroche #}
+                    <div class="font-bold text-sm md:text-lg text-sky-600 mt-4">🌱 Améliorez votre santé en quelques semaines</div>
 
-						{% include "homepage/_socials.html.twig"  %}
+                    {# Liens sociaux et badges stores #}
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-4">
+                        {# Inclusion du template des icônes sociales #}
+                        {% include "homepage/_socials.html.twig"  %}
 
-						<div class="flex flex-row xl:my-hidden">
-							<a href="">
-								<img src="{{ 'images/Apple-Store-Badge.png' }}" class="h-12" />
-							</a>
-							<a href="">
-								<img src="{{ 'images/Google-Store-Badge.png' }}" class="h-12" />
-							</a>
-						</div>
+                        {# Badges Apple/Google visibles sur desktop #}
+                        <div class="flex flex-row xl:my-hidden">
+                            <a href="">
+                                <img src="{{ 'images/Apple-Store-Badge.png' }}" class="h-12" />
+                            </a>
+                            <a href="">
+                                <img src="{{ 'images/Google-Store-Badge.png' }}" class="h-12" />
+                            </a>
+                        </div>
+                    </div>
 
-					</div>
+                </div>
 
-				</div>
+                {# Partie droite : image principale (visible uniquement sur 2xl) #}
+                <div class="img-homepage my-hidden 2xl:flex ml-0 xl:-ml-16 w-1/2"></div>
 
-				<div class="img-homepage my-hidden 2xl:flex ml-0 xl:-ml-16 w-1/2"></div>
+                {# Badges stores flottants sur l'image (position absolute) #}
+                <div class="absolute flex gap-2 my-hidden 2xl:flex" style="right: 220px; bottom: 70px">
+                    <a href="">
+                        <img src="{{ 'images/Apple-Store-Badge.png' }}" class="h-12" />
+                    </a>
+                    <a href="">
+                        <img src="{{ 'images/Google-Store-Badge.png' }}" class="h-12" />
+                    </a>
+                </div>
 
-				<div class="absolute flex gap-2 my-hidden 2xl:flex" style="right: 220px; bottom: 70px">
-					<a href="">
-						<img src="{{ 'images/Apple-Store-Badge.png' }}" class="h-12" />
-					</a>
-					<a href="">
-						<img src="{{ 'images/Google-Store-Badge.png' }}" class="h-12" />
-					</a>
-				</div>
+            </div>
 
-			</div>
+            {# Section options d'abonnement #}
+            {{ include('homepage/subscription_options.html.twig')  }}
 
-			{{ include('homepage/subscription_options.html.twig')  }}
+            {# Section statistiques avec animation fade-in (Stimulus) #}
+            <div 
+                {{stimulus_controller('fade-in') }}
+                class="bg-white opacity-0 translate-y-8 transition-all duration-1000 ease-out"
+            >
+                {{ include('homepage/stats.html.twig')  }}    
+            </div>
 
-			<div 
-				{{stimulus_controller('fade-in') }}
-				class="bg-white opacity-0 translate-y-8 transition-all duration-1000 ease-out"
-			>
-				{{ include('homepage/stats.html.twig')  }}	
-			</div>
+            {# Section avis Google #}
+            {{ include('homepage/reviews_google.html.twig')  }}
 
-			{{ include('homepage/reviews_google.html.twig')  }}
+            {# Section features / avantages #}
+            {{ include('homepage/features_section.html.twig')  }}
 
-			{{ include('homepage/features_section.html.twig')  }}
+            {# Second CTA en bas de page, similaire au premier #}
+            <div class="w-full flex justify-center my-24">
+                <a href="{{ path('app_dashboard_index') }}" class="link-white inline-flex justify-center items-center bg-sky-600 px-4 py-3 font-bold text-opacity-0 text-base cursor-pointer rounded-lg hover:bg-sky-700 shadow-soft transition duration-300">
+                    <div class="text-center">
+                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (false) %}
+                            Poursuivre mon inscription
+                        {% elseif is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
+                            Mon espace
+                        {% else %}
+                            Commencer votre rééquilibrage
+                        {% endif %}
+                    </div>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
 
-			<div class="w-full flex justify-center my-24">
-				<a href="{{ path('app_dashboard_index') }}" class="link-white inline-flex justify-center items-center bg-sky-600 px-4 py-3 font-bold text-opacity-0 text-base cursor-pointer rounded-lg hover:bg-sky-700 shadow-soft transition duration-300">
-					<div class="text-center">
-						{% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (false) %}
-							Poursuivre mon inscription
-						{% elseif is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
-							Mon espace
-						{% else %}
-							Commencer votre rééquilibrage
-						{% endif %}
-					</div>
-					<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-					</svg>
-				</a>
-			</div>
-
-        </div>	
+        </div>    
 
     </div>
 

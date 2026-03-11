@@ -62,7 +62,14 @@ class FoodRepository extends ServiceEntityRepository
      *
      * @return Food[]
      */
-    public function myFindByKeywordAndFGAndLactoseAndGluten(?string $keyword, array|string|null $fglist = [], $freeLactose = false, $freeGluten = false)
+    public function myFindByKeywordAndFGAndLactoseAndGluten(
+			?string $keyword, 
+			array|string|null $fglist = [], 
+			$freeLactose = false, 
+			$freeGluten = false,
+			$limit = null,
+			int $offset = 0
+		)
     {
         $qb = $this->createQueryBuilder('f');
 		
@@ -93,8 +100,10 @@ class FoodRepository extends ServiceEntityRepository
 
 		$qb->orderBy('f.name', 'ASC');
 
-		// $qb->setFirstResult($offset);
-		// $qb->setMaxResults($limit);
+		if($limit){
+			$qb->setFirstResult($offset)
+       			->setMaxResults($limit + 1);
+		}
 
         return $qb->getQuery()->execute();
     }

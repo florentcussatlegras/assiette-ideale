@@ -1,66 +1,31 @@
-<div class="flex flex-col text-base font-normal">
+<p>Chaque corps dépense de l’énergie même au repos, pour assurer le fonctionnement des organes vitaux comme le cœur, le cerveau et la respiration. Cette dépense minimale est appelée
+	<strong>métabolisme de base</strong>.</p>
 
-	<div class="flex flex-col w-full items-center justify-center text-lg font-bold text-xl text-red-600 my-8">
-		<span>Votre énergie quotidienne recommandée est</span>
-		<span>{{ energyKcal }} kcal / {{ energyJ }} Kj</span>
-		<span class="text-sm">(1Kcal = 4,184Kj)</span>
-	</div>
+<p>À cela s’ajoute l’énergie utilisée pour les activités quotidiennes, comme marcher, travailler, pratiquer une activité sportive ou digérer les aliments.</p>
 
-	<p>
-		Nous estimons votre
-		<span class="font-bold text-sky-600">apport calorique quotidien</span>
-		en fonction de votre profil personnel : sexe, âge, taille, poids, activité physique et type de travail.
-	</p>
+<p>La
+	<strong>calorie</strong>
+	est l’unité de mesure de l’énergie contenue dans les aliments. Elle indique combien d’énergie votre corps peut extraire et utiliser pour fonctionner.</p>
 
-	<div class="flex italic text-2xl my-8 font-bold border border-gray-500 justify-center p-4">
-		Énergie (kj/jour) = coeffPI × coeffAge × poids utilisé × coeffActivité
-	</div>
+<p>Un
+	<strong>équilibre</strong>
+	entre les calories consommées et les calories dépensées est essentiel pour maintenir un poids stable et une bonne santé.</p>
+<p>
+	Le besoin calorique journalier s'évalue
+					en fonction du profil personnel de chaque individu : sexe, âge, taille, poids, activité physique et type de travail.
+</p>
 
-	<ul class="list-disc mx-8">
-		<li>Sexe :
-			<strong>{{ app.user.gender == 'MALE' ? 'Homme' : 'Femme' }}</strong>
-			→ coeffPI =
-			<strong>{{ user.gender == 'MALE' ? 110 : 100 }}</strong>
-		</li>
-		<li>Âge :
-			<strong>{{ app.user.ageRange }}
-				ans</strong>
-			→ coeffAge =
-			<strong>{{ ageCoeff }}</strong>
-		</li>
-		<li>Taille :
-			<strong>{{ app.user.height }}
-				cm</strong>
-		</li>
-		<li>Poids :
-			<strong>{{ app.user.weight }}
-				kg</strong>
-		</li>
-		<li>Poids utilisé pour le calcul :
-			<strong>{{ weightForEnergy }}
-				kg</strong>
-			(max entre poids réel et poids idéal de
-			{{ perfectWeight }}
-			kg)</li>
-		<li>Activité physique :
-			<strong>
-				{% if workingType.id == 16 %}métier physique{% else %}pas de métier physique
-				{% endif %}
-			</strong>
-			+
-			<strong>
-				{% if sportingTime.id == 22 %}pas de sport{% elseif sportingTime.id == 23 %}moins de 5h de sport{% else %}plus de 5h de sport
-				{% endif %}
-			</strong>
-			→ coeffActivité =
-			<strong>{{ physicalActivityCoeff }}</strong>
-		</li>
-	</ul>
+<code class="flex text-2xl my-8 font-bold justify-center p-4 text-center">
+	Énergie (kj/jour) = coeffPI × coeffAge × poids utilisé × coeffActivité
+</code>
+<p>Si vous consommez
+	<strong>plus de calories</strong>
+	que vous n’en dépensez, l’excédent peut être stocké sous forme de graisse. À l’inverse, un
+	<strong>apport insuffisant en calories</strong>
+	peut entraîner une perte de poids et une diminution de l’énergie disponible pour le corps.</p>
 
-	<p class="mt-4 text-sm text-gray-600">
-		Ce calcul ajuste vos besoins énergétiques selon vos caractéristiques personnelles pour mieux répondre à vos objectifs et votre mode de vie.
-	</p>
+<p>Les
+	<strong>besoins caloriques</strong>
+	varient fortement selon les individus. Deux personnes de même taille et âge peuvent avoir des besoins différents si leur niveau d’activité physique ou leur type de travail diffère.</p>
 
-</div>
-
-
+<p>Connaître vos besoins caloriques vous permet de mieux planifier votre alimentation, d’assurer un apport suffisant en nutriments et de soutenir vos objectifs de santé ou de performance.</p>

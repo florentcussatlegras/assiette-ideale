@@ -1,93 +1,106 @@
 {% extends "base.html.twig" %}
 
 {% block title %}
-	{{ parent() }}
-	- Déficit calorique
+    {{ parent() }}
+    - Déficit calorique
 {% endblock %}
 
 {% block body %}
 
-	<div class="flex flex-col w-full md:w-4/5 mx-auto py-12">
+    <div class="flex flex-col w-full md:w-4/5 mx-auto py-12">
 
-		{% set isExcess = imcAlert.isExcess() %}
-		{% set isLack = imcAlert.isLack() %}
-		{% set isWell = imcAlert.isWell() %}
+        {# Détermination de l’état de l’IMC #}
+        {% set isExcess = imcAlert.isExcess() %}
+        {% set isLack = imcAlert.isLack() %}
+        {% set isWell = imcAlert.isWell() %}
 
-		{% if isExcess %}
-			{% set title = "Réduction des apports caloriques" %}
-		{% elseif isLack %}
-			{% set title = "Augmentation des apports caloriques" %}
-		{% else %}
-			{% set title = "Maintien de l’équilibre calorique" %}
-		{% endif %}
+        {# Définition du titre de la section en fonction de l’état #}
+        {% if isExcess %}
+            {% set title = "Réduction des apports caloriques" %}
+        {% elseif isLack %}
+            {% set title = "Augmentation des apports caloriques" %}
+        {% else %}
+            {% set title = "Maintien de l’équilibre calorique" %}
+        {% endif %}
 
-		{{ include('navigation/_header_page.html.twig') }}
+        {# Inclusion de l’en-tête de page (breadcrumb / titre) #}
+        {{ include('navigation/_header_page.html.twig') }}
 
-		<div class="flex flex-col items-start mt-8 p-8 mx-auto max-w-4xl bg-white shadow-lg rounded-xl gap-4 relative">
+        {# Bloc principal avec les conseils et explications #}
+        <div class="flex flex-col items-start mt-8 p-8 mx-auto max-w-4xl bg-white shadow-balanced rounded-xl gap-4 relative">
 
-			<p class="text-2xl" style="color: {{ imcAlert.color }}">
-				Votre IMC actuel est de
-				<span class="font-semibold">{{ app.user.imc|round }}</span>
-				pour un IMC recommandé de
-				<span class="font-semibold">{{ app.user.idealImc|round }}</span>.
-			</p>
+            {# Affichage de l’IMC actuel et recommandé avec mise en couleur dynamique #}
+            <p class="text-2xl" style="color: {{ imcAlert.color }}">
+                Votre IMC actuel est de
+                <span class="font-semibold">{{ app.user.imc|round }}</span>
+                pour un IMC recommandé de
+                <span class="font-semibold">{{ app.user.idealImc|round }}</span>.
+            </p>
 
-			<p class="leading-relaxed text-gray-700 my-prose">
-				{% if app.user.isWeightGoalActive %}
-					{{ imcMessage.explanationWithDiet
-						|replace({
-							'{{ energyBase }}': energyBase|round,
-							'{{ energyAdjusted }}': energyAdjusted|round,
-							'{{ idealImc }}': app.user.idealImc|round,
-							'{{ weightTarget }}': weightTarget
-						})
-						|raw
-					}}
-				{% else %}
-					{{ imcMessage.explanationWithoutDiet|raw|nl2br }}
-				{% endif %}
-			</p>
+            {# Explication détaillée adaptée selon que l’utilisateur ait un objectif de poids ou non #}
+            <p class="leading-relaxed text-gray-700 my-prose">
+                {% if app.user.isWeightGoalActive %}
+                    {# Texte avec ajustement énergétique et remplacements dynamiques #}
+                    {{ imcMessage.explanationWithDiet
+                        |replace({
+                            '{{ energyBase }}': energyBase|round,
+                            '{{ energyAdjusted }}': energyAdjusted|round,
+                            '{{ idealImc }}': app.user.idealImc|round,
+                            '{{ weightTarget }}': weightTarget
+                        })
+                        |raw
+                    }}
+                {% else %}
+                    {# Texte générique sans objectif de poids #}
+                    {{ imcMessage.explanationWithoutDiet|raw|nl2br }}
+                {% endif %}
+            </p>
 
-			{% if app.user.isWeightGoalActive %}
+            {# Si l’utilisateur suit déjà un objectif de poids, on propose d’annuler le suivi #}
+            {% if app.user.isWeightGoalActive %}
 
-				<div class="flex justify-end w-full mt-2">
-					{# <a href="{{ path('app_energy_adjustment_remove') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow"> #}
-					<a href="{{ path('app_energy_adjustment_stop') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow">
-						Annuler le suivi
-					</a>
-				</div>
+                <div class="flex justify-end w-full mt-2">
+                    <a href="{{ path('app_energy_adjustment_stop') }}" 
+                       class="bg-sky-600 hover:bg-sky-700 transition-colors text-white font-semibold py-4 px-6 rounded-lg shadow">
+                        Annuler le suivi
+                    </a>
+                </div>
 
-			{% else %}
+            {% else %}
 
-				{% set direction = null %}
+                {# Détermination de la direction de l’ajustement calorique pour l’affichage #}
+                {% set direction = null %}
+                {% if isExcess %}
+                    {% set direction = 'à la baisse' %}
+                {% elseif isLack %}
+                    {% set direction = 'à la hausse' %}
+                {% endif %}
 
-				{% if isExcess %}
-					{% set direction = 'à la baisse' %}
-				{% elseif isLack %}
-					{% set direction = 'à la hausse' %}
-				{% endif %}
+                {# Explication du rééquilibrage alimentaire à proposer #}
+                <p class="leading-relaxed text-gray-700">
+                    En acceptant notre nouvelle recommandation d’apport énergétique journalier 
+                    {% if direction %}<strong>{{ direction }}</strong>{% endif %}
+                    nous adapterons les conseils et les alertes lors de vos choix de plats et d’aliments.
+                    <br /><br />
+                    Cela permettra un rééquilibrage alimentaire sain et en douceur, ainsi qu’une amélioration progressive de votre poids et de votre santé.
+                </p>
 
-				<p class="leading-relaxed text-gray-700">
-					En acceptant notre nouvelle recommandation d’apport énergétique journalier 
-					{% if direction %}<strong>{{ direction }}</strong>{% endif %}
-					nous adapterons les conseils et les alertes lors de vos choix de plats et d’aliments.
-					<br /><br />
-					Cela permettra un rééquilibrage alimentaire sain et en douceur, ainsi qu’une amélioration progressive de votre poids et de votre santé.
-				</p>
+                {# Boutons d’action : revenir au tableau de bord ou accepter la recommandation #}
+                <div class="flex justify-end w-full mt-4">
+                    <a href="{{ path('app_dashboard_index') }}" 
+                       class="text-sky-600 hover:text-sky-700 font-semibold py-4 px-6 transition duration-300">
+                        Revenir à mon espace
+                    </a>
+                    <a href="{{ path('app_energy_adjustment_accept') }}" 
+                       class="bg-sky-600 hover:bg-sky-700 transition-colors text-white font-semibold py-4 px-6 rounded-lg shadow">
+                        J’ai compris et j’accepte
+                    </a>
+                </div>
 
-				<div class="flex justify-end w-full mt-4">
-					<a href="{{ path('app_dashboard_index') }}" class="text-sky-600 hover:text-sky-700 font-semibold py-4 px-6 transition duration-300">
-						Revenir à mon espace
-					</a>
-					<a href="{{ path('app_energy_adjustment_accept') }}" class="bg-sky-600 hover:bg-sky-700 transition-colors text-white hover:text-white font-semibold py-4 px-6 rounded-lg shadow">
-						J’ai compris et j’accepte
-					</a>
-				</div>
+            {% endif %}
 
-			{% endif %}
+        </div>
 
-		</div>
-
-	</div>
+    </div>
 
 {% endblock %}

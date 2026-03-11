@@ -1,12 +1,20 @@
 <div class="w-3/4 mx-auto flex flex-col items-stretch">
 
-    <h1 class="flex flex-col md:flex-row items-start md:items-center text-slate-700 justify-between mt-6 md:mt-2">
+    {# Titre de la page avec la date #}
+    <h1 class="flex flex-col xl:flex-row items-start xl:items-center text-slate-700 justify-between mt-6 md:mt-2">
        
         <span class="text-3xl font-bold tracking-tight">{{ date|format_date('full', locale='fr')|capitalize }}</span>
  
+        {# Affichage de l'énergie totale de la journée si des repas existent #}
         {% if meals is not empty %}
-            <div class="-ml-6 md:ml-0 flex flex-col items-end">
-                {{ render(path('menu_meals_show_total_energy', { 'energyMeals': meals[0].energyAllMealsDay, 'sizeIcon': 26, 'bgColor': 'white', 'showDetails': true } )) }}
+            <div class="-ml-6 md:ml-0 flex flex-col items-start xl:items-end mt-4">
+                {{ render(path('menu_meals_show_total_energy', { 
+                    'energyMeals': meals[0].energyAllMealsDay, 
+                    'highestAlertPerDay': highestAlertPerDay, 
+                    'sizeText': "3xl", 
+                    'bgColor': 'white', 
+                    'showDetails': true 
+                } )) }}
             </div>
         {% endif %}
 
@@ -14,17 +22,16 @@
 
     {% if meals is not empty %}
 
-        <a href="{{ path('app_balance_sheet_index', { start: date|date('Y-m-d'), end: date|date('Y-m-d') }) }}" class="flex text-sm md:text-base text-light-blue font-semibold items-center leading-tight gap-2 -ml-2 mb-4">
+        {# Lien vers le bilan complet de la journée #}
+        <a href="{{ path('app_balance_sheet_index', { start: date|date('Y-m-d'), end: date|date('Y-m-d') }) }}" class="flex text-sm md:text-base text-sky-600 hover:text-sky-700 font-semibold items-center leading-tight gap-2 -ml-2 mb-4">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
             <span>Voir le bilan complet de cette journée</span>
         </a>
 
+        {# Affichage des messages d'alerte pour la journée #}
         {{ render(path('app_alert_messages', { start: date|date('Y-m-d'), end: date|date('Y-m-d') })) }}
 
-        {# {% if meals[0].listFgpRemainingAbsentAllMealsDay is not empty %}
-            <span class="text-sm md:text-base" style="color: #C2410C">Certains groupes alimentaires sont manquants</span>
-        {% endif %} #}
-
+        {# Affichage des quantités totales des groupes alimentaires et nutriments #}
         <div class="flex flex-col md:flex-row items-start mt-6 md:mt-4 text-base gap-4 md:justify-between">
             <div class="flex md:my-hidden justify-center -ml-2 md:ml-0">
                 {{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: meals[0].listFgpAllMealsDay })) }}
@@ -43,16 +50,19 @@
 
     {% endif %}
 
+    {# Boucle sur les repas de la journée #}
     {% for meal in meals %}
 
         <div class="mt-4">
        
             <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-end md:justify-between gap-2">
 
+                {# Nom du type de repas (Petit-déjeuner, Déjeuner...) #}
                 <h1 class="font-medium mb-2 text-xl">
                     {{ meal.type.frontName }}
                 </h1>
 
+                {# Affichage des groupes alimentaires pour le repas #}
                 <div class="flex  -ml-2 md:ml-0">
                     {{ render(controller("App\\Controller\\meal\\MenuController::getListFgpMeal", { 'id': meal.id })) }}
                 </div>
@@ -63,20 +73,24 @@
 
                 <ul class="text-base">
 
+                    {# Boucle sur les plats et aliments du repas #}
                     {% for dishAndFood in meal.dishAndFoods %}
 
-                        <li class="flex flex-col">                 
+                        <li class="flex flex-col mb-2">                 
 
                             <div class="flex gap-2 w-auto my-1 items-center">
 
+                                {# Index de l’élément dans la liste #}
                                 <div class="text-slate-300 font-bold w-2">{{ loop.index }}</div>    
 
                                 {% if dishAndFood['type'] == 'Dish' %}
 
                                     {% set element = object(dishAndFood['id'], 'App\\Entity\\Dish') %}
 
+                                    {# Image du plat #}
                                     {{ include('meals/model/_picture_element.html.twig') }}
 
+                                    {# Nom et quantité du plat #}
                                     <div class="flex flex-col md:flex-row text-sm md:text-base gap-0 md:gap-2">
                                         <div>
                                             <span>{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}</span>
@@ -91,8 +105,10 @@
 
                                     {% set element = object(dishAndFood['id'], 'App\\Entity\\Food') %}
 
+                                    {# Image de l’aliment #}
                                     {{ include('meals/model/_picture_element.html.twig') }}
 
+                                    {# Nom, quantité et unité de l’aliment #}
                                     <div class="flex flex-col md:flex-row text-sm md:text-base gap-0 md:gap-2">
                                         <div>
                                             <span>{{ dishAndFood['quantity'] }}</span>
@@ -119,6 +135,7 @@
 
     {% else %}
     
+        {# Message si aucun repas n’est trouvé pour la journée #}
         <h1 class="py-12">Aucun repas trouvés</h1>
 
     {% endfor %}

@@ -1,24 +1,30 @@
+{# Lien complet vers la page de la catégorie #}
 <a href="{{ path(category.route) }}" class="dashboard_category-grid col-span-6 xl:col-span-2 relative">
 
-    <div class="card-wrapper card-space-user flex flex-col items-center justify-between gap-4 relative py-8 px-4 h-full bg-white border-gray-200 rounded-xl shadow-lg">
+    <div class="card-wrapper card-space-user flex flex-col items-center justify-between gap-4 relative py-8 px-4 h-full bg-white border-gray-200 rounded-xl shadow-balanced">
 
-        {# Badge statut repas du nour saisi/pas saisi #}
+        {# Vérifie si c’est la catégorie “repas du jour” #}
         {% if category.title == 'dashboard.category.meal_day' %}
+            {# Positionne le badge en haut à droite #}
             <div class="absolute top-3 right-3">
+
+                {# Si au moins un repas a été saisi, affiche le nombre avec pluriel #}
                 {% if countMealsDay > 0 %}
                     <span class="status-badge status-done">{{ countMealsDay }} saisi{{ countMealsDay > 1 ? 's' }}</span>
                 {% else %}
+                    {# Sinon affiche “À saisir” #}
                     <span class="status-badge status-pending">À saisir</span>
                 {% endif %}
             </div>
         {% endif %}
 
+        {# Picto de la catégorie #}
         <img src={{ asset("images/#{category.picto}") }} />
        
+        {# Titre traduit, en majuscules, centré et coloré en bleu #}
         <span class="flex gap-2 font-bold items-center text-base text-center text-sky-600">
             {{ category.title|trans({}, 'dashboard')|upper }}
         </span>
 
     </div>
-
 </a>

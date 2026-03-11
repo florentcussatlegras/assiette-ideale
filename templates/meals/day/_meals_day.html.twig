@@ -1,212 +1,217 @@
+{# Container principal du jour de repas, avec deux Stimulus controllers : 
+   - 'meal' pour gérer ajout/suppression de repas, reload ajax, etc.
+   - 'alert-meal-modal' pour la gestion des alertes modales #}
 <div 
     {{ stimulus_controller('meal', { 
-			urlReload: path('meal_day', { 'ajax': 1 }),
-			urlAddMeal: path('meal_day_add'),
-			urlRemoveMeal: path('meal_day_remove'),
-			lastRankMeal: app.session.get('_meal_day_range')|default("none") }) 
-		| stimulus_controller('alert-meal-modal')
-	}}
-	class="py-12 relative"
+        urlReload: path('meal_day', { 'ajax': 1 }),
+        urlAddMeal: path('meal_day_add'),
+        urlRemoveMeal: path('meal_day_remove'),
+        lastRankMeal: app.session.get('_meal_day_range')|default("none") 
+    }) 
+    | stimulus_controller('alert-meal-modal')
+    }}
+    class="py-12 relative"
 >
 
-		{{ include('meals/day/modals/_modal_messages_alerts.html.twig') }}
+    {# Inclusion du modal qui affiche les messages d'alerte #}
+    {{ include('meals/day/modals/_modal_messages_alerts.html.twig') }}
 
-		<input 
-			data-meal-target="alertCount"
-			type="hidden" 
-			value="{{ app.session.get('_meal_day_alerts/_final_list')|length|default(0) }}" 
-		/>
+    {# Stockage du nombre total d'alertes finales dans un input caché pour Stimulus #}
+    <input 
+        data-meal-target="alertCount"
+        type="hidden" 
+        value="{{ app.session.get('_meal_day_alerts/_final_list')|length|default(0) }}" 
+    />
 
-		{% for fgpRemaining in listFgpRemainingAbsent %}
-			<input 
-				data-meal-target="fgpRemaining"
-				type="hidden" 
-				value="{{ fgpRemaining }}" 
-			/> 
-		{% endfor %}
+    {# Inputs cachés pour les Food Groups restants non présents, utilisés côté JS #}
+    {% for fgpRemaining in listFgpRemainingAbsent %}
+        <input 
+            data-meal-target="fgpRemaining"
+            type="hidden" 
+            value="{{ fgpRemaining }}" 
+        /> 
+    {% endfor %}
 
-		{% if app.session.get('_meal_day_date') == 'model' %}
-			{% set title = "Mes repas" %}
-			{% if 'name' in app.session.get('_meal_day_0')|keys and app.session.get('_meal_day_0')['name'] is not null %}
-				{% set subtitle = app.session.get('_meal_day_0')['name'] %}
-			{% else %}
-				{% set subtitle = "Nouveau repas" %}
-			{% endif %}
-		{% else %}
-			{% set title = "meal.page.title"|trans({"date_meal": date(app.session.get('_meal_day_date'))}, "meal") %}
-		{% endif %}
+    {# Gestion du titre et sous-titre de la page selon que ce soit un modèle ou un jour réel #}
+    {% if app.session.get('_meal_day_date') == 'model' %}
+        {% set title = "Mes repas" %}
+        {% if 'name' in app.session.get('_meal_day_0')|keys and app.session.get('_meal_day_0')['name'] is not null %}
+            {% set subtitle = app.session.get('_meal_day_0')['name'] %}
+        {% else %}
+            {% set subtitle = "Nouveau repas" %}
+        {% endif %}
+    {% else %}
+        {% set title = "meal.page.title"|trans({"date_meal": date(app.session.get('_meal_day_date'))}, "meal") %}
+    {% endif %}
 
-		{{ include('navigation/_header_page.html.twig') }}
-		
-		{{ include("meals/day/save-meals.html.twig", { lastRankMeal: app.session.get('_meal_day_range') }, with_context = false) }}
+    {# Inclusion du header de navigation avec le titre/subtitle #}
+    {{ include('navigation/_header_page.html.twig') }}
 
-		{% if app.session.get('_meal_day_date') != 'model' %}
+    {# Ligne avec les alertes finales et bouton "Enregistrer" #}
+    <div class="flex flex-col-reverse md:flex-row items-start md:items-center mb-6 gap-4">
 
-			<div class="flex w-full">
+        {% if app.session.get('_meal_day_date') != 'model' %}
+            {# Affichage des alertes finales côté utilisateur #}
+            <div class="flex gap-2 items-center">
+                {{ render(path('meal_final_alerts')) }}
+            </div>
+        {% endif %}
 
-				<div class="flex items-center" style="width: 2%"></div>
+        {# Bouton "Enregistrer le repas" ou équivalent #}
+        {{ include("meals/day/save-meals.html.twig", { lastRankMeal: app.session.get('_meal_day_range') }, with_context = false) }}
 
-				<div class="flex flex-col lg:flex-row items-start lg:items-center pb-4 relative gap-2 lg:gap-0" style="width: 98%">
+    </div>
 
-					<div class ="my-hidden md:flex relative mb-2" style="width: 50%">
+    {# Contenu principal uniquement pour un jour réel (pas un modèle) #}
+    {% if app.session.get('_meal_day_date') != 'model' %}
 
-						{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
-							<button 
-								type="button"
-								data-toggle="modal" 
-								data-target="#finalAlertModal"
-								class="show-final-alerts flex items-center gap-2 cursor-pointer w-full text-base text-left leading-snug"
-								type="button"
-							>
-								<svg viewBox="0 0 24 24" class="w-8 h-8 text-red-900" xmlns="http://www.w3.org/2000/svg" fill="none">
-									<circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" fill="transparent"/>
-									<text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="12" font-family="Arial, sans-serif" font-weight="bold">i</text>
-								</svg>
-								<span class="text-red-900 cursor-pointer">Voir les alertes nutritionnelles</span>
-							</button>
-						{% endif %}
+        <div class="flex w-full">
 
-					</div>
+            {# Espace à gauche pour l'alignement des checkboxes #}
+            <div class="flex items-center" style="width: 2%"></div>
 
-					<div class ="flex md:my-hidden relative" style="width: 100%">
+            {# Container principal des repas #}
+            <div class="flex flex-col lg:flex-row items-start lg:items-center pb-4 relative gap-2 lg:gap-0" style="width: 98%">
 
-						{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
-							<button 
-								type="button"
-								data-toggle="modal" 
-								data-target="#finalAlertModal"
-								class="show-final-alerts flex items-center gap-4 cursor-pointer w-full text-base text-left leading-snug"
-								type="button"
-							>
-								<svg viewBox="0 0 24 24" class="w-8 h-8 text-red-900" xmlns="http://www.w3.org/2000/svg" fill="none">
-									<!-- Cercle rouge -->
-									<circle cx="12" cy="12" r="11" stroke="currentColor" stroke-width="1" fill="transparent"/>
+                {# Placeholder invisible sur mobile pour la colonne de gauche #}
+                <div class ="my-hidden md:flex flex-col relative mb-2" style="width: 50%"></div>
 
-									<!-- Lettre i blanche -->
-									<text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="12" font-family="Arial, sans-serif" font-weight="bold">i</text>
-								</svg>
-								<span class="text-red-900 cursor-pointer">Voir les alertes nutritionnelles</span>
-							</button>
-						{% endif %}
+                {# Placeholder pour la colonne centrale sur mobile #}
+                <div class ="flex md:my-hidden relative" style="width: 100%"></div>
 
-					</div>
+                {# Colonne de droite pour desktop : énergie totale et quantités FGP #}
+                <div class="my-hidden md:flex relative" style="width: 50%">
 
-					<div class="my-hidden md:flex relative" style="width: 50%">
-						
-						<div class="flex md:hidden w-2-3 md:py-2 text-2xl md:text-4xl mb-2 shadow-sm">
-							{{ render(path('meal_day_show_total_energy')) }}
-						</div>
+                    {# Version mobile : énergie totale #}
+                    <div class="flex md:hidden w-2-3 md:py-2 text-2xl md:text-4xl mb-2 shadow-sm">
+                        {{ render(path('meal_day_show_total_energy')) }}
+                    </div>
 
-						<div class="flex justify-center items-center">
-							{{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
-						</div>
+                    {# Quantités totales par Food Group #}
+                    <div class="flex justify-center items-center">
+                        {{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
+                    </div>
 
-						<div class="my-hidden md:flex md:py-2 text-2xl ml-auto bg-white rounded-2xl shadow-soft overflow-hidden">
-							{{ render(path('meal_day_show_total_energy')) }}
-						</div>
+                    {# Version desktop : énergie totale #}
+                    <div class="my-hidden md:flex md:py-2 text-2xl ml-auto bg-white rounded-2xl shadow-soft overflow-hidden">
+                        {{ render(path('meal_day_show_total_energy')) }}
+                    </div>
 
-					</div>
+                </div>
 
-					<div class="flex flex-col md:my-hidden relative items-start gap-6" style="width: 100%">
+                {# Version mobile pour énergie et FGP #}
+                <div class="flex flex-col md:my-hidden relative items-start gap-6" style="width: 100%">
 
-						<div class="flex md:py-2 text-xl -ml-5">
-							{{ render(path('meal_day_show_total_energy', {'bg': 'bg-transparent'})) }}
-						</div>
+                    <div class="flex md:py-2 text-xl -ml-5">
+                        {{ render(path('meal_day_show_total_energy', {'bg': 'bg-transparent'})) }}
+                    </div>
 
-						<div class="justify-center flex -ml-2">
-							{{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
-						</div>
+                    <div class="justify-center flex -ml-2">
+                        {{ render(controller('App\\Controller\\meal\\DefaultController::fgpQuantitiesTotal', { listFgp: listFgp })) }}
+                    </div>
 
-					</div>
+                </div>
 
-				</div>
+            </div>
 
-			</div>
+        </div>
 
-		{% endif %}
-		
-		{% if app.session.has('_meal_day_range') %}
+    {% endif %}
 
-			<div
-				{{ stimulus_controller('reload-content', {
-						url: path('meal_day_list_ajax'),
-						page: 0,
-					})
-				}}
-				data-action="sidebar-list-dishes:async:add-item->reload-content#onAddItem sidebar-list-dishes:async:remove-item->reload-content#onRemoveItem"
-			>
-				<div
-					{{ stimulus_controller('sidebar-list-dishes', {
-						urlReloadMeals: path('meal_day'),
-						urlAddItem: path('meal_day_add_dish_or_food'),
-						urlRemoveItem: path('meal_day_remove_dish'),
-						urlRemovePreselectedItems: path('meal_sidebar_remove_preselect_items'),
-						urlReloadEnergyLabel: path('meal_day_show_total_energy')
-					}) }}
-				>
+    {# Section dynamique pour les repas si le range existe #}
+    {% if app.session.has('_meal_day_range') %}
 
-					{% for rankMeal in range(0, app.session.get('_meal_day_range')) %}
-						<div id="ve-meal">
-							{{ include("meals/day/meal.html.twig") }}
-						</div>
-					{% endfor %}
+        <div
+            {{ stimulus_controller('reload-content', {
+                    url: path('meal_day_list_ajax'),
+                    page: 0,
+                })
+            }}
+            data-action="sidebar-list-dishes:async:add-item->reload-content#onAddItem sidebar-list-dishes:async:remove-item->reload-content#onRemoveItem"
+        >
+            {# Container pour la liste des plats / aliments #}
+            <div
+                {{ stimulus_controller('sidebar-list-dishes', {
+                    urlReloadMeals: path('meal_day'),
+                    urlAddItem: path('meal_day_add_dish_or_food'),
+                    urlRemoveItem: path('meal_day_remove_dish'),
+                    urlRemovePreselectedItems: path('meal_sidebar_remove_preselect_items'),
+                    urlReloadEnergyLabel: path('meal_day_show_total_energy')
+                }) }}
+            >
 
-					<div id="loader-new-meal" class="flex justify-center items-center h-36 hidden">
-						<div class="loader"></div>
-					</div>
+                {# Boucle sur les repas existants #}
+                {% for rankMeal in range(0, app.session.get('_meal_day_range')) %}
+                    <div id="ve-meal">
+                        {{ include("meals/day/meal.html.twig", {rankMeal: rankMeal}) }}
+                    </div>
+                {% endfor %}
 
-					{{ include('meals/day/_sidebar_list_dishes.html.twig') }}
+                {# Loader skeleton pour ajout d'un nouveau repas #}
+                <div id="loader-new-meal" class="flex justify-center items-center hidden">
+                    {{ include('meals/day/_meals_day_skeleton.html.twig') }}
+                </div>
 
-				</div>
+                {# Sidebar pour lister les plats disponibles #}
+                {{ include('meals/day/_sidebar_list_dishes.html.twig') }}
 
-			</div>
+            </div>
 
-		{% endif %}
+        </div>
 
-		<div class="flex w-full items-center">
+    {% endif %}
 
-			<div style="width: 2%"></div>
+    {# Ligne pour ajouter un nouveau repas avec checkbox de sélection globale #}
+    <div class="flex w-full items-center">
 
-			<div class="flex items-center justify-start relative" style="width: 98%">
-		
-				{% if app.session.get('_meal_day_date') != 'model' %}
-					<div class="flex md:my-hidden absolute -left-4 top-0 items-center h-full justify-center">
-						<input type="checkbox" class="cursor-pointer" data-action="meal#selectAllMeals" data-meal-target="selectAllMeals" />
-					</div>
-					<div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
-						<input type="checkbox" class="cursor-pointer" data-action="meal#selectAllMeals" data-meal-target="selectAllMeals" />
-					</div>
-				{% endif %}
-		
-				{% if app.session.get('_meal_day_date') != 'model' %}
-					<button 
-						data-action="meal#onRemoveMealSelection" 
-						class="p-2 bg-red-600 text-white font-medium rounded-lg text-base hidden"
-						data-url-remove-selection="{{ path('meal_day_remove_selection') }}"
-						data-meal-target="btnRemoveMealSelection"
-					>
-						Supprimer
-					</button>
-				{% endif %}
-				
-				{{ include("meals/day/add-meal.html.twig", { countMeals: app.session.get('_meal_day_range') }) }}
+        <div style="width: 2%"></div>
 
-			</div>
+        <div class="flex items-center justify-start relative" style="width: 98%">
 
-		</div>
+            {% if app.session.get('_meal_day_date') != 'model' %}
+                {# Checkbox pour sélectionner tous les repas (mobile et desktop) #}
+                <div class="flex md:my-hidden absolute -left-4 top-0 items-center h-full justify-center">
+                    <input type="checkbox" class="cursor-pointer" data-action="meal#selectAllMeals" data-meal-target="selectAllMeals" />
+                </div>
+                <div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
+                    <input type="checkbox" class="cursor-pointer" data-action="meal#selectAllMeals" data-meal-target="selectAllMeals" />
+                </div>
+            {% endif %}
 
-		{% if app.session.has('_meal_day_alerts/_final_list') and app.session.get('_meal_day_alerts/_final_list') is not empty %}
-			{{ include('meals/day/modals/_modal_list_final_alerts.html.twig') }}
-		{% endif %}
+            {% if app.session.get('_meal_day_date') != 'model' %}
+                {# Bouton pour supprimer la sélection de repas #}
+                <button 
+                    type="button"
+                    data-action="meal#onRemoveMealSelection" 
+                    class="p-2 bg-red-600 text-white font-medium rounded-lg text-base hidden"
+                    data-url-remove-selection="{{ path('meal_day_remove_selection') }}"
+                    data-meal-target="btnRemoveMealSelection"
+                >
+                    Supprimer
+                </button>
+            {% endif %}
+            
+            {# Inclusion du template pour ajouter un nouveau repas #}
+            {{ include("meals/day/add-meal.html.twig", { countMeals: app.session.get('_meal_day_range') }) }}
 
-		<button id="scrollTopBtn"
-			class="fixed bottom-6 right-6 bg-gray-700 text-white p-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 hover:bg-gray-700"
-		>
-			<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
-			</svg>
-		</button>
+        </div>
+
+    </div>
+
+    {# Bouton pour revenir en haut de la page #}
+    <div {{ stimulus_controller('scroll-top') }}>
+
+        <button
+            id="scrollTopBtn"
+            data-scroll-top-target="button"
+            data-action="click->scroll-top#scrollTop"
+            class="fixed bottom-6 right-6 bg-gray-700 text-white p-3 rounded-full shadow-lg opacity-0 pointer-events-none transition-opacity duration-300 hover:bg-gray-800"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+            </svg>
+        </button>
+
+    </div>
 
 </div>
-
-

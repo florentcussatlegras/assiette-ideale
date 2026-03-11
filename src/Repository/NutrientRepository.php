@@ -21,6 +21,22 @@ class NutrientRepository extends ServiceEntityRepository
         parent::__construct($registry, Nutrient::class);
     }
 
+    public function getCodeNameMap(): array
+	{
+		$qb = $this->createQueryBuilder('n')
+			->select('n.code, n.name')
+			->orderBy('n.name', 'ASC');
+
+		$results = $qb->getQuery()->getArrayResult();
+
+		$map = [];
+		foreach ($results as $row) {
+			$map[$row['code']] = $row['name'];
+		}
+
+		return $map;
+	}
+
     public function findAll(): array
 	{
 		$qb = $this->createQueryBuilder('n')

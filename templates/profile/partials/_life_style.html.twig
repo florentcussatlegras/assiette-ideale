@@ -1,23 +1,33 @@
- <div class="flex flex-col">
+<div class="flex flex-col">
+    {# Conteneur principal du formulaire d'activité physique #}
 
+    {# Champ "hour" #}
     <div class="m-auto mb-5" style="width: 25rem">
+        {# Label du champ #}
         {{ form_label(profileForm.hour) }}
+
+        {# Affiche les erreurs éventuelles du champ #}
         {{ form_errors(profileForm.hour) }}
+
+        {# Widget (input) du champ #}
         {{ form_widget(profileForm.hour) }}
     </div>
 
+    {# Champ "sportingTime" de l'activité physique #}
     <div class="m-auto mb-5" style="width: 25rem">
         {{ form_label(profileForm.physicalActivity.sportingTime) }}
         {{ form_errors(profileForm.physicalActivity.sportingTime) }}
         {{ form_widget(profileForm.physicalActivity.sportingTime) }}
     </div>
 
+    {# Champ "workingType" de l'activité physique #}
     <div class="m-auto mb-5" style="width: 25rem">
         {{ form_label(profileForm.physicalActivity.workingType) }}
         {{ form_errors(profileForm.physicalActivity.workingType) }}
         {{ form_widget(profileForm.physicalActivity.workingType) }}
     </div>
 
+    {# Token CSRF pour sécuriser le formulaire #}
     {{ form_widget(profileForm._token_profile) }}
     
 </div>

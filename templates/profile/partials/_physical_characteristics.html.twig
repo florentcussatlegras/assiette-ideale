@@ -1,13 +1,15 @@
 <div class="flex flex-col w-2/3">
 
+    {# Si une sous-étape existe, on affiche directement le formulaire complet #}
     {% if subStep is not null %}
-
         {{ form_widget(profileForm) }}
 
     {% else %}
 
+        {# Bloc ligne 1 : genre et date de naissance #}
         <div class="flex flex-row mb-5 justify-around">
 
+            {# Genre #}
             <div class="form-group flex flex-col items-left w-1/3">
                 {{ form_label(profileForm.gender, 'Vous êtes') }}
                 <div class="flex flex-col sm:flex-row items-center mt-2">
@@ -15,6 +17,7 @@
                 </div>
             </div>
 
+            {# Date de naissance #}
             <div class="form-group flex flex-col items-left w-1/3">
                 {{ form_label(profileForm.birthday) }}
                 {{ form_errors(profileForm.birthday) }}
@@ -25,29 +28,34 @@
 
         </div>
 
+        {# Bloc ligne 2 : taille et poids #}
         <div class="flex flex-row justify-around">
 
+            {# Taille #}
             <div class="form-group flex flex-col items-left w-1/3">
                 {{ form_label(profileForm.height, 'Votre taille') }}
                 {{ form_errors(profileForm.height) }}
                 <div class="input-group w-48">
-                    {{ form_widget(profileForm.height) }}<div id="input-group-price" class="input-group-text">cm</div>
+                    {{ form_widget(profileForm.height) }}
+                    <div id="input-group-price" class="input-group-text">cm</div>
                 </div>
             </div>
 
+            {# Poids #}
             <div class="form-group flex flex-col items-left w-1/3">
                 {{ form_label(profileForm.weight, 'Votre poids') }}
                 {{ form_errors(profileForm.weight) }}
                 <div class="input-group w-48">
-                    {{ form_widget(profileForm.weight) }}<div id="input-group-price" class="input-group-text">kg</div>
+                    {{ form_widget(profileForm.weight) }}
+                    <div id="input-group-price" class="input-group-text">kg</div>
                 </div>
             </div>
 
         </div>
 
+        {# Token CSRF du formulaire #}
         {{ form_widget(profileForm._token_profile) }} 
 
     {% endif %}
-
 
 </div>

@@ -1,0 +1,51 @@
+{# Modal de partage de recette, initialement caché #}
+<div data-share-recipe-target="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    
+    {# Conteneur principal du modal #}
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative flex flex-col items-center">
+
+        {# Bouton de fermeture du modal #}
+        <div class="flex justify-end w-full mb-4">
+            <button type="button" data-action="click->share-recipe#close" class="flex items-center text-sky-600 hover:text-sky-700 justify-center rounded-full hover:bg-gray-100 transition p-3" aria-label="Close">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+                </svg>
+            </button>
+        </div>
+
+        {# Titre du modal #}
+        <h2 class="text-xl font-bold mb-6">Partager cette recette</h2>
+
+        {# Rangée d’icônes pour les différentes options de partage #}
+        <div class="flex flex-row justify-center items-center gap-6 my-4 p-4">
+
+            {# Bouton WhatsApp, déclenche l’action Stimulus share-recipe#whatsapp #}
+            <button type="button" data-action="click->share-recipe#whatsapp" class="p-3 rounded-full bg-green-100 hover:bg-green-200 transition duration-300">
+                <svg class="w-8 h-8 text-green-600" fill="currentColor" viewBox="0 0 32 32"></svg>
+            </button>
+
+            {# Bouton Email, déclenche share-recipe#email #}
+            <button type="button" data-action="click->share-recipe#email" class="p-3 rounded-full bg-blue-100 hover:bg-blue-200 transition duration-300">
+                <svg class="w-8 h-8 text-blue-600"></svg>
+            </button>
+
+            {# Bouton X (anciennement Twitter), déclenche share-recipe#twitter #}
+            <button type="button" data-action="click->share-recipe#twitter" class="p-3 rounded-full bg-gray-200 hover:bg-gray-300 transition duration-300">
+                <svg class="w-8 h-8"></svg>
+            </button>
+
+            {# Bouton copier le lien, déclenche share-recipe#copy #}
+            <div class="relative inline-block">
+                <button type="button" data-action="click->share-recipe#copy" class="p-3 rounded-full bg-gray-300 hover:bg-gray-400 transition duration-300">
+                    <svg class="w-8 h-8 text-gray-700"></svg>
+                </button>
+
+                {# Message temporaire affiché après copie du lien #}
+                <span class="flash-message-copy-link absolute p-3 left-full top-1/2 -translate-y-1/2 ml-2 opacity-0 transition-all duration-300 pointer-events-none"></span>
+            </div>
+
+        </div>
+
+    </div>
+    
+</div>

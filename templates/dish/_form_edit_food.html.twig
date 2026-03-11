@@ -1,7 +1,9 @@
+{# Wrapper du formulaire de modification de quantité, caché par défaut #}
 <div class="form-quantity-food hidden flex-row justify-center gap-2 w-full py-2">
 
     <form method="POST" class="flex flex-row items-center gap-2">
 
+        {# Token CSRF pour sécuriser la modification de la quantité #}
         <input 
             type="hidden" 
             name="_token" 
@@ -11,50 +13,48 @@
 
         {% set foodGroupAlias = food.foodGroup.alias %}
 
+        {# Section saisie de quantité et unité #}
         <div class="flex gap-2">
 
+            {# Champ de saisie pour la quantité, prérempli si déjà en session #}
             <input 
                 name="quantity" 
                 type="text" 
                 class="w-16 rounded-lg"
                 data-foods-dish-target="newQuantity"
                 placeholder="Quantité" 
-                aria-label="default input inline 1" 
+                aria-label="Quantité"
                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                         and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
-                            value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
+                    value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
                 {% endif %}
             >
 
+            {# Sélecteur de l'unité de mesure #}
             <select 
                 name="unit-measure"
                 data-foods-dish-target="newUnitMeasure"
                 class="rounded-lg"
             >
-            
                 {% for unitMeasure in unitMeasures %}
 
+                    {# Affiche l'unité si elle a un ratio en grammes ou si l'aliment peut être une part #}
                     {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
-            
                         <option value="{{ unitMeasure.alias }}"
-                        
                             {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                            and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
-                    and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
-                                        selected="selected"
-                                    {% endif %}>
+                                and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+                                and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                selected="selected"
+                            {% endif %}>
+                            {{ unitMeasure.alias }}
+                        </option>
+                    {% endif %}
 
-                                    {{ unitMeasure.alias }}
-                                    
-                                </option>
-
-                            {% endif %}
-
-                        {% endfor %}
-            
+                {% endfor %}
             </select>
         </div>
 
+        {# Boutons pour modifier ou annuler la modification #}
         <div class="flex gap-2">
             <button 
                 type="button" 

@@ -8,7 +8,11 @@ use Doctrine\ORM\Mapping as ORM;
 class LevelAlert
 {
     // Constantes pour recommandations
-    public const RECOMMENDED_WELL_RANGE = 0.1;
+    public const RECOMMENDED_WELL_RANGE = 0.1; // 10%
+
+    public const HIGHLY_MULTIPLIER = 1.5;
+    public const STRONGLY_MULTIPLIER = 2.0;
+
     public const RECOMMENDED = 'recommended';
     public const HIGHLY_RECOMMENDED = 'highly_recommended';
     public const NOT_RECOMMENDED = 'not_recommended';
@@ -21,6 +25,7 @@ class LevelAlert
 
     // Constantes pour balance nutritionnelle
     public const BALANCE_WELL_RANGE = 0.1;
+    
     public const BALANCE_WELL = 'balance_well';
     public const BALANCE_LACK = 'balance_lack';
     public const BALANCE_VERY_LACK = 'balance_very_lack';

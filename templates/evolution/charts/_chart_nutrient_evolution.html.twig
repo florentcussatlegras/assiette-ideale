@@ -1,13 +1,19 @@
 {% extends 'evolution/charts/_chart_skeleton.html.twig' %}
 
+{# Bloc principal où seront injectés les graphiques spécifiques #}
 {% block chart %}
 
+    {# Conteneur flexible pour afficher plusieurs graphiques côte à côte #}
     <div class="flex flex-wrap w-full mt-4 bg-white">
+        
+        {# Boucle sur tous les graphiques passés à la vue #}
         {% for chart in charts %}
+            {# Chaque graphique prend toute la largeur sur mobile et la moitié sur grand écran #}
             <div class="w-full lg:w-1/2">
                 {{ render_chart(chart) }}
             </div>
         {% endfor %}
+        
     </div>
 
 {% endblock %}

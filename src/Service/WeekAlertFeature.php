@@ -2,18 +2,11 @@
 
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\HttpFoundation\RequestStack;
+use App\Entity\Alert\LevelAlert;
+use App\Service\AlertFeature;
 
 class WeekAlertFeature
 {
-	public function __construct(
-			private RequestStack $requestStack, 
-			private EntityManagerInterface $manager, 
-			private Security $security)
-	{}
-
 	public function get_lundi_vendredi_from_week($startingDate = null) 
 	{
 		$date = null === $startingDate ? new \Datetime() : $date = new \DateTime($startingDate);

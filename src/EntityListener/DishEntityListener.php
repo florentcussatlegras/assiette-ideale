@@ -23,10 +23,10 @@ class DishEntityListener implements TransformerInterface
         $dish->setHaveGluten(false);
         
         foreach($dish->getDishFoods() as $dishFood) {
-            if($dishFood->getFood()->isHaveLactose()) {
+            if($dishFood->getFood()->getHaveLactose()) {
                 $dish->sethaveLactose(true);
             }
-            if($dishFood->getFood()->isHaveGluten()) {
+            if($dishFood->getFood()->getHaveGluten()) {
                 $dish->sethaveGluten(true);
             }
         }

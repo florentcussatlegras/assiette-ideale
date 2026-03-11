@@ -1,9 +1,16 @@
 <div id="slideover-container" class="w-full h-full fixed inset-0 invisible" style="z-index: 51">
 
-	<div data-action="click->sidebar-details-meals#toggleSlideover" id="slideover-bg" class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 opacity-0"></div>
+	{# Fond sombre derrière le panneau (overlay) — ferme le slideover au clic #}
+	<div 
+		data-action="click->sidebar-details-meals#toggleSlideover" 
+		id="slideover-bg" 
+		class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 opacity-0"
+	></div>
 
+	{# Panneau latéral (slideover) qui apparaît depuis le bas #}
 	<div id="slideover" class="w-full bg-white h-full absolute right-0 bottom-0 duration-300 ease-out transition-all translate-y-full">
 
+		{# Bouton de fermeture du slideover #}
 		<button
 			class="absolute font-bold top-4 right-4 flex items-center text-light-blue gap-2"
 			data-action="click->sidebar-details-meals#toggleSlideover"
@@ -13,10 +20,13 @@
 			</svg>
 		</button>
 
+		{# Conteneur principal avec scroll pour afficher la liste des repas #}
 		<div 
 			id="container-list" 
 			class="container-list flex flex-col overflow-y-auto h-full pb-10 flex-1"
 		>
+
+			{# Zone où le contenu sera injecté dynamiquement (Stimulus target) #}
 			<div 
 				class="list mt-8"
 				data-sidebar-details-meals-target="content"

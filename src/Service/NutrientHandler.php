@@ -11,9 +11,15 @@ class NutrientHandler
     const CARBOHYDRATE = 'carbohydrate';
     const SODIUM = 'sodium';
 
+    public const NUTRIENTS = [
+        self::PROTEIN,
+        self::LIPID,
+        self::CARBOHYDRATE,
+        self::SODIUM,
+    ];
+
     public function __construct(
         private Security $security,
-        private EnergyHandler $energyHandler,
     ){}
 
     public function getRecommendations()
@@ -26,7 +32,7 @@ class NutrientHandler
         /** @var App\Entity\User $user */
         $user = $this->security->getUser();
 
-        $energy = $this->energyHandler->evaluateEnergy($user);
+        $energy = $user->getEnergy();
 
         $weight = $user->getWeight();
         $activity = $user->getPhysicalActivity();

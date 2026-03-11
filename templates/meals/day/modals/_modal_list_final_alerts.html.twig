@@ -1,63 +1,89 @@
 <div>
-	<div class="modal fade" id="finalAlertModal" tabindex="-1" role="dialog" aria-labelledby="finalAlertModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div
-				class="modal-content rounded-3xl shadow-lg overflow-hidden">
+    {# MODAL FINAL ALERT #}
+    <div
+        class="modal fade"
+        id="finalAlertModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="finalAlertModalLabel"
+        aria-hidden="true"
+    >
+        {# Dialog centré verticalement #}
+        <div class="modal-dialog modal-dialog-centered">
+            {# Conteneur principal du modal avec bord arrondi et ombre #}
+            <div class="modal-content rounded-3xl shadow-lg overflow-hidden">
 
-				<!-- Header -->
-				<div class="flex items-center justify-end text-light-blue p-4">
+                <!-- HEADER -->
+                <div class="flex items-center justify-end text-light-blue p-4">
+                    {# Bouton de fermeture du modal #}
+                    <button
+                        type="button"
+                        class="flex items-center justify-center rounded-full transition duration-300 hover:bg-gray-100 p-3"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                    >
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
+                            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                        </svg>
+                    </button>
+                </div>
 
-					<button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition" data-dismiss="modal" aria-label="Close">
-						<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
-							<path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-						</svg>
-					</button>
-				</div>
+                <!-- BODY -->
+                <div class="p-5 min-h-[8rem]">
 
-				<!-- Body -->
-				<div class="p-5 min-h-[8rem]">
+                    {# Icône d’alerte circulaire #}
+                    <div class="flex flex-col items-center justify-center gap-4 mb-4">
+                        <span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border: 3px solid {{ highest_alert.color }}">
+                            <svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                <g id="SVGRepo_iconCarrier">
+                                    {# Trait vertical du point d'exclamation #}
+                                    <path d="M12 5L12 14" stroke="{{ highest_alert.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    {# Point du point d'exclamation #}
+                                    <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{ highest_alert.color }}"></path>
+                                </g>
+                            </svg>
+                        </span>
 
-					<div class="flex flex-col items-center justify-center gap-4 mb-4">
-						<span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid #7C2D12">
-							<svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-								<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-								<g id="SVGRepo_iconCarrier">
-									<path d="M12 5L12 14" stroke="#7C2D12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-									<path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="#7C2D12"></path>
-								</g>
-							</svg>
-						</span>
-						<div class="font-bold text-3xl leading-tight text-center">
-							Vos choix vont à l'encontre de certaines recommandations
-						</div>
-					</div>
+                        {# Message principal du modal #}
+                        <div class="font-bold text-3xl leading-tight text-center" style="color: {{ highest_alert.color }}">
+                            Vos choix vont à l'encontre de certaines recommandations
+                        </div>
+                    </div>
 
-					<div class="text-base px-4 flex flex-col justify-center">
-						{% for key, messages in app.session.get('_meal_day_alerts/_final_list') %}
-							<ul class="mx-4 text-center">
-								{% if key == 'food_group_parent' %}
-									{% for message in messages %}
-										<li>{{ message }}</li>
-									{% endfor %}
-								{% else %}
-									<li>{{ messages }}</li>
-								{% endif %}
-							</ul>
-						{% endfor %}
-					</div>
+                    {# Contenu détaillé des alertes, injecté depuis la session #}
+                    <div class="text-base px-4 flex flex-col justify-center">
+                        {% for key, content in app.session.get('_meal_day_alerts/_final_list') %}
+                            <ul class="mx-4 text-center">
+                                {% if key == 'food_group_parent' %}
+                                    {# Liste des messages pour chaque sous-groupe #}
+                                    {% for subcontent in content %}
+                                        <li>{{ subcontent["message"] }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>{{ content["message"] }}</li>
+                                {% endif %}
+                            </ul>
+                        {% endfor %}
+                    </div>
 
-				</div>
+                </div>
 
-				<!-- Footer -->
-				<div class="p-5 flex justify-end rounded-b-3xl">
-					<button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
-						OK
-					</button>
-				</div>
+                <!-- FOOTER -->
+                <div class="p-5 flex justify-end rounded-b-3xl">
+                    {# Bouton OK pour fermer le modal #}
+                    <button
+                        type="button"
+                        class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition"
+                        data-dismiss="modal"
+                    >
+                        OK
+                    </button>
+                </div>
 
-			</div>
-		</div>
-	</div>
-
+            </div> {# Fin modal-content #}
+        </div> {# Fin modal-dialog #}
+    </div> {# Fin finalAlertModal #}
 </div>

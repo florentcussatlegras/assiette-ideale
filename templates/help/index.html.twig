@@ -1,43 +1,176 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }} - Une question?{% endblock %}
+{% block title %}
+	{{ parent() }}
+	- FAQ
+{% endblock %}
 
 {% block body %}
 
 	<div class="py-12">
 
-		{{ include('navigation/_header_page.html.twig', {title: "Une question"}) }}
+		{# Inclusion de l'en-tête de page avec le titre "FAQ" #}
+		{{ include('navigation/_header_page.html.twig', {title: "FAQ"}) }}
 
 		<div class="flex justify-center">
 
-			<div class="bg-white w-full lg:w-3/4 rounded-2xl shadow-soft">
+			{# Conteneur principal de la FAQ #}
+			<div class="bg-white w-full lg:w-3/4 rounded-2xl shadow-balanced">
 
-				<div class="p-10">
+				{# Espace avec padding et espacement entre les questions #}
+				<div class="p-10 space-y-12">
 
-					<h1>Lorem ipsum dolor sit amet consectetur?</h1>
-					<p class="mb-4 text-left">
-						Cumque pertinacius ut legum gnarus accusatorem flagitaret atque sollemnia, doctus id Caesar libertatemque superbiam ratus tamquam obtrectatorem audacem excarnificari praecepit, qui ita evisceratus ut cruciatibus membra deessent, inplorans caelo iustitiam, torvum renidens fundato pectore mansit inmobilis nec se incusare nec quemquam alium passus et tandem nec confessus nec confutatus cum abiecto consorte poenali est morte multatus. et ducebatur intrepidus temporum iniquitati insultans, imitatus Zenonem illum veterem Stoicum qui ut mentiretur quaedam laceratus diutius, avulsam sedibus linguam suam cum cruento sputamine in oculos interrogantis Cyprii regis inpegit.
-					</p>
+					{# Question 1 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">À quoi sert ce site ?</h1>
+						<p class="text-left">
+							Ce site a pour objectif de vous aider à mieux comprendre votre alimentation
+							et vos besoins nutritionnels. Il vous permet d’estimer votre IMC,
+							d’évaluer vos besoins caloriques journaliers et d’obtenir des informations
+							claires sur les différents groupes alimentaires afin d’adopter
+							une alimentation plus équilibrée.
+						</p>
+					</div>
 
-					<h1>Lorem ipsum dolor sit amet consectetur?</h1>
-					<p class="mb-4 text-left">
-						Quam quidem partem accusationis admiratus sum et moleste tuli potissimum esse Atratino datam. Neque enim decebat neque aetas illa postulabat neque, id quod animadvertere poteratis, pudor patiebatur optimi adulescentis in tali illum oratione versari. Vellem aliquis ex vobis robustioribus hunc male dicendi locum suscepisset; aliquanto liberius et fortius et magis more nostro refutaremus istam male dicendi licentiam. Tecum, Atratine, agam lenius, quod et pudor tuus moderatur orationi meae et meum erga te parentemque tuum beneficium tueri debeo.
-					</p>
+					<hr /> {# Séparateur visuel entre questions #}
 
-					<h1>Lorem ipsum dolor sit amet consectetur?</h1>
-					<p class="mb-4 text-left">
-						Paphius quin etiam et Cornelius senatores, ambo venenorum artibus pravis se polluisse confessi, eodem pronuntiante Maximino sunt interfecti. pari sorte etiam procurator monetae extinctus est. Sericum enim et Asbolium supra dictos, quoniam cum hortaretur passim nominare, quos vellent, adiecta religione firmarat, nullum igni vel ferro se puniri iussurum, plumbi validis ictibus interemit. et post hoe flammis Campensem aruspicem dedit, in negotio eius nullo sacramento constrictus.
-					</p>
+					{# Question 2 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Comment est calculé l’IMC ?</h1>
+						<p class="text-left">
+							L’Indice de Masse Corporelle (IMC) est calculé en divisant le poids
+							(en kilogrammes) par la taille au carré (en mètres).
+							Il permet d’évaluer la corpulence d’une personne et de la situer
+							dans une catégorie indicative : insuffisance pondérale,
+							corpulence normale, surpoids ou obésité.
+							Il s’agit d’un outil d’estimation et non d’un diagnostic médical.
+						</p>
+					</div>
 
-					<h1>Lorem ipsum dolor sit amet consectetur?</h1>
-					<p class="mb-4 text-left">
-						Quare talis improborum consensio non modo excusatione amicitiae tegenda non est sed potius supplicio omni vindicanda est, ut ne quis concessum putet amicum vel bellum patriae inferentem sequi; quod quidem, ut res ire coepit, haud scio an aliquando futurum sit. Mihi autem non minori curae est, qualis res publica post mortem meam futura, quam qualis hodie sit.
-					</p>
+					<hr />
 
-					<h1>Lorem ipsum dolor sit amet consectetur?</h1>
-					<p class="mb-4 text-left">
-						Hinc ille commotus ut iniusta perferens et indigna praefecti custodiam protectoribus mandaverat fidis. quo conperto Montius tunc quaestor acer quidem sed ad lenitatem propensior, consulens in commune advocatos palatinarum primos scholarum adlocutus est mollius docens nec decere haec fieri nec prodesse addensque vocis obiurgatorio sonu quod si id placeret, post statuas Constantii deiectas super adimenda vita praefecto conveniet securius cogitari.
-					</p>
+					{# Question 3 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Comment sont estimés les besoins caloriques ?</h1>
+						<p class="text-left">
+							Les besoins caloriques journaliers sont calculés à partir de plusieurs
+							paramètres : âge, sexe, taille, poids et niveau d’activité physique.
+							Le métabolisme de base représente l’énergie nécessaire au fonctionnement
+							vital de l’organisme, à laquelle s’ajoute la dépense liée à l’activité
+							quotidienne. Cette estimation permet d’adapter son alimentation
+							selon un objectif de maintien, de perte ou de prise de poids.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 4 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Les résultats sont-ils personnalisés ?</h1>
+						<p class="text-left">
+							Oui, les calculs proposés sont basés sur les informations que vous
+							renseignez dans les formulaires. Les résultats restent toutefois
+							indicatifs et ne remplacent pas l’avis d’un professionnel de santé,
+							notamment en cas de pathologie ou de situation particulière.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 5 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Pourquoi est-il important de varier son alimentation ?</h1>
+						<p class="text-left">
+							Chaque groupe alimentaire apporte des nutriments spécifiques :
+							protéines, glucides, lipides, vitamines et minéraux.
+							Varier les aliments permet de couvrir l’ensemble des besoins
+							nutritionnels, de prévenir les carences et de favoriser
+							un bon équilibre sur le long terme.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 6 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Ce site remplace-t-il un avis médical ?</h1>
+						<p class="text-left">
+							Non. Les informations proposées ont une vocation pédagogique
+							et informative. Pour toute question liée à votre santé,
+							à une pathologie ou à un régime spécifique,
+							il est recommandé de consulter un médecin ou un diététicien.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 7 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Quelle est la différence entre calories et kilocalories ?</h1>
+						<p class="text-left">
+							En nutrition, le terme "calorie" est couramment utilisé, mais il s’agit en réalité
+							de kilocalories (kcal). Une kilocalorie correspond à l’énergie nécessaire pour
+							élever la température d’un litre d’eau d’un degré Celsius. Les besoins
+							énergétiques quotidiens sont donc exprimés en kilocalories, même si l’on parle
+							simplement de “calories” dans le langage courant.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 8 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Pourquoi le métabolisme varie-t-il d’une personne à l’autre ?</h1>
+						<p class="text-left">
+							Le métabolisme dépend de plusieurs facteurs comme l’âge, le sexe,
+							la masse musculaire, la génétique et le niveau d’activité physique.
+							Deux personnes ayant le même poids peuvent donc avoir des besoins
+							énergétiques différents. C’est pourquoi les estimations proposées
+							sont toujours personnalisées.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 9 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Faut-il supprimer les glucides pour perdre du poids ?</h1>
+						<p class="text-left">
+							Les glucides constituent la principale source d’énergie de l’organisme.
+							Les supprimer totalement n’est ni nécessaire ni recommandé.
+							Il est préférable de privilégier les glucides complexes
+							(céréales complètes, légumineuses) et de limiter les sucres raffinés.
+							L’équilibre global de l’alimentation reste le facteur le plus important.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 10 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">Combien de repas faut-il prendre par jour ?</h1>
+						<p class="text-left">
+							Il est généralement conseillé de répartir son alimentation en trois repas
+							principaux par jour, éventuellement complétés par une collation
+							si nécessaire. L’important est d’éviter les excès, de respecter la sensation
+							de faim et de maintenir une répartition équilibrée des apports
+							tout au long de la journée.
+						</p>
+					</div>
+
+					<hr />
+
+					{# Question 11 #}
+					<div>
+						<h1 class="text-2xl font-semibold mb-2">L’activité physique influence-t-elle les besoins caloriques ?</h1>
+						<p class="text-left">
+							Oui, l’activité physique augmente la dépense énergétique.
+							Plus une personne est active, plus ses besoins caloriques journaliers
+							sont élevés. L’exercice régulier contribue également au maintien
+							de la masse musculaire, à l’équilibre du poids et à une meilleure
+							santé cardiovasculaire.
+						</p>
+					</div>
 
 				</div>
 

@@ -1,0 +1,30 @@
+{# Container principal pour le modal de résumé nutritionnel du repas #}
+<div {{ stimulus_controller('modal-meal-nutrition-summary') }}>
+
+    {# ------------------------------------------------------------------------ #}
+    {# Bouton pour ouvrir le modal nutritionnel                               #}
+    {# - Stimulus controller 'ripple' pour l'effet visuel                     #}
+    {# - data-action : ouvre le modal et déclenche l'effet ripple              #}
+    {# ------------------------------------------------------------------------ #}
+    <button
+        {{ stimulus_controller('ripple') }}
+        data-action="click->modal-meal-nutrition-summary#open click->ripple#ripple"
+        class="flex px-4 py-2 bg-sky-600 hover:bg-sky-700 transition duration-300 text-white rounded-lg gap-2"
+    >
+        {# Icône check indiquant si le repas est équilibré ou non #}
+        {% if isFullyBalanced %}
+            {# Vert si complètement équilibré #}
+            <i class="text-green-500">✔</i>
+        {% else %}
+            {# Gris si pas équilibré #}
+            <i class="text-gray-400">✔</i>
+        {% endif %} 
+
+        {# Texte du bouton #}
+        Voir les détails nutritionnels
+    </button>
+
+    {# Inclusion du modal complet de résumé nutritionnel #}
+    {{ include('meals/day/modals/_modal_nutrition_summary.html.twig') }}
+
+</div>

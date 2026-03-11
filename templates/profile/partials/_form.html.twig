@@ -1,10 +1,11 @@
 {% form_theme profileForm "form/_custom_profile_themes.html.twig" %}
+{# Définition du thème personnalisé pour le formulaire profileForm #}
 
 {{ form_start(profileForm, {
     'attr': {
         'action' : path('app_embedded_profile_edit', { element }),
-        'data-turbo' : 'false',
-        'class' : 'w-full gap-6 flex flex-col'
+        'data-turbo' : 'false', 
+        'class' : 'w-full gap-6 flex flex-col' 
     }
 }) }}
 
@@ -15,20 +16,27 @@
         >
             {{ messageSuccess }}
         </div>
+        {# Affiche un message de succès si défini, avec couleur verte et transition #}
     {% endif %}
 
     <div 
         data-modal-form-profile-target="form"
         style="min-width: 380px"
     >
+        {# Conteneur principal du formulaire avec cible Stimulus et largeur minimum #}
+
         {# {{ form_errors(profileForm, {'attr': {'class': 'text-red-700'}}) }} #}
+        {# Erreurs globales du formulaire (commentées ici) #}
 
         {{ form_widget(profileForm) }}
+        {# Rend tous les champs du formulaire selon le thème défini #}
 
         <button type="submit" class="bg-sky-600 text-white hover:bg-sky-700 px-3 py-2 rounded-xl font-bold transition duration-300">
             Valider
         </button>
+        {# Bouton de soumission avec styles Tailwind : fond bleu, texte blanc, hover plus foncé, coins arrondis, transition #}
 
     </div>
 
 {{ form_end(profileForm, { render_rest: false }) }}
+{# Fin du formulaire, n’affiche pas les champs restants (rest fields) #}

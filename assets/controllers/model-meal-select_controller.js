@@ -7,7 +7,7 @@ export default class extends Controller {
     fromModal: Boolean,
   }
 
-  static targets = ["card", "chooseButton"];
+  static targets = ["card", "chooseButton", "typeName", "name"];
 
   connect() {
     this.selectedCard = null;
@@ -31,6 +31,16 @@ export default class extends Controller {
         card.classList.remove("border-2");
         card.classList.remove("border-sky-600");
     });
+
+    this.typeNameTargets.forEach(typeName => {
+      typeName.classList.remove("text-sky-600");
+      typeName.classList.add("text-neutral-500");
+    });
+
+    this.nameTargets.forEach(name => {
+      name.classList.remove("text-sky-600");
+      name.classList.add("text-neutral-500");
+    });
    
     if(selection == true) {
         // Sélectionner le repas
@@ -38,6 +48,25 @@ export default class extends Controller {
         clickedCard.classList.add("border-sky-600");
 
         this.selectedCard = clickedCard;
+
+        // 🔹 On récupère le frontName dans la card cliquée
+        const name = clickedCard.querySelector(
+          '[data-model-meal-select-target="name"]'
+        );
+
+        const typeName = clickedCard.querySelector(
+          '[data-model-meal-select-target="typeName"]'
+        );
+
+        if (typeName) {
+          typeName.classList.remove("text-neutral-500");
+          typeName.classList.add("text-sky-600");
+        }
+
+        if (name) {
+          name.classList.remove("text-neutral-500");
+          name.classList.add("text-sky-600");
+        }
 
         // Activer les boutons
         this.enableButton();
@@ -47,6 +76,19 @@ export default class extends Controller {
         // Désactiver les boutons
         this.disableButton();
     }
+
+    // on gère l'accordéon
+      const accordionButton = clickedCard.querySelector(
+        '[data-action*="menu-accordion#toggle"]'
+      );
+
+      const panel = clickedCard.querySelector(
+        '[data-menu-accordion-target="panel"]'
+      );
+
+      if (accordionButton && panel && panel.classList.contains("max-h-0")) {
+        accordionButton.click();
+      }
   }
 
   ignore(event) {

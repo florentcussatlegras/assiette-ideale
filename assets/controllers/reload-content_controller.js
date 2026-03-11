@@ -11,6 +11,7 @@ export default class extends Controller {
     updateDish = null;
     freeGluten = 0; 
     freeLactose = 0;
+    onlyAllowed = 0;
 
     static values = {
         url: String,
@@ -19,12 +20,11 @@ export default class extends Controller {
         page: Number,
         urlListRemoveFavoriteDish: String,
     }
-    static targets = ['content', 'loader', 'loadMore', 'search', 'foodGroup', 'typeDish', 'typeItem', 'lastResults', 'selectAllFoodGroup', 'deselectAllFoodGroup'];
+    static targets = ['content', 'loader', 'loadMore', 'search', 'foodGroup', 'typeDish', 'typeItem', 'lastResults', 'selectAllFoodGroup', 'deselectAllFoodGroup', 'clearButton'];
     static debounces = ['onSearchInput'];
 
     connect() {
         useDebounce(this);
-        console.log(this.urlValue);
 
         this.foodGroupTargets.forEach((element) => {
             if(element.classList.contains('selected') == true) {
@@ -35,6 +35,16 @@ export default class extends Controller {
         this.foodGroupButtonSelected.forEach(element => {
             this.selectedFoodGroupId.push(element.dataset.foodGroupId);
         });
+
+        const glutenBtn = this.element.querySelector('[data-action*="onSelectGlutenFood"]');
+        if (glutenBtn && glutenBtn.classList.contains('selected')) {
+            this.freeGluten = 1;
+        }
+
+        const lactoseBtn = this.element.querySelector('[data-action*="onSelectLactoseFood"]');
+        if (lactoseBtn && lactoseBtn.classList.contains('selected')) {
+            this.freeLactose = 1;
+        }
      
         if(this.lastResultsTargets.reverse()[0].value == 1) {
             this.loadMoreTarget.classList.add('hidden');
@@ -43,6 +53,7 @@ export default class extends Controller {
 
     onSearchInput(event) {
         this.pageValue = 0;
+        this.toggleClear();
         this.refreshContent();
     }
 
@@ -273,6 +284,37 @@ export default class extends Controller {
         
     }
 
+    onToggleOnlyAllowed(event) {
+
+        const btn = event.currentTarget;
+
+        if (btn.classList.contains('selected')) {
+            btn.classList.remove('selected');
+            btn.classList.replace("text-white", "text-gray-900");
+            btn.classList.remove("hover:text-white");
+            btn.classList.add("hover:text-gray-900");
+            btn.classList.replace("bg-sky-600", "bg-gray-100");
+            btn.classList.remove("hover:bg-sky-600");
+            btn.classList.add("hover:bg-gray-200");
+
+            this.onlyAllowed = 0;
+        } else {
+            btn.classList.add('selected');
+            btn.classList.replace("text-gray-900", "text-white");
+            btn.classList.remove("hover:text-gray-900");
+            btn.classList.add("hover:text-white");
+            btn.classList.replace("bg-gray-100", "bg-sky-600");
+            btn.classList.remove("hover:bg-gray-200");
+            btn.classList.add("hover:bg-sky-600");
+
+            this.onlyAllowed = 1;
+        }
+
+        this.pageValue = 0;
+        this.refreshContent();
+
+    }
+
     onAddItem() {
         this.rankDishValue++;
         // this.loadMore = false;
@@ -305,8 +347,6 @@ export default class extends Controller {
         document.getElementById('slideOverRankMeal').value = event.currentTarget.dataset.rankMeal;
         document.getElementById('slideOverRankDish').value = event.currentTarget.dataset.rankDish;
         document.getElementById('slideOverUpdateDish').value = event.currentTarget.dataset.updateDish;
-        // console.log('type de plat');
-        // console.log(event.currentTarget.dataset.typeDish);
         if(event.currentTarget.dataset.typeDish !== 'undefined' && event.currentTarget.dataset.typeDish !== '') {
             document.getElementById('slideOverTypeDish').classList.replace('hidden', 'inline');
             document.getElementById('slideOverTypeDish').innerHTML = event.currentTarget.dataset.typeDish;
@@ -341,25 +381,35 @@ export default class extends Controller {
             typeItem: this.typeItemSelected,
             freeGluten: this.freeGluten,
             freeLactose: this.freeLactose,
+            onlyAllowed: this.onlyAllowed,
             ajax: 1
         });
         
         this.url = `${this.urlValue}?${params.toString()}`;
+        console.log(this.url);
+        console.log('page: ', this.pageValue);
      
         if(this.pageValue > 0) {
 
-            const response = await fetch(this.url);
-            const newContent = await response.text();
+            // const response = await fetch(this.url);
+            // const newContent = await response.text();
 
             fetch(this.url)
                 .then((response) => {
                     return response.text()
                 })
                 .then((newContent) => {
-                    target.innerHTML = target.innerHTML + newContent;
+
+                    // target.innerHTML = target.innerHTML + newContent;
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = newContent;
+
+                    while (tempDiv.firstChild) {
+                        target.appendChild(tempDiv.firstChild);
+                    }
+
                     this.loaderTarget.classList.add('hidden');
                     target.classList.remove('hidden');
-                    // console.log(this.lastResultsTargets);
                     if(this.lastResultsTargets.reverse()[0].value != 1) {
                         this.loadMoreTarget.classList.remove('hidden');
                     }
@@ -369,18 +419,18 @@ export default class extends Controller {
 
             target.classList.add('hidden');
 
-            const response = await fetch(this.url);
-            target.innerHTML = await response.text();
+            // const response = await fetch(this.url);
+            // target.innerHTML = await response.text();
 
             fetch(this.url)
                 .then((response) => {
                     return response.text()
                 })
                 .then((newContent) => {
+                    
                     target.innerHTML = newContent;
                     this.loaderTarget.classList.add('hidden');
                     target.classList.remove('hidden');
-                    // console.log(this.lastResultsTargets);
                     if(this.lastResultsTargets.reverse()[0].value != 1) {
                         this.loadMoreTarget.classList.remove('hidden');
                     }
@@ -425,5 +475,19 @@ export default class extends Controller {
         
         this.pageValue = 0;
         this.refreshContent();
+    }
+
+    toggleClear() {
+        if (this.searchTarget.value.length > 0) {
+            this.clearButtonTarget.classList.remove("hidden");
+        } else {
+            this.clearButtonTarget.classList.add("hidden");
+        }
+    }
+
+    clearSearch() {
+        this.searchTarget.value = '';
+        this.toggleClear();
+        this.searchTarget.dispatchEvent(new Event('input'));
     }
 }

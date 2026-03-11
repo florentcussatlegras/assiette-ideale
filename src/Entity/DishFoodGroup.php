@@ -19,7 +19,7 @@ class DishFoodGroup
     private ?Dish $dish = null;
 
     #[ORM\ManyToOne(targetEntity: FoodGroup::class)]
-    #[ORM\JoinColumn(name: "foodgroup_id", nullable: false)]
+    #[ORM\JoinColumn(name: "food_group_id", nullable: false)]
     private ?FoodGroup $foodGroup = null;
 
     #[ORM\Column(name: "quantity_for_one", type: "float", nullable: true)]

@@ -22,6 +22,7 @@ class FoodGroupCrudController extends AbstractCrudController
             TextField::new('shortName', 'Abréviation'),
             TextField::new('alias', 'Alias'),
             AssociationField::new('forbiddenDiets', 'Régimes alimentaires exclu'),
+            AssociationField::new('parent', 'Groupe parent'),
         ];
     }
     

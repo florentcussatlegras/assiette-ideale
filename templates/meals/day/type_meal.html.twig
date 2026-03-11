@@ -1,90 +1,94 @@
 <div class="flex">
 
-	{% if app.session.has('_meal_day_' ~ rankMeal) and 'type' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['type'] is not null %}
-		{% set currentTypeMeal = app.session.get('_meal_day_' ~ rankMeal)['type'] %}
-	{% else %}
-		{% set currentTypeMeal = null %}
-	{% endif %}
+    {# Déterminer le type actuel du repas s'il est défini dans la session #}
+    {% if app.session.has('_meal_day_' ~ rankMeal) and 'type' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['type'] is not null %}
+        {% set currentTypeMeal = app.session.get('_meal_day_' ~ rankMeal)['type'] %}
+    {% else %}
+        {% set currentTypeMeal = null %}
+    {% endif %}
 
-	{% set rankPreviousType = 0 %}
+    {# Déterminer le rang du type de repas précédent pour gérer les options désactivées #}
+    {% set rankPreviousType = 0 %}
+    {% if 'rankPreviousType' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['rankPreviousType'] is not null %}
+        {% set rankPreviousType = app.session.get('_meal_day_' ~ rankMeal)['rankPreviousType'] %}
+    {% else %}
+        {# Vérifie les repas précédents pour trouver un type défini #}
+        {% if rankMeal > 0 %}
+            {% for rank in (rankMeal-1)..0 %}
+                {% if app.session.get('_meal_day_' ~ rank)['type'] is not null and rankPreviousType == 0 %}
+                    {% set rankPreviousType = app.session.get('_meal_day_' ~ rank)['type'] %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
 
-	{% if 'rankPreviousType' in app.session.get('_meal_day_' ~ rankMeal)|keys and app.session.get('_meal_day_' ~ rankMeal)['rankPreviousType'] is not null %}
-		{% set rankPreviousType = app.session.get('_meal_day_' ~ rankMeal)['rankPreviousType'] %}
-	{% else %}
-		{% if rankMeal > 0 %}
-			{% for rank in (rankMeal-1)..0 %}
-				{% if app.session.get('_meal_day_' ~ rank)['type'] is not null and rankPreviousType == 0 %}
-					{% set rankPreviousType = app.session.get('_meal_day_' ~ rank)['type'] %}
-				{% endif %}
-			{% endfor %}
-		{% endif %}
-	{% endif %}
+    {# Conteneur principal des options de type de repas #}
+    <div class="flex flex-col-reverse md:flex-row items-start md:items-center w-full gap-2 md:gap-0">
 
-	<div class="flex flex-col-reverse md:flex-row items-start md:items-center w-full gap-2 md:gap-0">
+        <div class="flex items-stretch md:items-center mb-2 gap-2">
+        
+            {% for typeMeal in typeMeals %}
+            
+                {# Input radio caché pour chaque type de repas #}
+                <input
+                    type="radio" 
+                    data-type-meal-target="typeMealOption"
+                    value="{{ typeMeal.backName }}" 
+                    class="type-meal hidden" 
+                    name="type_{{ rankMeal }}" 
+                    {% if rankPreviousType == 'none' or typeMeal.ranking < rankPreviousType %}disabled data-disabled="1"{% else %}data-disabled="0"{% endif %}
+                    {% if typeMeal.backName is same as(currentTypeMeal) %}checked{% endif %}
+                >
+            
+                {# Bouton visible correspondant à l'option de type de repas #}
+                <div
+                    class="cursor-pointer btn-type-meal{% if typeMeal.ranking < rankPreviousType %} disabled{% elseif typeMeal.backName is same as(currentTypeMeal) %} selected{% endif %} 
+                        inline-block tabs-date-range_tab bg-white text-center h-full shadow-soft rounded-2xl"
+                    data-type-meal-target="typeMealButton"
+                    data-meal-target="typeMealButton"
+                    data-type-meal="{{ typeMeal.backName }}"
+                    {% if typeMeal.ranking >= rankPreviousType %}
+                        data-action="click->type-meal#onSelectType"
+                    {% endif %}
+                >
 
-		<div class="flex items-stretch md:items-center mb-2 gap-2">
-		
-			{% for typeMeal in typeMeals %}
-		
-				<input
-					type="radio" 
-					data-type-meal-target="typeMealOption"
-					value="{{ typeMeal.backName }}" 
-					class="type-meal hidden" 
-					name="type_{{ rankMeal }}" 
-					{% if rankPreviousType == 'none' or typeMeal.ranking < rankPreviousType %}disabled data-disabled="1"{% else %}data-disabled="0"{% endif %}
-					{% if typeMeal.backName is same as(currentTypeMeal) %}checked{% endif %}
-				>
-			
-				<div
-					class="cursor-pointer btn-type-meal{% if typeMeal.ranking < rankPreviousType %} disabled{% elseif typeMeal.backName is same as(currentTypeMeal) %} selected{% endif %} 
-						inline-block tabs-date-range_tab bg-white text-center h-full shadow-soft rounded-2xl"
-				
-					data-type-meal-target="typeMealButton"
-					data-meal-target="typeMealButton"
-					data-type-meal="{{ typeMeal.backName }}"
-					{% if typeMeal.ranking >= rankPreviousType %}
-						data-action="click->type-meal#onSelectType"
-					{% endif %}
-				>
+                    {# Affichage du nom du type de repas #}
+                    <div class="flex items-center h-full name-type px-4 py-3 text-xs md:text-base leading-4">
+                        <span class="flex lg:hidden">{{ typeMeal.shortCut|trans({}, 'meal') }}</span>
+                        <span class="my-hidden lg:flex">{{ typeMeal.backName|trans({}, 'meal') }}</span>
+                    </div>
 
-					<div class="flex items-center h-full name-type px-4 py-3 text-xs md:text-base leading-4">
-						<span class="flex lg:hidden">{{ typeMeal.shortCut|trans({}, 'meal') }}</span>
-						<span class="my-hidden lg:flex">{{ typeMeal.backName|trans({}, 'meal') }}</span>
-					</div>
+                    {# Loader animé lorsqu'on change le type de repas #}
+                    <div class="loader-type hidden text-white px-4 py-0 justify-center items-center rounded-2xl">
+                        <svg width="30" height="10" viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="5" cy="5" r="3" fill="#ffffff">
+                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0s"/>
+                            </circle>
+                            <circle cx="15" cy="5" r="3" fill="#ffffff">
+                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
+                            </circle>
+                            <circle cx="25" cy="5" r="3" fill="#ffffff">
+                                <animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
+                            </circle>
+                        </svg>
+                    </div>
 
-					<div class="loader-type hidden text-white px-4 py-0 justify-center items-center rounded-2xl">
-					
-						<svg width="30" height="10" viewBox="0 0 30 10" xmlns="http://www.w3.org/2000/svg">
-							<circle cx="5" cy="5" r="3" fill="#ffffff">
-								<animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0s"/>
-							</circle>
+                </div>
+                
+            {% endfor %}
 
-							<circle cx="15" cy="5" r="3" fill="#ffffff">
-								<animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.2s"/>
-							</circle>
+        </div>
 
-							<circle cx="25" cy="5" r="3" fill="#ffffff">
-								<animate attributeName="cy" values="5;3;5" dur="0.8s" repeatCount="indefinite" begin="0.4s"/>
-							</circle>
-						</svg>
-		
-					</div>
+        {# Affichage de l'énergie totale du repas, version desktop #}
+        <span class="my-hidden md:flex items-center bg-gray-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-4 mb-2">
+            {{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
+        </span>
 
-				</div>
-				
-			{% endfor %}
+        {# Affichage de l'énergie totale du repas, version mobile #}
+        <span class="md:my-hidden flex items-center bg-gray-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-0 mb-2">
+            {{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
+        </span>
 
-		</div>
-
-		<span class="my-hidden md:flex items-center bg-gray-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-4 mb-2">
-			{{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
-		</span>
-
-		<span class="md:my-hidden flex items-center bg-gray-400 text-white text-sm font-bold px-2 py-1 rounded-full ml-0 mb-2">
-			{{ "%d Kcal"|format(app.session.get('_meal_day_' ~ rankMeal)['energy']|default(0)) }}
-		</span>
-
-	</div>
-	
+    </div>
+    
 </div>

@@ -1,5 +1,14 @@
+{# balance_sheet/_chart_average_fgp.html.twig #}
 
+{# Composant partiel pour afficher un graphique des quantités de fgp par période avec son titre #}
 <div class="flex flex-col items-center">
-        {{ render_chart(chart) }}
-        <div class="md:mt-2 text-sm md:text-base font-semibold text-center">{{ title }}</div>
+
+    {# Rendu du graphique côté serveur (Chart.js ou autre) #}
+    {{ render_chart(chart) }}
+
+    {# Titre du graphique sous le graphique, responsive selon l’écran #}
+    <div class="md:mt-2 text-sm md:text-base font-semibold text-center">
+        {{ title }}
+    </div>
+
 </div>

@@ -3,6 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {   
 
     date = null;
+    highestAlertPerDay = null;
 
     static values = {
         url: String
@@ -27,12 +28,14 @@ export default class extends Controller {
 
     setMeals(event) {
         this.date = event.currentTarget.dataset.date;
+        this.highestAlertPerDay = event.currentTarget.dataset.highestAlertPerDay;
         this.loadMeals();
     }
 
     async loadMeals() {
         const params = new URLSearchParams({
             'date': this.date,
+            'highestAlertPerDay': this.highestAlertPerDay,
             'ajax': 1
         });
 

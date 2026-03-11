@@ -1,9 +1,11 @@
 {% extends "base.html.twig" %}
 
+{# Titre de la page (hérite du titre parent + ajout) #}
 {% block title %}{{ parent() }} - Mes repas de la semaine{% endblock %}
 
 {% block body %}
 
+	{# Conteneur principal avec le contrôleur Stimulus qui gère le menu de la semaine #}
 	<div
 		{{ stimulus_controller('menu-week', {
 			url: path('menu_week_menu')
@@ -11,8 +13,10 @@
 		class="py-12"
 	>
 
+		{# En-tête de la page (titre + éventuels éléments de navigation) #}
 		{{ include('navigation/_header_page.html.twig', {title: "Mes menus"}) }}
 
+		{# Conteneur principal du tableau de la semaine #}
 		<div 
 			id="tableMenuWeek" 
 			{{ stimulus_controller('sidebar-details-meals', {
@@ -20,14 +24,17 @@
 			}) }}
 		>
 
+			{# Panneau latéral (slideover) affichant le détail des repas d'une journée #}
 			{{ include('meals/week/_sidebar_details_meals.html.twig') }}
 
+			{# Version desktop du planning hebdomadaire #}
 			<div id="wrapperMenuWeekDesktop" class="my-hidden lg:block">
 
 				{{ include('meals/week/_wrapper_menu_week.html.twig') }}
 
 			</div>
 
+			{# Version mobile du planning (structure différente adaptée au petit écran) #}
 			<div id="wrapperMenuWeekMobile" class="block lg:hidden">
 
 				{{ include('meals/week/mobile/_wrapper_menu_week.html.twig') }}

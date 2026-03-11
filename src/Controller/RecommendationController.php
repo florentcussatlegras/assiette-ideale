@@ -9,108 +9,123 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\NutrientRepository;
 use App\Repository\NutrientRecommendationUserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+/**
+ * RecommendationController
+ *
+ * Contrôleur principal pour gérer :
+ *  - l'affichage des nutriments et recommandations
+ *  - le calcul de l'énergie quotidienne
+ *  - le calcul des recommandations nutritionnelles
+ *
+ * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
+ * Date : 2026-03-09
+ * Projet : Assiette idéale 
+ */
 #[Route('/recommendation', name: 'app_recommendation_')]
+#[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 class RecommendationController extends AbstractController
 {
-    // INDEX
+    /**
+     * Page principale des recommandations : liste tous les nutriments.
+     *
+     * @param NutrientRepository $nutrientRepository
+     *
+     * @return Response
+     */
     #[Route('/', name: 'index', methods: ['GET'])]
-    public function index(NutrientRepository $nutrientRepository)
+    public function index(NutrientRepository $nutrientRepository): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
         return $this->render('recommendations/index.html.twig', [
             'nutrients' => $nutrientRepository->findAll(),
         ]);
     }
 
-    // GROUPES ALIMENTAIRES
-
-    // new route for 'app_recommended_quantity_edit':
-    #[Route('/foodgroup/edit', name: 'foodgroup_edit', methods: ['GET'])]
-    public function edit(EntityManagerInterface $manager)
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
-        $user = $this->getUser();
-
-        // $recommendedQuantities = $user->getRecommendedQuantities();
-        $recommendedQuantities = [
-            'FGP_VPO' => 200,
-            'FGP_STARCHY' => 200,
-            'FGP_VEG' => 200,
-            'FGP_FRUIT' => 200,
-            'FGP_DAIRY' => 200,
-            'FGP_FAT' => 200,
-            'FGP_SUGAR' => 200,
-            'FGP_CONDIMENT' => 200
-        ];
-        // $recommendedQuantities['FGP_CONDIMENT'] = 200;
-
-        $user->setRecommendedQuantities($recommendedQuantities);
-
-        $manager->persist($user);
-        $manager->flush();
-
-        return new Response('Quantités mises à jour');
-    }
-
-    // ENERGY
+    /**
+     * Affiche le bloc d'énergie du profil utilisateur.
+     *
+     * @param EnergyHandler $energyHandler
+     *
+     * @return Response
+     */
     #[Route('/energy', name: 'energy_index', methods: ['GET'])]
-    public function energy(EnergyHandler $energyHandler)
+    public function energy(EnergyHandler $energyHandler): Response
     {
         return $this->render('profile/partials/_energy.html.twig', [
             'missingElements' => $energyHandler->profileMissingForEnergy(),
         ]);
     }
 
+    /**
+     * Calcule l'énergie quotidienne de l'utilisateur.
+     *
+     * @param EnergyHandler $energyHandler
+     * @param EntityManagerInterface $manager
+     *
+     * @return Response
+     */
     #[Route('/energy/calculate', name: 'energy_estimate', methods: ['POST'])]
-    public function calculateEnergy(EnergyHandler $energyHandler, EntityManagerInterface $manager)
+    public function calculateEnergy(EnergyHandler $energyHandler, EntityManagerInterface $manager): Response
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
-
+        /** @var User $user */
         $user = $this->getUser();
-        
-        $user->setAutomaticCalculateEnergy(true);
-        $energyHandler->evaluateEnergy($user);
-        $user->setEnergy($energyHandler->evaluateEnergy($user));
-        
-        $manager->flush();
-        
-        $this->addFlash('success', 'Votre energie quotidienne a bien été mise à jour2.');
 
+        // Active le calcul automatique de l'énergie pour l'utilisateur
+        $user->setAutomaticCalculateEnergy(true);
+
+        // Calcule l'énergie quotidienne via le service EnergyHandler
+        $energyValue = $energyHandler->evaluateEnergy($user);
+
+        // Enregistre la valeur calculée dans l'entité User
+        $user->setEnergy($energyValue);
+
+        // Persiste les modifications dans la base de données
+        $manager->flush();
+
+        // Message flash pour informer l'utilisateur
+        $this->addFlash('success', 'Votre énergie quotidienne a bien été mise à jour.');
+
+        // Redirige vers la page de profil
         return $this->redirectToRoute('app_profile_index');
     }
 
-    // NUTRIENT
+    /**
+     * Calcule les recommandations nutritionnelles pour l'utilisateur.
+     *
+     * @param NutrientHandler $nutrientHandler
+     * @param EntityManagerInterface $manager
+     * @param NutrientRecommendationUserRepository $nutrientRecommendationUserRepository
+     *
+     * @return Response
+     */
     #[Route('/nutrient/calculate', name: 'nutrient_estimate', methods: ['POST'])]
     public function calculateNutrientRecommendations(
-            NutrientHandler $nutrientHandler, 
-            EntityManagerInterface $manager, 
-            NutrientRecommendationUserRepository $nutrientRecommendationUserRepository
-    )
-    {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_REMEMBERED');
+        NutrientHandler $nutrientHandler,
+        EntityManagerInterface $manager,
+    ): Response {
 
+        /** @var \App\Entity\User|null $user */
         $user = $this->getUser();
-        
-        // $nutrientRecommendations = $this->nutrientHandler->getRecommendations();
 
-        $user->getNutrientRecommendations()->forAll(function($key, $entity) use ($manager, $user) {
+        // Suppression des anciennes recommandations
+        $user->getNutrientRecommendations()->forAll(function ($key, $entity) use ($manager, $user) {
             $user->removeNutrientRecommendation($entity);
             $manager->remove($entity);
-
             return true;
         });
 
-        foreach($nutrientHandler->getRecommendations() as $nutrientRecommendation) {
+        // Ajout des nouvelles recommandations
+        foreach ($nutrientHandler->getRecommendations() as $nutrientRecommendation) {
             $user->addNutrientRecommendation($nutrientRecommendation);
         }
-        
+
+        // Persiste les modifications dans la base de données
         $manager->flush();
-        
-        $this->addFlash('success', 'Vos recommendations de nutrition ont bien été mise à jour.');
+
+        // Message flash pour informer l'utilisateur
+        $this->addFlash('success', 'Vos recommandations de nutrition ont bien été mises à jour.');
 
         return $this->redirectToRoute('app_profile_index');
     }

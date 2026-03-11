@@ -4,23 +4,26 @@
 
 {% block body %}
 
+    {# Conteneur principal avec plusieurs contrôleurs Stimulus #}
     <div
         {{ stimulus_controller('reload-content', {
-            'url': path('app_dish_list'),
-            'urlListRemoveFavoriteDish': path('app_favorite_dishes_remove'),
-            'type-dish': 'type.dish.all'
+            'url': path('app_dish_list'),  # URL pour recharger la liste des plats
+            'urlListRemoveFavoriteDish': path('app_favorite_dishes_remove'),  # URL pour retirer un plat des favoris
+            'type-dish': 'type.dish.all'  # type de plat par défaut
         }) }}
-        {{ stimulus_controller('view-mode') }}
+        {{ stimulus_controller('view-mode') }}  {# Contrôleur pour gérer le mode d'affichage (liste/grille) #}
         class="py-12"
     >
         <div {{ stimulus_controller('view-mode') }}>        
 
+            {# Section du header et boutons principaux #}
             <div class="flex justify-between items-center">
 
-                {% if favoriteDishesId is defined %}
+                {% if favoriteDishesId is defined %} {# Vérifie si l'utilisateur a des plats favoris #}
 
                     {% set title = 'Les plats' %}
 
+                    {# Affichage mobile du header et bouton "Saisir une recette" #}
                     <div class="md:my-hidden flex flex-col gap-2 items-start mb-8">
 
                         {{ include('navigation/_header_page.html.twig') }}
@@ -32,7 +35,8 @@
 
                     </div>
 
-                    <div class="my-hidden md:flex flex-row w-full gap-2 items-center justify-between mb-8">
+                    {# Affichage desktop du header et bouton "Saisir une recette" #}
+                    <div class="my-hidden md:flex flex-row w-full gap-2 items-center justify-between">
 
                         {{ include('navigation/_header_page.html.twig') }}
                         
@@ -43,7 +47,7 @@
 
                     </div>
                     
-                {% else %}
+                {% else %}  {# Si aucun plat favori, affichage du header alternatif #}
 
                     {{ include('navigation/_header_page.html.twig', {title: 'Mes plats préférés'}) }}
 
@@ -54,20 +58,31 @@
 
                 {% if favoriteDishesId is defined %}
 
+                    {# Section de recherche et filtres #}
                     <div class="flex flex-col gap-2 items-start">
 
-                        <div class="relative search_dish_list w-full md:w-1/2 mb-2">
+                        {# Barre de recherche #}
+                        <div class="relative search_dish_list w-full xl:w-1/3 mb-2">
                             <input
                                 id="input_search_dish_list"
                                 name="q"
                                 placeholder="Saisissez le nom d'un aliment ou d'un plat"
                                 type="search"
-                                class="block p-6 w-full xl:w-2/3 rounded-lg"
+                                class="block p-6 w-full rounded-lg"
                                 data-reload-content-target="search"
                                 data-action="reload-content#onSearchInput"
                             >
+                            <button
+                                type="button"
+                                class="absolute right-4 top-3 text-gray-400 hover:text-gray-700 text-xl hidden"
+                                data-reload-content-target="clearButton"
+                                data-action="reload-content#clearSearch"
+                            >
+                                ✕
+                            </button>
                         </div>
                                     
+                        {# Boutons de sélection/déselection des groupes alimentaires #}
                         <div class="flex flex-row gap-2 items-center">
                             <button
                                 type="button"
@@ -87,16 +102,19 @@
                             </button>
                         </div>
 
+                        {# Liste des groupes alimentaires #}
                         <div class="flex flex-row flex-wrap gap-2 mt-2 mb-2">
                             {{ include('/foodgroup/_foodgroup_list.html.twig') }}
                         </div>
 
                     </div>
 
+                    {# Section filtres par type de plat et vue #}
                     <div class="flex flex-col gap-4 xl:gap-0 items-start xl:flex-row mt-4 justify-start xl:items-center lg:justify-between w-full xl:h-8">
 
                         <div class="flex flex-col justify-start md:flex-row gap-4 md:gap-0 w-full">
 
+                            {# Boutons pour filtrer par type de plat #}
                             <div class="flex items-center">
                                 <button 
                                     type="button"
@@ -120,10 +138,12 @@
                                 {% endfor %}
                             </div>
 
+                            {# Boutons pour filtres spécifiques (gluten/lactose) #}
                             <div class="flex items-center ml-0 md:ml-auto lg:ml-16 mr-4 gap-2">
                                 {{ include('meals/partials/_button_gluten_lactose.html.twig') }}
                             </div>
 
+                            {# Composant pour changer le mode d'affichage (liste/grille) #}
                             <div class="my-hidden lg:flex h-8 md:h-10 xl:h-11 ml-auto">
                                 {{ include('partials/_view_mode_list.html.twig') }}
                             </div>
@@ -134,6 +154,7 @@
 
                 {% endif %}
 
+                {# Liste des plats favoris avec Stimulus #}
                 <div 
                     {{ stimulus_controller('favorite-dishes', {
                         'url': path('app_favorite_dishes_list', {'ajax': 1}),
@@ -141,9 +162,8 @@
                         'urlRemove': path('app_favorite_dishes_remove')
                     }) }}
                 >
-                    <div 
+                    <div
                         data-view-mode-target="wrapper"
-                        id="wrapper" 
                         class="wrapper gap-4 mt-8 relative min-h-64"
                         data-loading="addClass(opacity-50)"
                         data-reload-content-target="content"
@@ -151,22 +171,25 @@
                     >     
                         {{ include('dish/_dish_list.html.twig') }}
                     </div>
-
                 </div>
 
                 {% if favoriteDishesId is defined %}
 
+                    {# Skeleton loaders pour le chargement des plats #}
                     <div 
-                        class="container-loader w-full h-64 items-center justify-center mt-8 hidden flex py-8"
+                        class="wrapper gap-4 mt-8 relative hidden"
                         data-reload-content-target="loader"
                     >
-                        <div class="loader"></div>
+                        {% for i in 1..12 %}
+                            {{ include('dish/_dish_skeleton.html.twig') }}
+                        {% endfor %}
                     </div>
 
+                    {# Bouton "Voir plus" pour charger plus de plats #}
                     <center class="mt-8 mb-8">
                         <button 
                             type="button"
-                            class="bg-gray-200 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300"
+                            class="bg-gray-200 hover:bg-gray-300 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300"
                             data-action="reload-content#onLoadMore"
                             data-reload-content-target="loadMore"
                         >

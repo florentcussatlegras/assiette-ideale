@@ -1,59 +1,82 @@
 <div class="flex flex-row items-center gap-4 px-6 pt-2 bg-{{ bgColor|default('light-blue') }}">
-
+    
+    {# Si une alerte est définie et que l'on n'est pas dans le contexte d'un modèle de repas #}
     {% if alert is defined and app.session.get('_meal_day_date') != 'model' %}
 
-        <div class="flex flex-col items-end">
+        <div class="flex flex-col items-start xl:items-end">
+
+            {# Bloc affichant l'énergie totale de la journée #}
             <div 
-                {# {{ stimulus_controller('popover-info', {
-                    url: path('meal_popover_energy')
-                }) }} #}
-                {# data-action="click->popover-info#showMessages" #}
                 data-energy="{{ mealDayEnergy }}"
                 class="flex items-center cursor-pointer gap-2"
             >
+            
+                {# Icône d'alerte avec couleur selon le niveau d'alerte le plus élevé #}
+                <span class="rounded-full flex items-center justify-center w-8 h-8" style="background-color: {{ highestAlertPerDay.color }}">
+                    <svg class="text-white w-6 h-6" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 5L12 14" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="currentColor"></path>
+                    </svg>
+                </span>
 
-                {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(42), opacity: 1 }) }}
-
-                <div class="flex items-end gap-2">
-                    <span class="text-3xl font-semibold leading-none" style="color: {{ alert.color  }}">{{ mealDayEnergy|round }}</span>
-                    <span class="text-base" style="color: {{ alert.color  }}">Kcal</span>
+                {# Valeur énergétique totale (kcal) #}
+                <div class="flex flex-row items-end gap-2">
+                    <div class="text-{{ sizeText|default("xl") }} font-semibold leading-none" style="color: {{ highestAlertPerDay.color }}">
+                        {{ mealDayEnergy|round }}
+                    </div>
+                    <div class="text-sm {% if sizeText == "3xl" %}text-base pb-1{% endif %} leading-none" style="color: {{ highestAlertPerDay.color }}">
+                        Kcal
+                    </div>
                 </div>
 
             </div>
+
+            {# Texte explicatif du niveau d'alerte si les détails sont activés #}
             {% if showDetails %}
-                <div class="text-sm md:text-base" style="color: {{ alert.color }}">Votre total énergétique sur la journée est {{ alert.text|lower }}</div>
-            {% endif %}   
+                <div class="text-sm md:text-base" style="color: {{ alert.color }}">
+                    Votre total énergétique sur la journée est {{ alert.text|lower }}
+                </div>
+            {% endif %}
+
         </div>
 
     {% else %}
             
+        {# Affichage simple de l'énergie sans alerte #}
         <div class="flex items-end gap-2">
-            <span class="text-3xl font-semibold leading-none text-white">{{ mealDayEnergy|round }}</span>
-            <span class="text-base text-gray-500">Kcal</span>
+            <span class="text-{{ sizeText|default("xl") }} font-semibold leading-none text-white">
+                {{ mealDayEnergy|round }}
+            </span>
+            <span class="text-sm text-gray-500">Kcal</span>
         </div>
        
     {% endif %}
      
-
+    {# Champ caché utilisé côté JS pour indiquer l'état énergétique (-1 manque, 0 équilibré, 1 excès) #}
     <input 
         type="hidden" 
         data-meal-target="alertEnergy"
+
+        {# Cas de manque énergétique #}
         {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_LACK') or
             alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_LACK') or 
             alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_LACK')
         %}
             value="-1"
         {% endif %}
+
+        {# Cas d'excès énergétique #}
         {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_EXCESS') or
             alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_VERY_EXCESS') or 
             alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_CRITICAL_EXCESS')
         %}
             value="1"
         {% endif %}
+
+        {# Cas d'équilibre énergétique #}
         {% if alert.code is constant('App\\Entity\\Alert\\LevelAlert::BALANCE_WELL') %}
             value="0"
         {% endif %}
     />
 
-</div> 
-
+</div>

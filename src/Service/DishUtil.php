@@ -19,7 +19,6 @@ class DishUtil
 {
 	public function __construct(
 		private EntityManagerInterface $manager, 
-		private TokenStorageInterface $tokenStorage, 
 		private FoodUtil $foodUtil,
 		private DishRepository $dishRepository)
 	{}
@@ -69,63 +68,6 @@ class DishUtil
 		{
 			if(true === $forbidden = $this->foodUtil->isForbidden($dishFood->getFood())) 
 				break;
-
-			/*foreach($this->user->getForbiddenFoods() as $forbiddenFood)
-			{
-				if(
-					$dishFood->getFood()->getId() == (int)$forbiddenFood 
-						|| 
-					(null !== $dishFood->getFood()->getSubFoodGroup() && $dishFood->getFood()->getSubFoodGroup()->getId() == (int)$forbiddenFood)
-				)
-				{
-					$forbidden = true;
-				}
-			}
-			if(!$forbidden)
-			{
-				foreach($this->user->getDiets()->toArray() as $diet)
-				{
-					if($diet->getSubDiets()->isEmpty())
-					{
-						if(
-							$diet->getForbiddenFoods()->contains($dishFood->getFood()) 
-								|| 
-							$diet->getForbiddenFoods()->contains($dishFood->getFood()->getSubFoodGroup())
-						)
-						{
-							$forbidden = true;
-						}
-						if(!$forbidden)
-						{
-							if($diet->getForbiddenFoodGroups()->contains($dishFood->getFood()->getFoodGroup()))
-							{
-								$forbidden = true;
-							}
-						}
-					}
-				}
-			}
-			if(!$forbidden)
-			{
-				foreach($this->user->getSubDiets()->toArray() as $subDiet)
-				{
-					if(
-						$subDiet->getForbiddenFoods()->contains($dishFood->getFood())
-							||
-						$subDiet->getForbiddenFoods()->contains($dishFood->getFood()->getSubFoodGroup())
-					)
-					{
-						$forbidden = true;
-					}
-					if(!$forbidden)
-					{
-						if($subDiet->getForbiddenFoodGroups()->contains($dishFood->getFood()->getFoodGroup()))
-						{
-							$forbidden = true;
-						}
-					}
-				}
-			}*/
 		}
 
 		return $forbidden;

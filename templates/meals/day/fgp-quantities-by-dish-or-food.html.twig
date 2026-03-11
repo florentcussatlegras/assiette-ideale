@@ -1,18 +1,25 @@
+{# Boucle sur tous les groupes d’aliments parents #}
 {% for foodGroupParent in foodGroupParents %}
 
+    {# Conteneur circulaire pour chaque groupe alimentaire #}
     <div class="flex items-center justify-center w-8 fgp-wrapper">
 
+        {# Flag pour savoir si l’aliment ou plat appartient à ce groupe parent #}
         {% set in = false %}
 
+        {# Si l’élément est un plat (Dish) #}
         {% if type == 'Dish' %}
 
+            {# Boucle sur tous les groupes parents liés au plat #}
             {% for dishFoodGroupParent in dishOrFood.dishFoodGroupParents %}
 
                 {% if dishFoodGroupParent.foodGroupParent.id == foodGroupParent.id %}
-
+                    {# Si le plat appartient à ce groupe parent #}
                     {% set in = true %}
 
-                    <div style="background-color: {{ foodGroupParent.color }}" class="flex text-white text-sm font-bold w-5 h-5 rounded-full justify-center items-center">
+                    {# Cercle coloré pour indiquer la présence du groupe dans le plat #}
+                    <div style="background-color: {{ foodGroupParent.color }}" 
+                         class="flex text-white text-sm font-bold w-5 h-5 rounded-full justify-center items-center">
                     </div>
 
                 {% endif %}
@@ -20,28 +27,34 @@
             {% endfor %}
 
         {% else %}
-
+            {# Cas d’un aliment simple (Food) #}
             {% if dishOrFood.foodGroup.parent.id == foodGroupParent.id %}
-
                 {% set in = true %}
 
-                <div style="background-color: {{ foodGroupParent.color }}" class="flex text-white text-sm font-bold w-5 h-5 rounded-full justify-center items-center">
+                {# Cercle coloré pour indiquer la présence du groupe dans l’aliment #}
+                <div style="background-color: {{ foodGroupParent.color }}" 
+                     class="flex text-white text-sm font-bold w-5 h-5 rounded-full justify-center items-center">
                 </div>
 
             {% endif %}
-        
         {% endif %}
         
+        {# Si le plat/aliment n’appartient pas à ce groupe parent #}
         {% if in == false %}
-            <div style="background-color: {{ foodGroupParent.color }}" class="text-white font-bold w-5 h-5 rounded-full opacity-20"></div>
+            <div style="background-color: {{ foodGroupParent.color }}" 
+                 class="text-white font-bold w-5 h-5 rounded-full opacity-20">
+            </div>
         {% endif %}
 
-         <div class="fgp-tooltip">
+        {# Tooltip affichant le nom du groupe alimentaire avec lien #}
+        <div class="fgp-tooltip">
             <div class="fgp-tooltip-content" style="background-color: {{ foodGroupParent.degradedColor }}">
-                <a style="color: {{ foodGroupParent.color }}" href="{{ path('app_food_groups_show', { slug: foodGroupParent.slug }) }}">
+                <a style="color: {{ foodGroupParent.color }}" 
+                   href="{{ path('app_food_groups_show', { slug: foodGroupParent.slug }) }}">
                     <strong>{{ foodGroupParent.name }}</strong>
                 </a>
             </div>
+            {# Flèche du tooltip #}
             <div class="fgp-arrow" style="background-color: {{ foodGroupParent.degradedColor }}"></div>
         </div>
 

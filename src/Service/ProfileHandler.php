@@ -43,12 +43,13 @@ class ProfileHandler
         self::ENERGY
     ];
     
-    private $security;
 
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
+    public function __construct(
+            private Security $security,
+            private NutrientHandler $nutrientHandler,
+            private FoodGroupHandler $foodGroupHandler,
+    )
+    {}
 
     public function currentStep()
     {
@@ -97,4 +98,26 @@ class ProfileHandler
 
         return $q/count(self::STEPS);
     }
+
+    public function recalcUserProfile(): void
+    {
+        /** @var App\Entity\User|null $user */
+        $user = $this->security->getUser();
+
+        // Recalcul IMC, poids idéal
+        $user->setValueImc();
+        $user->setValueIdealWeight();
+        $user->setValueIdealImc();
+
+        // Recalcul recommandations nutritionnelles
+        $nutrientRecommendations = $this->nutrientHandler->getRecommendations($user);
+        $accessor = PropertyAccess::createPropertyAccessor();
+        foreach ($nutrientRecommendations as $nutrientAlias => $value) {
+            $accessor->setValue($user, $nutrientAlias, $value);
+        }
+
+        // Recalcul recommandations par groupe d'aliment
+        $user->setRecommendedQuantities($this->foodGroupHandler->getRecommendations($user));
+    }
+
 }

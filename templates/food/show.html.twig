@@ -1,13 +1,18 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ parent() }} - Les aliments{% endblock %}
+{% block title %}
+    {{ parent() }} - Les aliments
+{% endblock %}
 
 {% block body %}
 
     <div class="py-12">
 
+        {# Header de la page avec navigation et titre de l’aliment #}
         <div class="flex">
             {{ include('navigation/_header_page.html.twig', {title: food.name}) }}
+
+            {# Lien d’édition visible uniquement pour les admins #}
             {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_food_add', { slug : food.slug }) }}">
                     <i data-feather="edit" class="w-6 h-6"></i>
@@ -15,30 +20,40 @@
             {% endif %}
         </div>
 
-        <div class="flex bg-white shadow-lg rounded-xl pt-6 text-sm relative">
+        {# Affiche l’ID de l’aliment en environnement dev #}
+        {% if app.environment == 'dev' %}{{ food.id }}{% endif %}
 
-            <div class="font-bold px-4 py-1 rounded uppercase absolute z-5 left-6 text-sm" style="background-color: {{ food.foodGroup.parent.degradedColor }}; color: {{ food.foodGroup.parent.color }}">
-                {{ food.foodGroup.name }}
-            </div>
+        {# Conteneur principal des informations de l’aliment #}
+        <div class="flex bg-white shadow-balanced rounded-xl pt-6 text-sm relative">
+
+            {# Bouton/label pour revenir au groupe alimentaire #}
+            <a href="{{ path('app_food_list', { fg: food.foodGroup.id, unique_fg: 1 }) }}" class="inline-block font-bold px-4 py-1 rounded uppercase absolute z-5 left-6 text-sm" style="background-color: {{ food.foodGroup.parent.degradedColor }}">
+                <span style="color: {{ food.foodGroup.parent.color }}">{{ food.foodGroup.name }}</span>
+            </a>
 
             <div class="flex flex-col items-center lg:flex-row w-full">
 
+                {# Colonne gauche : image et infos générales #}
                 <div class="w-full lg:w-1/2 p-8">
 
+                    {# Affiche l’image de l’aliment ou un placeholder si vide #}
                     {% if food.picture is empty %}
                         <img class="w-full h-64 image-fit" src="https://via.placeholder.com/800">
                     {% else %}
                         <img alt="Image plat" class="image-fit mx-auto" src="{{ food.picturePath|imagine_filter('squared_thumbnail_medium') }}" width="450px">
                     {% endif %}
 
+                    {# Informations complémentaires de l’aliment #}
                     <div class="flex flex-row gap-2 mt-12 px-12">
                         {{ food.info is not null ? food.info }}
                     </div>
 
                 </div>
 
+                {# Colonne droite : propriétés et valeurs nutritionnelles #}
                 <div class="flex flex-col w-full lg:w-1/2 gap-4 text-sm">
 
+                    {# Indicateurs gluten et lactose #}
                     <div class="flex flex-row gap-4 px-8">
 
                         <div class="font-bold bg-yellow-100 text-yellow-800 px-4 py-1 rounded">
@@ -51,41 +66,56 @@
                     
                     </div>
 
+                    {# Tableau des valeurs nutritionnelles #}
                     <div class="mt-4 flex flex-col items-center gap-4 text-sm">
 
                         <div class="flex flex-col w-full px-8">
 
                             <div class="flex flex-col md:flex-row item-center gap-4 w-full">
                     
+                                {# Énergie #}
                                 <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
-                                    <label class="flex flex-row">Energie</label><span class="text-neutral-500">{{ food.nutritionalTable.energy }} KCAL</span>
+                                    <label class="flex flex-row">Energie</label>
+                                    <span class="text-neutral-500">{{ food.nutritionalTable.energy }} KCAL</span>
                                 </div>
+
+                                {# Lipides #}
                                 <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
-                                    <label class="flex flex-row">Lipides</label><span class="text-neutral-500">{{ food.nutritionalTable.lipid }} g</span>
+                                    <label class="flex flex-row">Lipides</label>
+                                    <span class="text-neutral-500">{{ food.nutritionalTable.lipid }} g</span>
                                 </div>
+
+                                {# Glucides #}
                                 <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
-                                    <label class="flex flex-row">Glucides</label><span class="text-neutral-500">{{ food.nutritionalTable.carbohydrate }} g</span>
-                                    </div>
+                                    <label class="flex flex-row">Glucides</label>
+                                    <span class="text-neutral-500">{{ food.nutritionalTable.carbohydrate }} g</span>
+                                </div>
+
+                                {# Protéines #}
                                 <div class="flex flex-col items-center border-2 border-light-blue p-4 w-full md:w-1/4">
-                                    <label class="flex flex-row">Protéines</label><span class="text-neutral-500">{{ food.nutritionalTable.protein }} g</span>
+                                    <label class="flex flex-row">Protéines</label>
+                                    <span class="text-neutral-500">{{ food.nutritionalTable.protein }} g</span>
                                 </div>
         
                             </div>
 
-                            <div class="mt-2 text-xs">Energie pour 100g d'aliment</div>
+                            {# Mention de portion standard pour 100g #}
+                            <div class="mt-2 text-xs">Pour 100g d'aliment</div>
 
                         </div>
 
+                        {# Graphique nutritionnel #}
                         <div class="pt-2 mb-8" style="max-width: 400px; margin: 0 auto;">
+                            {# Si toutes les données sont à zéro, afficher un message #}
                             {% if chartAllZero %}
                                 <div class="text-gray-400 text-center py-16">
                                     Pas de données nutritionnelles à afficher.
                                 </div>
                             {% else %}
+                                {# Affiche le graphique #}
                                 {{ render_chart(chart, {'id': 'myChart', 'height': '300px', 'width': '500px'}) }}
                             {% endif %}
                         </div>
-
 
                     </div>
 
@@ -98,4 +128,3 @@
     </div>
 
 {% endblock %}
-

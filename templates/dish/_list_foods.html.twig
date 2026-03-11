@@ -1,58 +1,84 @@
+{# Vérifie si la session contient des aliments de la recette #}
 {% if app.session.has('recipe_foods') %}
 
     <div class="w-full">
 
+        {# Parcourt chaque groupe alimentaire et ses aliments dans la session #}
         {% for foodGroupAlias, foods in app.session.get('recipe_foods') %}
 
+            {# Affiche uniquement si le groupe contient des aliments #}
             {% if foods is not empty %}
 
-                <span class="mt-6 font-bold text-base">{{ foodGroupAlias|change('App\\Entity\\FoodGroup\\FoodGroup', 'alias', 'name') }}</span>
+                {# Nom du groupe alimentaire (converti de l'alias à un nom lisible) #}
+                <span class="mt-6 font-bold text-base">
+                    {{ foodGroupAlias|change('App\\Entity\\FoodGroup\\FoodGroup', 'alias', 'name') }}
+                </span>
 
-
+                {# Conteneur vertical pour la liste des aliments du groupe #}
                 <div class="flex flex-col w-full">
 
-                        {% for id, item in foods %}
+                    {# Parcourt chaque aliment du groupe #}
+                    {% for id, item in foods %}
                  
-                            {% if item.quantity is not empty %}
-                                <div 
-                                    class="flex flex-row items-center {% if loop.index is odd %} bg-slate-100{% endif %}"
-                                    {{ stimulus_controller('foods-dish', { url: path('app_dish_food_edit', {'idFood': item.food.id, 'idDish': idDish}) }) }}
-                                >
-                                    <div class="pl-2 py-2 flex items-center gap-2 w-1/2">
-                                        {% if item.food.picture is not null %}
-                                            <img alt="Image aliment" class="rounded-lg w-12" src="{{ item.food.picturePath|imagine_filter('squared_thumbnail_small') }}">
-                                        {% else %}
-                                            <img src="{{ asset('uploads/dish/pic_dish_default.jpg') }}" alt="Photo plat {{ item.food.name }}" class="rounded-lg w-12">
-                                        {% endif %}
-                                        <a class="font-semibold text-light-blue">{{ item.food.name }}</a>
-                                        <div class="text-gray-600 text-xs whitespace-nowrap">{{ item.food.isSubFoodGroup ? item.food.name : item.food.subFoodGroup }}</div>
-                                    </div>
-    
-                                    <div class="w-2/6 flex flex-row items-center justify-center h-full" style="height: 100%" data-foods-dish-target="quantity"> 
-                                        {{ include('dish/_quantity_food.html.twig', { quantity: item.quantity, unitMeasure: item.unit_measure, idFood: id, idDish: idDish }) }}
-                                    </div>
-                      
-                                    <div class="w-1/6 ml-auto mr-2">
-
-                                        <div class="flex justify-end items-center ml-auto pr-4 gap-2">
-
-                                            <button 
-                                                type="button" 
-                                                data-action="foods-dish#toggleFormEdit"
-                                                data-foods-dish-target="btnToggleEdit"
-                                                class="flex items-center font-medium"
-                                            >
-                                                {{ include('partials/svg/edit.html.twig') }}
-                                            </button>
-
-                                            <a href="#" class="delete-food flex items-center font-medium" data-foodgroup-alias="{{ foodGroupAlias }}" data-foodid="{{ id }}">
-                                                {{ include('partials/svg/remove.html.twig') }}
-                                            </a>
-                                        </div>
+                        {# Affiche uniquement si une quantité a été saisie pour l’aliment #}
+                        {% if item.quantity is not empty %}
+                            <div 
+                                class="flex flex-row items-center {% if loop.index is odd %} bg-slate-100{% endif %}"  {# Couleur de fond alternée pour lisibilité #}
+                                {{ stimulus_controller('foods-dish', { url: path('app_dish_food_edit', {'idFood': item.food.id, 'idDish': idDish}) }) }}  {# Contrôleur Stimulus pour éditer l’aliment en AJAX #}
+                            >
+                                {# Partie gauche : image et nom de l’aliment #}
+                                <div class="pl-2 py-2 flex items-center gap-2 w-1/2">
+                                    {% if item.food.picture is not null %}
+                                        {# Image de l’aliment #}
+                                        <img alt="Image aliment" class="rounded-lg w-12" src="{{ item.food.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                                    {% else %}
+                                        {# Image par défaut si aucune photo disponible #}
+                                        <img src="{{ asset('uploads/dish/pic_dish_default.jpg') }}" alt="Photo plat {{ item.food.name }}" class="rounded-lg w-12">
+                                    {% endif %}
+                                    {# Nom de l’aliment #}
+                                    <a class="font-semibold text-light-blue">{{ item.food.name }}</a>
+                                    {# Sous-groupe de l’aliment ou nom si subFoodGroup #}
+                                    <div class="text-gray-600 text-xs whitespace-nowrap">
+                                        {{ item.food.isSubFoodGroup ? item.food.name : item.food.subFoodGroup }}
                                     </div>
                                 </div>
-                            {% endif %}
-                        {% endfor %}
+    
+                                {# Partie centrale : quantité de l’aliment #}
+                                <div class="w-2/6 flex flex-row items-center justify-center h-full" style="height: 100%" data-foods-dish-target="quantity"> 
+                                    {{ include('dish/_quantity_food.html.twig', { 
+                                        quantity: item.quantity, 
+                                        unitMeasure: item.unit_measure, 
+                                        idFood: id, 
+                                        idDish: idDish 
+                                    }) }}
+                                </div>
+                      
+                                {# Partie droite : boutons d’action (éditer / supprimer) #}
+                                <div class="w-1/6 ml-auto mr-2">
+
+                                    <div class="flex justify-end items-center ml-auto pr-4 gap-2">
+
+                                        {# Bouton pour basculer le formulaire d’édition de l’aliment #}
+                                        <button 
+                                            type="button" 
+                                            data-action="foods-dish#toggleFormEdit"
+                                            data-foods-dish-target="btnToggleEdit"
+                                            class="flex items-center font-medium"
+                                        >
+                                            {{ include('partials/svg/edit.html.twig') }}
+                                        </button>
+
+                                        {# Lien pour supprimer l’aliment du groupe #}
+                                        <a href="#" class="delete-food flex items-center font-medium" 
+                                           data-foodgroup-alias="{{ foodGroupAlias }}" 
+                                           data-foodid="{{ id }}">
+                                            {{ include('partials/svg/remove.html.twig') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                
                 </div>
 
@@ -63,4 +89,3 @@
     </div>
     
 {% endif %}
-

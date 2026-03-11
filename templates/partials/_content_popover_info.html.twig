@@ -1,8 +1,20 @@
+<div class="font-bold text-3xl mb-2 flex flex-col gap-3 items-center justify-center">
 
-    <div class="font-bold text-3xl mb-2 flex flex-col gap-3 items-center justify-center">
-        {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: alert, size: sizeIcon|default(20), sizeCircle: "100px", widthBorder: 3, opacity: 1 }) }}
-        {{ title }} 
-    </div>
-    <div class="font-normal text-center text-base">
-        {{ message|default("") }}
-    </div>
+    <span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border: 3px solid {{ alert.color }}">
+        <svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M12 5L12 14" stroke="{{ alert.color }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M13.8417 18.8417C13.8417 19.8588 13.0171 20.6833 12 20.6833C10.9829 20.6833 10.1583 19.8588 10.1583 18.8417C10.1583 17.8245 10.9829 17 12 17C13.0171 17 13.8417 17.8245 13.8417 18.8417Z" fill="{{ alert.color }}"></path>
+            </g>
+        </svg>
+    </span>
+
+    {{ title }} 
+
+</div>
+
+<div class="font-normal text-center text-base">
+    {{ message|default("") }}
+</div>

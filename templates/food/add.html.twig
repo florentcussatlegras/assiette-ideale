@@ -4,32 +4,36 @@
 
     <div class="px-5">
 
+        {# Conteneur central pour le formulaire d’ajout d’aliment #}
         <div class="w-1/2 mx-auto mt-4 mb-4">
 
+            {# Titre de la page #}
             <div class="w-3/5">
-
                 <span class="inline-flex items-center justify-center text-4xl leading-none text-dark-blue font-bold">
                     Ajouter un aliment
                 </span>
-
             </div>
 
             <div class="flex gap-10">
 
+                {# Début du formulaire Symfony #}
                 {{ form_start(form) }}
 
+                    {# Ligne 1 : nom, image et checkbox de sous-groupe alimentaire #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.name) }}
                         {{ form_row(form.pictureFile) }}
                         {{ form_row(form.isSubFoodGroup) }}
                     </div>
 
+                    {# Ligne 2 : informations supplémentaires, poids médian, et affichage du poids médian #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.info) }}
                         {{ form_row(form.medianWeight) }}
                         {{ form_row(form.showMedianWeight) }}
                     </div>
 
+                    {# Ligne 3 : attributs de l’aliment (gluten, lactose, non consommable cru, peut être une part) #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.haveGluten) }}
                         {{ form_row(form.haveLactose) }}
@@ -37,39 +41,47 @@
                         {{ form_row(form.canBeAPart) }}
                     </div>
                     
+                    {# Ligne 4 : énergie (kCal) #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.nutritionalTable.energy) }}
                     </div>
 
+                    {# Ligne 5 : groupe alimentaire et sous-groupe #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.foodGroup) }}
                         {{ form_row(form.subFoodGroup) }}
                     </div>
 
+                    {# Ligne 6 : protéines #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.nutritionalTable.protein) }}
                     </div>
 
+                    {# Ligne 7 : lipides et acides gras saturés #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.nutritionalTable.lipid) }}
                         {{ form_row(form.nutritionalTable.saturatedFattyAcid) }}
                     </div>
 
+                    {# Ligne 8 : glucides et sucres #}
                     <div class="flex items-center gap-4">
                         {{ form_row(form.nutritionalTable.carbohydrate) }}
                         {{ form_row(form.nutritionalTable.sugar) }}
                     </div>
 
-                     <div class="flex items-center gap-4">
+                    {# Ligne 9 : fibres et sel #}
+                    <div class="flex items-center gap-4">
                         {{ form_row(form.nutritionalTable.fiber) }}
                         {{ form_row(form.nutritionalTable.salt) }}
                     </div>
 
-                     <div class="flex gap-12">
+                    {# Ligne 10 : nutriscore et unités de mesure #}
+                    <div class="flex gap-12">
                         {{ form_row(form.nutritionalTable.nutriscore) }}
                         {{ form_row(form.unitMeasures, {'attr': {'class': 'w-full h-32'}}) }}
                     </div>
 
+                {# Fin du formulaire Symfony #}
                 {{ form_end(form) }}
             
             <div>
@@ -79,4 +91,3 @@
     </div>
 
 {% endblock %}
-

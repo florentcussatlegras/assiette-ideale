@@ -1,43 +1,45 @@
-<div class="modal fade" id="modelMeal" tabindex="-1" role="dialog" aria-labelledby="modelMealLabel" aria-hidden="true">
-        
-    <div class="modal-dialog modal-dialog-centered w-full">
-            
-        <div class="modal-content rounded-3xl shadow-lg overflow-hidden">
+{# Modal principal pour afficher le détail d'un repas #}
+<div class="modal fade fixed inset-0" 
+     style="z-index: 1060" 
+     id="modelMeal" 
+     tabindex="-1" 
+     role="dialog" 
+     aria-labelledby="modelMealLabel" 
+     aria-hidden="true">
 
-            <!-- Header -->
+    {# Backdrop semi-transparent #}
+    <div class="fixed inset-0 bg-black bg-opacity-50" style="z-index: 1060"></div>
+
+    {# Container centré du modal #}
+    <div class="modal-dialog modal-dialog-centered w-full" style="z-index: 1060">
+        <div class="modal-content rounded-3xl shadow-lg overflow-hidden bg-white">
+
+            {# Header du modal avec bouton de fermeture #}
             <div class="flex items-center justify-end text-sky-600 p-4">
-
                 <button 
                     type="button"
-                    class="flex items-center justify-center transition duration-300 text-sky-600 hover:text-sky-700 gap-2 font-bold"
+                    class="flex items-center justify-center transition duration-300 text-sky-600 hover:bg-gray-100 gap-2 font-bold p-3 rounded-full"
                     data-dismiss="modal"
                     aria-label="Close"
                 >
+                    {# Icône croix pour fermer le modal #}
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
                 </button>
-                
             </div>
 
-            <!-- Body -->
-            <div class="p-t-0 px-5 pb-5 min-h-[8rem] mb-12">
+            {# Corps du modal : contenu dynamique du repas #}
+            <div class="p-t-0 px-5 pb-5 min-h-[8rem] mb-12" style="z-index: 1060">
 
+                {# Zone où le contenu du repas sera injecté via Stimulus controller ou JS #}
                 <div data-model-meal-target="modalContent" class="relative flex items-center justify-center w-full" style="min-height: 300px">
-                    
+                    {# Contenu dynamique du repas inséré ici #}
                 </div>
 
             </div>
 
-            <!-- Footer -->
-            {# <div class="p-5 border-t border-gray-100 flex justify-end rounded-b-3xl">
-                <button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow-soft bg-sky-600 hover:bg-sky-700 transition duration-300" data-dismiss="modal">
-                    Fermer
-                </button>
-            </div> #}
-
         </div>
-
     </div>
 
 </div>

@@ -1,25 +1,34 @@
+{# Tableau principal affichant les quantités recommandées par groupe alimentaire #}
 <table class="text-lg text-left text-gray-500 w-full">
+
+    {# En-tête du tableau avec fond clair et texte en majuscules #}
     <thead class="text-xs text-gray-700 uppercase bg-blue-50">
         <tr>
+            {# Colonne pour le nom des groupes alimentaires #}
             <th scope="col" class="px-6 py-3">
                 Groupes alimentaires
             </th>
+            {# Colonne pour les quantités recommandées en grammes #}
             <th scope="col" class="px-6 py-3">
                 Quantités (en grammes)
             </th>
         </tr>
     </thead>
+
+    {# Corps du tableau affichant les données dynamiques de l'utilisateur #}
     <tbody>
         {% for fgp, quantity in app.user.recommendedQuantities %}
         <tr class="bg-white border-b">
+            {# Nom du groupe alimentaire #}
             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 {{ fgp|foodGroupParent.name }}
             </th>
+            {# Quantité recommandée #}
             <td class="px-6 py-4">
                 {{ quantity }}
             </td>
         </tr>
         {% endfor %}
     </tbody>
-</table>
 
+</table>

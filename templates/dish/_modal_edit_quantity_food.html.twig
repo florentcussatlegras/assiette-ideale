@@ -1,64 +1,90 @@
-<!-- Modal Container -->
-<div data-modal-target="container" data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard" class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center" style="z-index: 9999;">
+{# Conteneur principal du modal #}
+<div 
+    data-modal-target="container"  {# Cible Stimulus pour ouvrir/fermer le modal #}
+    data-action="click->modal#closeBackground keyup@window->modal#closeWithKeyboard"  {# Ferme au clic sur le fond ou touche Esc #}
+    class="hidden animated fadeIn fixed inset-0 overflow-y-auto flex items-center justify-center"  {# Positionné au centre, invisible par défaut #}
+    style="z-index: 9999;"
+>
   
+    {# Conteneur interne du modal #}
     <div class="max-h-screen bg-white w-full max-w-lg relative">
 
+        {# Contenu principal du modal #}
         <div class="flex flex-col p-8">
             
+            {# Titre du modal #}
             <h1 class="text-2xl font-bold mb-3">Modifier un aliment</h1>
 
-            <p class="my-4">Veuillez indiquer la quantité de 
+            {# Texte explicatif avec le nom dynamique de l’aliment #}
+            <p class="my-4">
+                Veuillez indiquer la quantité de 
                 <span class="text-dark-blue">{{ food.name }}</span> 
                 que vous souhaitez ajouter au plat :
             </p>
     
-            {# <form action="{{ path('app_dish_food_edit', {idFood: food.id, idDish: idDish}) }}" method="POST" #}
+            {# Formulaire pour modifier la quantité de l’aliment #}
             <form method="POST" class="flex flex-row gap-2">
 
+                {# Token CSRF pour sécurité #}
                 <input type="hidden" name="_token" value="{{ csrf_token('select_foods') }}" />
 
+                {# Récupération de l’alias du groupe alimentaire #}
                 {% set foodGroupAlias = food.foodGroup.alias %}
 
+                {# Champs cachés pour l’identification du groupe alimentaire #}
                 <input name="food_group_code" type="hidden" value="{{ foodGroupAlias }}" /> 
                 <input name="food_group_slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
 
-                <input name="foods[{{ food.id }}][quantity]" 
-                            type="text" 
-                            class="w-24" 
-                            placeholder="Quantité" 
-                            aria-label="default input inline 1" 
-                            {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                                    and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
-                                        value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
-                            {% endif %}>
+                {# Champ de quantité de l’aliment #}
+                <input 
+                    name="foods[{{ food.id }}][quantity]" 
+                    type="text" 
+                    class="w-24" 
+                    placeholder="Quantité" 
+                    aria-label="default input inline 1" 
+                    {# Pré-remplissage si la quantité est déjà dans la session #}
+                    {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
+                        and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
+                        value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
+                    {% endif %}
+                >
                 
+                {# Sélecteur de l’unité de mesure #}
                 <select name="foods[{{ food.id }}][unit_measure]" aria-label="Default select example">
                 
                     {% for unitMeasure in unitMeasures %}
 
+                        {# Affiche seulement les unités valides selon gramRatio ou portion #}
                         {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
                 
                             <option value="{{ unitMeasure.alias }}"
                             
+                                {# Sélectionne l’unité si déjà dans la session #}
                                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
-                                and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
-                        and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
-                                            selected="selected"
-                                        {% endif %}>
+                                    and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
+                                    and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
+                                    selected="selected"
+                                {% endif %}>
 
-                                        {{ unitMeasure.alias }}
-                                        
-                                    </option>
+                                {{ unitMeasure.alias }}
+                                
+                            </option>
 
-                                {% endif %}
+                        {% endif %}
 
-                            {% endfor %}
+                    {% endfor %}
                 
                 </select>
 
-                <button type="button" class="modify-food flex flex-row bg-dark-blue text-white font-bold py-1 px-4 rounded-full items-center ">Modifier</button>
+                {# Bouton pour modifier / sauvegarder la quantité #}
+                <button type="button" class="modify-food flex flex-row bg-dark-blue text-white font-bold py-1 px-4 rounded-full items-center">
+                    Modifier
+                </button>
                 
-                <button class="text-dark-blue font-bold py-2" data-action="click->modal#close">Annuler</button>
+                {# Bouton annuler pour fermer le modal #}
+                <button class="text-dark-blue font-bold py-2" data-action="click->modal#close">
+                    Annuler
+                </button>
 
             </form>
 

@@ -1,0 +1,84 @@
+{# Container principal pour le placeholder d'un jour de repas avec animation pulse #}
+<div class="flex w-full animate-pulse">
+
+    {# Espace à gauche si ce n'est pas un modèle (pour l'alignement visuel) #}
+    {% if app.session.get('_meal_day_date') != 'model' %}
+        <div style="width: 2%"></div>
+    {% endif %}
+
+    {# Colonne principale pour tout le contenu du jour #}
+    <div class="flex flex-col flex-1">
+
+        {# Zone où la liste des modèles de repas sera injectée #}
+        <div class="container-list-meal-model"></div>
+
+        {# Section relative pour gérer les éléments positionnés absolument #}
+        <div class="relative">
+
+            {# Repères visuels à gauche si ce n'est pas un modèle #}
+            {% if app.session.get('_meal_day_date') != 'model' %}
+                {# Petit repère caché sur mobile, visible sur desktop #}
+                <div class="flex md:my-hidden absolute -left-4 top-6 items-center h-full justify-center">
+                    <div class="w-7 h-7 mt-0 mb-2 bg-gray-100 rounded"></div>
+                </div>
+                {# Repère visible sur desktop (taille et position légèrement différente) #}
+                <div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
+                    <div class="w-7 h-7 mt-0 mb-2 bg-gray-100 rounded"></div>
+                </div>
+            {% endif %}
+
+            {# Ligne horizontale des repas (petit-déjeuner, déjeuner, etc.) #}
+            <div class="flex">
+
+                <div class="flex flex-col-reverse md:flex-row items-start md:items-center w-full gap-2 md:gap-0">
+
+                    {# Placeholder pour les repas avec blocs gris et texte invisible #}
+                    <div class="flex items-stretch md:items-center mb-2 gap-2">
+                        {% for i in 0..5 %}
+                            <div class="bg-white text-center shadow-soft rounded-2xl p-2">
+                                <span class="opacity-0">Petit déjeuner</span> {# texte invisible pour la taille du bloc #}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    {# Placeholder Kcal visible sur desktop #}
+                    <span class="my-hidden md:flex items-center bg-gray-100 text-white text-sm font-bold px-2 py-1 rounded-full ml-4 mb-2">
+                        <span class="opacity-0">0 Kcal</span>
+                    </span>
+
+                    {# Placeholder Kcal visible sur mobile #}
+                    <span class="md:my-hidden flex items-center bg-gray-100 text-white text-sm font-bold px-2 py-1 rounded-full ml-0 mb-2">
+                        <span class="opacity-0">0 Kcal</span>
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {# Section principale de contenu du jour : repas choisis / interactions #}
+        <div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-balanced rounded-xl">
+
+            {# Ligne d'entête avec message placeholder et bouton droit #}
+            <div class="flex items-center pl-4">
+
+                {# Message placeholder indiquant qu'aucun aliment/plat n'est choisi #}
+                <span class="bg-gray-100 rounded-lg p-2 text-sm">
+                    <span class="opacity-0">Aucun aliments/plats choisis</span>
+                </span>
+
+                {# Bouton à droite, placeholder visuel pour actions futures #}
+                <div class="ml-auto">
+                    <button class="p-2 md:p-4 flex mr-2">
+                        <div class="rounded-full w-10 h-10 shadow-soft bg-gray-200"></div>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

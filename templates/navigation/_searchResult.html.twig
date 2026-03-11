@@ -1,55 +1,88 @@
 <div 
     id="wrapper" 
     class="wrapper wrapper-search__header mt-6 mx-auto" 
+
+    {# Ajoute une opacité pendant le chargement (via JS / Stimulus) #}
     data-loading="addClass(opacity-50)"
+
+    {# Target utilisée par Stimulus pour recharger le contenu des résultats #}
     data-reload-content-target="content"
+
+    {# Indique s'il existe déjà des résultats précédents #}
+    data-last-results="{{ lastResults ? '1' : '0' }}"
 >
 
+	{# Parcourt les résultats de recherche (plats ou aliments) #}
 	{% for item in results %}
 
-            <a 
-                class="card card-wrapper rounded-lg current-shadow" 
-                {% if instanceOf(item, 'App\\Entity\\Dish') %}
-                    href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}"
-                {% else %}
-                    href="{{ path('app_food_show', { slug: item.slug }) }}"
-                {% endif %}
-                role="option"
-            >
+        <a 
+            class="card card-wrapper rounded-lg current-shadow" 
 
-                <div class="flex flex-row">
-                {% if item.picture is not null and item.picturePath is not null %}
-                    <img alt="Image" class="rounded-lg w-24" src="{{ item.picturePath|imagine_filter('squared_thumbnail_small') }}">
+            {# Lien différent selon le type d'élément : plat ou aliment #}
+            {% if item.item_type == 'Dish' %}
+                href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}"
+            {% else %}
+                href="{{ path('app_food_show', { slug: item.slug }) }}"
+            {% endif %}
+
+            role="option"
+        >
+
+            <div class="flex flex-row">
+
+                {# Affiche l'image si elle existe, sinon un placeholder #}
+                {% if item.picture is not null %}
+                    <img 
+                        alt="Image" 
+                        class="rounded-lg w-36" 
+                        src="{{ (item.item_type|lower ~ '/' ~ item.picture)|imagine_filter('squared_thumbnail_small') }}"
+                    >
                 {% else %}
-                    <img src="https://placehold.co/50x50" alt="Photo plat" width="100px" class="rounded-lg">
+                    <img 
+                        src="https://placehold.co/50x50" 
+                        alt="Photo plat" 
+                        width="100px" 
+                        class="rounded-lg"
+                    >
                 {% endif %}
-    
-                    <div class="px-5">
-                        <div class="mb-1 text-base leading-4">
-                            {{ showKeyword(item.name, keyword)|raw }}
-                        </div>
-                        {% if instanceOf(item, 'App\\Entity\\Dish') %}
-                            {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
-                        {% else %}
-                            <div class="list-fgp flex flex-row gap-2">
-                                <div class="w-3 h-3 rounded-full" style="border: 1px solid {{ item.foodGroup.parent.color }}; background-color: {{ item.foodGroup.parent.color }}"></div>
-                            </div>
-                        {% endif %}
+
+                <div class="px-5">
+
+                    {# Nom du résultat avec mise en évidence du mot-clé recherché #}
+                    <div class="mb-1 text-base leading-4">
+                        {{ showKeyword(item.name, keyword)|raw }}
                     </div>
+
+                    {# Affiche les groupes alimentaires si c'est un plat #}
+                    {% if item.item_type == 'Dish' %}
+
+                        {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
+
+                    {% else %}
+
+                        {# Pour un aliment : affiche simplement la couleur du groupe alimentaire parent #}
+                        <div class="list-fgp flex flex-row gap-2">
+                            <div 
+                                class="w-3 h-3 rounded-full" 
+                                style="border: 1px solid {{ item.parent_color }}; background-color: {{ item.parent_color }}"
+                            ></div>
+                        </div>
+
+                    {% endif %}
 
                 </div>
 
-            </a>
+            </div>
+
+        </a>
 
     {% else %}
 
-        <div class="list-group-item p-8" role="option" aria-disabled="true">{% trans %}Aucun résultat{% endtrans %}</div>
+        {# Message affiché si aucun résultat n'est trouvé #}
+        <div class="absolute inset-0 flex items-center justify-center list-group-item p-8 border">
+            {% trans %}Aucun résultat{% endtrans %}
+        </div>
 
     {% endfor %}
 
 </div>
-
-
-
-
-

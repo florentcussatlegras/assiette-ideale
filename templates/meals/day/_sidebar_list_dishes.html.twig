@@ -1,167 +1,187 @@
-
+{# Conteneur principal du slideover pour la sélection des plats/aliments #}
 <div id="slideover-container" class="w-full h-screen fixed inset-0 invisible" style="z-index: 51">
 
-		<div data-action="click->sidebar-list-dishes#removeAllItem click->sidebar-list-dishes#toggleSlideover" id="slideover-bg" class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 opacity-0"></div>
+    {# Fond semi-transparent cliquable pour fermer le slideover et retirer les items sélectionnés #}
+    <div 
+        data-action="click->sidebar-list-dishes#removeAllItem click->sidebar-list-dishes#toggleSlideover" 
+        id="slideover-bg" 
+        class="w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 opacity-0">
+    </div>
 
-		<div id="slideover" class="w-full bg-white h-full absolute right-0 bottom-0 duration-300 ease-out transition-all translate-y-full">
+    {# Contenu principal du slideover #}
+    <div id="slideover" class="w-full bg-white h-full absolute right-0 bottom-0 duration-300 ease-out transition-all translate-y-full">
 
-			<div 
-				id="container-list" 
-				class="container-list flex flex-col overflow-y-auto pb-10 flex-1 current-background-color h-screen"
-			>
+        {# Container pour tous les éléments du slideover (liste des plats/aliments) #}
+        <div 
+            id="container-list" 
+            class="container-list flex flex-col overflow-y-auto pb-10 flex-1 current-background-color h-screen">
 
-				<div class="flex flex-col gap-2 sticky bg-white h-min-40 w-full items-center top-0 z-10 current-shadow">
+            {# Header sticky du slideover : titre, fermeture et info énergie #}
+            <div class="flex flex-col gap-2 sticky bg-white h-min-40 w-full items-center top-0 z-10 current-shadow">
 
-					<div class="flex flex-row justify-between w-full px-4 items-center">
+                <div class="flex flex-row justify-between w-full px-4 items-center">
 
-						<div class="w-full">
+                    <div class="w-full">
+                        {# Titre du slideover #}
+                        <div class="flex flex-row items-center pt-4">
+                            <span class="tracking-tight text-slate-600 text-base md:text-3xl font-semibold">
+                                {{ title|default('Mon repas') }}
+                            </span>
 
-							<div class="flex flex-row items-center pt-4">
-								
-								<span class="tracking-tight text-slate-600 text-base md:text-3xl font-semibold">{{ h1_content|default('Titre') }}</span>
+                            {# Bouton de fermeture visible uniquement sur mobile #}
+                            <button
+                                id="btnCancelSelection"
+                                class="flex md:hidden items-center text-sky-600 hover:text-sky-700 gap-2 cursor-pointer ml-auto text-sm"
+                                data-action="click->sidebar-list-dishes#toggleSlideover"
+                            >
+                                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                                </svg>
+                            </button>
+                        </div>
 
-								<button
-									id="btnCancelSelection"
-									class="flex md:hidden items-center text-sky-600 hover:text-sky-700 gap-2 cursor-pointer ml-auto text-sm"
-									data-action="click->sidebar-list-dishes#toggleSlideover"
-								>
-									<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-										<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-									</svg>
-								</button>
+                        {# Zone pour afficher le type d’item (plat ou aliment) #}
+                        <div id="slideOverTypeDish" class="text-sm py-2 hidden text-center uppercase text-sky-600 font-semibold"></div>
 
-							</div>
+                        {# Inputs cachés pour stocker les rangs et état des items sélectionnés #}
+                        <input type="hidden" id="slideOverRankMeal" />
+                        <input type="hidden" id="slideOverRankDish" />
+                        <input type="hidden" id="slideOverUpdateDish" />
 
-							<div id="slideOverTypeDish" class="text-sm py-2 hidden text-center uppercase text-sky-600 font-semibold"></div>
+                        {# Affichage de l'énergie totale sur mobile #}
+                        <div id="sidebarTotalEnergyMobile" class="w-full h-[62px] flex md:hidden text-lg md:text-4xl justify-end">
+                            {{ render(path('meal_day_show_total_energy_on_list_item', {'showPopover': false, 'bg': 'bg-gray-200', 'paddingX': 0})) }}
+                        </div>
+                    </div>
 
-							<input type="hidden" id="slideOverRankMeal" />
-							<input type="hidden" id="slideOverRankDish" />
-							<input type="hidden" id="slideOverUpdateDish" />
+                    {# Affichage de l'énergie totale sur desktop et bouton de fermeture #}
+                    <div class="h-[62px] my-hidden md:flex text-lg md:text-4xl ml-0 md:ml-auto mr-0 flex-col gap-6">
+                        <button
+                            id="btnCancelSelection"
+                            class="flex items-center text-sky-600 hover:text-sky-700 hover:bg-gray-200 rounded-full p-3 gap-2 cursor-pointer ml-auto text-sm mt-4 transition duration-300"
+                            data-action="click->sidebar-list-dishes#toggleSlideover"
+                        >
+                            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                            </svg>
+                        </button>
 
-							<div id="sidebarTotalEnergyMobile" class="w-full h-[62px] flex md:hidden text-lg md:text-4xl justify-end">
-								{{ render(path('meal_day_show_total_energy_on_list_item', {'showPopover': false, 'bg': 'bg-gray-200', 'paddingX': 0})) }}
-							</div>
+                        {# Zone affichant l'énergie totale sur desktop #}
+                        <div id="sidebarTotalEnergyDesktop" style="min-width: 50px">
+                            {{ render(path('meal_day_show_total_energy_on_list_item', {'showPopover': false, 'bg': 'bg-gray-200', 'paddingX': 0})) }}
+                        </div>
+                    </div>
 
-						</div>
+                </div>
 
-						<div class="h-[62px] my-hidden md:flex text-lg md:text-4xl ml-0 md:ml-auto mr-0 flex-col gap-6">
-							<button
-									id="btnCancelSelection"
-									class="flex items-center text-sky-600 hover:text-sky-700 gap-2 cursor-pointer ml-auto text-sm pt-4"
-									data-action="click->sidebar-list-dishes#toggleSlideover"
-								>
-								<svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-								</svg>
-							</button>
-							<div id="sidebarTotalEnergyDesktop" style="min-width: 50px">
-								{{ render(path('meal_day_show_total_energy_on_list_item', {'showPopover': false, 'bg': 'bg-gray-200', 'paddingX': 0})) }}
-							</div>
-						</div>
+                {# Formulaire de recherche et filtres #}
+                <div class="flex flex-col gap-2">
 
-					</div>
+                    <form class="w-full flex flex-col items-start gap-3 px-4">
 
-					<div class="flex flex-col gap-2">
+                        {# Barre de recherche des plats/aliments #}
+                        <div class="relative w-full lg:w-1/2">
+                            <input 
+                                name="q"
+                                type="search" 
+                                class="search-sidebar-list-item text-base rounded-slate-800 w-full rounded-lg"
+                                placeholder="Aliment, plat..."
+                                data-sidebar-list-dishes-target="search"
+                                data-reload-content-target="search"
+                                data-action="reload-content#onSearchInput"
+                            />
+                            {# Bouton pour effacer la recherche #}
+                            <button
+                                type="button"
+                                class="absolute right-4 top-2 text-gray-400 hover:text-gray-700 text-xl hidden"
+                                data-reload-content-target="clearButton"
+                                data-action="reload-content#clearSearch"
+                            >
+                                ✕
+                            </button>
+                        </div>
 
-						<form class="w-full flex flex-col items-start gap-3 px-4">
+                        {# Filtres par groupe alimentaire et type (plat/aliment) #}
+                        <div class="flex flex-col md:flex-row gap-2 w-full items-start md:items-center">
 
-							<input 
-								name="q"
-								type="search" 
-								class="search-sidebar-list-item text-base rounded-slate-800 w-full lg:w-1/2 rounded-lg"
-								placeholder="Aliment, plat..."
-								data-sidebar-list-dishes-target="search"
-								data-reload-content-target="search"
-								data-action="reload-content#onSearchInput"
-							/>
+                            <div class="flex flex-row gap-2 items-center">
+                                <button
+                                    type="button"
+                                    data-action="reload-content#onSelectAllFoodGroup"
+                                    data-reload-content-target="selectAllFoodGroup"
+                                    class="flex items-center justify-center px-2 py-3 gap-2 cursor-pointer text-sm lg:text-lg rounded-lg text-white bg-sky-600 hover:bg-sky-600 transition duration-300 hover:text-white"
+                                >
+                                    <span>Tous les groupes</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    data-action="reload-content#onDeselectAllFoodGroup"
+                                    data-reload-content-target="deselectAllFoodGroup"
+                                    class="flex items-center justify-center px-2 py-3 gap-2 cursor-pointer text-sm lg:text-lg rounded-lg text-gray-900 bg-gray-100 hover:bg-gray-200 transition duration-300 hover:text-gray-900"
+                                >
+                                    <span>Aucun groupe</span>
+                                </button>
+                            </div>
 
-							<div class="flex flex-col md:flex-row gap-2">
+                            {# Boutons de filtrage par type d’item et options spécifiques #}
+                            <div class="flex flex-col md:flex-row items-start md:items-center md:gap-2">
 
-								<div class="flex flex-row gap-2 items-center">
-									<button
-										type="button"
-										data-action="reload-content#onSelectAllFoodGroup"
-										data-reload-content-target="selectAllFoodGroup"
-										class="flex items-center justify-center px-2 py-3 gap-2 cursor-pointer text-sm lg:text-lg rounded-lg text-white bg-sky-600 hover:bg-sky-600 transition duration-300 hover:text-white"
-									>
-										<span>Tous les groupes</span>
-									</button>
-									<button
-										type="button"
-										data-action="reload-content#onDeselectAllFoodGroup"
-										data-reload-content-target="deselectAllFoodGroup"
-										class="flex items-center justify-center px-2 py-3 gap-2 cursor-pointer text-sm lg:text-lg rounded-lg text-gray-900 bg-gray-100 hover:bg-gray-200 transition duration-300 hover:text-gray-900"
-									>
-										<span>Aucun groupe</span>
-									</button>
-								</div>
+                                <div class="flex flex-row gap-2 mb-2 md:mb-0">
+                                    <button type="button" class="btn-type-item selected ..." data-type-item="dish">Les plats</button>
+                                    <button type="button" class="btn-type-item selected ..." data-type-item="food">Les aliments</button>
+                                </div>
 
-								<div class="flex flex-col md:flex-row items-start md:items-center md:gap-2">
+                                {# Filtres gluten/lactose #}
+                                <div class="flex flex-row gap-2">
+                                    {{ include('meals/partials/_button_gluten_lactose.html.twig', {'with_shadow': true}) }}
+                                </div>
 
-									<div class="flex flex-row gap-2 mb-2 md:mb-0">
-										<button 
-											type="button" 
-											class="btn-type-item selected px-2 py-3 text-sm lg:text-lg cursor-pointer rounded-lg text-white bg-sky-600 hover:bg-sky-600 transition duration-300 hover:text-white"
-											data-reload-content-target="typeItem" 
-											data-action="reload-content#onSelectTypeItem" 
-											data-type-item="dish">
-												Les plats
-										</button>
-										<button 
-											type="button" 
-											class="btn-type-item selected px-2 py-3 text-sm lg:text-lg cursor-pointer rounded-lg text-white bg-sky-600 hover:bg-sky-600 transition duration-300 hover:text-white"
-											data-reload-content-target="typeItem" 
-											data-action="reload-content#onSelectTypeItem" 
-											data-type-item="food">
-												Les aliments
-										</button>
-									</div>
+                                {# Bouton “Seulement les aliments/plats autorisés” #}
+                                <button type="button" class="..." data-action="click->reload-content#onToggleOnlyAllowed">
+                                    <svg ...></svg>
+                                    Seulement les aliments et plats autorisés
+                                </button>
 
-									<div class="flex flex-row gap-2">
-										{{ include('meals/partials/_button_gluten_lactose.html.twig', {'with_shadow': true}) }}
-									</div>
+                            </div>
 
-								</div>
+                        </div>
 
-							</div>
+                    </form>
 
-						</form>
+                    {# Liste des groupes alimentaires disponibles #}
+                    <div class="flex flex-row items-center flex-wrap gap-4 mt-2 mb-4 px-4">
+                        {{ include('/foodgroup/_foodgroup_list.html.twig') }}
+                    </div>
 
-						<div class="flex flex-row items-center flex-wrap gap-4 mt-2 mb-4 px-4">
-							{{ include('/foodgroup/_foodgroup_list.html.twig') }}
-						</div>
+                </div>
 
-					</div>
+            </div>
 
-				</div>
+            {# Conteneur pour afficher dynamiquement les plats/aliments filtrés #}
+            <div class="wrapper w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mx-auto gap-4 z-0 pt-6 px-4"
+                 data-sidebar-list-dishes-target="content"
+                 data-reload-content-target="content">
+            </div>
 
-				<div 
-					id="wrapper"
-					class="w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mx-auto gap-4 z-0 pt-6 px-4 empty-state"
-					data-sidebar-list-dishes-target="content"
-					data-reload-content-target="content"
-				></div>
+            {# Skeleton loader pour les items en chargement #}
+            <div class="wrapper w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 mx-auto gap-4 z-0 pt-6 px-4"
+                 data-reload-content-target="loader">
+                {% for i in 1..12 %}
+                    {{ include('meals/day/_dish_card_skeleton.html.twig') }}
+                {% endfor %}
+            </div>
 
-				<div 
-					class="container-loader flex w-full h-full items-center justify-center mt-5"
-					data-reload-content-target="loader"
-				>
-					<div class="loader"></div>
-				</div>
+            {# Bouton “Voir plus de plats” pour pagination ou chargement supplémentaire #}
+            <div class="mt-8 mb-8 flex h-10 w-full justify-center">
+                <button type="button" class="..." data-action="reload-content#onLoadMore" data-reload-content-target="loadMore">
+                    Voir plus de plat...
+                </button>
+            </div>
 
-				<div class="mt-8 mb-8 flex h-10 w-full justify-center">
-					<button
-						type="button"
-						class="bg-gray-200 px-4 py-2 h-10 text-sm rounded-lg text-gray-500 hover:text-gray-900 transition duration-300 before:content-none after:content-none"
-						data-action="reload-content#onLoadMore"
-						data-reload-content-target="loadMore"
-					>
-						Voir plus de plat...
-					</button>
-				</div>
+        </div>
 
-			</div>
+    </div>
 
-		</div>
-
-	</div>
+</div>

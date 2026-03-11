@@ -1,31 +1,45 @@
-
+{# Bloc d’affichage de l’énergie moyenne dans le bilan avec niveau d’alerte #}
 <div class="flex flex-row items-center gap-2 py-1 my-4 text-xl w-full">
 
+    {# Récupération du niveau d’alerte associé à l’énergie #}
     {% set levelAlert = balance_sheet_alerts.energy %}
 
     <div class="flex flex-col w-full">
 
-        <div class="flex flex-row items-center gap-2 w-full xl:w-[500px]">
+        {# Ligne principale affichant le label, la valeur moyenne et les icônes #}
+        <div class="flex flex-row items-center gap-2 w-full xl:w-[500px] min-w-0">
 
+            {# Label et valeur moyenne de l’énergie #}
             <div class="flex items-center gap-2">
                 <label class="md:w-48 text-lg md:text-xl">Energie</label>
                 <div class="flex justify-center w-32 text-sm md:text-xl ml-auto md:ml-0">
-                    <span class="bg-gray rounded-full px-2 py-1 font-semibold" style="color: {{ levelAlert.color }}">{{ average_energy }} Kcal</span>
+                    {# Valeur moyenne affichée avec couleur correspondant au niveau d’alerte #}
+                    <span class="bg-gray rounded-full px-2 py-1 font-semibold" style="color: {{ levelAlert.color }}">
+                        {{ average_energy }} Kcal
+                    </span>
                 </div>
             </div>
 
+            {# Icône d’alerte et bouton pour afficher plus de détails #}
             <div class="flex gap-2 items-center ml-auto" style="color: {{ levelAlert.color }}">
 
-                <a href="#" class="relative" data-action="click->popover-info#show" style="color: {{ levelAlert.color }}">
+                {# Icône correspondant au niveau d’alerte (warning/checkmark) #}
+                <div class="relative" style="color: {{ levelAlert.color }}">
                     {{ include('balance_sheet/_icon_warning.html.twig', { size: 7 }) }}
-                </a>
+                </div>
 
-                <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 ml-4 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                {# Bouton pour afficher/masquer les détails de l’alerte #}
+                <button class="rounded-full hover:bg-gray-100 p-2">
+                    <svg data-balance-sheet-target="showDetailsAlert" class="show-details-alert w-6 h-6 text-slate-400 cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
 
             </div>
 
         </div>
 
+        {# Contenu détaillé de l’alerte (initialement caché), injecté via rendu d’un path Symfony #}
         <div data-balance-sheet-target="detailsAlert" class="text-sm md:text-xl details-alert hidden mt-2" style="color: {{ levelAlert.color }}">
             {{ render(path('app_balance_sheet_message_details_alert_energy', { 'energy': average_energy })) }}
         </div>
@@ -33,6 +47,3 @@
     </div>
 
 </div>
-
-
-

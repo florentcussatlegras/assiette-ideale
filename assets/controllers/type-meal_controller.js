@@ -33,7 +33,7 @@ export default class extends Controller {
                     type: element.value,
                     ajax: 1
                 });
-                
+                console.log(`${this.urlValue}?${params.toString()}`);
                 fetch(`${this.urlValue}?${params.toString()}`)
                     .then((response) => {
                         fetch(this.urlReloadValue)

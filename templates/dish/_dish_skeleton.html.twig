@@ -1,0 +1,47 @@
+{# dish/_dish_card_skeleton.html.twig #}
+
+{# Wrapper principal de la carte avec animation "pulse" pour l'effet de chargement #}
+<div class="card-wrapper p-0 shadow-balanced rounded-xl overflow-hidden animate-pulse">
+  
+    {# Placeholder pour le titre ou tag en haut à gauche #}
+    <div class="absolute top-6 pl-4" >
+        <div class="h-4 w-24 bg-gray-300 rounded"></div>
+    </div>
+
+    {# Placeholder pour une icône ou bouton en haut à droite #}
+    <div class="absolute top-4 right-4">
+        <div class="h-6 w-6 bg-gray-300 rounded-full"></div>
+    </div>
+
+    {# Section image principale du plat #}
+    <div class="flex w-full rounded-t-xl border-white overflow-hidden">
+        <div class="w-full bg-gray-200 rounded-2xl" style="height: 341px"></div>
+
+        {# Section description masquée sur mobile (my-hidden) #}
+        <div class="description w-11-12 py-4 flex-row justify-between my-hidden ml-auto bg-white text-sm">
+            <div class="w-full px-4">
+
+                {# Placeholder pour informations principales (nom, catégorie, etc.) #}
+                <div class="flex gap-4 mb-4">
+                    <div class="h-4 w-16 bg-gray-300 rounded"></div>
+                    <div class="h-4 w-24 bg-gray-300 rounded"></div>
+                    <div class="h-4 w-20 bg-gray-300 rounded"></div>
+                </div>
+
+                {# Placeholder pour tags ou petits badges #}
+                <ul class="mt-3 flex flex-row flex-wrap gap-2">
+                    {% for i in 1..4 %}
+                        <li class="h-3 w-16 bg-gray-200 rounded"></li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    {# Placeholder pour le bas de la carte, souvent bouton ou info complémentaire #}
+    <div class="absolute bottom-0 w-full p-4 bg-white mt-4 rounded-b-2xl">
+        <div class="h-4 w-32 bg-gray-300 rounded"></div>
+    </div>
+
+</div>

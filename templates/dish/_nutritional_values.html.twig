@@ -1,45 +1,87 @@
- <table class="dish-nutritional-value mt-2 w-full text-base">
+{# Tableau des valeurs nutritionnelles d’un plat #}
+<table class="dish-nutritional-value mt-2 w-full text-base">
+
+  {# En-tête du tableau avec titre #}
   <thead>
     <tr>
-      <th colspan="2" align="left"><h1 class="text-xl font-bold mt-5 mb-2">Valeurs nutritionnelles</h1></th>
+      <th colspan="2" align="left">
+        <h1 class="text-xl font-bold mt-5 mb-2">Valeurs nutritionnelles</h1>
+      </th>
     </tr>
   </thead>
+
+  {# Corps du tableau : chaque ligne correspond à un élément nutritionnel #}
   <tbody>
+    {# Protéines #}
     <tr>
       <td>Protéines</td>
-      <td>{{ dish.nutritionalTable.protein is not null ? "#{dish.nutritionalTable.protein} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.protein is not null ? "#{dish.nutritionalTable.protein} g" : null }}
+      </td>
     </tr>
+
+    {# Lipides #}
     <tr>
       <td>Lipides</td>
-      <td>{{ dish.nutritionalTable.lipid is not null ? "#{dish.nutritionalTable.lipid} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.lipid is not null ? "#{dish.nutritionalTable.lipid} g" : null }}
+      </td>
     </tr>
+
+    {# Acides gras saturés (sous-catégorie des lipides) #}
     <tr>
       <td class="pl-4">dont acides gras saturés</td>
-      <td>{{ dish.nutritionalTable.saturatedFattyAcid is not null ? "#{dish.nutritionalTable.saturatedFattyAcid} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.saturatedFattyAcid is not null ? "#{dish.nutritionalTable.saturatedFattyAcid} g" : null }}
+      </td>
     </tr>
+
+    {# Glucides #}
     <tr>
       <td>Glucides</td>
-      <td>{{ dish.nutritionalTable.carbohydrate is not null ? "#{dish.nutritionalTable.carbohydrate} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.carbohydrate is not null ? "#{dish.nutritionalTable.carbohydrate} g" : null }}
+      </td>
     </tr>
+
+    {# Sucres (sous-catégorie des glucides) #}
     <tr>
       <td class="pl-4">dont sucres</td>
-      <td>{{ dish.nutritionalTable.sugar is not null ? "#{dish.nutritionalTable.sugar} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.sugar is not null ? "#{dish.nutritionalTable.sugar} g" : null }}
+      </td>
     </tr>
+
+    {# Sel #}
     <tr>
       <td>Sel</td>
-      <td>{{ dish.nutritionalTable.salt is not null ? "#{dish.nutritionalTable.salt} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.salt is not null ? "#{dish.nutritionalTable.salt} g" : null }}
+      </td>
     </tr>
+
+    {# Fibres #}
     <tr>
       <td>Fibres</td>
-      <td>{{ dish.nutritionalTable.fiber is not null ? "#{dish.nutritionalTable.fiber} g" : null }}</td>
+      <td>
+        {{ dish.nutritionalTable.fiber is not null ? "#{dish.nutritionalTable.fiber} g" : null }}
+      </td>
     </tr>
+
+    {# Énergie pour 100g de plat #}
     <tr>
       <td>Energie (pour 100g de plat)</td>
-      <td>{{ dish.nutritionalTable.energy is not null ? "#{dish.nutritionalTable.energy} Kcal" : null }}</td>
-
+      <td>
+        {{ dish.nutritionalTable.energy is not null ? "#{dish.nutritionalTable.energy} Kcal" : null }}
+      </td>
     </tr>
+
+    {# Ligne avec le Nutri-Score, centré sur les deux colonnes #}
     <tr>
-      <td colspan="2" align="center" class="pt-6"><img src='{{ asset("svg/nutriscore/Nutri-score-#{dish.nutritionalTable.nutriscore}.svg") }}' width="120px" /></td>
+      <td colspan="2" align="center" class="pt-6">
+        <img src='{{ asset("svg/nutriscore/Nutri-score-#{dish.nutritionalTable.nutriscore}.svg") }}' width="120px" />
+      </td>
     </tr>
   </tbody>
+
 </table>

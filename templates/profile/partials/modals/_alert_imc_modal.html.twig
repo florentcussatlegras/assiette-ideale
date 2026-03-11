@@ -1,11 +1,13 @@
+{# Modal Bootstrap pour afficher une alerte IMC/poids #}
 <div class="modal fade" id="alertImcModal" tabindex="-1" aria-hidden="true">
 
+    {# Centre le modal verticalement #}
 	<div class="modal-dialog modal-dialog-centered">
 
-		<div
-			class="modal-content rounded-3xl shadow-lg overflow-hidden">
+        {# Conteneur principal du modal avec bord arrondi et ombre #}
+		<div class="modal-content rounded-3xl shadow-lg overflow-hidden">
 
-			<!-- Header -->
+            {# Bouton de fermeture en haut à droite #}
 			<div class="flex items-center justify-end text-light-blue p-4">
 				<button type="button" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition" data-dismiss="modal" aria-label="Close">
 					<svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 14 14">
@@ -14,17 +16,20 @@
 				</button>
 			</div>
 
-			<!-- Body -->
+            {# Contenu principal du modal #}
 			<div class="p-5 min-h-[8rem]">
 
+                {# Loader caché, affiché si nécessaire via Stimulus #}
 				<div class="hidden w-full h-24 flex items-center justify-center" data-alert-imc-weight-modal-target="loader">
 					<div class="loader"></div>
 				</div>
 
+                {# Contenu texte et icône du modal #}
 				<div class="text-base px-4 flex flex-col" data-alert-imc-weight-modal-target="content">
 
 					<div class="flex flex-col items-center gap-4 mb-2">
 
+                        {# Cercle avec icône d'alerte (point d'exclamation) #}
 						<span class="rounded-full flex items-center justify-center shrink-0 p-2" style="border:3px solid {{  alerts.color }}">
 							<svg class="w-20 h-20" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 								<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -36,6 +41,7 @@
 							</svg>
 						</span>
 
+                        {# Message d'alerte dynamique traduit avec le code de l'alerte et IMC idéal #}
 						<div class="text-center my-4 mx-8 text-xl">
 							{{ ("alert.imc." ~ alerts.code)|trans({"imc_ideal": app.user.idealImc|round}, 'alert') }}
 						</div>
@@ -46,7 +52,8 @@
 
 			</div>
 
-			<!-- Footer -->
+            <!-- Footer -->
+            {# Bouton de fermeture en bas du modal #}
 			<div class="p-5 flex justify-end rounded-b-3xl">
 				<button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
 					OK

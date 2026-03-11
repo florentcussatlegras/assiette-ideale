@@ -1,5 +1,13 @@
+{# Conteneur pour un graphique des quantités de nutriments par période avec son titre #}
 
 <div class="flex flex-col items-center">
+
+    {# Rendu du graphique côté serveur (Chart.js ou autre via Twig) #}
     {{ render_chart(chart) }}
-    <span class="md:mt-2 text-sm md:text-base font-semibold text-center">{{ title }}</span>
+
+    {# Titre du graphique sous le graphique, responsive selon la taille d’écran #}
+    <span class="md:mt-2 text-sm md:text-base font-semibold text-center">
+        {{ title }}
+    </span>
+
 </div>

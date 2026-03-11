@@ -1,25 +1,28 @@
 {# meals/model/_filter_calories_form.html.twig #}
 
+{# Début du formulaire pour filtrer par calories #}
 {{ form_start(filterCaloriesForm) }}
 
 <div
+    {# Contrôleur Stimulus pour gérer le slider de calories #}
     {{ stimulus_controller('calories-range') }}
     data-calories-range-min-value="0"
     data-calories-range-max-value="50000"
     data-action="calories-range:change->model-meal#onCaloriesChange"
 >
 
+    {# Champs cachés du formulaire pour min et max calories #}
     {{ form_widget(filterCaloriesForm.caloriesMin) }}
     {{ form_widget(filterCaloriesForm.caloriesMax) }}
 
     <div class="flex items-center gap-4">
 
-        <!-- slider -->
+        {# Slider visuel pour sélectionner la plage de calories #}
         <div class="flex-1">
             <div data-calories-range-target="slider"></div>
         </div>
 
-        <!-- valeurs -->
+        {# Affichage des valeurs min et max sélectionnées #}
         <div class="text-sm whitespace-nowrap text-right min-w-[90px]">
             <span data-calories-range-target="min"></span>
             –
@@ -31,4 +34,5 @@
 
 </div>
 
+{# Fin du formulaire #}
 {{ form_end(filterCaloriesForm) }}

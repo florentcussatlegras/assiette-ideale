@@ -19,7 +19,7 @@ class DishFoodGroupParent
     private ?Dish $dish = null;
 
     #[ORM\ManyToOne(targetEntity: FoodGroupParent::class)]
-    #[ORM\JoinColumn(name: "foodgroupparent_id", nullable: false)]
+    #[ORM\JoinColumn(name: "food_group_parent_id", nullable: false)]
     private ?FoodGroupParent $foodGroupParent = null;
 
     // ------------------- Constructor -------------------

@@ -1,22 +1,30 @@
+{# Vérifie s’il y a un repas à afficher #}
 {% if meal is not null %}
 
+    {# Affiche le type de repas et la date #}
     <div class="flex text-xs rounded-lg bg-gray-200 text-sky-600 p-2 mb-2 justify-center text-center">
         <center>{{ meal.type.frontName }} du {{ meal.eatedAt|format_date('short', locale='fr') }}</center>
     </div>
     
+    {# Boucle sur tous les plats et aliments du repas #}
     {% for dishAndFood in meal.dishAndFoods %}
 
+        {# Instancie l’objet correspondant au type ('Dish' ou autre) #}
         {% set element = object(dishAndFood['id'], 'App\\Entity\\' ~ dishAndFood['type']) %}
 
+        {# Cas où c’est un plat (Dish) #}
         {% if dishAndFood['type'] == 'Dish' %}
 
             <div class="flex flex-row items-start m-b gap-2">
- 
+                
+                {# Image du plat si disponible, sinon placeholder #}
                 {% if element.picture is not null and element.picturePath is not null %}
                     <img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
                 {% else %}
                     <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
                 {% endif %}
+
+                {# Nom du plat et quantité #}
                 <div class="flex flex-col leading-4">
                     <a 
                         href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}" 
@@ -33,13 +41,18 @@
 
         {% else %}
 
+            {# Cas où c’est un aliment (Food) #}
             <div class="flex flex-row items-center">
                 <div class="flex text-base gap-2 items-center mb-2">
+
+                    {# Image de l’aliment si disponible, sinon placeholder #}
                     {% if element.picture is not null and element.picturePath is not null %}
                         <img alt="Photo plat" class="rounded-lg w-8" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
                     {% else %}
                         <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
                     {% endif %}
+
+                    {# Nom de l’aliment et quantité avec unité #}
                     <div class="flex flex-col leading-4 mt-1">
                         <a 
                             href="{{ path('app_food_show', { slug: element.slug }) }}" 
@@ -47,7 +60,9 @@
                         >
                             {{ element.name }}
                         </a>
-                        <span class="text-xs text-neutral-500">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}</span>
+                        <span class="text-xs text-neutral-500">
+                            {{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -58,6 +73,7 @@
 
 {% else %}
 
+    {# Message si aucun repas n’est trouvé pour la période #}
     <span class="text-sm text-gray-500">Aucun repas trouvés pour cette période</span>
 
 {% endif %}

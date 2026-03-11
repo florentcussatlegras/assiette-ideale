@@ -1,18 +1,23 @@
+{# Conteneur principal pour la liste des groupes d’aliments (Food Group Parents) #}
 <div class="list-fgp flex items-center justify-end w-1/2 gap-6">
 
-	{% for foodGroupParent in foodGroupParents %}
+    {# Boucle sur tous les groupes parents de la session ou du repas #}
+    {% for foodGroupParent in foodGroupParents %}
 
-		<a href="#" class="fgp" title="{{ foodGroupParent.name }}">
+        {# Lien cliquable pour chaque groupe d’aliments, avec un tooltip affichant son nom #}
+        <a href="#" class="fgp" title="{{ foodGroupParent.name }}">
 
-			<div class="picto w-12 rounded-full flex items-center justify-center">
+            {# Conteneur pour l’icône/illustration du groupe alimentaire #}
+            <div class="picto w-12 rounded-full flex items-center justify-center">
 
-				{{ include('meals/pictos/foodgroupparent/' ~ foodGroupParent.alias ~ '.xml.twig', {'color': foodGroupParent.color }) }}
-				
-			</div>
-		
-		</a>
+                {# Inclusion dynamique du SVG correspondant au groupe parent #}
+                {# Le fichier SVG est basé sur l’alias du groupe et reçoit une couleur spécifique #}
+                {{ include('meals/pictos/foodgroupparent/' ~ foodGroupParent.alias ~ '.xml.twig', {'color': foodGroupParent.color }) }}
+                
+            </div>
+        
+        </a>
 
-	{% endfor %}
+    {% endfor %}
 
 </div>
-

@@ -4,27 +4,34 @@
 
 {% block body %}
 
-	<div class="py-12">
+    <div class="py-12">
 
+        {# Header de la page #}
         {{ include('navigation/_header_page.html.twig', {title: 'Evolution de mon alimentation'}) }}
 
-		<div class="my-4 text-xl">
+        <div class="my-4 text-xl">
 
-			<div {{ stimulus_controller('evolution', { urlLoadContent: path('app_evolution_chart_index') } ) }} class="flex flex-col tabs-content-evolution">
+            {# Container principal avec Stimulus controller pour charger dynamiquement le contenu #}
+            <div {{ stimulus_controller('evolution', { urlLoadContent: path('app_evolution_chart_index') } ) }} class="flex flex-col tabs-content-evolution">
 
-				{{ include('evolution/_tabs_content.html.twig') }}
-				{{ include('evolution/_tabs_date.html.twig') }}
+                {# Inclusion des onglets de contenu (par type de données, par exemple) #}
+                {{ include('evolution/_tabs_content.html.twig') }}
 
-				<div class="content my-8 text-gray-500 text-sm md:text-base mt-0 md:mt-16 w-full min-h-64 flex items-center justify-center" data-evolution-target="content"></div>
+                {# Inclusion des onglets de dates pour filtrer la période de l’évolution #}
+                {{ include('evolution/_tabs_date.html.twig') }}
 
-				<div class="h-64 my-8 md:mt-16 flex items-center justify-center hidden" data-evolution-target="loader">
-					<div class="loader"></div>
-				</div>
+                {# Zone de contenu dynamique où les graphiques seront injectés par Stimulus #}
+                <div class="content my-8 text-gray-500 text-sm md:text-base mt-0 md:mt-16 w-full min-h-64 flex items-center justify-center" data-evolution-target="content"></div>
 
-			</div>
+                {# Loader affiché pendant le chargement du contenu #}
+                <div class="h-64 my-8 md:mt-16 flex items-center justify-center hidden" data-evolution-target="loader">
+                    <div class="loader"></div>
+                </div>
 
-		</div>
+            </div>
 
-	</div>
+        </div>
+
+    </div>
 
 {% endblock %}

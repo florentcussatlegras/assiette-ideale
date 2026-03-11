@@ -1,8 +1,12 @@
+{# Conteneur principal du graphique d’évolution #}
+<div class="content bg-white p-6 rounded-2xl shadow-balanced">
 
-<div class="content bg-white p-6 rounded-2xl shadow-soft">
+    {# Titre affichant la période sélectionnée #}
+    <h1 class="text-xl md:text-2xl xl:text-3xl mb-4">
+        Votre évolution sur la période du {{ start|date('d/m/Y') }} au {{ end|date('d/m/Y') }}
+    </h1>
 
-    <h1 class="text-xl md:text-2xl xl:text-3xl mb-4">Votre évolution sur la période du {{ start|date('d/m/Y') }} au {{ end|date('d/m/Y') }}</h1>
-
+    {# Inclusion du graphique via render_chart #}
     {{ render_chart(chart) }}
 
 </div>

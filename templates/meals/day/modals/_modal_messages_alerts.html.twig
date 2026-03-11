@@ -1,38 +1,44 @@
 <div class="modal fade" id="alertMealModal" tabindex="-1" aria-hidden="true">
+  {# Dialog centré verticalement #}
   <div class="modal-dialog modal-dialog-centered">
+    {# Conteneur principal du modal avec arrondis et ombre #}
     <div class="modal-content rounded-3xl shadow-lg overflow-hidden">
 
-      <!-- Header -->
-    <div class="flex items-center justify-end text-light-blue p-4">
-
+      <!-- HEADER -->
+      <div class="flex items-center justify-end text-light-blue p-4">
+        {# Bouton de fermeture #}
         <button 
             type="button"
-            class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition"
+            class="flex items-center justify-center rounded-full p-3 hover:bg-gray-100 transition duration-300"
             data-dismiss="modal"
             aria-label="Close"
         >
-            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                 <path stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
             </svg>
         </button>
-    </div>
+      </div>
 
-      <!-- Body -->
+      <!-- BODY -->
       <div class="p-5 min-h-[8rem]">
+        {# Loader affiché pendant le chargement des données via Ajax #}
         <div class="hidden w-full h-24 flex items-center justify-center" data-alert-meal-modal-target="loader">
           <div class="loader"></div>
         </div>
+
+        {# Contenu Ajax injecté dynamiquement #}
         <div class="hidden text-base px-4 flex flex-col" data-alert-meal-modal-target="content"></div>
       </div>
 
-      <!-- Footer -->
+      <!-- FOOTER -->
       <div class="p-5 flex justify-end rounded-b-3xl">
+        {# Bouton OK ferme le modal #}
         <button type="button" class="bg-light-blue text-white font-bold rounded-lg px-6 py-2.5 text-lg shadow hover:bg-blue-600 transition" data-dismiss="modal">
           OK
         </button>
       </div>
 
-    </div>
-  </div>
-</div>
+    </div> {# Fin modal-content #}
+  </div> {# Fin modal-dialog #}
+</div> {# Fin alertMealModal #}

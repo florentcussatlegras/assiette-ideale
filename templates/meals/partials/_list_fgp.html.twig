@@ -1,20 +1,30 @@
 {% for foodGroupParent in foodGroupParents %}
+    {# Conteneur principal pour chaque groupe d'aliments #}
     <div class="fgp-wrapper">
 
+        {# Point coloré représentant le groupe d'aliments #}
+        {# Si le groupe n'est pas dans la liste active, il est rendu inactif avec une classe spécifique #}
         <div 
             class="fgp-dot {% if foodGroupParent.id not in listFgp %}fgp-inactive{% endif %}"
             style="background-color: {{ foodGroupParent.color }}">
         </div>
 
+        {# Tooltip affiché au survol du point #}
         <div class="fgp-tooltip">
+
+            {# Contenu du tooltip avec couleur dégradée pour un effet visuel #}
             <div class="fgp-tooltip-content" style="background-color: {{ foodGroupParent.degradedColor }}">
+                
+                {# Lien cliquable vers la page détaillée du groupe d'aliments #}
+                {# La couleur du texte correspond à la couleur principale du groupe pour cohérence visuelle #}
                 <a style="color: {{ foodGroupParent.color }}" href="{{ path('app_food_groups_show', { slug: foodGroupParent.slug }) }}">
                     <strong>{{ foodGroupParent.name }}</strong>
                 </a>
             </div>
+
+            {# Petite flèche en bas du tooltip pour indiquer le point source #}
             <div class="fgp-arrow" style="background-color: {{ foodGroupParent.degradedColor }}"></div>
         </div>
 
     </div>
 {% endfor %}
-

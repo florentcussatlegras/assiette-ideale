@@ -1,12 +1,18 @@
+{# Boucle sur tous les types de repas disponibles #}
 {% for typeMeal in typeMeals %}
+
+    {# Checkbox pour sélectionner un type de repas #}
     <input
         type="checkbox"
         class="text-sky-500 mb-1"
         value="{{ typeMeal.id }}"
         data-model-meal-target="types"
-        data-action="change->model-meal#applyFilters"
+        data-action="change->model-meal#applyFilters" {# déclenche l'action Stimulus pour filtrer les repas #}
     >
+
+    {# Affichage du nom du type de repas #}
     <span class="leading-none">
         {{ typeMeal.frontName }}
     </span>    
+
 {% endfor %}

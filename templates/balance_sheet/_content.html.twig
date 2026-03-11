@@ -1,33 +1,49 @@
+{# Vérifie si la période concerne une seule journée #}
 {% set is_single_day = date(start_date) == date(end_date) %}
 
+{# Titre principal affichant la période des bilans #}
 <h1 class="text-xl lg:text-3xl title-date-range pt-4 mt-0 font-bold">
     {% if is_single_day %}
+        {# Affiche le bilan pour une seule journée #}
         Mes bilans pour la journée du {{ start_date|format_date('full', locale='fr') }}
     {% else %}
+        {# Affiche le bilan pour une période #}
         Mes bilans pour la période du {{ start_date|format_date('full', locale='fr') }}
         au {{ end_date|format_date('full', locale='fr') }}
     {% endif %}
 </h1>
 
+{# Sous-titre indiquant qu'il s'agit d'une moyenne journalière #}
 <span class="text-base">(moyenne journalière pour cette période)</span>
 
+{# Vérifie si aucun repas n'est enregistré pour la période #}
 {% if no_meals is defined %}
 
-    <h1 class="py-12 text-sm lg:text-xl text-gray-500">Aucun repas repertoriés pour cette période</h1>
+    {# Message informatif quand il n’y a aucun repas #}
+    <h1 class="py-12 text-sm lg:text-xl text-gray-500">
+        Aucun repas repertoriés pour cette période
+    </h1>
 
 {% else %}
 
+    {# Conteneur principal pour les graphiques et les données de bilan #}
     <div class="flex flex-col pb-12"
-        {{ stimulus_controller('modal-chart-balance-sheet') }}
+        {{ stimulus_controller('modal-chart-balance-sheet') }} {# Active le controller Stimulus pour les modals #}
     >
+
+        {# Inclusion du graphique de l’énergie moyenne #}
         {{ include('balance_sheet/average_energy.html.twig') }}
+
+        {# Titre et inclusion des graphiques des groupes d’aliments (FGP) #}
         <h2 class="text-lg md:text-2xl mt-4 pb-4">Les groupes d'aliment</h2>
         {{ include('balance_sheet/average_fgp.html.twig') }}
+
+        {# Titre et inclusion des graphiques des nutriments #}
         <h2 class="text-lg md:text-2xl pt-18 xl:pt-8 pb-4">Les nutriments</h2>
         {{ include('balance_sheet/average_nutrient.html.twig') }}
+
+        {# Inclusion du modal pour interagir avec les graphiques #}
         {{ include('balance_sheet/_modal_chart.html.twig') }}
     </div>
 
 {% endif %}
-
-

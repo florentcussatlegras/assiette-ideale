@@ -8,7 +8,7 @@ export default class extends Controller {
         if (!choice) {
             this.element.classList.remove('hidden');
         } else if (choice === 'accepted') {
-            this.loadTrackingScripts();
+            // this.loadTrackingScripts();
         }
     }
 

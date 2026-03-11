@@ -48,4 +48,26 @@ class UnitMeasureRepository extends ServiceEntityRepository
 
 		return $qb->getScalarResult();
 	}
+
+	/**
+     * Retourne un tableau id => alias
+     *
+     * @return array<int,string>
+     */
+    public function getIdAliasArray(): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->select('u.id, u.alias')
+            ->orderBy('u.alias', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        // Transformer en tableau id => alias
+        $array = [];
+        foreach ($results as $row) {
+            $array[$row['id']] = $row['alias'];
+        }
+
+        return $array;
+    }
 }

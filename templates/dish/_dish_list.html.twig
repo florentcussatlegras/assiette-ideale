@@ -1,13 +1,18 @@
 {% for dish in dishes %}
-	{{ include("dish/_dish.html.twig") }}
+    {# Boucle sur tous les plats et inclusion du template partiel pour chaque plat #}
+    {{ include("dish/_dish.html.twig") }}
 {% else %}
-	<div class="absolute flex items-center justify-center text-center h-64 text-lg text-gray-400 w-full">
-		{% if favoriteDishesId is defined %}
-			Aucun plat ne correspond à votre recherche
-		{% else %}
-			Vous n'avez aucun plat préféré
-		{% endif %}
-	</div>
+    {# Bloc affiché si aucun plat n'est trouvé #}
+    <div class="absolute flex items-center justify-center text-center h-64 text-lg text-gray-400 w-full">
+        {% if favoriteDishesId is defined %}
+            {# Message spécifique si la recherche ne retourne aucun plat #}
+            Aucun plat ne correspond à votre recherche
+        {% else %}
+            {# Message si l'utilisateur n'a aucun plat favori #}
+            Vous n'avez aucun plat préféré
+        {% endif %}
+    </div>
 {% endfor %}
 
+{# Champ caché pour stocker la dernière valeur de résultats, utilisé par Stimulus pour recharger le contenu dynamiquement #}
 <input type="hidden" data-reload-content-target="lastResults" value="{{ lastResults|default(false) }}"/>

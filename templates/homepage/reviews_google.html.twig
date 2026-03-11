@@ -1,15 +1,19 @@
 <section 
     class="flex flex-col items-center justify-center py-10 md:py-20 md:px-16 xl:px-18 w-full xl:max-w-[1100px] 2xl:max-w-[1536px] mx-auto"
-    {{ stimulus_controller('reviews') }}
+    {{ stimulus_controller('reviews') }}  {# Stimulus controller principal pour gérer le slider des avis #}
 >
 
+    <!-- Header de la section -->
     <div class="flex flex-col items-center gap-2">
-        <span class="text-sky-600 uppercase font-semibold text-xs leading-3 tracking-widest">Validé par plus de 150000 utilisateurs</span>
+        <span class="text-sky-600 uppercase font-semibold text-xs leading-3 tracking-widest">
+            Validé par plus de 150000 utilisateurs
+        </span>
         <h2 class="text-2xl md:text-4xl xl:text-6xl font-bold text-center mb-10"> 
             Nos utilisateurs nous <span class="text-sky-600">adorent</span> !
         </h2>
     </div>
     
+    <!-- Box de notation globale -->
     <div class="flex items-center justify-center py-10">
 
         <div class="flex rounded-2xl shadow-soft border border-gray-200 px-8 py-5 gap-4">

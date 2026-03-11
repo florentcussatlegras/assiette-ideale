@@ -6,35 +6,35 @@
     
     <div class="py-12">
 
+        {# Inclusion du header de page avec le titre #}
         {{ include('navigation/_header_page.html.twig', {title: 'Nos recommandations journalières'}) }}
 
+        {# Conteneur principal pour les trois blocs : énergie, groupes alimentaires, nutriments #}
         <div class="flex flex-col lg:flex-row gap-4 items-start text-base">
 
-            <div class="w-full lg:w-1/3 bg-white h-auto rounded-xl shadow-lg">
+            {# Bloc 1 : Besoin énergétique de l'utilisateur #}
+            <div class="w-full lg:w-1/3 bg-white h-auto rounded-xl shadow-balanced">
                               
+                {# Titre du bloc #}
                 <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-xl uppercase gap-2">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 416.979 416.979" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85 c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786 c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576 c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765 c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"></path> </g> </g></svg>
                     Votre besoin énergétique
                 </span>
                 
+                {# Contenu central : affichage de l'énergie ou options pour la saisir/estimer #}
                 <div class="flex items-center justify-center font-bold h-28">
 
                     <div class="flex flex-col gap-3 items-center text-red-700">
                     
                         {% if app.user.energy %}
 
-                                <span class="text-xl">
-                                    {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
-                                </span>
-
-                                {# {% if app.user.automaticCalculateEnergy is same as(true) %}
-                                    <div class="text-xs absolute bottom-2 right-2">*calculée automatiquement</div>
-                                {% else %}
-                                    <div class="text-xs absolute bottom-2 right-2">*calculée par vous-même</div>
-                                {% endif %} #}
+                            {# Affichage de la valeur énergétique si disponible #}
+                            <span class="text-xl">
+                                {{ '%kcal% kCal / %kj% kJ'|replace({"%kcal%": app.user.energy|round, "%kj%": app.user.energyKj|round}) }}
+                            </span>
 
                         {% else %}
                         
+                            {# Message si l'énergie n'a pas été saisie #}
                             <div class="text-sm flex flex-col items-center gap-4">
 
                                 {% if app.user.automaticCalculateEnergy is same as(false) %}
@@ -45,6 +45,7 @@
 
                                 {% if missingElements|length > 0 %}
 
+                                    {# Affichage des informations manquantes pour calculer l'énergie #}
                                     <p>Il nous manque des informations afin que nous puissions calculer votre besoin energétique journalier:
                                         {{ missingElements|join(',', ' et ') }}
                                         <br/>Merci de compléter ces informations ou 
@@ -52,6 +53,7 @@
 
                                 {% else %}
 
+                                    {# Lien pour estimer automatiquement le besoin énergétique #}
                                     <a href="{{ path('app_energy_estimate') }}" 
                                                 class="text-dark-blue text-black p-2 rounded-full">
                                             Laissez l'application estimer mon besoin énergétique
@@ -59,6 +61,7 @@
 
                                 {% endif %}   
 
+                                {# Lien pour saisir manuellement le besoin énergétique #}
                                 <div class="flex flex-row text-sm gap-2">
                                     <a href="{{ path('app_profile_edit', {element : constant('App\\Service\\ProfileHandler::ENERGY')}) }}"
                                                 class="text-white bg-dark-blue p-2 rounded-full">
@@ -76,13 +79,15 @@
                 
             </div>
 
-            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-lg">
+            {# Bloc 2 : Besoins par groupes alimentaires #}
+            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-balanced">
                             
+                {# Titre du bloc #}
                 <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-xl uppercase gap-2">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 416.979 416.979" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85 c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786 c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576 c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765 c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"></path> </g> </g></svg>
                     Vos besoins par groupes alimentaires
                 </span>
                 
+                {# Liste des groupes alimentaires et des quantités recommandées #}
                 <div class="flex items-center justify-center font-bold">
 
                     <ul class="flex flex-col py-4">
@@ -90,6 +95,7 @@
                         {% for fgp, quantity in app.user.recommendedQuantities %}
 
                             <li class="px-6 py-2 font-medium flex flex-row gap-2 items-start">
+                                {# Cercle coloré représentant le groupe alimentaire #}
                                 <div class="flex rounded-full w-4 h-4 mt-1" style="background-color: {{ fgp|foodGroupParent.color }}"></div>
                                 <div class="flex flex-col">
                                     <span>
@@ -109,13 +115,15 @@
                 
             </div>
 
-            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-lg">
+            {# Bloc 3 : Besoins en nutriments #}
+            <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-balanced">
                             
+                {# Titre du bloc #}
                 <span class="py-4 flex items-center justify-center font-medium border-b w-full bg-light-blue text-white rounded-t-2xl uppercase gap-2">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 416.979 416.979" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85 c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786 c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576 c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765 c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"></path> </g> </g></svg>
                     Vos besoins en nutriments
                 </span>
                 
+                {# Inclusion de la liste des nutriments depuis un template séparé #}
                 <div class="flex my-2 font-bold justify-center items-center">
 
                     {{ include('recommendations/nutrient/_list.html.twig') }}

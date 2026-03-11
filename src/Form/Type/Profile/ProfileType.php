@@ -12,8 +12,6 @@ use App\Entity\WorkingType;
 use App\Entity\SportingTime;
 use App\Service\EnergyHandler;
 use App\Service\ProfileHandler;
-use App\Service\NutrientHandler;
-use App\Service\FoodGroupHandler;
 use App\Repository\HourRepository;
 use Doctrine\ORM\EntityRepository;
 use App\Repository\GenderRepository;
@@ -51,8 +49,7 @@ class ProfileType extends AbstractType
             private RequestStack $requestStack, 
             private Security $security, 
             private EnergyHandler $energyHandler,
-            private NutrientHandler $nutrientHandler,
-            private FoodGroupHandler $foodGroupHandler,
+            private ProfileHandler $profileHandler,
     )
     {}
 
@@ -375,19 +372,8 @@ class ProfileType extends AbstractType
                         $user->setEnergy($form->get('energy')->getData() * EnergyHandler::MULTIPLICATOR_CONVERT_KJ_IN_KCAL);
                     }
                     $user->setEnergyCalculate($energyEstimate);
-                    $user->setValueImc();
-                    $user->setValueIdealWeight();
-                    $user->setValueIdealImc();
-
-                    // on (re)calcule les recommendations nutritionnels
-                    $nutrientRecommendations = $this->nutrientHandler->getRecommendations();
-                    $accessor = PropertyAccess::createPropertyAccessor();
-                    foreach($nutrientRecommendations as $nutrientAlias => $value) {
-                        $accessor->setValue($user, $nutrientAlias, $value);
-                    }
-
-                    // on (re)calcule les recommendations par groupe d'aliment
-                    $user->setRecommendedQuantities($this->foodGroupHandler->getRecommendations());
+                    
+                    $this->profileHandler->recalcUserProfile();
 
                 }
 

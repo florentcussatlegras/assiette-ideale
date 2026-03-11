@@ -1,4 +1,10 @@
+{# Conteneur pour afficher un message d’alerte avec son icône #}
 <div class="flex items-center gap-2 text-sm md:text-base font-bold" style="color: {{ levelAlert.color }}">
+
+    {# Inclusion de l’icône correspondant au niveau d’alerte (warning, checkmark, etc.) #}
     {{ include('balance_sheet/_icon_warning.html.twig', { levelAlert: levelAlert, size: 5 }) }}
+
+    {# Message de l’alerte, traduit via le filtre trans pour multilingue #}
     {{ message|trans }}
+
 </div>

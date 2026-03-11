@@ -16,6 +16,7 @@ export default class FavoriteDishes extends Controller {
 
     async toggle(event) {
 
+        console.log('toggle favorite');
         const btn = event.currentTarget;
         const dishId = btn.dataset.dishId;
 
@@ -27,9 +28,12 @@ export default class FavoriteDishes extends Controller {
         });
 
         if(btn.querySelector('.heart').classList.contains('hidden')) {
+            console.log('la 1');
+            console.log(`${this.urlAddValue}?${params.toString()}`);
             const response = await fetch(`${this.urlAddValue}?${params.toString()}`);
             document.getElementById('alert-ajax').innerHTML = await response.text();
         }else{
+            console.log('la 1');
             console.log(`${this.urlRemoveValue}?${params.toString()}`);
             const response = await fetch(`${this.urlRemoveValue}?${params.toString()}`);
             document.getElementById('alert-ajax').innerHTML = await response.text();

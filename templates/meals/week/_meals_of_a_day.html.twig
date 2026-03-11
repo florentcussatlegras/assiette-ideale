@@ -1,81 +1,94 @@
-
 <ul class="flex flex-col list-none mx-2 pr-1">
-								
-	{% for meal in meals %}
 
-		{% if meal is not null %}
+    {# Boucle sur tous les repas de la journée #}
+    {% for meal in meals %}
 
-			{% for index, dishAndFood in meal.dishAndFoods %}
-				
-				{% if dishAndFood is not null %}
+        {% if meal is not null %}
 
-					{% set element = object(dishAndFood['id'], 'App\\Entity\\' ~ dishAndFood['type']) %}
+            {# Boucle sur tous les plats et aliments du repas #}
+            {% for index, dishAndFood in meal.dishAndFoods %}
 
-					{% if dishAndFood['type'] == 'Dish' %}
+                {% if dishAndFood is not null %}
 
-						<li class="flex flex-row items-start">
+                    {# Récupère l'entité correspondante (Dish ou Food) #}
+                    {% set element = object(dishAndFood['id'], 'App\\Entity\\' ~ dishAndFood['type']) %}
 
-							<div class="flex text-sm gap-2 items-start mb-2">
-								{% if element.picture is not null and element.picturePath is not null %}
-									<img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
-								{% else %}
-									<img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
-								{% endif %}
-								<div class="flex flex-col leading-4 mt-1">
-									<a 
-										href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}"		
-										class="font-semibold text-sky-600 hover:text-sky-700 transition duration-300 text-sm tracking-tight"
-									>
-											{{ element.name }}
-									</a>
-									<div class="text-xs text-neutral-500">
-										{{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}
-									</div>
-								</div>
-							</div>
+                    {% if dishAndFood['type'] == 'Dish' %}
 
-							<div class="ml-auto mt-2">
-								{% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnDishes|keys %}
-									{{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnDishes[index].higher_level.color}) }}
-								{% endif %}
-							</div>
-							
-						</li>
+                        {# Affichage d’un plat #}
+                        <li class="flex flex-row items-start">
 
-					{% else %}
+                            <div class="flex text-sm gap-2 items-start mb-2">
+                                {# Image du plat, fallback si aucune image #}
+                                {% if element.picture is not null and element.picturePath is not null %}
+                                    <img alt="Photo plat" class="rounded-lg w-8 mt-1" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8 mt-1">
+                                {% endif %}
 
-						<li class="flex flex-row items-center">
-							<div class="flex text-sm gap-2 items-center mb-2">
-								{% if element.picture is not null and element.picturePath is not null %}
-									<img alt="Photo plat" class="rounded-lg w-8" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
-								{% else %}
-									<img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
-								{% endif %}
-								<div class="flex flex-col leading-4 mt-1">
-									<a 
-										href="{{ path('app_food_show', { slug: element.slug }) }}" 
-										class="font-semibold text-sky-600 hover:text-sky-700 transition duration-300 text-sm tracking-tight"
-									>
-										{{ element.name }}
-									</a>
-									<span class="text-xs text-neutral-500">{{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}</span>
-								</div>
-							</div>
-							<div class="ml-auto">
-								{% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnFoods|keys %}
-									{{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnFoods[index].higher_level.color}) }}
-								{% endif %}
-							</div>
-						</li>
+                                {# Nom et quantité du plat #}
+                                <div class="flex flex-col leading-4 mt-1">
+                                    <a href="{{ path('app_dish_show', { id: element.id, slug: element.slug }) }}"		
+                                       class="font-semibold text-sky-600 hover:text-sky-700 transition duration-300 text-sm tracking-tight">
+                                        {{ element.name }}
+                                    </a>
+                                    <div class="text-xs text-neutral-500">
+                                        {{ dishAndFood['quantity'] }} portion{% if dishAndFood['quantity'] > 1 %}s{% endif %}
+                                    </div>
+                                </div>
+                            </div>
 
-					{% endif %}
+                            {# Affichage d’un picto d’alerte si défini pour le plat #}
+                            <div class="ml-auto mt-2 pl-2">
+                                {% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnDishes|keys %}
+                                    {{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnDishes[index].higher_level.color}) }}
+                                {% endif %}
+                            </div>
+                            
+                        </li>
 
-				{% endif %}
+                    {% else %}
 
-			{% endfor %}
-			
-		{% endif %}
+                        {# Affichage d’un aliment (Food) #}
+                        <li class="flex flex-row items-center">
 
-	{% endfor %}
+                            <div class="flex text-sm gap-2 items-center mb-2">
+                                {# Image de l’aliment, fallback si aucune image #}
+                                {% if element.picture is not null and element.picturePath is not null %}
+                                    <img alt="Photo plat" class="rounded-lg w-8" src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/50" alt="Photo plat" class="rounded-lg w-8">
+                                {% endif %}
+
+                                {# Nom et quantité de l’aliment #}
+                                <div class="flex flex-col leading-4 mt-1">
+                                    <a href="{{ path('app_food_show', { slug: element.slug }) }}" 
+                                       class="font-semibold text-sky-600 hover:text-sky-700 transition duration-300 text-sm tracking-tight">
+                                        {{ element.name }}
+                                    </a>
+                                    <span class="text-xs text-neutral-500">
+                                        {{ dishAndFood['quantity'] }} {{ object(dishAndFood['unitMeasure'], "App\\Entity\\UnitMeasure").alias }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {# Picto d’alerte si défini pour l’aliment #}
+                            <div class="ml-auto">
+                                {% if attribute(meal, 'alertOnDishes') is defined and index in meal.alertOnFoods|keys %}
+                                    {{ include("meals/pictos/warning2.xml.twig", {"color" : meal.alertOnFoods[index].higher_level.color}) }}
+                                {% endif %}
+                            </div>
+
+                        </li>
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endfor %}
+            
+        {% endif %}
+
+    {% endfor %}
 
 </ul>

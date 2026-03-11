@@ -1,49 +1,62 @@
-
+{# Conteneur principal de l'aliment #}
 <div class="flex my-2 px-4 pb-4 items-center w-full md:w-1/2 lg:w-full xl:w-1/2 bg-white"> 
     
+    {# Lien autour de l'image de l'aliment #}
     <a href="#" class="mt-4">
+        {# Image de l'aliment avec filtre de redimensionnement carré #}
         <img class="rounded-md" alt="Photo de l'aliment {{ food.name }}" src="{{ food.picturePath|imagine_filter('squared_thumbnail_xsmall') }}">
     </a>
 
+    {# Conteneur des informations et formulaire de l'aliment #}
     <div class="px-4 w-4/5">
 
+        {# Nom de l'aliment, tronqué si trop long #}
         <a href="#" class="block text-sm font-bold mt-4 truncate">{{ food.name }}</a>
 
+        {# Formulaire vide (peut être utilisé pour autre fonctionnalité ou scripts JS) #}
         <form></form>
 
+        {# Formulaire principal pour ajouter l'aliment à une recette #}
         <form method="POST" class="flex flex-row gap-2">
 
+            {# Token CSRF pour sécuriser le formulaire #}
             <input type="hidden" class="token" name="_token" value="{{ csrf_token('select_foods') }}" />
 
+            {# ID du plat si défini, sinon null #}
             <input type="hidden" class="id-dish" name="idDish" value="{{ idDish ?? null }}" />
 
+            {# Récupération de l'alias du groupe alimentaire de l'aliment #}
             {% set foodGroupAlias = food.foodGroup.alias %}
 
+            {# Informations du groupe alimentaire, utilisées côté serveur ou JS #}
             <input name="food_group_alias" class="food-group-alias" type="hidden" value="{{ foodGroupAlias }}" /> 
             <input name="food_group_slug" class="food-group-slug" type="hidden" value="{{ food.foodGroup.slug }}" /> 
 
-            <input name="foods[{{ food.id }}][quantity]" required="required" type="text" class="food-quantity w-24 rounded-lg" placeholder="Quantité" aria-label="default input inline 1"
+            {# Quantité de l'aliment à saisir #}
+            <input name="foods[{{ food.id }}][quantity]" required="required" type="text" 
+                class="food-quantity w-24 rounded-lg" placeholder="Quantité" aria-label="default input inline 1"
+                {# Pré-remplissage si l'aliment est déjà présent dans la session #}
                 {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                         and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys %}
                             value="{{ app.session.get('recipe_foods')[foodGroupAlias][food.id]['quantity'] }}"
                 {% endif %} />
             
+            {# Sélecteur de l'unité de mesure de l'aliment #}
             <select name="foods[{{ food.id }}][unit_measure]" class="food-unit-measure rounded-lg" aria-label="Default select example">
             
                 {% for unitMeasure in unitMeasures %}
 
+                    {# Filtre les unités valides selon si elles ont un gramRatio ou si l'aliment peut être une portion #}
                     {% if (unitMeasure.gramRatio is not null) or (food.canBeAPart == true and unitMeasure.gramRatio is null) %}
             
                         <option value="{{ unitMeasure.alias }}"
-                        
+                            {# Sélectionne l'unité si elle est déjà dans la session #}
                             {% if foodGroupAlias in app.session.get('recipe_foods')|keys 
                             and food.id in app.session.get('recipe_foods')[foodGroupAlias]|keys
             and app.session.get('recipe_foods')[foodGroupAlias][food.id]['unit_measure'] == unitMeasure.alias %} 
                                 selected="selected"
                             {% endif %}>
-
                             {{ unitMeasure.alias }}
-                            
                         </option>
 
                     {% endif %}
@@ -52,10 +65,11 @@
             
             </select>
 
+            {# Bouton pour ajouter l'aliment à la recette #}
             <button type="button" class="add-food text-sky-600 py-1 px-4 items-center rounded-lg">
-
-                <svg viewBox="0 0 24 24" class="w-7 h-7" data-v-563d9226="" fill="#0EA5E9"><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>
-            
+                <svg viewBox="0 0 24 24" class="w-7 h-7" data-v-563d9226="" fill="#0EA5E9">
+                    <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path>
+                </svg>
             </button>
     
         </form>

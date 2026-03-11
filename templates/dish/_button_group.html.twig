@@ -1,9 +1,24 @@
 <div class="pt-3 mb-2 sticky button-group flex items-center gap-2">
-  
-    <a href="{{ path('app_dish_food_session_clear', {id: dish.id|default(null)}) }}" class="flex items-center font-bold gap-2 py-3 text-sky-600 hover:text-sky-700 rounded-lg text-md md:text-base pr-2">
+    {# Conteneur des boutons d'action sticky en haut de la section #}
+
+    <a href="{{ path('app_dish_food_session_clear', {id: dish.id|default(null)}) }}" 
+       class="flex items-center font-bold gap-2 py-3 text-sky-600 hover:text-sky-700 rounded-lg text-md md:text-base pr-2">
+        {# Bouton pour réinitialiser la session ou les entrées du plat #}
         Réinitialiser
     </a>
 
-    {{ form_widget(dishForm.saveAndAdd, {'label' : '<svg viewBox="0 0 24 24" class="w-5 h-5" fill="#ffffff" data-v-563d9226=""><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path></svg>Enregistrer', 'attr' : {'class' : 'flex justify-center items-center gap-2 save-meals rounded-lg font-bold bg-sky-600 hover:bg-sky-700 flex px-4 py-2 text-white text-sm cursor-pointer text-md md:text-base', 'style' : 'width: 200px'}}) }}
+    {{ form_widget(dishForm.saveAndAdd, {
+        'label' : '<svg viewBox="0 0 24 24" class="w-5 h-5" fill="#ffffff" data-v-563d9226="">
+                      <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" data-v-563d9226=""></path>
+                   </svg>Enregistrer',
+        'attr' : {
+            'class' : 'flex justify-center items-center gap-2 save-meals rounded-lg font-bold bg-sky-600 hover:bg-sky-700 flex px-4 py-2 text-white text-sm cursor-pointer text-md md:text-base',
+            'style' : 'width: 200px'
+        }
+    }) }}
+    {# Bouton pour enregistrer et ajouter le plat 
+       - Utilise le widget Symfony Form pour générer le bouton
+       - Inclut une icône SVG dans le label
+       - Bouton stylé avec Tailwind et largeur fixe de 200px #}
 
 </div>

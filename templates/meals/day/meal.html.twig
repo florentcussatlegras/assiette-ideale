@@ -1,48 +1,62 @@
 <div class="flex w-full">
 
-	{% if app.session.get('_meal_day_date') != 'model' %}
-		<div style="width: 2%"></div>
-	{% endif %}
+    {# Espace à gauche si ce n’est pas un modèle de repas #}
+    {% if app.session.get('_meal_day_date') != 'model' %}
+        <div style="width: 2%"></div>
+    {% endif %}
 
-	<div id="meal-{{ rankMeal }}" class="meal flex flex-col" {% if app.session.get('_meal_day_date') != 'model' %} style="width: 98%" {% else %} style="width: 100%" {% endif %} {{ stimulus_controller('type-meal', { url: path('meal_day_update_type_meal'), urlReload: path('meal_day', { ajax: 1 } ), rankmeal: rankmeal }) }}>
+    {# Conteneur principal du repas avec stimulus controller pour gérer le type de repas #}
+    <div id="meal-{{ rankMeal }}" 
+         class="meal flex flex-col" 
+         {% if app.session.get('_meal_day_date') != 'model' %} style="width: 98%" {% else %} style="width: 100%" {% endif %}
+         {{ stimulus_controller('type-meal', { 
+            url: path('meal_day_update_type_meal'),
+            urlReload: path('meal_day', { ajax: 1 }), 
+            rankMeal: rankMeal }) 
+        }}
+    >
 
-		<div class="container-list-meal-model"></div>
+        {# Zone pour les modèles de repas (vide ici) #}
+        <div class="container-list-meal-model"></div>
 
-		<div class="relative">
-			{% if app.session.get('_meal_day_date') != 'model' %}
-				<div class="flex md:my-hidden absolute -left-4 top-6 items-center h-full justify-center">
-					<input type="checkbox" class="cursor-pointer mt-0 mb-2" data-meal-target="selectMeal" data-action="meal#selectMeal" value="{{ rankMeal }}"/>
-				</div>
-				<div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
-					<input type="checkbox" class="cursor-pointer mt-0 mb-2" data-meal-target="selectMeal" data-action="meal#selectMeal" value="{{ rankMeal }}"/>
-				</div>
-			{% endif %}
-			{{ include('meals/day/type_meal.html.twig') }}
-		</div>
+        <div class="relative">
+            {# Checkbox de sélection du repas (visible seulement si ce n’est pas un modèle) #}
+            {% if app.session.get('_meal_day_date') != 'model' %}
+                <div class="my-hidden md:flex absolute -left-6 top-0 items-center h-full justify-center">
+                    <input type="checkbox" class="cursor-pointer mt-0 mb-2" data-meal-target="selectMeal" data-action="meal#selectMeal" value="{{ rankMeal }}"/>
+                </div>
+            {% endif %}
 
-		<div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-lg rounded-xl">
+            {# Inclusion du template pour le type de repas #}
+            {{ include('meals/day/type_meal.html.twig') }}
+        </div>
 
-			{% if app.session.has('_meal_day_' ~ rankMeal) 
-				and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys 
-				and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not null 
-			%}
-				{% set rankDish = app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods']|length %}
-			{% else %}
-				{% set rankDish = 0 %}
-			{% endif %}
+        {# Conteneur des plats/aliments du repas #}
+        <div class="flex flex-col py-4 md:p-8 relative mb-8 bg-white shadow-balanced rounded-xl">
 
-			{% if rankDish > 0 %}
-				{{ include('meals/day/list-dishes.html.twig') }}
-				{{ include('meals/day/group-btn-action.html.twig') }}
-			{% else %}
-				<div class="flex items-center pl-4">
-					<span class="text-xs md:text-sm text-neutral-400 rounded-lg p-2">Aucun aliments/plats choisis</span>
-					<div class="ml-auto">{{ include('meals/day/group-btn-action.html.twig') }}</div>
-				</div>
-			{% endif %}
+            {# Calcul du nombre de plats/aliments dans ce repas #}
+            {% if app.session.has('_meal_day_' ~ rankMeal) 
+                and 'dishAndFoods' in app.session.get('_meal_day_' ~ rankMeal)|keys 
+                and app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods'] is not null 
+            %}
+                {% set rankDish = app.session.get('_meal_day_' ~ rankMeal)['dishAndFoods']|length %}
+            {% else %}
+                {% set rankDish = 0 %}
+            {% endif %}
 
-		</div>
+            {# Affichage de la liste des plats ou message si vide #}
+            {% if rankDish > 0 %}
+                {{ include('meals/day/list-dishes.html.twig') }}
+                {{ include('meals/day/group-btn-action.html.twig') }}
+            {% else %}
+                <div class="flex items-center pl-4">
+                    <span class="text-xs md:text-sm text-neutral-400 rounded-lg p-2">Aucun aliments/plats choisis</span>
+                    <div class="ml-auto">{{ include('meals/day/group-btn-action.html.twig') }}</div>
+                </div>
+            {% endif %}
 
-	</div>
+        </div>
+
+    </div>
 
 </div>

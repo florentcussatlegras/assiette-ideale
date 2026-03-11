@@ -8,6 +8,7 @@
 
 	<div 
 		{% if app.user.hasFirstFillProfile is same as(false) %}
+			{# Si l'utilisateur n'a pas encore rempli son profil pour la première fois, on applique une transition #}
 			class="page-transition"
 			{{ stimulus_controller('page-transition') }}
 		{% endif %}
@@ -15,104 +16,110 @@
 
 		<div class="py-12 min-screen">
 
+			{# Header différent selon si l'utilisateur a déjà rempli son profil #}
 			{% if app.user.hasFirstFillProfile is same as(true) %}
 
+				{# Header avec titre #}
 				{{ include('navigation/_header_page.html.twig', {title: "Mes informations"}) }}
 
+				{# Conteneur centré pour le formulaire #}
 				<div class="flex justify-center items-center">
 
 			{% else %}
 
+				{# Si première fois, alignement à gauche avec padding vertical plus important #}
 				<div class="flex items-center justify-start py-16">
 
 			{% endif %}
 
 					<div class="flex flex-col w-full justify-center text-center">
 
+						{# Affiche le stepper de la création de profil si première fois #}
 						{% if app.user.firstFillProfile is same as (false) %}
-
 							{{ include('profile/registration_steps.html.twig') }}
-
 						{% endif %}
 
+						{# Conteneur du formulaire profil #}
 						<div class="flex-1 flex items-start lg:items-center">
 
-							<div class="p-6 profileForm mx-auto my-5 bg-white flex flex-col justify-center mt-0 rounded-xl shadow-lg" {{ stimulus_controller('profile') }}>
+							<div class="p-6 profileForm mx-auto my-5 bg-white flex flex-col justify-center mt-0 rounded-xl shadow-balanced" {{ stimulus_controller('profile') }}>
 
+								{# Début du formulaire Symfony #}
 								{{ form_start(profileForm, {'attr': {
 										'action' : path('app_profile_edit', { element }),
-										'data-controller': 'form-loader',
+										'data-controller': 'form-loader',  # Stimulus pour loader formulaire
 										'data-turbo' : 'false', 
 										'class' : 'w-full relative'}
 								}) }}
 
+								{# Bloc spécifique si l'étape concerne l'énergie #}
 								{% if element == constant('App\\Service\\ProfileHandler::ENERGY') %}
 
+									{# Label pour le champ auto-calcul énergie #}
 									{{ form_label(profileForm.automaticCalculateEnergy) }}
 
 									<div class="flex flex-col items-center justify-center">
 
 										<div class="space-y-6 mb-8">
 
+											{# Affiche les erreurs globales et sur le champ énergie #}
 											{{ form_errors(profileForm) }}
 											{{ form_errors(profileForm.energy) }}
 
+											{# Option "laisser le programme calculer mes besoins" #}
 											<div class="flex items-center gap-3">
-
 												{{ form_widget(profileForm.automaticCalculateEnergy.0, {
 													attr: { 'class': '-mt-1' }
 												}) }}
-
 												<label for="{{ profileForm.automaticCalculateEnergy.0.vars.id }}" class="font-normal flex items-center">
 													Laisser le programme calculer mes besoins
 													<span class="text-red-700 font-semibold">
 														({{ app.user.energyCalculate|round }} kcal)
 													</span>
 												</label>
-
 											</div>
 
+											{# Option "je connais mes besoins" avec saisie manuelle #}
 											<div class="flex items-center gap-3">
-
 												{{ form_widget(profileForm.automaticCalculateEnergy.1, {
 													attr: { 'class': '-mt-1' }
 												}) }}
-
 												<label for="{{ profileForm.automaticCalculateEnergy.1.vars.id }}" class="font-normal">
 													Je connais mes besoins
 												</label>
-
 												<div class="flex items-center gap-2">
 													{{ form_widget(profileForm.energy, {
 														attr: { class: 'w-28 border rounded px-2 py-1' }
 													}) }}
-
 													{{ form_widget(profileForm.unitMeasureEnergy) }}
 												</div>
-
 											</div>
 
 										</div>
 
 									</div>
 
+									{# Token CSRF spécifique à l'étape énergie #}
 									{{ form_widget(profileForm._token_profile) }}
 
 								{% else %}
 
+									{# Affichage standard pour les autres étapes #}
 									{{ form_widget(profileForm) }}
 
 								{% endif %}
 
-
+								{# Affichage d'une erreur spécifique sur la photo si présente dans la session #}
 								{% if app.session.has('user_error_pic') %}
 									<span class="text-red-700">
 										{{ render(controller('App\\Controller\\ProfileController::showErrorPicture')) }}
 									</span>
 								{% endif %}
 
+								{# Boutons de navigation suivant/précédent #}
 								{{ include('profile/partials/_btn_nav.html.twig') }}
 
+								{# Fin du formulaire #}
 								{{ form_end(profileForm, { render_rest: false }) }}
 
 							</div>
@@ -128,5 +135,3 @@
 	</div>
 
 {% endblock %}
-
-

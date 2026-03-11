@@ -1,3 +1,11 @@
-<div class="quantity-food">{{ quantity }} {{ unitMeasure }}</div>
+{# Affichage simple de la quantité d’un aliment et son unité #}
+<div class="quantity-food">
+    {{ quantity }} {{ unitMeasure }}  {# Ex : "150 g" ou "2 portions" #}
+</div>
 
-{{ render(controller("App\\Controller\\DishController::editFood", { idFood: idFood, idDish: idDish})) }}
+{# Inclusion dynamique d’un contrôleur Symfony #}
+{# Rendu du formulaire ou bloc pour éditer un aliment spécifique #}
+{{ render(controller(
+    "App\\Controller\\DishController::editFood",  {# Contrôleur et méthode à exécuter #}
+    { idFood: idFood, idDish: idDish }           {# Paramètres passés à la méthode #}
+)) }}

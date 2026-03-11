@@ -1,18 +1,24 @@
 <ul>
-    {% set previousPriority = null %}
+    {% set previousPriority = null %} {# On initialise la variable pour suivre la priorité précédente #}
 
     {% for item in balanceSheetAlerts %}
         {% if item.key != 'energy' and item.alert.code != 'balance_well' %}
+            {# On ignore les alertes d'énergie et celles avec code 'balance_well' #}
 
-            {# Si la priorité change, on ajoute un espace #}
+            {# Si la priorité change, on ajoute un petit espace visuel #}
             {% if previousPriority is not null and previousPriority != item.alert.priority %}
                 <li style="list-style:none; height:12px;"></li>
             {% endif %}
 
+            {# Affiche l'alerte avec sa couleur et texte dynamique #}
             <li style="color: {{ item.alert.color }}">
-                Les <strong>{{ item.label }}</strong> sont <em>{{ item.alert.placeholderText }}s</em>
+                Les <strong>{{ item.label }}</strong> sont 
+                <em>
+                    {{ item.alert.placeholderText }}{% if item.alert.placeholderText|slice(-1) != 's' %}s{% endif %}
+                </em>
             </li>
 
+            {# On mémorise la priorité actuelle pour le prochain item #}
             {% set previousPriority = item.alert.priority %}
         {% endif %}
     {% endfor %}

@@ -2,10 +2,28 @@
 
 namespace App\Service;
 
-use Symfony\Component\Serializer\SerializerInterface;
-
+/**
+ * FoodGroupUtils.php
+ *
+ * Service utilitaire pour gérer les groupes alimentaires et leurs alias.
+ *
+ * Fournit :
+ * - Les alias des groupes parents (FGP_*)
+ * - Les alias des groupes enfants (FG_*)
+ * - Une structure complète des données pour chaque groupe alimentaire
+ *   avec noms, couleurs, rang, et sous-groupes
+ *
+ * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
+ * Date : 2026-03-10
+ * Projet : Assiette idéale
+ */
 class FoodGroupUtils
 {
+    /**
+     * Retourne la liste des alias des groupes parents.
+     *
+     * @return array
+     */
     public function getFoodGroupParentAlias(): array
     {
         return [
@@ -19,6 +37,11 @@ class FoodGroupUtils
         ];
     }
 
+    /**
+     * Retourne la liste des alias des groupes enfants.
+     *
+     * @return array
+     */
     public function getFoodGroupAlias(): array
     {
         return [
@@ -38,6 +61,23 @@ class FoodGroupUtils
         ];
     }
 
+    /**
+     * Retourne les données complètes des groupes alimentaires,
+     * incluant les groupes parents et leurs enfants.
+     *
+     * Chaque groupe contient :
+     * - name : nom complet
+     * - short_name : nom court
+     * - semi_short_name : nom semi-court
+     * - alias : code du groupe
+     * - color : couleur principale
+     * - degraded_color : couleur dégradée
+     * - ranking : ordre dans le tableau
+     * - principal : booléen indiquant si c'est un groupe parent
+     * - childs : liste des sous-groupes enfants
+     *
+     * @return array
+     */
     public function getDatas(): array
     {
         return [
@@ -51,21 +91,21 @@ class FoodGroupUtils
                 'ranking' => 1,
                 'principal' => true,
                 'childs' => [
-                    0 => [
+                    [
                         'name' => 'Viandes',
                         'short_name' => 'Viandes',
                         'semi_short_name' => 'Viandes',
                         'alias' => 'FG_MEAT',
                         'ranking' => 1
                     ],
-                    1 => [
+                    [
                         'name' => 'Poissons',
                         'short_name' => 'Poissons',
                         'semi_short_name' => 'Poissons',
                         'alias' => 'FG_FISH',
                         'ranking' => 2
                     ],
-                    2 => [
+                    [
                         'name' => 'Oeufs',
                         'short_name' => 'Oeufs',
                         'semi_short_name' => 'Oeufs',
@@ -84,7 +124,7 @@ class FoodGroupUtils
                 'ranking' => 2,
                 'principal' => true,
                 'childs' => [
-                    0 => [
+                    [
                        'name' => 'Féculents',
                        'short_name' => 'Al. protidiques',
                        'semi_short_name' => 'Al. protidiques',
@@ -101,16 +141,16 @@ class FoodGroupUtils
                 'color' => '#216959',
                 'degraded_color' => '#e6f7f4',
                 'ranking' => 3,
-                'principal' => 1,
+                'principal' => true,
                 'childs' => [
-                    0 => [
+                    [
                        'name' => 'Légumes crus',
                        'short_name' => 'L. crus',
                        'semi_short_name' => 'Lég. crus',    
                        'alias' => 'FG_RAW_VEG',
                        'ranking' => 5
                     ],
-                    1 => [
+                    [
                         'name' => 'Légumes cuits',
                         'short_name' => 'L. cuits',
                         'semi_short_name' => 'Lég. cuits',
@@ -129,14 +169,14 @@ class FoodGroupUtils
                 'ranking' => 4,
                 'principal' => true,
                 'childs' => [
-                    0 => [
+                    [
                        'name' => 'Fruits crus',
                        'short_name' => 'Fc',
                        'semi_short_name' => 'Fr. crus',  
                        'alias' => 'FG_RAW_FRUIT',
                        'ranking' => 7
                     ],
-                    1 => [
+                    [
                        'name' => 'Fruits cuits',
                        'short_name' => 'Fc',
                        'semi_short_name' => 'Fr. cuits',  
@@ -155,14 +195,14 @@ class FoodGroupUtils
                 'ranking' => 5,
                 'principal' => true,
                 'childs' => [
-                    0 => [
+                    [
                         'name' => 'Laitages',
                         'short_name' => 'L.',
                         'semi_short_name' => 'Lait.',
                         'alias' => 'FG_MILK',
                         'ranking' => 9
                     ],
-                    1 => [
+                    [
                         'name' => 'Fromages',
                         'short_name' => 'Fr.',
                         'semi_short_name' => 'From.',
@@ -181,14 +221,14 @@ class FoodGroupUtils
                 'ranking' => 6,
                 'principal' => false,
                 'childs' => [
-                    0 => [
+                    [
                        'name' => 'Matières grasses végétales',
                        'short_name' => 'MGV',
                        'semi_short_name' => 'Mat. grasses végétales',
                        'alias' => 'FG_FAT_VEG',
                        'ranking' => 11
                     ],
-                    1 => [
+                    [
                         'name' => 'Matières grasses animales',
                         'short_name' => 'MGA',
                         'semi_short_name' => 'Mat. grasses animales',
@@ -197,25 +237,6 @@ class FoodGroupUtils
                      ]
                 ]
             ],
-            // 6 => [
-            //     'name' => 'MATIERES GRASSES ANIMALES',
-            //     'short_name' => 'Mga',
-            //     'semi_short_name' => 'MG Animales',
-            //     'code' => 'FGP_FAT_ANIMAL',
-            //     'color' => '#e97810',
-            //     'degraded_color' => '#fcead9',
-            //     'ranking' => 7,
-            //     'principal' => false,
-            //     'childs' => [
-            //         0 => [
-            //            'name' => 'Matières grasses animales',
-            //            'short_name' => 'MGA',
-            //            'semi_short_name' => 'Mat. grasse animale',
-            //            'code' => 'FG_FAT_ANIMAL',
-            //            'ranking' => 10 
-            //         ]
-            //     ]
-            // ],
             8 => [
                 'name' => 'PRODUITS SUCRES',
                 'short_name' => 'Ps',
@@ -226,7 +247,7 @@ class FoodGroupUtils
                 'ranking' => 8,
                 'principal' => false,
                 'childs' => [
-                    0 => [
+                    [
                        'name' => 'Produits sucrés',
                        'short_name' => 'PS',
                        'semi_short_name' => 'Pr sucrés',

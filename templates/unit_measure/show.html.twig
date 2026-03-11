@@ -2,31 +2,42 @@
 
 {% block body %}
 
-<main class="bg-slate-50 p-14" role="main">
+	<main
+		class="bg-slate-50 p-14" role="main">
+		{# Définition de variables pour l'en-tête du composant inclus #}
+		{% set spanHeader, h1Header = "Recherche", "Les unités de mesures" %}
 
-    {% set spanHeader, h1Header = "Recherche", "Les unités de mesures" %}
+		{# Conteneur pour l'en-tête, aligné avec flex entre les éléments #}
+		<div class="flex items-end justify-between mb-2">
+			{{ include("partials/_header.html.twig", {}) }}
+		</div>
 
-    <div class="flex items-end justify-between mb-2">
-        {{ include("partials/_header.html.twig", {}) }}
-    </div>
+		{# Inclusion d'un composant d'alerte pour les messages (erreurs ou succès) #}
+		{{ include("partials/_alert.html.twig") }}
 
-    {{ include("partials/_alert.html.twig") }}
+		{# Conteneur principal du formulaire, centré et avec padding #}
+		<div
+			class="flex box w-1/2 p-20">
 
-    <div class="flex box w-1/2 p-20">
+			{# Début du formulaire Symfony #}
+			{{ form_start(form) }}
 
-        {{ form_start(form) }}
+			{# Affichage des erreurs liées au champ alias #}
+			{{ form_errors(form.alias) }}
 
-            {{ form_errors(form.alias) }}
-            {{ form_widget(form.alias) }}
+			{# Widget du champ alias (input) #}
+			{{ form_widget(form.alias) }}
 
-            <div class="button-group">
-                <button class="btn btn-primary mt-5">Rechercher</button>
-            </div>
+			{# Bouton de soumission du formulaire #}
+			<div class="button-group">
+				<button class="btn btn-primary mt-5">Rechercher</button>
+			</div>
 
-        {{ form_end(form) }}
+			{# Fin du formulaire #}
+			{{ form_end(form) }}
 
-    </div>
+		</div>
 
-</main>
+	</main>
 
 {% endblock %}

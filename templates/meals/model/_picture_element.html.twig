@@ -1,5 +1,15 @@
 {% if element.picture is not null and element.picturePath is not null %}
-    <img src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}" alt="pic-{{ element.slug }}" class="rounded-lg w-6">
+    {# Affiche la vraie image si disponible #}
+    <img 
+        src="{{ element.picturePath|imagine_filter('squared_thumbnail_small') }}" 
+        alt="pic-{{ element.slug }}" 
+        class="rounded-lg w-6"
+    >
 {% else %}
-    <img src="https://placehold.co/20x20" alt="Photo plat" class="rounded-lg w-6">
+    {# Image de remplacement si aucune photo #}
+    <img 
+        src="https://placehold.co/20x20" 
+        alt="Photo plat" 
+        class="rounded-lg w-6"
+    >
 {% endif %}

@@ -15,7 +15,7 @@ import helper from "./helper";
 import Velocity from "velocity-animate";
 import * as Popper from "@popperjs/core";
 import LiveController from '@symfony/ux-live-component';
-import '@symfony/ux-live-component/styles/live.css';
+// import '@symfony/ux-live-component/styles/live.css';
 import TextareaAutogrow from 'stimulus-textarea-autogrow';
 import Notification from '@stimulus-components/notification';
 import PasswordVisibility from '@stimulus-components/password-visibility'

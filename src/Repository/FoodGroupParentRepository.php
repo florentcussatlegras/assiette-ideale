@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\FoodGroup\FoodGroupParent;
 use Doctrine\Persistence\ManagerRegistry;
-use App\Repository\FoodGroupParentRepository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
@@ -19,6 +18,42 @@ class FoodGroupParentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, FoodGroupParent::class);
     }
+
+	public function getAliasNameMap(): array
+	{
+		$qb = $this->createQueryBuilder('fgp')
+			->select('fgp.alias, fgp.name')
+			->orderBy('fgp.name', 'ASC');
+
+		$results = $qb->getQuery()->getArrayResult();
+
+		$map = [];
+		foreach ($results as $row) {
+			$map[$row['alias']] = $row['name'];
+		}
+
+		return $map;
+	}
+
+	public function getAliasMetadataMap(): array
+	{
+		$results = $this->createQueryBuilder('fgp')
+			->select('fgp.alias, fgp.name, fgp.isPrincipal, fgp.color')
+			->getQuery()
+			->getArrayResult();
+
+		$map = [];
+
+		foreach ($results as $row) {
+			$map[$row['alias']] = [
+				'name' => $row['name'],
+				'isPrincipal' => $row['isPrincipal'],
+				'color' => $row['color'],
+			];
+		}
+
+		return $map;
+	}
 
 	public function myFindAllOrderByRank()
 	{

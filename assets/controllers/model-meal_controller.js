@@ -6,6 +6,7 @@ export default class extends Controller {
     urlList: String,
     urlListModal: String,
     urlRemove: String,
+    lastRankMeal: String,
   };
   static targets = ["content", "modalContent", "background", "container", "search", "types", "sort", "loader", "chooseButton"];
 
@@ -19,6 +20,138 @@ export default class extends Controller {
   }
 
   async show(event) {
+
+    const lastMealElement = document.getElementById('meal-' + this.lastRankMealValue);
+    const dishes = lastMealElement.getElementsByClassName('row-dish');
+
+    if (this.lastRankMealValue == 0) {
+
+      if (dishes.length == 0) {
+
+        if (!this.hasModalContentTarget) {
+          return;
+        }
+
+        const target = this.modalContentTarget;
+
+        target.innerHTML = '<div class="loader"></div>';
+
+        const response = await fetch(this.urlListModalValue, {
+          headers: { "X-Requested-With": "XMLHttpRequest" }
+        });
+
+        target.innerHTML = await response.text();
+
+        return;
+
+      }else{
+
+         // On vérifie que le dernier repas a bien un type
+        const types = lastMealElement.getElementsByClassName('type-meal');
+        let typeChecked = false;
+
+        Array.from(types).forEach((element) => {
+            if(element.checked == true) {
+                typeChecked = true;
+            }
+        });
+
+        if(typeChecked == false) {
+        
+            Swal.fire({
+                title: "Attention!",
+                text: "Vous n'avez pas précisé de type pour votre dernier repas",
+                icon: "warning",
+                customClass: {
+                    confirmButton: `
+                        text-white
+                        bg-sky-600 
+                        hover:bg-sky-700 
+                        transition 
+                        duration-300 
+                        font-semibold
+                        rounded-lg
+                        px-4
+                        py-2
+                    `
+                },
+                buttonsStyling: false
+            })
+
+            // Empêche l'ouverture de la modal
+            event.preventDefault();
+            event.stopImmediatePropagation(); // empêche tout autre handler click
+            return;
+        }
+
+        const target = this.modalContentTarget;
+
+        target.innerHTML = '<div class="loader"></div>';
+
+        const response = await fetch(this.urlListModalValue, {
+          headers: { "X-Requested-With": "XMLHttpRequest" }
+        });
+
+        target.innerHTML = await response.text();
+
+        return;
+
+      }
+
+    }
+
+    // On vérifie que le dernier repas a bien un type
+    const types = lastMealElement.getElementsByClassName('type-meal');
+    let typeChecked = false;
+
+    Array.from(types).forEach((element) => {
+        if(element.checked == true) {
+            typeChecked = true;
+        }
+    });
+
+    if(typeChecked == false) {
+        
+        Swal.fire({
+            title: "Attention!",
+            text: "Vous n'avez pas précisé de type pour votre dernier repas",
+            icon: "warning",
+            customClass: {
+                confirmButton: `
+                    text-white
+                    bg-sky-600 
+                    hover:bg-sky-700 
+                    transition 
+                    duration-300 
+                    font-semibold
+                    rounded-lg
+                    px-4
+                    py-2
+                `
+            },
+            buttonsStyling: false
+        })
+
+        // Empêche l'ouverture de la modal
+        event.preventDefault();
+        event.stopImmediatePropagation(); // empêche tout autre handler click
+        return;
+    }
+
+    // On vérifie que le dernier repas contient bien des plats/aliments
+    if (dishes.length === 0 ) {
+        Swal.fire({
+            title: "Attention!",
+            text: "Vous n'avez pas saisis de plats pour votre dernier repas",
+            icon: "warning"
+        })
+
+        // Empêche l'ouverture de la modal
+        event.preventDefault();
+        event.stopImmediatePropagation(); // empêche tout autre handler click
+        return;
+    }
+
     if (!this.hasModalContentTarget) {
       return;
     }
@@ -32,6 +165,7 @@ export default class extends Controller {
     });
 
     target.innerHTML = await response.text();
+    
   }
 
   async onRemoveMeal(event) {

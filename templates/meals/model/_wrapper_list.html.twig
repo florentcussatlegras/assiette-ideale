@@ -1,15 +1,18 @@
 {# meals/model/_wrapper_list.html.twig #}
 
 <div class="flex flex-col my-4 w-full {% if listModal is defined and listModal is same as (true)  %}list-modal{% endif %}">
+    {# Conteneur principal de la liste des repas, ajoute la classe `list-modal` si affiché dans un modal #}
 
     <div class="flex flex-col md:flex-row w-full items-start md:items-center justify-between my-4 gap-4">
+        {# Ligne supérieure : filtres et recherche #}
 
         <div class="w-full md:w-1/2 pl-4">
+            {# Filtre par calories #}
             {{ include('meals/model/_filter_calories_form.html.twig') }}
         </div>
 
-        <!-- Recherche par nom -->
         <div class="w-full md:w-1/4">
+            {# Recherche par nom de repas #}
             <input
                 type="text"
                 id="meal-search"
@@ -23,12 +26,17 @@
     </div>
 
     <div class="flex flex-col md:flex-row items-start md:items-center md:justify-between gap-4 mb-4">
+        {# Ligne avec les choix de type de repas et le tri #}
+
         <div class="w-full md:w-2/3 overflow-x-auto py-4">
             <div class="flex items-center gap-2 min-w-type-meal-choices">
+                {# Affiche les boutons de choix de type de repas #}
                 {{ render(path('app_type_meal_choices')) }}
             </div>
         </div>
+
         <div>
+            {# Tri des repas par calories #}
             <select
                 id="sort-meals"
                 data-model-meal-target="sort"
@@ -38,6 +46,8 @@
                 <option value="asc">Du moins calorique au plus calorique</option>
                 <option value="desc">Du plus calorique au moins calorique</option>
             </select>
+
+            {# Icône flèche pour indiquer que c'est un select #}
             <svg class="w-4 h-4 absolute right-3 top-[2.2rem] text-gray-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
             </svg>
@@ -51,8 +61,10 @@
         }) }} 
         class="flex flex-col items-start"
     >
+        {# Conteneur avec le Stimulus controller pour la sélection de repas #}
 
         <div class="flex justify-end mb-4 w-full">
+            {# Bouton pour choisir un repas (initialement désactivé) #}
             <button
                 data-model-meal-select-target="chooseButton"
                 data-model-meal-target="chooseButton"
@@ -62,16 +74,11 @@
             >
                 Choisir
             </button>
-            {# <button
-                data-model-meal-select-target="removeButton"
-                data-model-meal-target="removeButton"
-                class="btn-remove-model-meals px-4 py-2 mt-4 rounded-lg bg-red-700 text-white font-bold opacity-30 cursor-not-allowed transition"
-                disabled
-            >
-                Supprimer la sélection
-            </button> #}
+
+            {# Bouton "Supprimer la sélection" commenté pour le moment #}
         </div>
 
+        {# Loader pendant le chargement de la liste des repas #}
         <div 
             class="container-loader w-full items-center justify-center flex"
             style="height: 240px"
@@ -80,13 +87,12 @@
             <div class="loader"></div>
         </div>
 
+        {# Contenu de la liste des repas (initialement caché) #}
         <div 
             class="w-full flex flex-col justify-center hidden"
             data-model-meal-target="content"
         >
-
             {{ include('meals/model/_list.html.twig') }}
-
         </div>
 
     </div>

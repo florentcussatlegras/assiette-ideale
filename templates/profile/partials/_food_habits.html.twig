@@ -1,33 +1,74 @@
 <div class="profile-food flex flex-col w-1/2">
+    {# Container principal pour la section "Alimentation" avec flex-col et largeur 50% #}
 
     <div class="mb-5 text-left">
+        {# Bloc pour le premier select multiple (régimes) #}
 
         <div id="multiple-select">
-                <div class="preview">
-                    {{ form_label(profileForm.diets, null, {'label_attr' : {'class' : 'form-label'}}) }}
-                    {{ form_widget(profileForm.diets, {'attr': {'class': 'tom-select w-full', 'data-placeholder': 'Selectionnez vos régimes'}}) }}
-                </div>
-                <div class="source-code hidden">
-                    <button data-target="#copy-multiple-select" class="copy-code btn py-1 px-2 btn-outline-secondary w-full"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
-                    <div class="overflow-y-auto mt-3 rounded-md">
-                        <pre id="copy-multiple-select" class="source-preview"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagselect data-placeholder=&quot;Select your favorite actors&quot; class=&quot;tom-select w-full&quot; multipleHTMLCloseTag HTMLOpenTagoption value=&quot;1&quot; selectedHTMLCloseTagLeonardo DiCaprioHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;2&quot;HTMLCloseTagJohnny DeepHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;3&quot; selectedHTMLCloseTagRobert Downey, JrHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;4&quot;HTMLCloseTagSamuel L. JacksonHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;5&quot;HTMLCloseTagMorgan FreemanHTMLOpenTag/optionHTMLCloseTag HTMLOpenTag/selectHTMLCloseTag </code> </pre>
-                    </div>
+            <div class="preview">
+                {# Label du champ 'diets' avec la classe 'form-label' #}
+                {{ form_label(profileForm.diets, null, {'label_attr' : {'class' : 'form-label'}}) }}
+
+                {# Widget du select multiple 'diets' avec plugin Tom Select et placeholder #}
+                {{ form_widget(profileForm.diets, {'attr': {'class': 'tom-select w-full', 'data-placeholder': 'Selectionnez vos régimes'}}) }}
+            </div>
+
+            <div class="source-code hidden">
+                {# Bouton pour copier le code exemple du select #}
+                <button data-target="#copy-multiple-select" class="copy-code btn py-1 px-2 btn-outline-secondary w-full">
+                    <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code
+                </button>
+
+                {# Conteneur pour afficher le code source HTML exemple (scrollable) #}
+                <div class="overflow-y-auto mt-3 rounded-md">
+                    <pre id="copy-multiple-select" class="source-preview">
+                        <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10">
+                            HTMLOpenTagselect data-placeholder=&quot;Select your favorite actors&quot; class=&quot;tom-select w-full&quot; multipleHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;1&quot; selectedHTMLCloseTagLeonardo DiCaprioHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;2&quot;HTMLCloseTagJohnny DeepHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;3&quot; selectedHTMLCloseTagRobert Downey, JrHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;4&quot;HTMLCloseTagSamuel L. JacksonHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;5&quot;HTMLCloseTagMorgan FreemanHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTag/selectHTMLCloseTag
+                        </code>
+                    </pre>
                 </div>
             </div>
+        </div>
 
     </div>
 
     <div class="mb-5 text-left">
+        {# Bloc pour le second select multiple (aliments interdits) #}
 
         <div id="multiple-select">
             <div class="preview">
+                {# Label du champ 'forbiddenFoods' avec la classe 'form-label' #}
                 {{ form_label(profileForm.forbiddenFoods, null, {'label_attr' : {'class' : 'form-label'}}) }}
+
+                {# Widget du select multiple 'forbiddenFoods' avec plugin Tom Select et placeholder #}
                 {{ form_widget(profileForm.forbiddenFoods, {'attr': {'class': 'tom-select w-full', 'data-placeholder': 'Selectionnez les aliments'}}) }}
             </div>
+
             <div class="source-code hidden">
-                <button data-target="#copy-multiple-select" class="copy-code btn py-1 px-2 btn-outline-secondary"> <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code </button>
+                {# Bouton pour copier le code exemple du second select #}
+                <button data-target="#copy-multiple-select" class="copy-code btn py-1 px-2 btn-outline-secondary">
+                    <i data-feather="file" class="w-4 h-4 mr-2"></i> Copy example code
+                </button>
+
+                {# Conteneur pour afficher le code source HTML exemple (scrollable) #}
                 <div class="overflow-y-auto mt-3 rounded-md">
-                    <pre id="copy-multiple-select" class="source-preview"> <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10"> HTMLOpenTagselect data-placeholder=&quot;Select your favorite actors&quot; class=&quot;tom-select w-full&quot; multipleHTMLCloseTag HTMLOpenTagoption value=&quot;1&quot; selectedHTMLCloseTagLeonardo DiCaprioHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;2&quot;HTMLCloseTagJohnny DeepHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;3&quot; selectedHTMLCloseTagRobert Downey, JrHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;4&quot;HTMLCloseTagSamuel L. JacksonHTMLOpenTag/optionHTMLCloseTag HTMLOpenTagoption value=&quot;5&quot;HTMLCloseTagMorgan FreemanHTMLOpenTag/optionHTMLCloseTag HTMLOpenTag/selectHTMLCloseTag </code> </pre>
+                    <pre id="copy-multiple-select" class="source-preview">
+                        <code class="text-xs p-0 rounded-md html pl-5 pt-8 pb-4 -mb-10 -mt-10">
+                            HTMLOpenTagselect data-placeholder=&quot;Select your favorite actors&quot; class=&quot;tom-select w-full&quot; multipleHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;1&quot; selectedHTMLCloseTagLeonardo DiCaprioHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;2&quot;HTMLCloseTagJohnny DeepHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;3&quot; selectedHTMLCloseTagRobert Downey, JrHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;4&quot;HTMLCloseTagSamuel L. JacksonHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTagoption value=&quot;5&quot;HTMLCloseTagMorgan FreemanHTMLOpenTag/optionHTMLCloseTag 
+                            HTMLOpenTag/selectHTMLCloseTag
+                        </code>
+                    </pre>
                 </div>
             </div>
         </div>
@@ -36,4 +77,5 @@
 
 </div>
 
- {{ form_widget(profileForm._token_profile) }} 
+{# Token CSRF pour sécuriser le formulaire #}
+{{ form_widget(profileForm._token_profile) }}

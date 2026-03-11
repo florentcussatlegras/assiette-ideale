@@ -1,7 +1,27 @@
-<div {{ stimulus_controller('autocomplete', { url: path('meal_day_list_ajax'), skipHiddenProperty: true } ) | stimulus_controller('autocomplete-transition', {}) }} data-action="toggle->autocomplete-transition#toggle">
+{# Conteneur principal pour l'autocomplétion avec Stimulus #}
+<div 
+    {{ stimulus_controller('autocomplete', { 
+        url: path('meal_day_list_ajax'),  # URL pour récupérer les résultats en AJAX
+        skipHiddenProperty: true          # Ignore les champs cachés dans la recherche
+    }) 
+    | stimulus_controller('autocomplete-transition', {}) }}  {# Ajoute les transitions visuelles #}
+    data-action="toggle->autocomplete-transition#toggle"       {# Déclenche l’ouverture/fermeture des résultats #}
+>
 
-	<input name="q" type="search" class="block p-4 w-full rounded-lg border border-slate-800" placeholder="Aliment, plat..." data-autocomplete-target="input">
+    {# Champ de recherche principal #}
+    <input 
+        name="q" 
+        type="search" 
+        class="block p-4 w-full rounded-lg border border-slate-800" 
+        placeholder="Aliment, plat..." 
+        data-autocomplete-target="input"  {# Cible Stimulus pour récupérer la saisie #}
+    >
 
-	<div class="search-preview border rounded overflow-y-auto" data-autocomplete-target="results" data-autocomplete-transition-target="results"></div>
+    {# Conteneur des résultats de la recherche #}
+    <div 
+        class="search-preview border rounded overflow-y-auto" 
+        data-autocomplete-target="results"          {# Cible Stimulus pour injecter les résultats #}
+        data-autocomplete-transition-target="results" {# Cible Stimulus pour les transitions #}
+    ></div>
 
 </div>

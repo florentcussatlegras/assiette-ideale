@@ -1,0 +1,60 @@
+{# partials/dish/_quantities_recommended_by_portion.html.twig #}
+
+<div 
+    {{ stimulus_controller('dish-recommended-quantities-by-portion', {
+        url: path('app_dish_quantities_recommended_by_portion', { 'id': dish.id, 'portion': 0 })
+    }) }}
+>
+    {# Conteneur principal contrôlé par Stimulus 
+       - Controller : dish-recommended-quantities-by-portion
+       - URL pour charger les quantités recommandées via AJAX #}
+
+    <div class="flex flex-col items-start mt-4 mb-4">
+        <h1 class="text-xl font-bold mt-5">Quantités nutritionnelles</h1>
+        {# Titre de la section #}
+
+        <select 
+            class="border rounded px-2 py-1"
+            data-action="change->dish-recommended-quantities-by-portion#change"
+            data-dish-recommended-quantities-by-portion-target="select"
+        >
+            {# Sélecteur du nombre de portions 
+               - Déclenche l'action Stimulus 'change' 
+               - Target : select #}
+            {% for i in 1..20 %}
+                <option value="{{ i }}" {% if i == portion %}selected{% endif %}>
+                    {{ i }} portion{{ i > 1 ? 's' : '' }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div data-dish-recommended-quantities-by-portion-target="content">
+        {# Contenu des quantités recommandées qui sera mis à jour dynamiquement #}
+
+        <div class="flex flex-col md:flex-row gap-4 flex-1 justify-around border p-4 rounded-xl border-gray-200">
+            {# Conteneur principal affichant les groupes alimentaires et nutriments #}
+
+            <div class="flex flex-col">
+                <h3 class="font-semibold mt-0">Groupes alimentaires</h3>
+                {# Affichage des groupes alimentaires avec quantité en grammes #}
+                {% for fgpAlias, quantity in results.fgpQuantitiesForNPortion %}
+                    <div>{{ fgpAlias }} : {{ quantity|round }} g</div>
+                {% endfor %}
+            </div>
+
+            <div class="flex flex-col">
+                <h3 class="font-semibold mt-0">Nutriments</h3>
+                {# Affichage des principaux nutriments arrondis #}
+                <div>Protéines : {{ results.protein|round}} g</div>
+                <div>Lipides : {{ results.lipid|round }} g</div>
+                <div>Glucides : {{ results.carbohydrate|round }} g</div>
+                <div>Sodium : {{ results.sodium|round }} g</div>
+                <div>Énergie : {{ results.energy|round }} Kcal</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
