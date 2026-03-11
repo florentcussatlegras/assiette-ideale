@@ -67,11 +67,8 @@
 
         <div class="flex w-full">
 
-            {# Espace à gauche pour l'alignement des checkboxes #}
-            <div class="flex items-center" style="width: 2%"></div>
-
             {# Container principal des repas #}
-            <div class="flex flex-col lg:flex-row items-start lg:items-center pb-4 relative gap-2 lg:gap-0" style="width: 98%">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center pb-4 relative gap-2 lg:gap-0 w-full">
 
                 {# Placeholder invisible sur mobile pour la colonne de gauche #}
                 <div class ="my-hidden md:flex flex-col relative mb-2" style="width: 50%"></div>
@@ -100,7 +97,7 @@
                 </div>
 
                 {# Version mobile pour énergie et FGP #}
-                <div class="flex flex-col md:my-hidden relative items-start gap-6" style="width: 100%">
+                <div class="flex flex-col md:my-hidden relative items-start gap-6 w-full">
 
                     <div class="flex md:py-2 text-xl -ml-5">
                         {{ render(path('meal_day_show_total_energy', {'bg': 'bg-transparent'})) }}
@@ -164,9 +161,7 @@
     {# Ligne pour ajouter un nouveau repas avec checkbox de sélection globale #}
     <div class="flex w-full items-center">
 
-        <div style="width: 2%"></div>
-
-        <div class="flex items-center justify-start relative" style="width: 98%">
+        <div class="flex items-center justify-start relative w-full">
 
             {% if app.session.get('_meal_day_date') != 'model' %}
                 {# Checkbox pour sélectionner tous les repas (mobile et desktop) #}

@@ -2,7 +2,7 @@
     
     {# Petit badge d’alerte en haut à gauche si ce n’est pas un modèle #}
     {% if app.session.get('_meal_day_date') != 'model' %}
-        <div class="alerts absolute -top-2 -left-2 bg-gray-200 w-10 h-10 rounded-full">
+        <div class="alerts absolute -top-2 -left-2 bg-gray-200 w-12 h-12 rounded-full">
             {# Cercle gris simulant l’icône d’alerte #}
         </div>
     {% endif %}
@@ -17,7 +17,7 @@
         <div class="flex flex-col justify-around px-4 leading-normal gap-2">
 
             {# Nom du plat / titre #}
-            <div class="text-base tracking-tight bg-gray-300"></div>
+            <div class="text-base tracking-tight bg-gray-300 h-8 rounded-lg"></div>
 
             {# Liste des groupes alimentaires (FGP) #}
             <div class="list-fgp flex flex-row gap-2">
