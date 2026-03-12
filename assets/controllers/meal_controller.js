@@ -1,6 +1,10 @@
 import { Controller } from '@hotwired/stimulus';
 import Swal from 'sweetalert2';
 
+/**
+ * Stimulus controller chargé de gérer la sélection, l'ajout et la suppression 
+ * de repas et de plats dans une journée, avec vérifications et alertes.
+ */
 export default class extends Controller {
 
     indexDishesSelected = [];
@@ -27,15 +31,16 @@ export default class extends Controller {
     }
 
     connect() {
+        // Associer les listeners pour mettre à jour les boutons de suppression
         this.selectMealTargets.forEach(el => el.addEventListener('change', () => this.updateRemoveButton()));
         this.selectAllMealsTargets.forEach(el => el.addEventListener('change', () => this.selectAllMeals({currentTarget: el})));
         
-        // On fait un premier check au cas où certaines sont déjà cochées
+        // Premier check au cas où certaines checkbox sont déjà cochées
         this.updateRemoveButton();
     }
     
+    // Supprime tous les repas sélectionnés après confirmation
     removeMeals(event) {
-
         Swal.fire({
             title: 'Confirmation',
             text: 'Etes-vous sûr de vouloir supprimer tous ces repas?',
@@ -51,6 +56,7 @@ export default class extends Controller {
         });
     }
 
+    // Supprime un repas spécifique après confirmation
     onRemoveMeal(event) {
         const rankMeal = event.currentTarget.dataset.rankMeal;
        
@@ -64,178 +70,94 @@ export default class extends Controller {
             confirmButtonText: 'Oui',
             showLoaderOnConfirm: true,
             preConfirm: () => {
-                const params = new URLSearchParams({
-                    'rankMeal': rankMeal
-                });
+                const params = new URLSearchParams({ 'rankMeal': rankMeal });
                 fetch(`${this.urlRemoveMealValue}?${params.toString()}`)
-                    .then((response) => {
-                        return this.refreshContent()
-                    });
+                    .then(() => this.refreshContent());
             }
         });
     }
 
+    // Ajoute un nouveau repas après vérifications
     onAddMeal(event) {
-
         document.getElementById('loader-new-meal').classList.replace('flex', 'hidden');
 
         if(this.lastRankMealValue !== "none") {
-
             const lastMealElement = document.getElementById('meal-' + this.lastRankMealValue);
 
-            // On vérifie que le dernier repas a bien un type
+            // Vérifie que le dernier repas a un type sélectionné
             const types = lastMealElement.getElementsByClassName('type-meal');
-            let typeChecked = false;
-
-            Array.from(types).forEach((element) => {
-                if(element.checked == true) {
-                    typeChecked = true;
-                }
-            });
-
-            if(typeChecked == false) {
-                
+            let typeChecked = Array.from(types).some(element => element.checked);
+            if(!typeChecked) {
                 Swal.fire({
                     title: "Attention!",
                     text: "Vous n'avez pas précisé de type pour votre dernier repas",
                     icon: "warning",
-                    customClass: {
-                        confirmButton: `
-                            text-white
-                            bg-sky-600 
-                            hover:bg-sky-700 
-                            transition 
-                            duration-300 
-                            font-semibold
-                            rounded-lg
-                            px-4
-                            py-2
-                        `
-                    },
+                    customClass: { confirmButton: "text-white bg-sky-600 hover:bg-sky-700 transition duration-300 font-semibold rounded-lg px-4 py-2" },
                     buttonsStyling: false
-                })
-
+                });
                 return;
             }
 
-            // On vérifie que le dernier repas contient bien des plats/aliments
+            // Vérifie que le dernier repas contient au moins un plat
             const dishes = lastMealElement.getElementsByClassName('row-dish');
-
             if (dishes.length === 0 ) {
-                
                 Swal.fire({
                     title: "Attention!",
                     text: "Vous n'avez pas saisis de plats pour votre dernier repas",
                     icon: "warning",
-                    customClass: {
-                        confirmButton: `
-                            text-white
-                            bg-sky-600 
-                            hover:bg-sky-700 
-                            transition 
-                            duration-300 
-                            font-semibold
-                            rounded-lg
-                            px-4
-                            py-2
-                        `
-                    },
+                    customClass: { confirmButton: "text-white bg-sky-600 hover:bg-sky-700 transition duration-300 font-semibold rounded-lg px-4 py-2" },
                     buttonsStyling: false
-                })
-
+                });
                 return;
             }
         }
 
+        // Requête pour ajouter le repas
         fetch(this.urlAddMealValue)
-            .then((response) => {
-                this.refreshContent();
-            })
-            .then((text) => {
-                document.getElementById('loader-new-meal').classList.replace('hidden', 'flex');
-            });
-
+            .then(() => this.refreshContent())
+            .then(() => document.getElementById('loader-new-meal').classList.replace('hidden', 'flex'));
     }
 
+    // Recharge le contenu des repas via AJAX
     async refreshContent() {
-        const params = new URLSearchParams({
-            'ajax': 1
-        })
+        const params = new URLSearchParams({ 'ajax': 1 });
         const response = await fetch(`${this.urlReloadValue}?${params.toString()}`);
         document.getElementById('meals-day').innerHTML = await response.text();
     }
 
+    // Sauvegarde les repas après vérifications et alertes de déséquilibre
     saveMeals(event) {
-
         const urlRedirect = event.currentTarget.dataset.url;
         const meals = document.querySelectorAll('.meal');
-     
-        let displayErrorType = false;
 
-        meals.forEach((element) => {
-            let typeChecked = false;
+        // Vérifie que chaque repas a un type
+        const displayErrorType = Array.from(meals).some(element => {
             const typeMeals = element.querySelectorAll('.type-meal');
-            typeMeals.forEach((element) => {
-                if(element.checked == true) {
-                    typeChecked = true;
-                }
-            });
-            if (typeChecked == false) {
-                displayErrorType = true;
-            }
+            return !Array.from(typeMeals).some(type => type.checked);
         });
 
-        if(displayErrorType == true) {
-            Swal.fire({
-                title: "Attention!",
-                text: "Merci d'indiquer un type pour tous vos repas",
-                icon: "warning",
-                confirmButtonColor: "#0284c7"
-            });
-
+        if(displayErrorType) {
+            Swal.fire({ title: "Attention!", text: "Merci d'indiquer un type pour tous vos repas", icon: "warning", confirmButtonColor: "#0284c7" });
             return;
         }
 
-        // On vérifie que tous les repas contiennent bien des plats/aliments
-        let noDishesSelected = false;
-        meals.forEach((element) => {
-            const dishes = element.querySelectorAll('.row-dish');
-            if (dishes.length === 0 ) {
-                noDishesSelected = true;
-            }
-        });
-
-        if(noDishesSelected === true) {
-            Swal.fire({
-                title: "Attention!",
-                text: "Un de vos repas ne contient pas de plats ou d'aliments",
-                icon: "warning",
-                confirmButtonColor: "#0284c7"
-            });
-
+        // Vérifie que tous les repas contiennent des plats
+        const noDishesSelected = Array.from(meals).some(element => element.querySelectorAll('.row-dish').length === 0);
+        if(noDishesSelected) {
+            Swal.fire({ title: "Attention!", text: "Un de vos repas ne contient pas de plats ou d'aliments", icon: "warning", confirmButtonColor: "#0284c7" });
             return;
         }
-        
+
+        // Vérification de l'équilibre des repas
         let wellBalanced = true;
         let text = '<ul><li>Vos repas sont déséquilibrés.</li>';
-
-        if(this.alertCountTarget.value > 0) {
-            wellBalanced = false;
-            text += '<li>Certains aliments ou plats sont déconseillés.</li>';
-        }
-        if(this.fgpRemainingTargets.length > 0) {
-            wellBalanced = false;
-            text += '<li>Certains groupes d\'aliments n\'apparaissent pas dans vos choix.</li>';
-        }
-        if(this.alertEnergyTarget.value == "1") {
-            text += '<li>Votre total énergétique est trop fort. </li>';
-        }
-        if(this.alertEnergyTarget.value == "-1") {
-            text += '<li>Votre total énergétique est trop faible.</li>';
-        }
+        if(this.alertCountTarget.value > 0) { wellBalanced = false; text += '<li>Certains aliments ou plats sont déconseillés.</li>'; }
+        if(this.fgpRemainingTargets.length > 0) { wellBalanced = false; text += '<li>Certains groupes d\'aliments n\'apparaissent pas dans vos choix.</li>'; }
+        if(this.alertEnergyTarget.value == "1") { text += '<li>Votre total énergétique est trop fort. </li>'; }
+        if(this.alertEnergyTarget.value == "-1") { text += '<li>Votre total énergétique est trop faible.</li>'; }
         text += '<li>Etes-vous sûr de vouloir les enregistrer?</li></ul>';
 
-        if(wellBalanced == false) {
+        if(!wellBalanced) {
             Swal.fire({
                 title: 'Etes-vous sûr?',
                 html: text,
@@ -245,70 +167,43 @@ export default class extends Controller {
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Oui',
                 showLoaderOnConfirm: true,
-                preConfirm: () => {
-                    document.location.href = urlRedirect;
-                }
+                preConfirm: () => { document.location.href = urlRedirect; }
             });
-            
-            return
+            return;
         }
-        
+
         document.location.href = urlRedirect;
     }
 
+    // Gestion de la sélection individuelle des plats
     selectDish(event) {
+        const rankMeal = event.currentTarget.dataset.rankMeal;
+        const displayBtnRemoveSelection = this.selectDishTargets.some(el => el.dataset.rankMeal == rankMeal && el.checked);
 
-        var displayBtnRemoveSelection = false;
-        var rankMeal = event.currentTarget.dataset.rankMeal;
-
-        this.selectDishTargets.forEach((element) => {
-            if(element.dataset.rankMeal == rankMeal && element.checked == true) {
-                displayBtnRemoveSelection = true;
-            }
-        });
-
-        if(displayBtnRemoveSelection == true) {
+        if(displayBtnRemoveSelection) {
             this.btnRemoveSelectionTargets[parseInt(rankMeal)].classList.remove('hidden');
-        }else{
+        } else {
             this.btnRemoveSelectionTargets[parseInt(rankMeal)].classList.add('hidden');
             this.selectAllDishesTargets[parseInt(rankMeal)].checked = false;
         }
-
-        
     }
 
+    // Gestion de la sélection de tous les plats d'un repas
     selectAllDishes(event) {
+        const rankMeal = event.currentTarget.dataset.rankMeal;
+        const btnRemoveMealSelection = this.btnRemoveSelectionTargets.find(el => el.dataset.rankMeal == rankMeal);
 
-        var rankMeal = event.currentTarget.dataset.rankMeal;
+        btnRemoveMealSelection.classList.toggle('hidden', !event.currentTarget.checked);
 
-        const btnRemoveMealSelection = this.btnRemoveSelectionTargets.find((element) => element.dataset.rankMeal == rankMeal);
-
-        if(event.currentTarget.checked == true) {
-            btnRemoveMealSelection.classList.remove('hidden');
-        }else{
-            btnRemoveMealSelection.classList.add('hidden');
-        }
-
-        this.selectDishTargets.forEach((element) => {
-            if(element.dataset.rankMeal == rankMeal) {
-                if(event.currentTarget.checked == true) {
-                    element.checked = true;
-                } else {
-                    element.checked = false;
-                }
-            }
+        this.selectDishTargets.forEach(el => {
+            if(el.dataset.rankMeal == rankMeal) el.checked = event.currentTarget.checked;
         });
-
     }
 
+    // Supprime les plats sélectionnés après confirmation
     onRemoveSelection(event) {
-
         this.urlRemoveSelection = event.currentTarget.dataset.urlRemoveSelection;
-        const dishesSelected = this.selectDishTargets.filter((element) => element.checked == true);
-    
-        dishesSelected.forEach((element) => {
-            this.indexDishesSelected.push(element.value);
-        });
+        this.indexDishesSelected = this.selectDishTargets.filter(el => el.checked).map(el => el.value);
 
         Swal.fire({
             title: 'Confirmation',
@@ -319,84 +214,54 @@ export default class extends Controller {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Oui',
             showLoaderOnConfirm: true,
-            preConfirm: () => {
-                this.removeSelection();
-            }
+            preConfirm: () => this.removeSelection()
         });
-
     }
 
+    // Exécute la suppression des plats sélectionnés et recharge le contenu
     async removeSelection() {
-        const params = new URLSearchParams({
-            'ajax': 1,
-            'rankDishes': this.indexDishesSelected
-        });
-        await(fetch(`${this.urlRemoveSelection}?${params.toString()}`));
+        const params = new URLSearchParams({ 'ajax': 1, 'rankDishes': this.indexDishesSelected });
+        await fetch(`${this.urlRemoveSelection}?${params.toString()}`);
         const response = await fetch(this.urlReloadValue);
         document.getElementById('meals-day').innerHTML = await response.text();
     }
 
+    // Met à jour l'affichage du bouton de suppression pour les repas
     updateRemoveButton() {
-        const checkedValues = this.selectMealTargets
-        .filter(el => el.checked)
-        .map(el => el.value);
+        const checkedValues = this.selectMealTargets.filter(el => el.checked).map(el => el.value);
+        this.btnRemoveMealSelectionTarget.classList.toggle('hidden', checkedValues.length === 0);
 
-        // console.log('--- updateRemoveButton ---');
-        // console.log('Checkboxes encore cochées (réellement):', checkedValues);
-
-        // Affiche ou cache le bouton de suppression
-        if (checkedValues.length > 0) {
-            this.btnRemoveMealSelectionTarget.classList.remove('hidden');
-        } else {
-            this.btnRemoveMealSelectionTarget.classList.add('hidden');
-        }
-
-        // Synchronise la checkbox "Tous"
         const allChecked = this.selectMealTargets.every(el => el.checked);
         this.selectAllMealsTargets.forEach(el => el.checked = allChecked);
     }
 
+    // Gestion de la sélection individuelle des repas
     selectMeal(event) {
         const value = event.currentTarget.value;
         const checked = event.currentTarget.checked;
 
-        // Synchronise toutes les checkbox avec la même valeur
-        this.selectMealTargets.forEach(el => {
-            if (el.value === value) {
-                el.checked = checked;
-            }
-        });
-        
+        this.selectMealTargets.forEach(el => { if(el.value === value) el.checked = checked; });
         this.updateRemoveButton();
     }
 
-    testToggleSelectAll() {
-        this.selectAllMealsTarget.checked = true;
-    }
+    // Coche toutes les meals (utilitaires)
+    testToggleSelectAll() { this.selectAllMealsTarget.checked = true; }
+    forceCheck() { this.selectAllMealsTarget.checked = true; }
 
-    forceCheck() {
-        this.selectAllMealsTarget.checked = true;
-    }
-
+    // Gestion de la sélection globale des repas
     selectAllMeals(event) {
         const checked = event.currentTarget.checked;
-
-        // Coche ou décoche tous les meals
         this.selectMealTargets.forEach(el => el.checked = checked);
-
-        // Met à jour le bouton et la checkbox "tous"
         this.updateRemoveButton();
     }
 
+    // Supprime plusieurs repas sélectionnés après confirmation
     onRemoveMealSelection(event) {
-
-        event.preventDefault(); 
-
+        event.preventDefault();
         this.urlRemoveSelection = event.currentTarget.dataset.urlRemoveSelection;
-        const mealsSelected = this.selectMealTargets.filter((element) => element.checked == true);
 
         this.indexMealsSelected = [
-            ...new Set(mealsSelected.map(element => element.value))
+            ...new Set(this.selectMealTargets.filter(el => el.checked).map(el => el.value))
         ];
 
         Swal.fire({
@@ -408,21 +273,15 @@ export default class extends Controller {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Oui',
             showLoaderOnConfirm: true,
-            preConfirm: () => {
-                this.removeMealSelection();
-            }
+            preConfirm: () => this.removeMealSelection()
         });
-
     }
 
+    // Exécute la suppression des repas sélectionnés et recharge le contenu
     async removeMealSelection() {
-        const params = new URLSearchParams({
-            'ajax': 1,
-            'rankMeals': this.indexMealsSelected
-        });
+        const params = new URLSearchParams({ 'ajax': 1, 'rankMeals': this.indexMealsSelected });
         console.log(`${this.urlRemoveSelection}?${params.toString()}`);
-        await(fetch(`${this.urlRemoveSelection}?${params.toString()}`));
-
+        await fetch(`${this.urlRemoveSelection}?${params.toString()}`);
         const response = await fetch(this.urlReloadValue);
         document.getElementById('meals-day').innerHTML = await response.text();
     }

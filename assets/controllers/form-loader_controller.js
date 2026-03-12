@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
+/**
+ * Stimulus controller générique chargé de gérer les boutons loader des formulaires
+ */
 export default class extends Controller {
     static targets = ["label", "button", "spinner"]
 

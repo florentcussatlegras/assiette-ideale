@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
+/**
+ * Stimulus controller chargé de gérer la fixation css des boutons d'ajout de nouveau repas du jour
+ */
 export default class extends Controller {
     static targets = ["buttons", "container"]
 

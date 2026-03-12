@@ -3,7 +3,15 @@ import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
 import Swal from "sweetalert2";
 
+/**
+ * Stimulus controller responsable du dashboard de statistiques nutritionnelles basé sur une plage de dates.
+ */
 export default class extends Controller {
+
+  /**
+   * Valeurs dynamiques injectées depuis Twig.
+   * Utilisées pour construire les requêtes AJAX vers le backend.
+   */
   static values = {
     start: String,
     end: String,
@@ -13,6 +21,10 @@ export default class extends Controller {
     urlLoadMostCaloricMeal: String,
   };
 
+  /**
+   * Références DOM utilisées par le controller.
+   * Elles correspondent aux data-*-target déclarés dans le template Twig.
+   */
   static targets = [
     "content",
     "contentFavorite",
@@ -30,19 +42,34 @@ export default class extends Controller {
     "mostCaloricMeal",
   ];
 
+  /**
+   * Lifecycle Stimulus.
+   * Initialise l'état du controller et déclenche le premier chargement.
+   */
   connect() {
     this.initFlatpickr();
     this.initTabRangeStyle();
     this.initStartEndValues();
 
+    // Synchronise l'onglet actif avec la plage de dates actuelle
     this.activateMatchingTab();
 
+    // Chargement initial du dashboard
     this.loadContent();
   }
 
   // ------------------------------------------------------
-  // 📌 1) Initialisation de Flatpickr
+  // 📌 1) Initialisation du sélecteur de dates
   // ------------------------------------------------------
+
+  /**
+   * Initialise les deux instances Flatpickr.
+   *
+   * Les pickers sont liés afin de garantir la cohérence
+   * entre date de début et date de fin :
+   * - start ne peut pas être > end
+   * - end ne peut pas être < start
+   */
   initFlatpickr() {
     if (!this.startTarget || !this.endTarget) return;
 
@@ -51,7 +78,7 @@ export default class extends Controller {
       onChange: (selectedDates, dateStr) => {
         this.startValue = dateStr;
 
-        // Empêche start > end
+        // Si start dépasse end → on réaligne end automatiquement
         if (
           selectedDates[0] &&
           this.endPicker.selectedDates[0] &&
@@ -60,6 +87,7 @@ export default class extends Controller {
           this.endPicker.setDate(selectedDates[0], true);
         }
 
+        // Empêche de sélectionner une fin antérieure
         this.endPicker.set("minDate", selectedDates[0]);
       },
     });
@@ -69,7 +97,7 @@ export default class extends Controller {
       onChange: (selectedDates, dateStr) => {
         this.endValue = dateStr;
 
-        // Empêche end < start
+        // Si end précède start → on réaligne start automatiquement
         if (
           selectedDates[0] &&
           this.startPicker.selectedDates[0] &&
@@ -78,18 +106,28 @@ export default class extends Controller {
           this.startPicker.setDate(selectedDates[0], true);
         }
 
+        // Empêche de sélectionner un début après la fin
         this.startPicker.set("maxDate", selectedDates[0]);
       },
     });
   }
 
   // ------------------------------------------------------
-  // 📌 2) Quand on clique sur un bouton date ou valider
+  // 📌 2) Gestion des interactions de sélection de dates
   // ------------------------------------------------------
+
+  /**
+   * Appliquée lorsqu'un utilisateur :
+   * - clique sur un bouton de plage rapide
+   * - valide une plage personnalisée
+   *
+   * Valide les données puis déclenche le rechargement
+   * des statistiques pour la nouvelle période.
+   */
   setDates(event) {
     const target = event.currentTarget;
 
-    // Si bouton rapide → utilise ses dates prédéfinies
+    // Bouton rapide (ex: semaine, mois...)
     if (target.dataset.start && target.dataset.end) {
       this.startValue = target.dataset.start;
       this.endValue = target.dataset.end;
@@ -97,11 +135,12 @@ export default class extends Controller {
       this.startTarget.value = this.startValue;
       this.endTarget.value = this.endValue;
     } else {
-      // Sinon on prend les valeurs saisies
+
+      // Plage personnalisée
       this.startValue = this.startTarget.value;
       this.endValue = this.endTarget.value;
 
-      // 🔴 Vérification champs vides
+      // Validation simple côté UI
       if (!this.startValue || !this.endValue) {
         Swal.fire({
           icon: "warning",
@@ -111,7 +150,6 @@ export default class extends Controller {
         return;
       }
 
-      // 🔴 Vérification start <= end
       if (new Date(this.startValue) > new Date(this.endValue)) {
         Swal.fire({
           icon: "error",
@@ -122,13 +160,20 @@ export default class extends Controller {
       }
     }
 
+    // Synchronisation UI + rafraîchissement données
     this.activateMatchingTab();
     this.loadContent();
   }
 
   // ------------------------------------------------------
-  // 📌 3) Initialisation affichage et valeurs par défaut
+  // 📌 3) Initialisation des valeurs par défaut
   // ------------------------------------------------------
+
+  /**
+   * Détermine la plage de dates initiale :
+   * - soit issue d'une navigation précédente
+   * - soit définie par défaut dans le template
+   */
   initStartEndValues() {
     const inputStart = document.getElementById("startFromWeekMenu");
     const inputEnd = document.getElementById("endFromWeekMenu");
@@ -146,38 +191,48 @@ export default class extends Controller {
   }
 
   // ------------------------------------------------------
-  // 📌 4) Gestion des onglets (style UI)
+  // 📌 4) Gestion du style des onglets de période
   // ------------------------------------------------------
+
+  /**
+   * Gère le comportement visuel des onglets de plage rapide.
+   * L'objectif est uniquement UI (pas de logique métier ici).
+   */
   initTabRangeStyle() {
     const tabs = document.querySelectorAll(".tabs-date-range_tab");
 
     tabs.forEach((tab) => {
       tab.addEventListener("click", (e) => {
+
+        // reset de tous les onglets
         tabs.forEach((t) => {
           t.classList.replace("text-white", "text-gray-900");
-          t.classList.remove("hover:text-white");
-          t.classList.add("hover:text-gray-900");
           t.classList.replace("bg-sky-600", "bg-gray-100");
-          t.classList.remove("hover:bg-gray-600");
-          t.classList.add("hover:bg-gray-900");
         });
 
+        // activation onglet sélectionné
         if (!tab.classList.contains("date-picker")) {
           tab.classList.replace("text-gray-900", "text-white");
-          tab.classList.remove("hover:text-gray-900");
-          tab.classList.add("hover:text-white");
           tab.classList.replace("bg-gray-100", "bg-sky-600");
-          tab.classList.remove("hover:bg-gray-900");
-          tab.classList.add("hover:bg-sky-600");
         }
       });
     });
   }
 
   // ------------------------------------------------------
-  // 📌 5) Chargement AJAX
+  // 📌 5) Chargement asynchrone des statistiques
   // ------------------------------------------------------
+
+  /**
+   * Charge les différents blocs statistiques via AJAX.
+   *
+   * Chaque bloc est indépendant afin de permettre
+   * un rendu progressif et améliorer la perception
+   * de performance côté utilisateur.
+   */
   loadContent() {
+
+    // état loading UI
     this.contentTarget.classList.add("hidden");
     this.contentFavoriteTarget.classList.add("hidden");
     this.loaderTarget.classList.remove("hidden");
@@ -189,6 +244,7 @@ export default class extends Controller {
       ajax: 1,
     });
 
+    // bloc principal statistiques
     fetch(`${this.urlLoadContentValue}?${params}`)
       .then((r) => r.text())
       .then((html) => {
@@ -196,6 +252,7 @@ export default class extends Controller {
         this.contentTarget.classList.remove("hidden");
         this.loaderTarget.classList.add("hidden");
 
+        // activation toggles des alert details
         this.showDetailsAlertTargets.forEach((btn, key) => {
           btn.addEventListener("click", () => {
             this.detailsAlertTargets[key].classList.toggle("hidden");
@@ -204,6 +261,7 @@ export default class extends Controller {
         });
       });
 
+    // statistiques secondaires
     fetch(`${this.urlLoadFavoriteDishValue}?${params}`)
       .then((r) => r.text())
       .then((html) => (this.favoriteDishTarget.innerHTML = html));
@@ -216,57 +274,9 @@ export default class extends Controller {
       .then((r) => r.text())
       .then((html) => {
         this.mostCaloricMealTarget.innerHTML = html;
+
+        // affichage final du bloc favoris
         this.contentFavoriteTarget.classList.remove("hidden");
         this.loaderFavoriteTarget.classList.add("hidden");
       });
   }
-
-  normalizeDate(dateStr) {
-    if (!dateStr) return null;
-
-    const d = new Date(dateStr);
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    const year = d.getFullYear();
-
-    return `${month}/${day}/${year}`;
-  }
-
-  activateMatchingTab() {
-    const tabs = document.querySelectorAll(".tabs-date-range_tab");
-
-    const currentStart = this.normalizeDate(this.startValue);
-    const currentEnd = this.normalizeDate(this.endValue);
-
-    let matched = false;
-
-    tabs.forEach((tab) => {
-        const tabStart = this.normalizeDate(tab.dataset.start);
-        const tabEnd = this.normalizeDate(tab.dataset.end);
-
-        // reset styles
-        tab.classList.replace("text-white", "text-gray-900");
-        tab.classList.remove("hover:text-white");
-        tab.classList.add("hover:text-gray-900");
-        tab.classList.replace("bg-sky-600", "bg-gray-100");
-        tab.classList.remove("hover:bg-sky-600");
-        tab.classList.add("hover:bg-gray-900");
-
-        // match exact dates
-        if (tabStart === currentStart && tabEnd === currentEnd) {
-            tab.classList.replace("text-gray-900", "text-white");
-            tab.classList.remove("hover:text-gray-900");
-            tab.classList.add("hover:text-white");
-            tab.classList.replace("bg-gray-100", "bg-sky-600");
-            tab.classList.remove("hover:bg-gray-900");
-            tab.classList.add("hover:bg-sky-600");
-            
-            matched = true;
-        }
-    });
-}
-
-  
-
-
-}

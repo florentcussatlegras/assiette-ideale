@@ -2,8 +2,23 @@ import { Controller } from '@hotwired/stimulus';
 import { useDispatch } from 'stimulus-use';
 import Swal from 'sweetalert2';
 
-export default class  extends Controller {   
+/**
+ * Controller Stimulus chargé de gérer les interactions liées aux items
+ * alimentaires dans un repas.
+ *
+ * Fonctionnalités principales :
+ * - ajout et mise à jour d’items
+ * - suppression d’items
+ * - gestion d’une liste d’items présélectionnés
+ * - recalcul de l’énergie totale
+ * - rechargement dynamique des repas via AJAX
+ * - ouverture / fermeture du slideover
+ */
+export default class extends Controller {
 
+    /**
+     * URLs injectées depuis Twig.
+     */
     static values = {
         urlReloadMeals: String,
         urlAddItem: String,
@@ -13,256 +28,294 @@ export default class  extends Controller {
     }
 
     connect() {
-        // console.log('connection sidebar-list-dishes réussie');
+        /**
+         * Active la fonctionnalité dispatch fournie par stimulus-use.
+         */
         useDispatch(this);
     }
 
+    /**
+     * Vérifie que la quantité saisie est correcte.
+     */
+    validateQuantity(quantity) {
+
+        if (!quantity || quantity <= 0 || quantity === 'Aucune') {
+
+            Swal.fire({
+                title: "Attention!",
+                text: "Veuillez saisir une quantité valide",
+                icon: "warning",
+                confirmButtonColor: "#0284c7"
+            });
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Récupère les données saisies dans l'interface
+     * pour un item spécifique.
+     */
+    getItemData(id) {
+
+        // Sélectionne l'input contenant la quantité pour cet item
+        const quantity = document.querySelector(`.quantity-${id}`)?.value;
+
+        // Sélectionne le select contenant l'unité de mesure
+        const unitMeasureId = document.querySelector(`.unitMeasure-${id}`)?.value;
+
+        // Retourne les deux valeurs sous forme d'objet
+        return { quantity, unitMeasureId };
+    }
+
+    /**
+     * Recalcule l'énergie totale affichée dans la sidebar.
+     */
+    async updateEnergy() {
+
+        // Appel AJAX vers la route de recalcul d'énergie
+        const response = await fetch(this.urlReloadEnergyLabelValue);
+
+        // Récupère le HTML retourné par le serveur
+        const html = await response.text();
+
+        // Remplace le contenu actuel de l'affichage énergie
+        document.getElementById('sidebarTotalEnergy').innerHTML = html;
+    }
+
+    /**
+     * Méthode utilitaire qui construit une requête fetch
+     * avec des paramètres sous forme de query string.
+     */
+    async fetchWithParams(url, params) {
+
+        // Construit l'URL finale avec les paramètres
+        return fetch(`${url}?${params.toString()}`);
+    }
+
+    /**
+     * Ajoute un item dans un repas.
+     */
     async addItem(event) {
-        const btnAdd = event.currentTarget;
-        const id = btnAdd.dataset.itemId;
-        const quantity = document.querySelector(".quantity-" + String(id)).value;
 
-        if(quantity === '' || quantity === null || quantity === 'undefined' || quantity <= 0 || quantity === 'Aucune') {
-            Swal.fire({
-                title: "Attention!",
-                text: "Veuillez saisir une quantité valide",
-                icon: "warning",
-                confirmButtonColor: "#0284c7"
-            })
-    
-            return;
-        }
+        // Bouton cliqué
+        const btn = event.currentTarget;
 
-        const unitMeasureId = document.querySelector(".unitMeasure-" + String(id)).value;
+        // ID de l'item récupéré depuis le data attribute
+        const id = btn.dataset.itemId;
 
-        let params = new URLSearchParams({
-            id: id,
-            type: btnAdd.dataset.itemType,
-            rankMeal: btnAdd.dataset.rankMeal,
-            rankDish: btnAdd.dataset.rankDish,
-            quantity: quantity,
+        // Récupération des données saisies dans l'interface
+        const { quantity, unitMeasureId } = this.getItemData(id);
+
+        // Validation de la quantité
+        if (!this.validateQuantity(quantity)) return;
+
+        // Construction des paramètres envoyés au backend
+        const params = new URLSearchParams({
+            id,
+            type: btn.dataset.itemType,
+            rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish,
+            quantity,
             unitMeasure: unitMeasureId,
             ajax: 1
         });
 
-        fetch(`${this.urlAddItemValue}?${params.toString()}`)
-            .then((response) => {
-                this.toggleSlideover();
-                this.reloadMeals();
-            });
+        // Appel AJAX pour enregistrer l'item
+        await this.fetchWithParams(this.urlAddItemValue, params);
+
+        // Fermeture du panneau latéral
+        this.toggleSlideover();
+
+        // Rechargement de l'affichage des repas
+        this.reloadMeals();
     }
 
-    async addPreSelect(btnAdd) {
+    /**
+     * Met à jour la quantité d'un item déjà existant.
+     */
+    async updateItem(event) {
 
-        const urlPreselectItem = btnAdd.dataset.urlAddPreselectItem;
-        const id = btnAdd.dataset.itemId;
-        const quantity = document.querySelector(".quantity-" + String(id)).value;
-        const unitMeasureId = document.querySelector(".unitMeasure-" + String(id)).value;
-        const alertColor = document.querySelector(".alert-" + String(id)).dataset.alertColor;
-        const alertText = document.querySelector(".alert-" + String(id)).dataset.alertText;
+        const btn = event.currentTarget;
+        const id = btn.dataset.itemId;
 
+        const { quantity, unitMeasureId } = this.getItemData(id);
 
-        // ON AFFICHE LES PLATS PRESELECTIONNES
-        
-        let params = new URLSearchParams({
-            'rankMeal': btnAdd.dataset.rankMeal,
-            'rankDish': btnAdd.dataset.rankDish,
-            'quantity': quantity,
-            'unitMeasure': unitMeasureId,
-            'alertColor': alertColor,
-            'alertText': alertText,
-            'ajax': 1
-        });
+        if (!this.validateQuantity(quantity)) return;
 
-        console.log(`${urlPreselectItem}?${params.toString()}`);
-
-        fetch(`${urlPreselectItem}?${params.toString()}`)
-            .then((response) => response.text())
-            .then((text) => {
-                document.getElementById("listPreselectedItem").innerHTML += text;
-                document.getElementById("itemPreselected-" + id).classList.replace('fade-enter-from', 'fade-enter-to');
-                fetch(this.urlReloadEnergyLabelValue)
-                    .then((response) => {return response.text()})
-                    .then((text) => {
-                        document.getElementById('sidebarTotalEnergy').innerHTML = text;
-                    });
-        });
-
-
-    }
-
-    updateItem(event) {
-        const btnAdd = event.currentTarget;
-        const id = btnAdd.dataset.itemId;
-        const quantity = document.querySelector(".quantity-" + String(id)).value;
-
-        if(quantity === '' || quantity === null || quantity === 'undefined' || quantity <= 0 || quantity === 'Aucune') {
-            Swal.fire({
-                title: "Attention!",
-                text: "Veuillez saisir une quantité valide",
-                icon: "warning",
-                confirmButtonColor: "#0284c7"
-            })
-    
-            return;
-        }
-
-        const unitMeasureId = document.querySelector(".unitMeasure-" + String(id)).value;
-
-        let params = new URLSearchParams({
-            id: id,
-            type: btnAdd.dataset.itemType,
-            rankMeal: btnAdd.dataset.rankMeal,
-            rankDish: btnAdd.dataset.rankDish,
-            quantity: quantity,
+        const params = new URLSearchParams({
+            id,
+            type: btn.dataset.itemType,
+            rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish,
+            quantity,
             unitMeasure: unitMeasureId,
             ajax: 1
         });
 
-        console.log("j'update l'element à la session");
-        console.log(`${this.urlAddItemValue}?${params.toString()}`);
+        await this.fetchWithParams(this.urlAddItemValue, params);
 
-        fetch(`${this.urlAddItemValue}?${params.toString()}`)
-            .then((response) => {
-                this.toggleSlideover();
-                this.reloadMeals();
-            });
+        this.toggleSlideover();
+        this.reloadMeals();
     }
 
+    /**
+     * Ajoute un item dans la liste des items présélectionnés.
+     * Cette liste sert de prévisualisation dans le slideover.
+     */
+    async addPreSelect(btn) {
+
+        const id = btn.dataset.itemId;
+
+        const { quantity, unitMeasureId } = this.getItemData(id);
+
+        // Élément contenant les informations d'alerte nutritionnelle
+        const alert = document.querySelector(`.alert-${id}`);
+
+        const params = new URLSearchParams({
+            rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish,
+            quantity,
+            unitMeasure: unitMeasureId,
+            alertColor: alert.dataset.alertColor,
+            alertText: alert.dataset.alertText,
+            ajax: 1
+        });
+
+        const response = await this.fetchWithParams(btn.dataset.urlAddPreselectItem, params);
+
+        // HTML du nouvel item présélectionné
+        const html = await response.text();
+
+        // Ajout du HTML à la liste existante
+        document.getElementById("listPreselectedItem").innerHTML += html;
+
+        // Animation d'apparition de l'élément
+        document
+            .getElementById(`itemPreselected-${id}`)
+            .classList.replace('fade-enter-from', 'fade-enter-to');
+
+        // Recalcul de l'énergie totale
+        this.updateEnergy();
+    }
+
+    /**
+     * Réinitialise la quantité saisie pour un item.
+     */
     resetSelection(event) {
 
-        // On remet les champs selection quantité à zéro
         const id = event.currentTarget.dataset.itemId;
         const typeItem = event.currentTarget.dataset.itemType;
-        const selector = `.quantity-${id}`; // ou la classe/id réel
-        const el = document.querySelector(selector);
+
+        const el = document.querySelector(`.quantity-${id}`);
         if (!el) return;
 
-        // 1) set value
-        if(typeItem == 'Food') {
-            
-            el.value = '';
-        }else{
-            el.value = 'Aucune';
-        }
+        // Certains items utilisent une valeur vide,
+        // d'autres utilisent "Aucune"
+        el.value = typeItem === 'Food' ? '' : 'Aucune';
 
-        // 2) dispatch input (best)
-        const inputEvt = new InputEvent('input', { bubbles: true, cancelable: true });
-        el.dispatchEvent(inputEvt);
-
-
-        // On remet l'energie totale à sa valeur de départ
-        // fetch(`${this.urlAddItemValue}?${params.toString()}`)
-        //     .then((response) => {
-        //         this.toggleSlideover();
-        //         this.reloadMeals();
-        //     });
+        // Déclenche un événement input pour notifier l'interface
+        el.dispatchEvent(new InputEvent('input', { bubbles: true }));
     }
 
+    /**
+     * Supprime un item spécifique.
+     */
     async removeItem(event) {
 
-        const btnRemove = event.currentTarget;
-        const id = btnRemove.dataset.itemId;
+        const btn = event.currentTarget;
 
-        let params = new URLSearchParams({
-            'rankMeal': btnRemove.dataset.rankMeal,
-            'rankDish': btnRemove.dataset.rankDish,
-            'ajax': 1
+        const params = new URLSearchParams({
+            rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish,
+            ajax: 1
         });
 
-        console.log("je supprime l'element à la session");
-        console.log(`${this.urlRemoveItemValue}?${params.toString()}`);
+        // Suppression côté serveur
+        await this.fetchWithParams(this.urlRemoveItemValue, params);
 
-        fetch(`${this.urlRemoveItemValue}?${params.toString()}`)
-            .then((response) => {
-                this.removePreselect(btnRemove);
-            })
-            .then((text) => {
-                this.dispatch('async:remove-item');
-            });
+        // Mise à jour de la liste des présélections
+        await this.removePreselect(btn);
 
+        // Déclenche un événement custom
+        this.dispatch('async:remove-item');
     }
 
+    /**
+     * Supprime tous les items d'un repas.
+     */
     async removeAllItem() {
 
-        let params = new URLSearchParams({
-            'rankMeal': document.getElementById('slideOverRankMeal').value,
-            'rankDish': document.getElementById('slideOverRankDish').value,
-            'fromRankDishToTheEnd': true,
-            'ajax': 1
+        const params = new URLSearchParams({
+            rankMeal: document.getElementById('slideOverRankMeal').value,
+            rankDish: document.getElementById('slideOverRankDish').value,
+            fromRankDishToTheEnd: true,
+            ajax: 1
         });
 
-        console.log("je supprime tous les élements de la session");
-        console.log(`${this.urlRemoveItemValue}?${params.toString()}`);
+        await this.fetchWithParams(this.urlRemoveItemValue, params);
 
-        fetch(`${this.urlRemoveItemValue}?${params.toString()}`)
-            .then((response) => {
-                this.removeAllPreselect();
-            });
-            
-
+        this.removeAllPreselect();
     }
 
-    async removePreselect(btnRemove) {
-  
-        const url = btnRemove.dataset.urlRemovePreselectItem;
-        const id = btnRemove.dataset.itemId;
+    /**
+     * Supprime un item de la liste des présélections.
+     */
+    async removePreselect(btn) {
 
         const params = new URLSearchParams({
-            'rankMeal': btnRemove.dataset.rankMeal,
-            'rankDish': btnRemove.dataset.rankDish,
+            rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish
         });
 
-        fetch(`${url}?${params.toString()}`)
-            .then((response) => response.text())
-            .then((text) => {
-                document.getElementById("listPreselectedItem").innerHTML = text;
-                fetch(this.urlReloadEnergyLabelValue)
-                    .then((response) => {return response.text()})
-                    .then((text) => {
-                        document.getElementById('sidebarTotalEnergy').innerHTML = text;
-                    });
-             
-        });
-        
+        const response = await this.fetchWithParams(btn.dataset.urlRemovePreselectItem, params);
+
+        const html = await response.text();
+
+        // Remplace la liste des présélections
+        document.getElementById("listPreselectedItem").innerHTML = html;
+
+        this.updateEnergy();
     }
 
+    /**
+     * Supprime tous les items présélectionnés.
+     */
     async removeAllPreselect() {
 
-        fetch(`${this.urlRemovePreselectedItemsValue}`)
-            .then((response) => {
-                document.getElementById("listPreselectedItem").innerHTML = '';
-            })
-            .then(
-                fetch(this.urlReloadEnergyLabelValue)
-                    .then((response) => {return response.text()})
-                    .then((text) => {
-                        console.log('on recalcule l\'energie');
-                        console.log(text);
-                        document.getElementById('sidebarTotalEnergy').innerHTML = text;
-                    })
-            );
-           
+        await fetch(this.urlRemovePreselectedItemsValue);
+
+        document.getElementById("listPreselectedItem").innerHTML = '';
+
+        this.updateEnergy();
     }
 
+    /**
+     * Recharge l'affichage complet des repas.
+     */
     async reloadMeals() {
-        const params = new URLSearchParams({
-            'ajax': 1
-        });
-        const url = `${this.urlReloadMealsValue}?${params.toString()}`;
 
-        fetch(url)
-            .then((response) => {
-                return response.text();
-            })
-            .then((text) => {
-                document.getElementById('meals-day').innerHTML = text;
-                console.log('je vide la liste des items présélectionnés');
-                fetch(this.urlRemovePreselectedItemsValue);
-            });
+        const params = new URLSearchParams({ ajax: 1 });
+
+        const response = await this.fetchWithParams(this.urlReloadMealsValue, params);
+
+        const html = await response.text();
+
+        // Remplacement du contenu de la liste des repas
+        document.getElementById('meals-day').innerHTML = html;
+
+        // Nettoyage des présélections pour éviter des incohérences
+        fetch(this.urlRemovePreselectedItemsValue);
     }
 
-    toggleSlideover(event) {
+    /**
+     * Ouvre ou ferme le slideover (panneau latéral).
+     * Les animations sont gérées via des classes Tailwind.
+     */
+    toggleSlideover() {
+
         document.getElementById('slideover-container').classList.toggle('invisible');
         document.getElementById('slideover-bg').classList.toggle('opacity-0');
         document.getElementById('slideover-bg').classList.toggle('opacity-50');

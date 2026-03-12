@@ -1,5 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 
+/**
+ * Stimulus controller chargé de gérer l'affichage d'une modal contenant
+ * toutes les alertes des repas en cours de saisie/edition
+ */
 export default class extends Controller {
 
     static values = {

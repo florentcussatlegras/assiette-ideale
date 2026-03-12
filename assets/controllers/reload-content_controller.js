@@ -1,493 +1,302 @@
 import { Controller } from '@hotwired/stimulus';
 import { useDebounce } from 'stimulus-use';
+import Swal from 'sweetalert2';
 
+/**
+ * 🔹 Stimulus controller chargé de gérer :
+ * - Filtrage des aliments par groupe, type, gluten/lactose, autorisation
+ * - Recherche et pagination
+ * - Ajout / suppression d’items dans le repas
+ * - Mise à jour dynamique du contenu avec AJAX
+ */
 export default class extends Controller {
 
-    selectedFoodGroupId = [];
-    foodGroupButtonSelected = [];
-    typeItemSelected = [];
-    lengthFgpTotal = 16;
-    allFgUnchecked = false;
-    updateDish = null;
-    freeGluten = 0; 
-    freeLactose = 0;
-    onlyAllowed = 0;
-
+    // ===============================
+    // 🔹 Valeurs injectées depuis HTML / backend
+    // ===============================
     static values = {
-        url: String,
-        urlRemoveItem: String,
-        typeDish: String,
-        page: Number,
-        urlListRemoveFavoriteDish: String,
+        urlList: String,                 // URL pour récupérer la liste filtrée des plats
+        urlAddItem: String,              // URL pour ajouter un item à un repas
+        urlRemoveItem: String,           // URL pour supprimer un item d’un repas
+        urlReloadMeals: String,          // URL pour recharger la liste complète des repas
+        urlReloadEnergyLabel: String,    // URL pour recalculer l’énergie totale du repas
+        typeDish: String,                // Type de plat sélectionné (entrée, plat, dessert, etc.)
+        page: Number                     // Numéro de page actuel pour la pagination
     }
-    static targets = ['content', 'loader', 'loadMore', 'search', 'foodGroup', 'typeDish', 'typeItem', 'lastResults', 'selectAllFoodGroup', 'deselectAllFoodGroup', 'clearButton'];
-    static debounces = ['onSearchInput'];
 
+    // ===============================
+    // 🔹 Cibles DOM
+    // ===============================
+    static targets = [
+        'content', 'loader', 'loadMore', 'search', 'foodGroup', 'typeDish', 
+        'typeItem', 'lastResults', 'selectAllFoodGroup', 'deselectAllFoodGroup', 
+        'clearButton', 'chooseButton'
+    ];
+
+    // Debounce automatique sur la recherche pour limiter les appels AJAX
+    static debounces = ['onSearchInput']; 
+
+    // ===============================
+    // 🔹 Propriétés internes
+    // ===============================
+    selectedFoodGroupId = [];    // IDs des groupes alimentaires sélectionnés
+    typeItemSelected = [];       // Types d’items sélectionnés (par exemple : légume, viande)
+    freeGluten = 0;              // Filtre sans gluten (0 = non, 1 = oui)
+    freeLactose = 0;             // Filtre sans lactose (0 = non, 1 = oui)
+    onlyAllowed = 0;             // Filtre “seulement aliments autorisés”
+    pageValue = 0;               // Pagination actuelle
+    allFgUnchecked = false;      // Tous les groupes alimentaires sont décochés ?
+
+    // ===============================
+    // 🔹 Méthode d'initialisation
+    // ===============================
     connect() {
-        useDebounce(this);
+        useDebounce(this); // Active le debounce pour onSearchInput
 
-        this.foodGroupTargets.forEach((element) => {
-            if(element.classList.contains('selected') == true) {
-                this.foodGroupButtonSelected.push(element);
+        // Initialisation : récupérer les groupes alimentaires déjà sélectionnés
+        this.foodGroupTargets.forEach(el => {
+            if(el.classList.contains('selected')) {
+                this.selectedFoodGroupId.push(el.dataset.foodGroupId);
             }
         });
 
-        this.foodGroupButtonSelected.forEach(element => {
-            this.selectedFoodGroupId.push(element.dataset.foodGroupId);
-        });
+        // Initialisation : récupérer les types d’items déjà sélectionnés
+        this.typeItemSelected = this.typeItemTargets
+            .filter(el => el.classList.contains('selected'))
+            .map(el => el.dataset.typeItem);
 
+        // Détecter si les filtres gluten/lactose sont déjà activés
         const glutenBtn = this.element.querySelector('[data-action*="onSelectGlutenFood"]');
-        if (glutenBtn && glutenBtn.classList.contains('selected')) {
-            this.freeGluten = 1;
-        }
+        this.freeGluten = glutenBtn?.classList.contains('selected') ? 1 : 0;
 
         const lactoseBtn = this.element.querySelector('[data-action*="onSelectLactoseFood"]');
-        if (lactoseBtn && lactoseBtn.classList.contains('selected')) {
-            this.freeLactose = 1;
-        }
-     
-        if(this.lastResultsTargets.reverse()[0].value == 1) {
-            this.loadMoreTarget.classList.add('hidden');
-        }
+        this.freeLactose = lactoseBtn?.classList.contains('selected') ? 1 : 0;
     }
 
-    onSearchInput(event) {
-        this.pageValue = 0;
+    // ===============================
+    // 🔹 Gestion recherche avec debounce
+    // ===============================
+
+    /**
+     * Déclenché à chaque saisie dans la barre de recherche
+     * Utilise debounce pour limiter les appels AJAX
+     */
+    onSearchInput() {
+        this.pageValue = 0; // Repartir de la première page
+        this.toggleClear(); // Affiche ou cache le bouton clear
+        this.refreshContent(); // Recharge le contenu filtré
+    }
+
+    // Affiche ou cache le bouton “X” pour vider la recherche
+    toggleClear() {
+        this.clearButtonTarget.classList.toggle("hidden", this.searchTarget.value.length === 0);
+    }
+
+    // Vide la barre de recherche et déclenche la mise à jour
+    clearSearch() {
+        this.searchTarget.value = '';
         this.toggleClear();
+        this.searchTarget.dispatchEvent(new Event('input')); // Déclenche onSearchInput
+    }
+
+    // ===============================
+    // 🔹 Gestion des classes CSS “selected”
+    // ===============================
+    /**
+     * Active / désactive les classes CSS pour un élément sélectionné
+     * Utilisé pour : boutons filtres, groupes alimentaires, types d’items
+     */
+    toggleClasses(el, selected) {
+        el.classList.toggle('selected', selected);
+        el.classList.replace(selected ? "text-gray-900" : "text-white", selected ? "text-white" : "text-gray-900");
+        el.classList.replace(selected ? "bg-gray-100" : "bg-sky-600", selected ? "bg-sky-600" : "bg-gray-100");
+        el.classList.toggle("hover:text-white", selected);
+        el.classList.toggle("hover:text-gray-900", !selected);
+        el.classList.toggle("hover:bg-sky-600", selected);
+        el.classList.toggle("hover:bg-gray-900", !selected);
+    }
+
+    // ===============================
+    // 🔹 Gestion des filtres
+    // ===============================
+
+    // Méthodes déclenchées par les boutons HTML
+    onSelectFoodGroup(event) { this.toggleFoodGroup(event.currentTarget); }
+    onSelectTypeDish(event) { this.toggleTypeDish(event.currentTarget); }
+    onSelectTypeItem(event) { this.toggleTypeItem(event.currentTarget); }
+    onSelectGlutenFood(event) { this.toggleFilter(event.currentTarget, 'freeGluten'); }
+    onSelectLactoseFood(event) { this.toggleFilter(event.currentTarget, 'freeLactose'); }
+    onToggleOnlyAllowed(event) { this.toggleFilter(event.currentTarget, 'onlyAllowed'); }
+
+    // Toggle un groupe alimentaire (ajout / suppression de selectedFoodGroupId)
+    toggleFoodGroup(el) {
+        const id = el.dataset.foodGroupId;
+        const selected = !el.classList.contains('selected');
+        this.toggleClasses(el, selected);
+
+        if(selected) this.selectedFoodGroupId.push(id);
+        else this.selectedFoodGroupId = this.selectedFoodGroupId.filter(fg => fg !== id);
+
+        this.allFgUnchecked = this.selectedFoodGroupId.length === 0;
+
+        // Mise à jour visuelle des boutons “Tout sélectionner / Tout décocher”
+        this.updateBtnAllFgpCheckedClasses(this.selectedFoodGroupId.length === this.foodGroupTargets.length);
+        this.updateBtnAllFgpUnCheckedClasses(this.allFgUnchecked);
+
+        this.pageValue = 0;
+        this.refreshContent(); // Rechargement AJAX
+    }
+
+    // Toggle le type de plat sélectionné
+    toggleTypeDish(el) {
+        this.typeDishValue = el.dataset.typeDish;
+        this.typeDishTargets.forEach(d => this.toggleClasses(d, d.dataset.typeDish === this.typeDishValue));
+        this.pageValue = 0;
         this.refreshContent();
     }
 
-    onSelectFoodGroup(event) {
-        const btnSelected = event.currentTarget;
+    // Toggle type d’item (légume, viande, etc.)
+    toggleTypeItem(el) {
+        el.classList.toggle('selected');
+        this.typeItemSelected = this.typeItemTargets
+            .filter(e => e.classList.contains('selected'))
+            .map(e => e.dataset.typeItem);
 
-        const newFoodGroupId = btnSelected.dataset.foodGroupId;
-        const indexFoodGroupId = this.selectedFoodGroupId.indexOf(newFoodGroupId);
-
-        if(indexFoodGroupId == -1) {
-            this.selectedFoodGroupId.push(newFoodGroupId);
-            btnSelected.classList.add('selected');
-            this.allFgUnchecked = false;
-            if(this.selectedFoodGroupId.length == this.lengthFgpTotal) {
-                this.updateBtnAllFgpCheckedClasses(true);
-            }else{
-                this.updateBtnAllFgpCheckedClasses(false);
-            }
-            this.updateBtnAllFgpUnCheckedClasses(false);
-        }else{
-            this.selectedFoodGroupId.splice(indexFoodGroupId, 1);
-            btnSelected.classList.remove('selected');
-            if(this.selectedFoodGroupId.length == 0) {
-                this.allFgUnchecked = true;
-                this.updateBtnAllFgpUnCheckedClasses(true);
-            }else{
-                this.allFgUnchecked = false;
-                this.updateBtnAllFgpUnCheckedClasses(false);
-            }
-            this.updateBtnAllFgpCheckedClasses(false);
-        }
+        // Si tous décochés → on coche tous automatiquement
+        if(this.typeItemSelected.length === 0) this.typeItemTargets.forEach(e => e.classList.add('selected'));
+        this.typeItemSelected = this.typeItemTargets
+            .filter(e => e.classList.contains('selected'))
+            .map(e => e.dataset.typeItem);
 
         this.pageValue = 0;
         this.refreshContent();
     }
 
-    updateBtnAllFgpCheckedClasses(active) {
-        const btn = this.selectAllFoodGroupTarget;
-
-        if(active) {
-            btn.classList.add('selected')
-            btn.classList.replace("text-gray-900", "text-white");
-            btn.classList.remove("hover:text-gray-900");
-            btn.classList.add("hover:text-white");
-            btn.classList.replace("bg-gray-100", "bg-sky-600");
-            btn.classList.remove("hover:bg-gray-900");
-            btn.classList.add("hover:bg-sky-600");
-        }else{
-            btn.classList.remove('selected')
-            btn.classList.replace("text-white", "text-gray-900");
-            btn.classList.remove("hover:text-white");
-            btn.classList.add("hover:text-gray-900");
-            btn.classList.replace("bg-sky-600", "bg-gray-100");
-            btn.classList.remove("hover:bg-sky-600");
-            btn.classList.add("hover:bg-gray-900");
-        }
-    }
-
-     updateBtnAllFgpUnCheckedClasses(active) {
-        const btn = this.deselectAllFoodGroupTarget;
-
-        if(active) {
-            btn.classList.add('selected')
-            btn.classList.replace("text-gray-900", "text-white");
-            btn.classList.remove("hover:text-gray-900");
-            btn.classList.add("hover:text-white");
-            btn.classList.replace("bg-gray-100", "bg-sky-600");
-            btn.classList.remove("hover:bg-gray-900");
-            btn.classList.add("hover:bg-sky-600");
-        }else{
-            btn.classList.remove('selected');
-            btn.classList.replace("text-white", "text-gray-900");
-            btn.classList.remove("hover:text-white");
-            btn.classList.add("hover:text-gray-900");
-            btn.classList.replace("bg-sky-600", "bg-gray-100");
-            btn.classList.remove("hover:bg-sky-600");
-            btn.classList.add("hover:bg-gray-900");
-        }
-    }
-
-    onSelectTypeDish(event) {
-
-        this.typeDishValue = event.currentTarget.dataset.typeDish;
-
-        this.typeDishTargets.forEach((element) => {
-            if(element.dataset.typeDish == this.typeDishValue) {
-                element.classList.replace("text-gray-900", "text-white");
-                element.classList.remove("hover:text-gray-900");
-                element.classList.add("hover:text-white");
-                element.classList.replace("bg-gray-100", "bg-sky-600");
-                element.classList.remove("hover:bg-gray-900");
-                element.classList.add("hover:bg-sky-600");
-            } else {
-                element.classList.replace("text-white", "text-gray-900");
-                element.classList.remove("hover:text-white");
-                element.classList.add("hover:text-gray-900");
-                element.classList.replace("bg-sky-600", "bg-gray-100");
-                element.classList.remove("hover:bg-sky-600");
-                element.classList.add("hover:bg-gray-900");
-            }
-        });
-
+    // Toggle les filtres gluten, lactose, onlyAllowed
+    toggleFilter(el, prop) {
+        el.classList.toggle('selected');
+        this[prop] = el.classList.contains('selected') ? 1 : 0;
         this.pageValue = 0;
         this.refreshContent();
-
     }
 
-    onSelectTypeItem(event) {
+    // ===============================
+    // 🔹 Sélection / désélection tous les groupes alimentaires
+    // ===============================
+    onSelectAllFoodGroup() { this.selectAllFoodGroups(true); }
+    onDeselectAllFoodGroup() { this.selectAllFoodGroups(false); }
 
-        var element = event.currentTarget;
-
-        var allTypeItemDeselect = true;
-
-        if(element.classList.contains('selected')) {
-
-            element.classList.remove('selected');
-
-            element.classList.replace("text-white", "text-gray-900");
-            element.classList.remove("hover:text-white");
-            element.classList.add("hover:text-gray-900");
-            element.classList.replace("bg-sky-600", "bg-gray-100");
-            element.classList.remove("hover:bg-sky-600");
-            element.classList.add("hover:bg-gray-200");
-
-        } else {
-
-            element.classList.add('selected');
-
-            element.classList.replace("text-gray-900", "text-white");
-            element.classList.remove("hover:text-gray-900");
-            element.classList.add("hover:text-white");
-            element.classList.replace("bg-gray-100", "bg-sky-600");
-            element.classList.remove("hover:bg-gray-200");
-            element.classList.add("hover:bg-sky-600");
-
-            allTypeItemDeselect = false;
-
-        }
-
-        this.typeItemSelected = [];
-
-        this.typeItemTargets.forEach((element) => {
-            if(element.classList.contains('selected') == true) {
-                allTypeItemDeselect = false;
-            }
-        });
-
-        if(allTypeItemDeselect == true) {
-            this.typeItemTargets.forEach((element) => {
-                element.classList.add('selected');
-            });
-        }
-
-        this.typeItemTargets.forEach((element) => {
-            if(element.classList.contains('selected') == true) {
-                this.typeItemSelected.push(element.dataset.typeItem);
-            }
-        });
-
+    selectAllFoodGroups(select) {
+        this.foodGroupTargets.forEach(el => this.toggleClasses(el, select));
+        this.selectedFoodGroupId = select ? this.foodGroupTargets.map(el => el.dataset.foodGroupId) : [];
+        this.updateBtnAllFgpCheckedClasses(select);
+        this.updateBtnAllFgpUnCheckedClasses(!select);
+        this.allFgUnchecked = !select;
         this.pageValue = 0;
         this.refreshContent();
-
     }
 
-    onSelectGlutenFood(event) {
+    // Mise à jour visuelle des boutons “Tout sélectionner / Tout décocher”
+    updateBtnAllFgpCheckedClasses(active) { this.toggleClasses(this.selectAllFoodGroupTarget, active); }
+    updateBtnAllFgpUnCheckedClasses(active) { this.toggleClasses(this.deselectAllFoodGroupTarget, active); }
 
-        const btnChoice = event.currentTarget;
+    // ===============================
+    // 🔹 Pagination / Load More
+    // ===============================
+    onAddItem() { this.pageValue = 0; this.refreshContent(); }
+    onRemoveItem() { this.pageValue = 0; this.refreshContent(); }
+    onLoadMore() { this.pageValue++; this.refreshContent(); }
 
-        if(btnChoice.classList.contains('selected')) {
-            btnChoice.classList.remove('selected')
-        
-            btnChoice.classList.replace("text-white", "text-gray-900");
-            btnChoice.classList.remove("hover:text-white");
-            btnChoice.classList.add("hover:text-gray-900");
-            btnChoice.classList.replace("bg-sky-600", "bg-gray-100");
-            btnChoice.classList.remove("hover:bg-sky-600");
-            btnChoice.classList.add("hover:bg-gray-200");
+    // ===============================
+    // 🔹 Ajout / suppression d’items via AJAX
+    // ===============================
 
-            this.freeGluten = 0;
-        }else{
-            btnChoice.classList.add('selected');
-
-            btnChoice.classList.replace("text-gray-900", "text-white");
-            btnChoice.classList.remove("hover:text-gray-900");
-            btnChoice.classList.add("hover:text-white");
-            btnChoice.classList.replace("bg-gray-100", "bg-sky-600");
-            btnChoice.classList.remove("hover:bg-gray-200");
-            btnChoice.classList.add("hover:bg-sky-600");
-
-            this.freeGluten = 1;
-        }
-
-        this.pageValue = 0;
-        this.refreshContent();
-
-    }
-
-    onSelectLactoseFood(event) {
-
-        const btnChoice = event.currentTarget;
-
-        if(btnChoice.classList.contains('selected')) {
-            btnChoice.classList.remove('selected')
-          
-            btnChoice.classList.replace("text-white", "text-gray-900");
-            btnChoice.classList.remove("hover:text-white");
-            btnChoice.classList.add("hover:text-gray-900");
-            btnChoice.classList.replace("bg-sky-600", "bg-gray-100");
-            btnChoice.classList.remove("hover:bg-sky-600");
-            btnChoice.classList.add("hover:bg-gray-200");
-
-            this.freeLactose = 0;
-        }else{
-            btnChoice.classList.add('selected');
-
-            btnChoice.classList.replace("text-gray-900", "text-white");
-            btnChoice.classList.remove("hover:text-gray-900");
-            btnChoice.classList.add("hover:text-white");
-            btnChoice.classList.replace("bg-gray-100", "bg-sky-600");
-            btnChoice.classList.remove("hover:bg-gray-200");
-            btnChoice.classList.add("hover:bg-sky-600");
-
-            this.freeLactose = 1;
-        }
-
-        this.pageValue = 0;
-        this.refreshContent();
-        
-    }
-
-    onToggleOnlyAllowed(event) {
-
+    async addItem(event) {
         const btn = event.currentTarget;
+        const id = btn.dataset.itemId;
+        const quantityEl = document.querySelector(".quantity-" + id);
+        const quantity = quantityEl?.value || 0;
 
-        if (btn.classList.contains('selected')) {
-            btn.classList.remove('selected');
-            btn.classList.replace("text-white", "text-gray-900");
-            btn.classList.remove("hover:text-white");
-            btn.classList.add("hover:text-gray-900");
-            btn.classList.replace("bg-sky-600", "bg-gray-100");
-            btn.classList.remove("hover:bg-sky-600");
-            btn.classList.add("hover:bg-gray-200");
-
-            this.onlyAllowed = 0;
-        } else {
-            btn.classList.add('selected');
-            btn.classList.replace("text-gray-900", "text-white");
-            btn.classList.remove("hover:text-gray-900");
-            btn.classList.add("hover:text-white");
-            btn.classList.replace("bg-gray-100", "bg-sky-600");
-            btn.classList.remove("hover:bg-gray-200");
-            btn.classList.add("hover:bg-sky-600");
-
-            this.onlyAllowed = 1;
+        if(quantity <= 0) {
+            Swal.fire({title:"Attention!", text:"Veuillez saisir une quantité valide", icon:"warning", confirmButtonColor:"#0284c7"});
+            return;
         }
 
-        this.pageValue = 0;
-        this.refreshContent();
+        const unitMeasureId = document.querySelector(".unitMeasure-" + id)?.value || '';
+        const params = new URLSearchParams({
+            id, type: btn.dataset.itemType, rankMeal: btn.dataset.rankMeal,
+            rankDish: btn.dataset.rankDish, quantity, unitMeasure: unitMeasureId, ajax:1
+        });
 
+        await fetch(`${this.urlAddItemValue}?${params.toString()}`);
+        this.reloadMeals(); // Recharge la liste des repas
     }
 
-    onAddItem() {
-        this.rankDishValue++;
-        // this.loadMore = false;
-        // this.reloadFromStart = 1;
-        document.getElementById('btnLoadMore').dataset.rankDish = this.rankDishValue;
-        
-        this.pageValue = 0;
-        this.refreshContent();
+    async removeItem(event) {
+        const btn = event.currentTarget;
+        const params = new URLSearchParams({rankMeal: btn.dataset.rankMeal, rankDish: btn.dataset.rankDish, ajax:1});
+        await fetch(`${this.urlRemoveItemValue}?${params.toString()}`);
+        this.reloadMeals();
     }
 
-    onRemoveItem() {
-        this.rankDishValue--;
-        // this.loadMore = false;
-        // this.reloadFromStart = 1;
-        document.getElementById('btnLoadMore').dataset.rankDish = this.rankDishValue;
-        
-        this.pageValue = 0;
-        this.refreshContent();
-    }
-   
-    onLoadMore() {
-        this.pageValue++;
-        this.loadMore = true;
-        // this.reloadFromStart = 0;
-        
-        this.refreshContent();
+    // Recharge la liste complète des repas depuis le serveur
+    async reloadMeals() {
+        const params = new URLSearchParams({ajax:1});
+        const url = `${this.urlReloadMealsValue}?${params.toString()}`;
+        const response = await fetch(url);
+        const html = await response.text();
+        document.getElementById('meals-day').innerHTML = html;
+        fetch(this.urlRemoveItemValue); // Vide la liste des items pré-sélectionnés
     }
 
-    openSidebarList(event) {
-        document.getElementById('slideOverRankMeal').value = event.currentTarget.dataset.rankMeal;
-        document.getElementById('slideOverRankDish').value = event.currentTarget.dataset.rankDish;
-        document.getElementById('slideOverUpdateDish').value = event.currentTarget.dataset.updateDish;
-        if(event.currentTarget.dataset.typeDish !== 'undefined' && event.currentTarget.dataset.typeDish !== '') {
-            document.getElementById('slideOverTypeDish').classList.replace('hidden', 'inline');
-            document.getElementById('slideOverTypeDish').innerHTML = event.currentTarget.dataset.typeDish;
-        }
-
-        this.pageValue = 0;
-        this.refreshContent();
-    }
-
+    // ===============================
+    // 🔹 Rafraîchissement AJAX du contenu filtré
+    // ===============================
     async refreshContent() {
-
-        if (this.hasLoaderTarget) {
-            this.loaderTarget.classList.remove('hidden');
-        }
-        if (this.hasLoadMoreTarget) {
-            this.loadMoreTarget.classList.add('hidden');
-        }
+        if(this.hasLoaderTarget) this.loaderTarget.classList.remove('hidden'); // Affiche loader
+        if(this.hasLoadMoreTarget) this.loadMoreTarget.classList.add('hidden');  // Cache bouton “load more” temporairement
 
         const target = this.hasContentTarget ? this.contentTarget : this.element;
-        const fg = this.allFgUnchecked == true ? "none" : this.selectedFoodGroupId;
-        const typeItem = this.typeItemSelected;
-   
+        const fg = this.allFgUnchecked ? "none" : this.selectedFoodGroupId;
+
         const params = new URLSearchParams({
             q: this.searchTarget.value,
-            fg: fg,
+            fg,
             type: this.typeDishValue,
-            rankMeal: null !== document.getElementById('slideOverRankMeal') ? document.getElementById('slideOverRankMeal').value : null,
-            // rankDish: this.rankDishValue,
+            rankMeal: document.getElementById('slideOverRankMeal')?.value || null,
             page: this.pageValue,
-            updateDish: null !== document.getElementById('slideOverUpdateDish') ? document.getElementById('slideOverUpdateDish').value : null, 
-            // reloadFromStart: this.reloadFromStart,
+            updateDish: document.getElementById('slideOverUpdateDish')?.value || null,
             typeItem: this.typeItemSelected,
             freeGluten: this.freeGluten,
             freeLactose: this.freeLactose,
             onlyAllowed: this.onlyAllowed,
             ajax: 1
         });
-        
-        this.url = `${this.urlValue}?${params.toString()}`;
-        console.log(this.url);
-        console.log('page: ', this.pageValue);
-     
-        if(this.pageValue > 0) {
 
-            // const response = await fetch(this.url);
-            // const newContent = await response.text();
+        try {
+            const response = await fetch(`${this.urlListValue}?${params.toString()}`);
+            const html = await response.text();
 
-            fetch(this.url)
-                .then((response) => {
-                    return response.text()
-                })
-                .then((newContent) => {
+            // Si page > 0 → ajouter contenu à la fin
+            if(this.pageValue > 0) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                while(tempDiv.firstChild) target.appendChild(tempDiv.firstChild);
+            } else {
+                // Page 0 → remplacer tout le contenu
+                target.innerHTML = html;
+            }
 
-                    // target.innerHTML = target.innerHTML + newContent;
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = newContent;
-
-                    while (tempDiv.firstChild) {
-                        target.appendChild(tempDiv.firstChild);
-                    }
-
-                    this.loaderTarget.classList.add('hidden');
-                    target.classList.remove('hidden');
-                    if(this.lastResultsTargets.reverse()[0].value != 1) {
-                        this.loadMoreTarget.classList.remove('hidden');
-                    }
-            });
-
-        }else{
-
-            target.classList.add('hidden');
-
-            // const response = await fetch(this.url);
-            // target.innerHTML = await response.text();
-
-            fetch(this.url)
-                .then((response) => {
-                    return response.text()
-                })
-                .then((newContent) => {
-                    
-                    target.innerHTML = newContent;
-                    this.loaderTarget.classList.add('hidden');
-                    target.classList.remove('hidden');
-                    if(this.lastResultsTargets.reverse()[0].value != 1) {
-                        this.loadMoreTarget.classList.remove('hidden');
-                    }
-            });
-
-        }
-
-    }
-
-    onSelectAllFoodGroup(event) {
-
-        this.updateBtnAllFgpCheckedClasses(true);
-        this.updateBtnAllFgpUnCheckedClasses(false);
-
-        this.foodGroupButtonSelected = [];
-        this.selectedFoodGroupId = [];
-
-        this.foodGroupTargets.forEach((element) => {
-            element.classList.add('selected');
-            this.foodGroupButtonSelected.push(element);
-        });
-
-        this.foodGroupButtonSelected.forEach(element => {
-            this.selectedFoodGroupId.push(element.dataset.foodGroupId);
-        });
-
-        this.pageValue = 0;
-        this.refreshContent();
-    }
-
-    onDeselectAllFoodGroup(event) {
-
-        this.updateBtnAllFgpCheckedClasses(false);
-        this.updateBtnAllFgpUnCheckedClasses(true);
-
-        this.selectedFoodGroupId = [];
-
-        this.foodGroupTargets.forEach((element) => {
-            element.classList.remove('selected');
-            // this.foodGroupButtonSelected.remove(element);
-        });
-        
-        this.pageValue = 0;
-        this.refreshContent();
-    }
-
-    toggleClear() {
-        if (this.searchTarget.value.length > 0) {
-            this.clearButtonTarget.classList.remove("hidden");
-        } else {
-            this.clearButtonTarget.classList.add("hidden");
+            if(this.hasLoaderTarget) this.loaderTarget.classList.add('hidden');
+            target.classList.remove('hidden');
+            if(this.hasLoadMoreTarget && this.lastResultsTargets.reverse()[0].value != 1) {
+                this.loadMoreTarget.classList.remove('hidden');
+            }
+        } catch (error) {
+            console.error("Erreur refresh:", error);
+            target.innerHTML = "<p class='text-red-600'>Erreur lors du chargement.</p>";
+            if(this.hasLoaderTarget) this.loaderTarget.classList.add('hidden');
         }
     }
 
-    clearSearch() {
-        this.searchTarget.value = '';
-        this.toggleClear();
-        this.searchTarget.dispatchEvent(new Event('input'));
-    }
 }
