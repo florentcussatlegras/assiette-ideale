@@ -11,6 +11,23 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
+/**
+ * Subscriber pour gérer les profils incomplets des utilisateurs.
+ *
+ * Objectif :
+ *  - Rediriger les utilisateurs vers la page de bienvenue si ce n’est pas encore fait.
+ *  - Rediriger les utilisateurs vers l’édition de profil si leur profil n’est pas rempli.
+ *  - S’assure que certaines routes restent accessibles même si le profil est incomplet.
+ *
+ * Fonctionnement :
+ *  - S’exécute sur l’événement `KernelEvents::REQUEST`.
+ *  - Vérifie si l’utilisateur est connecté et si la requête est la principale.
+ *  - Applique des redirections conditionnelles selon l’état du profil.
+ *
+ * Routes autorisées sans redirection :
+ *  - 'app_welcome', 'app_welcome_accept', 'app_profile_edit',
+ *    'app_logout', 'app_login', 'app_register'
+ */
 class IncompleteProfileSubscriber implements EventSubscriberInterface
 {
     public function __construct(
@@ -19,6 +36,9 @@ class IncompleteProfileSubscriber implements EventSubscriberInterface
         private ProfileHandler $profileHandler,
     ) {}
 
+    /**
+     * Définition des événements souscrits par ce subscriber.
+     */
     public static function getSubscribedEvents(): array
     {
         return [
@@ -26,6 +46,14 @@ class IncompleteProfileSubscriber implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * Gestion des requêtes entrantes.
+     *
+     * - Ignore les requêtes secondaires.
+     * - Vérifie l’utilisateur courant.
+     * - Redirige vers la page de bienvenue si jamais vue.
+     * - Redirige vers l’édition du profil si incomplet.
+     */
     public function onKernelRequest(RequestEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -42,7 +70,7 @@ class IncompleteProfileSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $route = $request->attributes->get('_route');
 
-        // ✅ routes toujours autorisées
+        // ✅ Routes toujours autorisées
         $allowedRoutes = [
             'app_welcome',
             'app_welcome_accept',
@@ -56,7 +84,7 @@ class IncompleteProfileSubscriber implements EventSubscriberInterface
             return;
         }
 
-        // ✅ 1️⃣ welcome une seule fois
+        // ✅ 1️⃣ welcome : une seule fois
         if (!$user->getHasSeenWelcome()) {
             $event->setResponse(
                 new RedirectResponse(
@@ -80,5 +108,3 @@ class IncompleteProfileSubscriber implements EventSubscriberInterface
         }
     }
 }
-
-

@@ -8,6 +8,24 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Security;
 use App\Service\EnergyAdjustmentManager;
 
+/**
+ * Listener pour vérifier si un utilisateur doit mettre à jour son poids.
+ *
+ * Objectif :
+ *  - Détecter les utilisateurs suivant un objectif de poids actif.
+ *  - Vérifier si leur poids n'a pas été mis à jour depuis plus de 7 jours.
+ *  - Ajouter un flag `needs_weight_update` à la requête pour affichage conditionnel dans Twig.
+ *
+ * Fonctionnement :
+ *  - Écoute l’événement `KernelEvents::REQUEST` (via service configuré).
+ *  - Ignore les requêtes secondaires ou les utilisateurs non connectés.
+ *  - Exclut la page de saisie du poids pour éviter un rappel redondant.
+ *
+ * Points clés :
+ *  - Utilise Security pour récupérer l’utilisateur courant.
+ *  - Utilise le service EnergyAdjustmentManager pour déterminer si une mise à jour est nécessaire.
+ *  - Compatible avec Twig pour l’affichage conditionnel dans les templates.
+ */
 class WeightUpdateCheckListener
 {
     public function __construct(
@@ -16,11 +34,16 @@ class WeightUpdateCheckListener
         private EnergyAdjustmentManager $energyAdjustmentManager
     ) {}
 
-    public function onKernelRequest(RequestEvent $event)
+    /**
+     * Vérifie la nécessité d’une mise à jour du poids sur chaque requête principale.
+     *
+     * - Ajoute l’attribut `needs_weight_update` à la requête si nécessaire.
+     */
+    public function onKernelRequest(RequestEvent $event): void
     {
         $request = $event->getRequest();
 
-        // On ignore les requêtes console
+        // On ignore les requêtes secondaires
         if (!$event->isMainRequest()) {
             return;
         }
@@ -31,18 +54,13 @@ class WeightUpdateCheckListener
             return;
         }
 
-
-        // Si l'utilisateur suit un régime et n'a pas mis à jour son poids depuis 7 jours
-        // if ($user->isWeightGoalActive() && $this->energyAdjustmentManager->needsWeeklyUpdate($user)) {
-        /** @var \App\Entity\User|null $user */
+        // Vérifie si l'utilisateur suit un objectif de poids et nécessite une mise à jour hebdomadaire
         if ($user->isWeightGoalActive() && $this->energyAdjustmentManager->needsWeeklyUpdate($user)) {
-            // Flag à récupérer dans Twig
             $currentRoute = $request->attributes->get('_route');
             $currentElement = $request->attributes->get('element');
 
-            // On ne montre pas le modal si déjà sur la page de saisie du poids
+            // Ne pas afficher le flag si déjà sur la page de saisie du poids
             if (!($currentRoute === 'app_profile_edit' && $currentElement === 'weight')) {
-                // Ajouter un attribut à la requête pour Twig
                 $request->attributes->set('needs_weight_update', true);
             }
         }

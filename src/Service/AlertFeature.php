@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-// Déclarations des dépendances utilisées par le service
 use App\Repository\DishRepository;
 use App\Repository\FoodRepository;
 use App\Repository\LevelAlertRepository;

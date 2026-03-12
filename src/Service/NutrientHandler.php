@@ -1,9 +1,24 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\Alert\LevelAlert;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * NutrientHandler.php
+ * 
+ * Service de gestion et recommandations nutritionnelles.
+ *
+ * Objectif :
+ *  - Fournir des recommandations alimentaires personnalisées basées sur les besoins de l'utilisateur.
+ *  - Calculer les apports en protéines, lipides, glucides et sodium selon le poids et l'activité physique.
+ *  - Fournir des messages et suggestions adaptés aux niveaux (bien, faible, élevé) pour chaque nutriment.
+ *
+ * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
+ * Date : 2026-03-10
+ * Projet : Assiette idéale
+ */
 class NutrientHandler
 {
     const PROTEIN = 'protein';
@@ -18,6 +33,7 @@ class NutrientHandler
         self::SODIUM,
     ];
 
+    // Messages de suggestion affichés dans la modale des bilans des repas saisi/édités
     public const LACK_SUGGESTIONS = [
         self::PROTEIN => "Ajoutez des aliments riches en protéines : viande, poisson, œufs ou légumineuses.",
         self::CARBOHYDRATE => "Ajoutez des féculents : riz, pâtes, pommes de terre ou pain.",
@@ -59,44 +75,52 @@ class NutrientHandler
         private Security $security,
     ){}
 
-    public function getRecommendations()
+    /**
+     * Retourne les recommandations nutritionnelles pour l'utilisateur connecté.
+     *
+     * @return array Tableau associatif : ['protein' => int, 'lipid' => int, 'carbohydrate' => int, 'sodium' => int]
+     */
+    public function getRecommendations(): array
     {
         return $this->calculateRecommendations();
     }
 
+    /**
+     * Calcule les besoins nutritionnels journaliers selon le poids, l'énergie et l'activité physique.
+     *
+     * @return array Tableau avec les grammes recommandés pour chaque nutriment.
+     */
     private function calculateRecommendations(): array
     {
-        /** @var App\Entity\User $user */
+        /** @var \App\Entity\User $user */
         $user = $this->security->getUser();
 
         $energy = $user->getEnergy();
-
         $weight = $user->getWeight();
         $activity = $user->getPhysicalActivity();
 
-        // 1️⃣ Protéines
+        // Protéines en g/kg selon activité
         $proteinPerKg = match(true) {
             $activity <= 1.0 => 0.9,
             $activity <= 1.2 => 1.1,
             default => 1.3,
         };
-
         $proteinGrams = $weight * $proteinPerKg;
         $proteinKcal = $proteinGrams * 4;
 
-        // 2️⃣ Lipides (30%)
+        // Lipides = 30% de l'énergie
         $fatKcal = $energy * 0.30;
         $fatGrams = $fatKcal / 9;
 
-        // 3️⃣ Glucides = reste
+        // Glucides = reste de l'énergie
         $carbKcal = $energy - ($proteinKcal + $fatKcal);
         $carbGrams = $carbKcal / 4;
 
         return [
-            'protein' => round($proteinGrams),
-            'lipid' => round($fatGrams),
-            'carbohydrate' => round($carbGrams),
-            'sodium' => 2,
+            self::PROTEIN => round($proteinGrams),
+            self::LIPID => round($fatGrams),
+            self::CARBOHYDRATE => round($carbGrams),
+            self::SODIUM => 2,
         ];
     }
 }

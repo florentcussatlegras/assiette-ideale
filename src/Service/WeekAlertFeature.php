@@ -5,46 +5,77 @@ namespace App\Service;
 use App\Entity\Alert\LevelAlert;
 use App\Service\AlertFeature;
 
+/**
+ * WeekAlertFeature.php
+ * 
+ * Service pour la gestion des dates et semaines liées aux alertes hebdomadaires.
+ *
+ * Objectif :
+ *  - Fournir des méthodes pour calculer le lundi et vendredi d'une semaine donnée.
+ *  - Générer des tableaux de jours utilisables pour les menus hebdomadaires ou alertes.
+ * 
+ * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
+ * Date : 2026-03-10
+ * Projet : Assiette idéale
+ */
 class WeekAlertFeature
 {
-	public function get_lundi_vendredi_from_week($startingDate = null) 
-	{
-		$date = null === $startingDate ? new \Datetime() : $date = new \DateTime($startingDate);
-		$week = $date->format('W');
-		$year = $date->format('Y');
+    /**
+     * Retourne les jours d'une semaine (lundi à dimanche) avec leurs noms et dates.
+     *
+     * @param string|null $startingDate Date de départ (format Y-m-d) ou null pour semaine actuelle
+     * @return array Tableau de jours ['l' => NomJour, 'Y-m-d' => Date]
+     */
+    public function get_lundi_vendredi_from_week($startingDate = null): array
+    {
+        $date = $startingDate === null ? new \Datetime() : new \DateTime($startingDate);
+        $week = $date->format('W');
+        $year = $date->format('Y');
 
-		$firstDayInYear = date("N", mktime(0, 0, 0, 1, 1, $year));
-		
-		if ($firstDayInYear<5)
-			$shift = -($firstDayInYear-1) * 86400;
-		else
-			$shift = (8-$firstDayInYear) * 86400;
-		
-		if ($week>1) $weekInSeconds=($week-1) * 604800; else $weekInSeconds=0;
-		
-		for($i=1; $i<=7; $i++)
-		{
-			$jours[] = array(
-				'l' => date('l', mktime(0,0,0,1,$i,$year)+$weekInSeconds+$shift),
-				'Y-m-d' => date('Y-m-d', mktime(0,0,0,1,$i,$year)+$weekInSeconds+$shift)
-			);
-		}
+        $firstDayInYear = date("N", mktime(0, 0, 0, 1, 1, $year));
 
-		return $jours;
+        $shift = ($firstDayInYear < 5)
+            ? -($firstDayInYear - 1) * 86400
+            : (8 - $firstDayInYear) * 86400;
 
-	}
+        $weekInSeconds = $week > 1 ? ($week - 1) * 604800 : 0;
 
-	public function getDaysForWeekMenu($startingDate)
-	{
-		foreach ($this->get_lundi_vendredi_from_week($startingDate) as $dateOfDay) {
-			$days[$dateOfDay['Y-m-d']] = $dateOfDay['l'];
-		}
+        $jours = [];
+        for ($i = 1; $i <= 7; $i++) {
+            $timestamp = mktime(0, 0, 0, 1, $i, $year) + $weekInSeconds + $shift;
+            $jours[] = [
+                'l' => date('l', $timestamp),
+                'Y-m-d' => date('Y-m-d', $timestamp)
+            ];
+        }
 
-		return $days;
-	}
+        return $jours;
+    }
 
-	public function getStartingDayOfWeek(String $date)
-	{
-		return date("Y-m-d", strtotime('monday this week', strtotime($date)));
-	}
+    /**
+     * Retourne un tableau clé => valeur [YYYY-MM-DD => NomJour] pour la semaine d'une date donnée.
+     *
+     * @param string $startingDate
+     * @return array
+     */
+    public function getDaysForWeekMenu(string $startingDate): array
+    {
+        $days = [];
+        foreach ($this->get_lundi_vendredi_from_week($startingDate) as $dateOfDay) {
+            $days[$dateOfDay['Y-m-d']] = $dateOfDay['l'];
+        }
+
+        return $days;
+    }
+
+    /**
+     * Retourne le lundi correspondant à la semaine d'une date donnée.
+     *
+     * @param string $date
+     * @return string YYYY-MM-DD
+     */
+    public function getStartingDayOfWeek(string $date): string
+    {
+        return date("Y-m-d", strtotime('monday this week', strtotime($date)));
+    }
 }
