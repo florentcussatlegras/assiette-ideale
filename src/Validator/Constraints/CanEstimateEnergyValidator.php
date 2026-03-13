@@ -9,19 +9,17 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class CanEstimateEnergyValidator extends ConstraintValidator
 {
-    private $energyHandler;
-    private $security;
-
-    public function __construct(EnergyHandler $energyHandler, Security $security)
-    {
-        $this->energyHandler = $energyHandler;
-        $this->user = $security->getUser();
-    }
+    public function __construct(
+        private EnergyHandler $energyHandler, 
+        private Security $security)
+    {}
 
     public function validate($value, Constraint $constraint)
     {
+        $user = $this->security->getUser();
+
         if (
-            $this->user->getAutomaticCalculateEnergy()
+            $user->getAutomaticCalculateEnergy()
                 &&
             count($this->energyHandler->profileMissingForEnergy()) > 0
         ) {

@@ -13,17 +13,15 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CanEditProfileValidator extends ConstraintValidator
 {
-    private $energyHandler;
-    private $security;
 
-    public function __construct(EnergyHandler $energyHandler, Security $security)
-    {
-        $this->energyHandler = $energyHandler;
-        $this->user = $security->getUser();
-    }
+    public function __construct(
+        private Security $security)
+    {}
 
     public function validate($value, Constraint $constraint)
     {
+        $user = $this->security->getUser();
+
         if (!$constraint instanceof CanEditProfile) {
             throw new UnexpectedTypeException(
                 $constraint,
@@ -32,9 +30,9 @@ class CanEditProfileValidator extends ConstraintValidator
         };
 
         if (
-            $this->user->getAutomaticCalculateEnergy()
+            $user->getAutomaticCalculateEnergy()
                 &&
-            $this->user->getEnergy()
+            $user->getEnergy()
                 &&
             null === $value
         ) {

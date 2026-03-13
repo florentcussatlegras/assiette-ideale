@@ -6,20 +6,35 @@ use App\Service\EnergyHandler;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ * Validator pour la contrainte IsEnergyValid.
+ *
+ * Vérifie que la valeur de l'énergie saisie est comprise
+ * dans la plage autorisée selon l'unité (kcal ou kJ).
+ */
 class IsEnergyValidValidator extends ConstraintValidator
 {
+    /**
+     * Valide la valeur d'énergie.
+     *
+     * @param mixed $value La valeur de l'énergie à valider
+     * @param Constraint|IsEnergyValid $constraint La contrainte appliquée
+     */
     public function validate($value, Constraint $constraint)
     {
-        // 🔥 équivalent NotBlank
+        // Si aucune valeur n'est fournie, on déclenche une violation
         if ($value === null || $value === '') {
             $this->context->buildViolation('Veuillez saisir une valeur d\'énergie.')
                 ->addViolation();
-            return; // important pour stopper ici
+            return; 
         }
 
+        // Validation selon l'unité définie dans la contrainte
         switch ($constraint->unitMeasure) {
+
             case EnergyHandler::KCAL:
-                if ($value >= $constraint->maxKcal || $value < $constraint->minKcal) {
+                // Vérifie que la valeur est comprise entre minKcal et maxKcal
+                if ($value < $constraint->minKcal || $value > $constraint->maxKcal) {
                     $this->context->buildViolation($constraint->messageRange, [
                                         '{{ min }}' => $constraint->minKcal,
                                         '{{ max }}' => $constraint->maxKcal,
@@ -28,8 +43,10 @@ class IsEnergyValidValidator extends ConstraintValidator
                                     ->addViolation();
                 }
                 break;
+
             case EnergyHandler::KJ:
-                if ((int)$value >= $constraint->maxKj || (int)$value < $constraint->minKj) {
+                // Vérifie que la valeur est comprise entre minKj et maxKj
+                if ((int)$value < $constraint->minKj || (int)$value > $constraint->maxKj) {
                     $this->context->buildViolation($constraint->messageRange, [
                                     '{{ min }}' => $constraint->minKj,
                                     '{{ max }}' => $constraint->maxKj,

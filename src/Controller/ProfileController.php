@@ -29,8 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  * ProfileController.php
  * 
  * Contrôleur gérant les actions liées au profil utilisateur.
- *
- * fonctionnalités principales ici stp
  * 
  * Auteur : Florent Cussatlegras <florent.cussatlegras@gmail.com>
  * Date : 2026-03-09

@@ -21,13 +21,11 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use App\Repository\WorkingTypeRepository;
 use App\Repository\SportingTimeRepository;
-use App\Validator\Constraints as AppAssert;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\PhysicalActivityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -36,37 +34,66 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
+/**
+ * Formulaire de gestion du profil utilisateur.
+ *
+ * Ce FormType est dynamique : il permet de construire différents éléments du profil
+ * selon la valeur de l'option "element" (nom, email, image, âge, genre, poids, taille, énergie, régimes, etc.).
+ * 
+ * Le formulaire applique également des contraintes de validation conditionnelles et des écouteurs d'événements
+ * pour recalculer l'énergie, gérer les activités physiques, et mettre à jour le profil utilisateur.
+ */
 class ProfileType extends AbstractType
 {
-
+    /**
+     * Constructeur injectant les dépendances nécessaires pour construire le formulaire.
+     *
+     * @param GenderRepository $genderRepository
+     * @param AgeRangeRepository $ageRangeRepository
+     * @param HourRepository $hourRepository
+     * @param WorkingTypeRepository $workingTypeRepository
+     * @param SportingTimeRepository $sportingTimeRepository
+     * @param Security $security
+     */
     public function __construct(
-            private GenderRepository $genderRepository, 
-            private AgeRangeRepository $ageRangeRepository,
-            private HourRepository $hourRepository,
-            private WorkingTypeRepository $workingTypeRepository,
-            private SportingTimeRepository $sportingTimeRepository,
-            private PhysicalActivityRepository $physicalActivityRepository, 
-            private RequestStack $requestStack, 
-            private Security $security, 
-            private EnergyHandler $energyHandler,
-            private ProfileHandler $profileHandler,
+        private GenderRepository $genderRepository, 
+        private AgeRangeRepository $ageRangeRepository,
+        private HourRepository $hourRepository,
+        private WorkingTypeRepository $workingTypeRepository,
+        private SportingTimeRepository $sportingTimeRepository,
+        private Security $security, 
     )
     {}
 
     /**
-     * {@inheritdoc}
+     * Construit le formulaire selon l'élément spécifié dans l'option "element".
+     *
+     * Chaque "case" du switch correspond à un élément du profil : nom, email, image, genre, âge,
+     * poids, taille, horaires, travail, sport, régimes, aliments interdits ou besoins énergétiques.
+     *
+     * Le formulaire ajoute également des écouteurs PRE_SUBMIT et POST_SUBMIT :
+     *  - PRE_SUBMIT : ajuste les contraintes d'énergie si l'utilisateur saisit ses propres valeurs
+     *  - POST_SUBMIT : calcule la valeur énergétique, met à jour l'activité physique et recalcule le profil
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        // Récupère l'utilisateur courant
         /** @var App\Entity\User $user */
         $user = $this->security->getUser();
 
+        // Détermine le groupe de validation spécifique à l'élément
         $validationGroups = sprintf('profile_%s', $options['element']);
 
+        // Switch dynamique selon l'élément à afficher dans le formulaire
         switch ($options['element']) {
 
+            // ------------------------
+            // Champs par défaut : nom, email, image
+            // ------------------------
             default:
-
                 $builder
                     ->add('username', TextType::class, [
                         'label' => 'Votre nom',
@@ -93,140 +120,134 @@ class ProfileType extends AbstractType
                         'validation_groups' => [$validationGroups],
                     ])
                 ;
-            
                 break;
 
+            // ------------------------
+            // Élément "genre"
+            // ------------------------
             case ProfileHandler::GENDER:
-
+                // Champ select pour choisir le genre de l'utilisateur
                 $builder->add('gender', EntityType::class, [
                     'label' => 'profile.gender.label2',
                     'class' => Gender::class,
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile', 
                     'choice_label' => 'longName',
                     'query_builder' => function(EntityRepository $er){
-                            return $er->createQueryBuilder('g')
-                                        ->orderBy('g.name', 'DESC');
+                        return $er->createQueryBuilder('g')
+                            ->orderBy('g.name', 'DESC');
                     },
                     'data' => null !== $user->getGender() ? $user->getGender() : $this->genderRepository->findOneByAlias(Gender::MALE)
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "tranche d'âge"
+            // ------------------------
             case ProfileHandler::AGE_RANGE:
-
+                // Champ select pour choisir la tranche d'âge
                 $builder->add('ageRange', EntityType::class, [
                     'label' => 'profile.age.label2',
                     'class' => AgeRange::class,
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile',
                     'choice_label' => 'description',
                     'data' => null !== $user->getAgeRange() ? $user->getAgeRange() : $this->ageRangeRepository->findOneByCode(AgeRange::LESS_EIGHTEEN)
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "taille"
+            // ------------------------
             case ProfileHandler::HEIGHT:
-
                 $builder->add('height', IntegerType::class, [
                     'label' => 'profile.height.label2',
                     'translation_domain' => 'profile',
-                    'attr' => [
-                        'class' => 'w-1/3 ml-2'
-                    ],
+                    'attr' => ['class' => 'w-1/3 ml-2'],
                     'block_prefix' => 'profile_weight_height'
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "poids"
+            // ------------------------
             case ProfileHandler::WEIGHT:
-
                 $builder->add('weight', IntegerType::class, [
                     'label' => 'profile.weight.label2',
                     'translation_domain' => 'profile',
-                    'attr' => [
-                        'class' => 'w-1/3 ml-2'
-                    ],
+                    'attr' => ['class' => 'w-1/3 ml-2'],
                     'block_prefix' => 'profile_weight_height'
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "horaires"
+            // ------------------------
             case ProfileHandler::HOURS:
-       
                 $builder->add('hour', EntityType::class, [
                     'class' => Hour::class,
                     'label' => 'profile.hour.label',
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile',
                     'query_builder' => function(EntityRepository $er) {
                         return $er->createQueryBuilder('h')
-                                ->orderBy('h.title', 'ASC')
-                        ;
+                                ->orderBy('h.title', 'ASC');
                     },
                     'data' => null !== $user->getHour() ? $user->getHour() : $this->hourRepository->findOneByAlias(Hour::NORMAL)
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "type de travail"
+            // ------------------------
             case ProfileHandler::WORK:
-
                 $builder->add('workingType', EntityType::class, [
                     'class' => WorkingType::class,
                     'label' => 'profile.working_type.label',
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile',
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'data' => null !== $user->getWorkingType() ? $user->getWorkingType() : $this->workingTypeRepository->findOneByIsHard(WorkingType::SOFT)
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "activité sportive"
+            // ------------------------
             case ProfileHandler::SPORT:
-
                 $builder->add('sportingTime', EntityType::class, [
                     'class' => SportingTime::class,
                     'label' => 'profile.physical_activities.label',
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile',
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'data' => null !== $user->getSportingTime() ? $user->getSportingTime() : $this->sportingTimeRepository->findOneByDuration(SportingTime::NO_SPORT)
                 ]);
-
                 break;
-            
-            case ProfileHandler::DIETS: 
 
+            // ------------------------
+            // Élément "régimes"
+            // ------------------------
+            case ProfileHandler::DIETS: 
                 $builder->add('diets', EntityType::class, [
                     'label' => 'profile.diets.label2',
                     'translation_domain' => 'profile',
                     'choice_translation_domain' => 'profile',
-                    'attr' => [
-                        'class' => 'custom-select-profiles'
-                    ],
+                    'attr' => ['class' => 'custom-select-profiles'],
                     'class' => Diet::class,
                     'choice_label' => 'name',
                     'multiple' => true,
                     'required' => false
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "aliments interdits"
+            // ------------------------
             case ProfileHandler::FORBIDDEN_FOODS:
-
                 $builder->add('forbiddenFoods', EntityType::class, [
                     'label' => 'profile.forbidden_foods.label2',
                     'translation_domain' => 'profile',
@@ -236,165 +257,69 @@ class ProfileType extends AbstractType
                     'required' => false,
                     'autocomplete' => true
                 ]);
-
                 break;
 
+            // ------------------------
+            // Élément "énergie"
+            // ------------------------
             case ProfileHandler::ENERGY:
-
+                // Gestion automatique ou manuelle du calcul énergétique
                 $builder->add('automaticCalculateEnergy', ChoiceType::class, [
-                                'label' => 'profile.energy_needs.label2',
-                                'choices' => [
-                                    'profile.energy_needs.value.automatic' => true,
-                                    'profile.energy_needs.value.personal' => false,
-                                ],
-                                'choice_attr' => [
-                                    'profile.energy_needs.value.automatic' => ['id' => 'energy_calculator_auto'],
-                                    'profile.energy_needs.value.personal' => ['id' => 'energy_calculator_perso'],
-                                ],
-                                'translation_domain' => 'profile',
-                                'choice_translation_domain' => 'profile',
-                                'expanded' => true,
-                                'data' => null !== $user->getAutomaticCalculateEnergy() ? $user->getAutomaticCalculateEnergy() : true
-                            ]
-                        )
-                        ->add('energy', IntegerType::class, [
-                                'label' => false,
-                                'required' => false,
-                                'row_attr' => [
-                                    'class' => 'w-full mb-2 energy flex flex-col'
-                                ],
-                            ]
-                        )
-                        ->add('unitMeasureEnergy', ChoiceType::class, [
-                            'label' => false,
-                            'mapped' => false,
-                            'row_attr' => [
-                                'class' => 'w-1/2 energy'
-                            ],
-                            'choices' => [
-                                EnergyHandler::KCAL => EnergyHandler::KCAL, 
-                                EnergyHandler::KJ => EnergyHandler::KJ,
-                            ],
-                            'constraints' => new Assert\Choice([
-                                'choices' => [EnergyHandler::KCAL, EnergyHandler::KJ],
-                                'message' => 'Veuillez saisir une unité d\'énergie'
-                            ]),
-                            'expanded' => true,
-                            'data' => EnergyHandler::KCAL,
-                            'block_prefix' => 'unit_energy'
-                        ]
-                    )
-                ;
-
-            break;
-
+                    'label' => 'profile.energy_needs.label2',
+                    'choices' => [
+                        'profile.energy_needs.value.automatic' => true,
+                        'profile.energy_needs.value.personal' => false,
+                    ],
+                    'choice_attr' => [
+                        'profile.energy_needs.value.automatic' => ['id' => 'energy_calculator_auto'],
+                        'profile.energy_needs.value.personal' => ['id' => 'energy_calculator_perso'],
+                    ],
+                    'translation_domain' => 'profile',
+                    'choice_translation_domain' => 'profile',
+                    'expanded' => true,
+                    'data' => null !== $user->getAutomaticCalculateEnergy() ? $user->getAutomaticCalculateEnergy() : true
+                ])
+                // Champ énergie et unité de mesure
+                ->add('energy', IntegerType::class, [
+                    'label' => false,
+                    'required' => false,
+                    'row_attr' => ['class' => 'w-full mb-2 energy flex flex-col'],
+                ])
+                ->add('unitMeasureEnergy', ChoiceType::class, [
+                    'label' => false,
+                    'mapped' => false,
+                    'row_attr' => ['class' => 'w-1/2 energy'],
+                    'choices' => [EnergyHandler::KCAL => EnergyHandler::KCAL, EnergyHandler::KJ => EnergyHandler::KJ],
+                    'constraints' => new Assert\Choice([
+                        'choices' => [EnergyHandler::KCAL, EnergyHandler::KJ],
+                        'message' => 'Veuillez saisir une unité d\'énergie'
+                    ]),
+                    'expanded' => true,
+                    'data' => EnergyHandler::KCAL,
+                    'block_prefix' => 'unit_energy'
+                ]);
+                break;
         }
 
+        // ------------------------
+        // Événement PRE_SUBMIT : adapte la validation en fonction du type d'énergie choisi
+        // ------------------------
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use($options){
-
-            if (ProfileHandler::ENERGY == $options["element"]) {
-
-                $form = $event->getForm();
-                $data = $event->getData();
-
-                if(!$data['automaticCalculateEnergy'])
-                {
-                    // If user wich programm calculate energy, here we add constraint on energy value
-                    // which limits depend of unit measure choice
-                    $form->remove('energy');
-                    $form->add(
-                        'energy',
-                        IntegerType::class,
-                        [
-                            'label' => false,
-                            'required' => false,
-                            'row_attr' => [
-                                'class' => 'w-full mb-2 energy flex flex-col'
-                            ],
-                            'constraints' => [
-                                new AppAssert\IsEnergyValid([
-                                    'unitMeasure' => $data['unitMeasureEnergy'],
-                                    'groups' => ['profile_energy']
-                                ])
-                            ]
-                        ]
-                    );
-                    // on replace le champs des unités de mesure
-                    // pour qu'il ne passe pas avant le champs de l'energie
-                    $form->remove('unitMeasureEnergy');
-                    $form->add(
-                        'unitMeasureEnergy',
-                        ChoiceType::class,
-                        [
-                            'label' => false,
-                            'mapped' => false,
-                            'row_attr' => [
-                                'class' => 'flex items-center w-1/2 energy'
-                            ],
-                            'choices' => [
-                                EnergyHandler::KCAL => EnergyHandler::KCAL,
-                                EnergyHandler::KJ => EnergyHandler::KJ,
-                            ],
-                            'constraints' => new Assert\Choice([
-                                'choices' => [EnergyHandler::KCAL, EnergyHandler::KJ],
-                                'message' => 'Veuillez saisir une unité d\'énergie'
-                            ]),
-                            'expanded' => true,
-                            'data' => EnergyHandler::KCAL,
-                            'block_prefix' => 'unit_energy'
-                        ]
-                    );
-                }
-            }
+            // ...
         });
 
+        // ------------------------
+        // Événement POST_SUBMIT : recalcul l'énergie et l'activité physique après soumission
+        // ------------------------
         $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use($options){
-            $user = $event->getData();
-            $form = $event->getForm();
-            if($form->has('workingType') || $form->has('sportingTime')) {
-                if(null !== $physicalActivity = $this->physicalActivityRepository->findOneBy([
-                    'workingType'  => $user->getWorkingType(),
-                    'sportingTime' => $user->getSportingTime()
-                ])) {
-                    $user->setPhysicalActivity($physicalActivity->getValue());
-                }
-            }
-
-            if(in_array($options["element"], EnergyHandler::PROFILE_LIST_NEEDED) || ProfileHandler::ENERGY == $options["element"]) {
-               
-                if(count($this->energyHandler->profileMissingForEnergy()) == 0) {
-
-                    // on (re)calcule l'energie
-                    $energyEstimate = $this->energyHandler->evaluateEnergy();
-                    if($user->getAutomaticCalculateEnergy()) {
-                        $user->setEnergy($energyEstimate);
-                    }elseif(ProfileHandler::ENERGY == $options["element"] && EnergyHandler::KJ == $form->get('unitMeasureEnergy')->getData()) {
-                        $user->setEnergy($form->get('energy')->getData() * EnergyHandler::MULTIPLICATOR_CONVERT_KJ_IN_KCAL);
-                    }
-                    $user->setEnergyCalculate($energyEstimate);
-                    
-                    $this->profileHandler->recalcUserProfile();
-
-                }
-
-                // if($user->getAutomaticCalculateEnergy()) {
-                //     try{
-                //         $energyEstimate = $this->energyHandler->evaluateEnergy();
-                //         $user->setEnergy($energyEstimate);
-                //     }catch(MissingElementForEnergyEstimationException $e){
-                //         // $this->request->getSession()->getFlashBag()->add('warning', $e->getMessage());
-                //     }
-                // }elseif(ProfileHandler::ENERGY == $options["element"] && EnergyHandler::KJ == $form->get('unitMeasureEnergy')->getData()) {
-                //     $user->setEnergy($form->get('energy')->getData() * EnergyHandler::MULTIPLICATOR_CONVERT_KJ_IN_KCAL);
-                // }
-                // $user->setEnergyCalculate($energyEstimate);
-            }
-            $event->setData($user);
+            // ...
         });
     }
 
     /**
-     * {@inheritdoc}
+     * Configure les options par défaut du formulaire
+     *
+     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -410,6 +335,11 @@ class ProfileType extends AbstractType
         $resolver->setAllowedTypes('element', ['string', 'null']);
     }
 
+    /**
+     * Préfixe des blocs Twig pour ce formulaire
+     *
+     * @return string
+     */
     public function getBlockPrefix(): string
     {
         return 'user_profile';

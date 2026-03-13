@@ -11,45 +11,42 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
-use Symfony\Component\Intl\Countries;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
+/**
+ * Formulaire de création de compte utilisateur (inscription).
+ * Permet de saisir les informations nécessaires pour créer un nouvel utilisateur.
+ */
 class RegistrationType extends AbstractType
 {
     /**
-     * {@inheritdoc}
+     * Construction du formulaire.
+     * Ajoute les champs de base : nom, email, mot de passe et acceptation des conditions.
+     *
+     * @param FormBuilderInterface $builder Le constructeur de formulaire Symfony
+     * @param array $options Options passées au formulaire
+     * @return void
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('username', null, [
-                    'label' => 'Nom ou pseudo',
-                    'empty_data' => '',
-                    'attr' => [
-                        'class' => 'rounded w-full',
-                    ],
-                ]
-            )
+        $builder
+            // Champ pour le nom ou pseudo de l'utilisateur
+            ->add('username', null, [
+                'label' => 'Nom ou pseudo',
+                'empty_data' => '',
+                'attr' => [
+                    'class' => 'rounded w-full',
+                ],
+            ])
+            // Champ pour l'email de l'utilisateur
             ->add('email', EmailType::class, [
-                    'label' => 'Votre adresse email',
-                    'attr' => [
-                        'class' => 'rounded w-full',
-                    ],
-                ]
-            )
-            /* ->add('plainPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'mapped' => false,
-                'help' => 'Le mot de passe doit contenir au minimum 6 caractères composés de lettres et de chiffres',
-                'invalid_message' => 'Les mots de passe ne correspondent pas',
-                'first_options' => ['label' => 'Mot de passe'],
-                'second_options' => ['label' => 'Confirmez votre mot de passe'],
-                'constraints' => [
-                    new AppAssert\PasswordRequirements([
-                        'groups' => ['registration']
-                    ])
-                ]
-            ]) */
+                'label' => 'Votre adresse email',
+                'attr' => [
+                    'class' => 'rounded w-full',
+                ],
+            ])
+            // Champ pour le mot de passe
             ->add('plainPassword', PasswordType::class, [
                 'label' => 'Votre mot de passe',
                 'mapped' => false,
@@ -70,40 +67,45 @@ class RegistrationType extends AbstractType
                     ])
                 ],
             ])
+            // Champ pour accepter les conditions générales
             ->add('terms', CheckboxType::class, [
-                    'label' => 'J\'ai lu et j\'accepte les conditions générales d\'utilisation et la politique de protection des données personnelles',
-                    'mapped' => false,
-                    'label_attr' => [
-                        'class' => 'font-normal'
-                    ],
-                    'constraints' => [
-                        new Assert\IsTrue([
-                                'message' => 'Pour continuer vous devez accepter nos conditions',
-                                'groups' => ['registration']
-                            ]
-                        )
-                    ]
+                'label' => 'J\'ai lu et j\'accepte les conditions générales d\'utilisation et la politique de protection des données personnelles',
+                'mapped' => false,
+                'label_attr' => [
+                    'class' => 'font-normal'
+                ],
+                'constraints' => [
+                    new Assert\IsTrue([
+                        'message' => 'Pour continuer vous devez accepter nos conditions',
+                        'groups' => ['registration']
+                    ])
                 ]
-            );
+            ]);
     }
 
     /**
-     * {@inheritdoc}
+     * Configuration des options du formulaire.
+     * Définit les options par défaut, notamment l'entité associée.
+     *
+     * @param OptionsResolver $resolver Le résolveur d'options Symfony
+     * @return void
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-                 'data_class' => User::class,
-                 'validation_groups' => ['registration']
+            'data_class' => User::class,
+            'validation_groups' => ['registration'],
         ]);
     }
 
     /**
-     * {@inheritdoc}
+     * Retourne le préfixe du bloc utilisé pour le formulaire.
+     * Permet de personnaliser les noms des champs dans les templates Twig.
+     *
+     * @return string
      */
     public function getBlockPrefix(): string
     {
         return 'user_registration';
     }
-
 }
