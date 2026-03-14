@@ -13,7 +13,7 @@
         <div class="w-full flex flex-col">
 
             {# Conteneur central avec texte + image, responsive #}
-            <div class="flex flex-row items-center justify-center md:justify-start gap-4 md:gap-0 lg:flex-row py-10 w-full xl:max-w-[1100px] 2xl:max-w-[1536px] mx-auto relative">
+            <div class="flex flex-row items-center justify-center md:justify-start gap-4 md:gap-0 lg:flex-row py-10 w-full xl:max-w-[1536px] mx-auto relative">
 
                 {# Message conditionnel pour utilisateur connecté avec profil complet #}
                 {% if is_granted('IS_AUTHENTICATED_REMEMBERED') and app.user.firstFillProfile is same as (true) %}
