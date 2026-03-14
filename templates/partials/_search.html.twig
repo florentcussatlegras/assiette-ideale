@@ -58,7 +58,10 @@
                                         type="search"
                                         class="block w-full rounded-xl border border-gray-300 text-3xl bg-white pl-16 h-16 leading-none"
                                         data-search-items-target="input"
-                                        data-action="input->search-items#search"
+                                        data-action="
+                                            input->search-items#search
+                                            modal-nav-search:opened@window->search-items#focus
+                                        "
                                         placeholder="Aliments, plats..."
                                     />
                                     <button

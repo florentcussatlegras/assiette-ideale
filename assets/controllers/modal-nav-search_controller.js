@@ -28,6 +28,8 @@ export default class extends Controller {
         document.body.classList.add('modal-nav-search-active')
 
         document.addEventListener('keydown', this.handleEscape)
+
+        this.dispatch("opened");
     }
 
     /**

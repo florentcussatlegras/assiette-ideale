@@ -11,7 +11,7 @@ import { Controller } from "@hotwired/stimulus";
  */
 export default class extends Controller {
     // Définition des targets pour accéder facilement aux éléments DOM
-    static targets = ["wrapper", "listBtn", "gridBtn"];
+    static targets = ["wrapper", "wrapperSkeleton", "skeletonGrid", "skeletonList", "listBtn", "gridBtn"];
 
     /**
      * Active le mode liste
@@ -20,6 +20,16 @@ export default class extends Controller {
         event.preventDefault(); // Empêche le comportement par défaut du clic
 
         this.wrapperTarget.classList.add("list");
+        this.wrapperSkeletonTarget.classList.add("list");
+
+        // toggle skeletons
+        this.skeletonGridTargets.forEach(el => {
+            el.classList.add("hidden");
+        });
+
+        this.skeletonListTargets.forEach(el => {
+            el.classList.remove("hidden");
+        });
 
         this.gridBtnTarget.classList.remove("view-mode-switch__display--selected");
 
@@ -33,6 +43,16 @@ export default class extends Controller {
         event.preventDefault(); // Empêche le comportement par défaut du clic
 
         this.wrapperTarget.classList.remove("list");
+        this.wrapperSkeletonTarget.classList.remove("list");
+
+        // toggle skeletons
+        this.skeletonListTargets.forEach(el => {
+            el.classList.add("hidden");
+        });
+
+        this.skeletonGridTargets.forEach(el => {
+            el.classList.remove("hidden");
+        });
 
         this.listBtnTarget.classList.remove("view-mode-switch__display--selected");
 

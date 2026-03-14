@@ -2489,7 +2489,8 @@ select#sort-meals:focus {
 
 .list-modal .btn-remove-model-meal,
 .list-modal .btn-remove-model-meals,
-.list-modal .btn-edit-model-meal
+.list-modal .btn-edit-model-meal,
+.list-modal .btn-arrow-model-meals
 {
     display: none;
 }
@@ -2500,6 +2501,10 @@ select#sort-meals:focus {
 
 .list-modal .btn-choose-model-meal {
     display: flex !important;
+}
+
+.list-modal .card-model-meal {
+    cursor: pointer;
 }
 
 .max-w-6xl {
@@ -3745,17 +3750,32 @@ btn {
     align-self: flex-start;
 }
 
-.list .card-wrapper {
+.list .card-wrapper,
+.list .card-wrapper-skeleton {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    height: 300px;
     width: 100%;
     gap: 2rem;
 }
 
 .list .card-wrapper .description {
     display: flex;
+    padding-right: 40px;
+}
+
+.list .card-wrapper .dish-gluten-lactose,
+.list .card-wrapper .list-fgp-color {
+    left: 180px !important;
+}
+
+.list .card-wrapper .list-fgp-color {
+    padding-left: 0px !important;
+}
+
+.list .card-wrapper .heart-favorites {
+    border: 1px solid gray;
+    border-radius: 9999px;
 }
 
 .w-10-12 {
@@ -4037,15 +4057,16 @@ btn {
 }
 
 .list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
+}
+
+.list .card-wrapper {
+    width: 100%;
+    min-height: 210px;
 }
 
 .card-col-left {
     display: flex;
-}
-
-.list .card-wrapper {
-    height: 200px;
 }
 
 .card-wrapper .card-col-left {
@@ -4262,6 +4283,14 @@ btn {
     @media (width >= 80rem /* 1280px */) {
         margin-right: calc(var(--spacing) * 16) /* 4rem = 64px */;
     }
+}
+
+.mr-10 {
+    margin-right: 40px !important;
+}
+
+.mr-14 {
+    margin-right: 56px !important;
 }
 
 .text-3xl {
@@ -5867,6 +5896,10 @@ canvas {
 
 .w-28 {
     wodth: 112px !important;
+}
+
+.w-30 {
+    wodth: 120px !important;
 }
 
 .gap-6 {
