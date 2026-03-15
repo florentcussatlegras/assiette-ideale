@@ -41,16 +41,14 @@
                                 {# Contenu du menu dropdown utilisateur #}
                                 <div data-dropdown-target="menu" class="absolute w-56 right-0 top-full mt-2 bg-white shadow-lg rounded-lg
                                                         opacity-0 invisible translate-y-2 transition-all duration-200" style="z-index: 100">
-                                    <div class="p-4">
-                                        {{ include('navigation/_menu_dropdown_content.html.twig') }}
-                                    </div>
+                                    {{ include('navigation/_menu_dropdown_content.html.twig') }}
                                 </div>
                             </div>
 
                             {# === Mobile / Tablette: menu drawer latéral === #}
                             <div class="block xl:my-hidden" {{ stimulus_controller('drawer') }}>
                                 {# Bouton ouvrir menu #}
-                                <button data-action="click->drawer#toggle" class="px-0 py-2 hover:text-sky-700 transition duration-300" aria-label="Ouvrir le menu">
+                                <button data-action="click->drawer#toggle" class="p-3 hover:text-sky-700 hover:bg-gray-200 transition duration-300 rounded-full" aria-label="Ouvrir le menu">
                                     <svg width="24" height="24" fill="none" viewbox="0 0 24 24" stroke="currentColor" class="text-light-blue">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                                     </svg>

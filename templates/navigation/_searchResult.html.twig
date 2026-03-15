@@ -1,88 +1,90 @@
-<div 
-    id="wrapper" 
-    class="wrapper wrapper-search__header mt-6 mx-auto" 
+{% if results is not empty %} 
 
-    {# Ajoute une opacité pendant le chargement (via JS / Stimulus) #}
-    data-loading="addClass(opacity-50)"
+    <div 
+        id="wrapper" 
+        class="wrapper wrapper-search__header mt-6 mx-auto" 
 
-    {# Target utilisée par Stimulus pour recharger le contenu des résultats #}
-    data-reload-content-target="content"
+        {# Ajoute une opacité pendant le chargement (via JS / Stimulus) #}
+        data-loading="addClass(opacity-50)"
 
-    {# Indique s'il existe déjà des résultats précédents #}
-    data-last-results="{{ lastResults ? '1' : '0' }}"
->
+        {# Target utilisée par Stimulus pour recharger le contenu des résultats #}
+        data-reload-content-target="content"
 
-	{# Parcourt les résultats de recherche (plats ou aliments) #}
-	{% for item in results %}
+        {# Indique s'il existe déjà des résultats précédents #}
+        data-last-results="{{ lastResults ? '1' : '0' }}"
+    >
 
-        <a 
-            class="card card-wrapper rounded-lg current-shadow" 
+        {# Parcourt les résultats de recherche (plats ou aliments) #}
+        {% for item in results %}
 
-            {# Lien différent selon le type d'élément : plat ou aliment #}
-            {% if item.item_type == 'Dish' %}
-                href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}"
-            {% else %}
-                href="{{ path('app_food_show', { slug: item.slug }) }}"
-            {% endif %}
+            <a 
+                class="card card-wrapper rounded-lg current-shadow" 
 
-            role="option"
-        >
-
-            <div class="flex flex-row">
-
-                {# Affiche l'image si elle existe, sinon un placeholder #}
-                {% if item.picture is not null %}
-                    <img 
-                        alt="Image" 
-                        class="rounded-lg w-36" 
-                        src="{{ (item.item_type|lower ~ '/' ~ item.picture)|imagine_filter('squared_thumbnail_small') }}"
-                    >
+                {# Lien différent selon le type d'élément : plat ou aliment #}
+                {% if item.item_type == 'Dish' %}
+                    href="{{ path('app_dish_show', { id: item.id, slug: item.slug }) }}"
                 {% else %}
-                    <img 
-                        src="https://placehold.co/50x50" 
-                        alt="Photo plat" 
-                        width="100px" 
-                        class="rounded-lg"
-                    >
+                    href="{{ path('app_food_show', { slug: item.slug }) }}"
                 {% endif %}
 
-                <div class="px-5">
+                role="option"
+            >
 
-                    {# Nom du résultat avec mise en évidence du mot-clé recherché #}
-                    <div class="mb-1 text-base leading-4">
-                        {{ showKeyword(item.name, keyword)|raw }}
-                    </div>
+                <div class="flex flex-row">
 
-                    {# Affiche les groupes alimentaires si c'est un plat #}
-                    {% if item.item_type == 'Dish' %}
-
-                        {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
-
+                    {# Affiche l'image si elle existe, sinon un placeholder #}
+                    {% if item.picture is not null %}
+                        <img 
+                            alt="Image" 
+                            class="rounded-lg w-36" 
+                            src="{{ (item.item_type|lower ~ '/' ~ item.picture)|imagine_filter('squared_thumbnail_small') }}"
+                        >
                     {% else %}
+                        <img 
+                            src="https://placehold.co/50x50" 
+                            alt="Photo plat" 
+                            width="100px" 
+                            class="rounded-lg"
+                        >
+                    {% endif %}
 
-                        {# Pour un aliment : affiche simplement la couleur du groupe alimentaire parent #}
-                        <div class="list-fgp flex flex-row gap-2">
-                            <div 
-                                class="w-3 h-3 rounded-full" 
-                                style="border: 1px solid {{ item.parent_color }}; background-color: {{ item.parent_color }}"
-                            ></div>
+                    <div class="px-5">
+
+                        {# Nom du résultat avec mise en évidence du mot-clé recherché #}
+                        <div class="mb-1 text-base leading-4">
+                            {{ showKeyword(item.name, keyword)|raw }}
                         </div>
 
-                    {% endif %}
+                        {# Affiche les groupes alimentaires si c'est un plat #}
+                        {% if item.item_type == 'Dish' %}
+
+                            {{ include('dish/_list_fgp_colors.html.twig', { dish: item }) }}
+
+                        {% else %}
+
+                            {# Pour un aliment : affiche simplement la couleur du groupe alimentaire parent #}
+                            <div class="list-fgp flex flex-row gap-2">
+                                <div 
+                                    class="w-3 h-3 rounded-full" 
+                                    style="border: 1px solid {{ item.parent_color }}; background-color: {{ item.parent_color }}"
+                                ></div>
+                            </div>
+
+                        {% endif %}
+
+                    </div>
 
                 </div>
 
-            </div>
+            </a>
 
-        </a>
+        {% endfor %}
 
-    {% else %}
+    </div>
 
-        {# Message affiché si aucun résultat n'est trouvé #}
-        <div class="absolute inset-0 flex items-center justify-center list-group-item p-8 border">
-            {% trans %}Aucun résultat{% endtrans %}
-        </div>
+{% else %}
 
-    {% endfor %}
+    {# Message affiché si aucun résultat n'est trouvé #}
+    <div class="flex justify-center items-center p-8 text-gray-500 mt-16 text-xl">{% trans %}Aucun résultat{% endtrans %}</div>
 
-</div>
+{% endif %}

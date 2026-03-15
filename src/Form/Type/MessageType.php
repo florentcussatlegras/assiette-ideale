@@ -47,10 +47,6 @@ class MessageType extends AbstractType
                 'attr' => [
                     'class' => 'rounded-lg w-full'
                 ],
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Veuille saisir une adresse email']), // validation obligatoire
-                    new Assert\Email(['message' => 'Veuille saisir une adresse email valide']) // validation format email
-                ]
             ])
             
             // Champ sujet, utilisant un form type personnalisé SubjectMessageType
@@ -63,17 +59,6 @@ class MessageType extends AbstractType
             // Champ message
             ->add('body', TextareaType::class, [
                 'label' => 'Message',
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'Veuillez saisir un message'
-                    ]),
-                    new Assert\Length([
-                            'min' => 10, 
-                            'max' => 500, 
-                            'minMessage' => 'Votre message doit contenir au moins {{ limit }} caractères',
-                            'maxMessage' => 'Votre message doit contenir un maximum de {{ limit }} caractères'
-                    ]),
-                ],
                 'data' => 'Bonjour,', // valeur par défaut du message
                 'attr' => [
                     'class' => "h-32 bg-white border border-gray-200 w-full py-1 px-4 rounded-lg",

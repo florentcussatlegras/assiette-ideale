@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+
+{# 
+    Bloc title : 
+    On garde le titre du layout parent (base.html.twig) 
+    et on ajoute le titre spécifique de la page.
+#}
+{% block title %}
+	{{ parent() }}
+	- Les régimes alimentaires
+{% endblock %}
+
+{% block body %}
+
+	<div class="py-12">
+
+		{{ include('navigation/_header_page.html.twig', {title: 'Les régimes alimentaires'}) }}
+
+		<div class="flex justify-center">
+
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+				{# 
+				    Boucle sur tous les régimes envoyés par le controller
+				#}
+				{% for diet in diets %}
+
+					{# 
+					    Carte représentant un régime alimentaire
+					#}
+					<div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition cursor-pointer">
+
+						{# Nom du régime #}
+						<h2 class="text-lg font-semibold text-gray-800">
+							{{ diet.name }}
+						</h2>
+
+						{# 
+						    Description optionnelle du régime
+						#}
+						{% if diet.description %}
+							<p class="text-sm text-gray-500 mt-2">
+								{{ diet.description }}
+							</p>
+						{% endif %}
+
+					</div>
+
+				{% endfor %}
+
+			</div>
+
+		</div>
+	</div>
+
+{% endblock %}

@@ -3799,6 +3799,24 @@ btn {
     @apply w-6 h-6 flex-shrink-0;
 }
 
+@media (min-width: 1024px) {
+    .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .xl\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
 .px-7 {
     padding-inline: 26px !important;
 }
@@ -3816,6 +3834,14 @@ btn {
 
 .top-7 {
     top: 28px !important;
+}
+
+.bottom-full {
+    bottom: 100% !important;
+}
+
+.top-full {
+    top: 100% !important;
 }
 
 .\2xl\:mt-0 {
