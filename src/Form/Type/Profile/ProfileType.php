@@ -284,6 +284,7 @@ class ProfileType extends AbstractType
                     'label' => false,
                     'required' => false,
                     'row_attr' => ['class' => 'w-full mb-2 energy flex flex-col'],
+                    'data' => round($user->getEnergy()),
                 ])
                 ->add('unitMeasureEnergy', ChoiceType::class, [
                     'label' => false,
