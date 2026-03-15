@@ -7,19 +7,13 @@ export default class extends Controller {
     }
 
     toggle(event) {
-
-        const value = event.target.checked
-
-        fetch(this.urlValue, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                value: value
-            })
-        })
-
+        const value = event.target.checked;
+        console.log(`${this.urlValue}/${value}`);
+    
+        // On envoie la valeur dans l'URL directement
+        fetch(`${this.urlValue}/${value}`, {
+            method: "GET"
+        });
     }
 
 }
