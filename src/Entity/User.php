@@ -223,6 +223,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "datetime", nullable: true)]
     private ?\DateTimeInterface $lastWeightUpdateAt = null;
 
+    #[ORM\Column(type: "boolean")]
+    private bool $showDietFoods = true;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $showForbiddenFoods = true;
 
     public function __construct()
     {
@@ -1062,5 +1067,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getLastWeightUpdateAt(): ?\DateTimeInterface
     {
         return $this->lastWeightUpdateAt;
+    }
+
+    public function isShowDietFoods(): bool
+    {
+        return $this->showDietFoods;
+    }
+
+    public function setShowDietFoods(bool $showDietFoods): self
+    {
+        $this->showDietFoods = $showDietFoods;
+        return $this;
+    }
+
+    public function isShowForbiddenFoods(): bool
+    {
+        return $this->showForbiddenFoods;
+    }
+
+    public function setShowForbiddenFoods(bool $showForbiddenFoods): self
+    {
+        $this->showForbiddenFoods = $showForbiddenFoods;
+        return $this;
     }
 }

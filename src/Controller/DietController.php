@@ -41,4 +41,52 @@ class DietController extends AbstractController
             'diets' => $diets
         ]);
     }
+
+    /**
+     * Active ou désactive l'affichage des aliments interdits liés aux régimes de l'utilisateur.
+     *
+     * @param Request $request Requête HTTP contenant le JSON envoyé par le toggle
+     * @param EntityManagerInterface $em Gestionnaire Doctrine permettant de persister les modifications
+     *
+     * @return JsonResponse Réponse JSON indiquant le succès de l'opération
+     */
+    #[Route('/toggle-diet-foods', name: 'app_diets_toggle_visibility_diet_items', methods: ['POST'])]
+    public function toggleVisibilityDietFoods(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+
+        // Decode le JSON envoyé par le frontend
+        $data = json_decode($request->getContent(), true);
+
+        // Met à jour la préférence utilisateur
+        $user->setShowDietFoods($data['value']);
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+    /**
+     * Active ou désactive l'affichage des aliments explicitement interdits par l'utilisateur.
+     *
+     * @param Request $request Requête contenant les données envoyées par le toggle
+     * @param EntityManagerInterface $em Gestionnaire Doctrine pour appliquer les modifications
+     *
+     * @return JsonResponse Confirmation de mise à jour
+     */
+    #[Route('/toggle-forbidden-foods', name: 'app_diets_toggle_visibility_forbidden_items', methods: ['POST'])]
+    public function toggleVisibilityForbiddenFoods(Request $request, EntityManagerInterface $em): JsonResponse
+    {
+        $user = $this->getUser();
+
+        // Lecture du JSON envoyé par le frontend
+        $data = json_decode($request->getContent(), true);
+
+        // Mise à jour de la préférence utilisateur
+        $user->setShowForbiddenFoods($data['value']);
+
+        $em->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
 }

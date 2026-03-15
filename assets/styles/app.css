@@ -655,6 +655,10 @@ a:focus {
   }
 }
 
+.pt-5 {
+    padding-top: 1.25rem !important; /* 20px */
+}
+
 .p-12 {
     padding: 3rem /* 48px */;
 }
@@ -779,6 +783,9 @@ a:focus {
 @media (width >= 48rem) {
     .md\:mb-12 {
         margin-bottom: calc(var(--spacing) * 12);
+    }
+    .md\:border-none {
+        border: none;
     }
 }
 
@@ -1373,6 +1380,9 @@ h2 {
     .lg\:text-base {
         font-size: 1rem /* 16px */;
         line-height: 1.5rem /* 24px */;
+    }
+    .lg\:ml-5 {
+        margin-left: 30px !important;
     }
 }
 
@@ -3785,41 +3795,7 @@ btn {
 .border-y {
     border-top: 1px solid;
     border-bottom: 1px solid;
-}
-
-.h-1 {
-    height: 1px !important
-}
-
-.menu-item{
-    @apply flex items-center gap-3 px-8 py-3 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 transition duration-300 rounded-lg cursor-pointer;
-}
-
-.menu-icon{
-    @apply w-6 h-6 flex-shrink-0;
-}
-
-@media (min-width: 1024px) {
-    .lg\:grid-cols-2 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (min-width: 1024px) {
-    .lg\:grid-cols-2 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (min-width: 1280px) {
-    .xl\:grid-cols-3 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-.px-7 {
-    padding-inline: 26px !important;
-}
+} 
 
 .xl\:text-lg {
     @media (width >= 80rem /* 1280px */) {
@@ -3834,14 +3810,6 @@ btn {
 
 .top-7 {
     top: 28px !important;
-}
-
-.bottom-full {
-    bottom: 100% !important;
-}
-
-.top-full {
-    top: 100% !important;
 }
 
 .\2xl\:mt-0 {
@@ -4340,6 +4308,76 @@ btn {
     margin-right: 56px !important;
 }
 
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+}
+
+.toggle-container{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:12px;
+}
+
+.toggle-label{
+    font-size:14px;
+    font-weight:500;
+    color:#444;
+}
+
+.switch{
+    position:relative;
+    display:inline-block;
+    width:46px;
+    height:24px;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    cursor:pointer;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color:#d1d5db;
+    transition:.3s;
+    border-radius:24px;
+}
+
+.slider:before{
+    position:absolute;
+    content:"";
+    height:18px;
+    width:18px;
+    left:3px;
+    bottom:3px;
+    background:white;
+    transition:.3s;
+    border-radius:50%;
+}
+
+.switch input:checked + .slider{
+    background-color:#16a34a;
+}
+
+.switch input:checked + .slider.blue{
+    background-color:#2563eb;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(22px);
+}
+
 .text-3xl {
     font-size: var(--text-3xl) /* 1.875rem = 30px */;
     line-height: var(--tw-leading, var(--text-3xl--line-height) /* calc(2.25 / 1.875) ≈ 1.2 */);
@@ -4751,6 +4789,59 @@ btn {
     top: 2px;
 }
 
+/* group (parent) */
+.group {}
+
+/* group-hover:opacity-100 */
+.group:hover .group-hover\:opacity-100 {
+    opacity: 1;
+}
+
+/* group-hover:block */
+.group:hover .group-hover\:block {
+    display: block;
+}
+
+/* group-hover:flex */
+.group:hover .group-hover\:flex {
+    display: flex;
+}
+
+/* group-hover:visible */
+.group:hover .group-hover\:visible {
+    visibility: visible;
+}
+
+/* group-hover:bg-black */
+.group:hover .group-hover\:bg-black {
+    background-color: black;
+}
+
+/* group-hover:text-white */
+.group:hover .group-hover\:text-white {
+    color: white;
+}
+
+@media (min-width: 1024px) {
+    .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 1280px) {
+    .xl\:grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.bottom-full {
+    bottom: 100% !important;
+}
+
+.top-full {
+    top: 100% !important;
+}
+
 .image-fit{
 	position: relative;
 }
@@ -4844,6 +4935,7 @@ opacity: 1;
     background-image: none;
     line-height: 1;
     border: none;
+    text-decoration: uppercase;
   }
 
 .ts-wrapper.plugin-remove_button:not(.rtl) .item .remove {
@@ -5698,6 +5790,10 @@ transform-origin: 0 0; /* see note above */
     }
 }
 
+.translate-x-1\/4 {
+    transform: translateX(25%) !important;
+}
+
 .md\:left-4 {
     @media (width >= 48rem /* 768px */) {
         left: 1rem !important;
@@ -5914,6 +6010,18 @@ canvas {
 
 .h-72 {
     height: 288px !important;
+}
+
+.h-1 {
+    height: 1px !important
+}
+
+.menu-item{
+    @apply flex items-center gap-3 px-8 py-3 text-sm text-gray-700 hover:bg-gray-100 focus:bg-gray-100 transition duration-300 rounded-lg cursor-pointer;
+}
+
+.menu-icon{
+    @apply w-6 h-6 flex-shrink-0;
 }
 
 @media (min-width: 1280px) {
@@ -6243,6 +6351,10 @@ canvas {
 
 .px-6 {
     padding-inline: 24px !important;
+}
+
+.px-7 {
+    padding-inline: 26px !important;
 }
 
 .pl-32 {
