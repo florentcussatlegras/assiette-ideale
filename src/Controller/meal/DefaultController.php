@@ -5,6 +5,7 @@ namespace App\Controller\meal;
 use App\Entity\Alert\LevelAlert;
 use App\Entity\TypeMeal;
 use App\Entity\MealModel;
+use App\Service\FoodUtil;
 use App\Service\DishUtil;
 use App\Service\MealUtil;
 use App\Service\AlertFeature;
@@ -829,7 +830,11 @@ class DefaultController extends AbstractController
 		Request $request,
 		SearchRepository $searchRepository,
 		AlertFeature $alertFeature,
-		UnitMeasureRepository $unitMeasureRepository
+		UnitMeasureRepository $unitMeasureRepository,
+		FoodRepository $foodRepository,
+		DishRepository $dishRepository,
+		FoodUtil $foodUtil, 
+		DishUtil $dishUtil,
 	): Response {
 
 		$session = $request->getSession();
@@ -937,6 +942,34 @@ class DefaultController extends AbstractController
 			}
 		}
 
+		// On vérifie si les items sont restreints par l'utilisateur (aliments non consommés, régimes)
+		$itemAnalysis = [];
+
+		foreach ($validItems as $item) {
+
+			if ($item['item_type'] === 'Food') {
+
+				$food = $foodRepository->find($item['id']);
+				$reasons = $foodUtil->getForbiddenReasons($food);
+
+			} else {
+
+				$dish = $dishRepository->find($item['id']);
+				$reasons = $dishUtil->getForbiddenReasons($dish);
+
+			}
+
+			if(!empty($reasons)) {
+				$itemAnalysis[] = [
+					'id' => $item['id'],
+					'name' => $item['name'],
+					'type' => $item['item_type'],
+					'forbidden' => !empty($reasons),
+					'reasons' => $reasons
+				];
+			}
+		}
+
 		// Mise à jour de l'offset réel en session
 		$session->set('real_offset', $realOffset);
 
@@ -946,6 +979,7 @@ class DefaultController extends AbstractController
 				"meals/day/list-ajax.html.twig",
 				[
 					"results" => $validItems,
+					"itemAnalysis" => $itemAnalysis,
 					"keyword" => $keyword,
 					"rankMeal" => $rankMeal,
 					"rankDish" => $rankDish,

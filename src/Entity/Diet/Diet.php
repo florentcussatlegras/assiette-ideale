@@ -21,6 +21,9 @@ class Diet
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $name = null;
 
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $shortName = null;
+
     #[ORM\ManyToMany(targetEntity: Food::class, inversedBy: "diets")]
     #[ORM\JoinTable(name: "diet_forbidden_food")]
     private Collection $forbiddenFoods;
@@ -185,6 +188,17 @@ class Diet
     public function removeAuthorizedFood(Food $food): self
     {
         $this->authorizedFoods->removeElement($food);
+        return $this;
+    }
+
+    public function getShortName(): ?string
+    {
+        return $this->shortName;
+    }
+
+    public function setShortName(?string $shortName): self
+    {
+        $this->shortName = $shortName;
         return $this;
     }
 }

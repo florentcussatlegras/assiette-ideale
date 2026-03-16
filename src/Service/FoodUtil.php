@@ -90,33 +90,62 @@ class FoodUtil
 	 */
 	public function isForbidden($food): bool
 	{
-		/** @var App/Entity/User|null $user */
+		return !empty($this->getForbiddenReasons($food));
+	}
+
+	/**
+	 * Vérifie si un aliment est interdit pour l'utilisateur et renvoi un tableau avec nom/type restriction/source restriction.
+	 *
+	 * @param Food $food
+	 * 
+	 * @return array
+	 */
+	public function getForbiddenReasons($food): array
+	{
 		$user = $this->security->getUser();
 
-		$forbidden = false;
+		$reasons = [];
 
-		// Vérification directe dans les aliments interdits
+		// 1️⃣ forbiddenFoods utilisateur
 		foreach ($user->getForbiddenFoods() as $forbiddenFood) {
+
 			if (
-				$food->getId() == (int)$forbiddenFood->getId() ||
-				(null !== $food->getSubFoodGroup() && $food->getSubFoodGroup()->getId() == (int)$forbiddenFood->getId())
+				$food->getId() == (int) $forbiddenFood->getId()
+				||
+				(null !== $food->getSubFoodGroup() && $food->getSubFoodGroup()->getId() == (int) $forbiddenFood->getId())
 			) {
-				$forbidden = true;
-				break;
+
+				$reasons[] = [
+					'food' => $food->getName(),
+					'type' => 'user_forbidden_food',
+					'source' => $forbiddenFood->getName()
+				];
 			}
 		}
 
-		// Vérification via les régimes de l'utilisateur
-		if (!$forbidden) {
-			foreach ($user->getDiets()->toArray() as $diet) {
-				if ($food->getForbiddenDiets()->contains($diet) || $food->getFoodGroup()->getForbiddenDiets()->contains($diet)) {
-					$forbidden = true;
-					break;
-				}
+		// 2️⃣ diets
+		foreach ($user->getDiets() as $diet) {
+
+			if ($food->getForbiddenDiets()->contains($diet)) {
+
+				$reasons[] = [
+					'food' => $food->getName(),
+					'type' => 'diet',
+					'source' => $diet->getShortName()
+				];
+			}
+
+			if ($food->getFoodGroup()->getForbiddenDiets()->contains($diet)) {
+
+				$reasons[] = [
+					'food' => $food->getName(),
+					'type' => 'diet_group',
+					'source' => $diet->getShortName()
+				];
 			}
 		}
 
-		return $forbidden;
+		return $reasons;
 	}
 
 	/**

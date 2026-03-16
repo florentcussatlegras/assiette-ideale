@@ -2,33 +2,32 @@
 
 {% block content %}
 
-    {# Conteneur principal : disposition en colonne avec un petit écart entre les éléments #}
     <div class="flex flex-col gap-2">
 
-        {# Titre de la page #}
-        <h1 class="text-3xl font-bold text-sky-600">
+        <h1 class="text-3xl font-bold">
             Renvoyer l'email d'activation
         </h1>
 
-        {# Description / instruction pour l'utilisateur #}
+        {# Message informatif expliquant à l'utilisateur que son compte n'est pas encore activé #}
         <p class="mt-2 text-sm text-gray-500 text-left">
             Votre compte n'est pas activé.<br />
             Voulez-vous recevoir à nouveau un email contenant un lien pour confirmer votre inscription?
         </p>
 
-        {# Début du formulaire de renvoi de l'email #}
         {{ form_start(form) }}
 
-            {# Bouton de soumission avec styles Tailwind #}
-            <button class="bg-security text-white w-full font-bold py-3 font-semibold text-base cursor-pointer rounded-lg mt-8">Renvoyer l'email</button>
+            {# Bouton permettant de déclencher l'envoi d'un nouvel email d'activation #}
+            <button class="bg-security text-white w-full font-bold py-3 font-semibold text-base cursor-pointer rounded-lg mt-8">
+                Renvoyer l'email
+            </button>
 
-        {# Fin du formulaire #}
         {{ form_end(form) }}
 
         <br />
 
-        {# Lien de retour vers le formulaire de connexion #}
-        <a class="text-security text-sm" href="{{ path('app_login') }}">Revenir au formulaire de connexion</a>
+        <a class="text-security text-sm" href="{{ path('app_login') }}">
+            Revenir au formulaire de connexion
+        </a>
 
     </div>
 
