@@ -4,12 +4,8 @@
 
     <div class="flex flex-col gap-2">
 
-        <h1 class="text-4xl font-bold text-center">
-            Réinitialisation de votre mot de passe
-        </h1>
-
         {# Message d'information expliquant que si un compte existe, un email de réinitialisation a été envoyé #}
-        <p class="mt-2 text-left leading-relaxed">
+        <p class="mt-4 text-left leading-relaxed">
             Si un compte correspondant à votre adresse e-mail existe, un e-mail vient de vous être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.
             <br />
             {# Affichage de la durée de validité du lien de réinitialisation fournie par le ResetPasswordBundle #}
@@ -17,9 +13,7 @@
         </p>
 
         {# Lien permettant à l'utilisateur de revenir à la page de connexion #}
-        <a href="{{ path('app_login') }}" class="text-sky-600 hover:text-sky-700 transition duration-300 font-bold">
-            Revenir à la connexion
-        </a>
+        <a href="{{ path('app_login') }}" class="text-sky-600 hover:text-sky-700 transition duration-300 font-semibold">Revenir à la connexion</a>
 
     </div>
 

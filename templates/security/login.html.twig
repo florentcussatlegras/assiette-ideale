@@ -4,18 +4,21 @@
 
 {% block content %}
 
-	{# En-tête de la page : bienvenue et instruction   #}
-	<div class="flex flex-col items-center w-full">
-		<h1 class="text-4xl font-bold">
-			Bienvenue !
-		</h1>
-		<p class="mt-2 text-xl">Merci de vous identifier</p>
-	</div>
-
 	{# Affichage des erreurs globales (ex: identifiants incorrects) #}
 	{% if error %}
-		<div class="flex justify-center mt-6 text-red-700 w-full">
+		<div class="flex flex-col items-center justify-center mt-6 text-red-700 w-full text-center">
 			{{ error.messageKey|trans(error.messageData, 'security') }}
+
+			{# Affichage de l'erreur indiquant que le compte n'est pas encore activé et proposant le renvoi d'un  #}
+			{% if error.messageKey == "Votre compte n'est pas activé. Veuillez saisir le code de confirmation envoyé par email." %}
+				<form method="post" action="{{ path('app_resend_confirmation') }}" class="mt-2">
+					<input type="hidden" name="email" value="{{ last_username }}">
+					
+					<button type="submit" class="text-sky-600 hover:text-sky-700">
+						Renvoyer le code de confirmation
+					</button>
+				</form>
+			{% endif %}
 		</div>
 	{% endif %}
 
@@ -31,27 +34,13 @@
 		{% endfor %}
 	{% endfor %}
 
-	{# Message pour utilisateur non activé #}	
-	{% if non_verified_user %}
-		<div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 w-full" role="alert">
-			<p>Votre compte n'est pas encore activé. Vous devez l'activer avec le code envoyé par e-mail.</p>
-			<form action="{{ path('app_resend_confirmation') }}" method="post" class="mt-2">
-				<input type="hidden" name="email" value="{{ non_verified_user.email }}">
-				<button type="submit" class="text-sky-600 underline hover:text-sky-700">
-					Renvoyer le code
-				</button>
-			</form>
-		</div>
-	{% endif %}
-
 
 	{# Boutons de connexion via Google et GitHub #}
-	<div class="flex flex-col items-center mt-6 space-y-3 gap-2 mb-4 w-full">
+	<div class="flex items-center mt-6 space-y-3 gap-2 mb-4 w-full">
 
        {# Google #}
 		<a href="{{ path('connect_google') }}" class="w-full flex items-center justify-center gap-3 bg-gray-100 border border-gray-100 hover:bg-gray-200 rounded-lg py-2 transition duration-300">
 			<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5">
-			<span class="font-medium">Continuer avec Google</span>
 		</a>
 
 		{# GitHub #}
@@ -75,17 +64,9 @@
 					0 .315.21.69.825.57C20.565 22.092 24 17.592
 					24 12.297c0-6.627-5.373-12-12-12z"/>
 			</svg>
-			<span class="font-medium">Continuer avec GitHub</span>
 		</a>
 
 
-	</div>
-
-	{# Séparateur "ou" #}
-	<div class="flex items-center my-6 w-full">
-		<div class="flex-1 border border-1 border-gray-200"></div>
-		<span class="px-3 text-gray-400 leading-none">ou</span>
-		<div class="flex-1 border border-1 border-gray-200"></div>
 	</div>
 
 	{# Formulaire classique : identifiant/email + mdp  #}
@@ -94,7 +75,7 @@
 		<div class="mt-4 flex flex-col gap-3">
 
 			<div>
-				<input type="text" name="usernameOrEmail" placeholder="Identifiant ou adresse e-mail" class="block w-full pr-10 bg-white rounded-lg border border-gray-300 text-gray-900">
+				<input type="text" name="usernameOrEmail" placeholder="Identifiant ou adresse e-mail" class="block w-full pr-10 bg-white rounded-lg border border-gray-300 text-gray-900 text-base">
 			</div>
 
 			<div class="flex flex-col gap-2">
@@ -105,27 +86,11 @@
 					</a>
 				</div>
 
-				<div data-controller="password-visibility" class="relative flex items-center">
+				<div data-controller="password-visibility" class="relative flex items-center overflow-hidden">
 
-					<input type="password" name="password" placeholder="Mot de passe" data-password-visibility-target="input" spellcheck="false" class="w-full pr-10 bg-white border border-gray-300 rounded-lg text-gray-900"/>
+					<input type="password" name="password" placeholder="Mot de passe" data-password-visibility-target="input" spellcheck="false" class="w-full pr-10 bg-white border border-gray-300 rounded-lg text-gray-900 text-base"/>
 
 					{{ include('partials/_button_visibility_pwd.html.twig') }}
-
-				</div>
-
-			</div>
-
-			<div class="flex flex-col gap-4 w-full">
-
-				<div class="w-full">
-
-					<div class="w-full">
-						<label for="remember-me" class="remember-label inline-flex items-center gap-3">
-							<input id="remember-me" name="_remember_me" type="checkbox" />
-
-							<span class="font-normal select-none">{{ 'label.rememberme'|trans({}, 'security') }}</span>
-						</label>
-					</div>
 
 				</div>
 

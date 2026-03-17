@@ -1,18 +1,13 @@
 {% extends "security/_layout.html.twig" %}
 
-{% block title %}Confirmation{% endblock %}
+{% block title %}Confirmation de votre compte{% endblock %}
 
 {% block content %}
 
-    <div class="flex flex-col gap-2">
-
-        {# Titre principal de la page #}
-        <h1 class="text-3xl font-bold text-white">
-            Confirmation du compte
-        </h1>
+    <div class="flex flex-col gap-2 items-stretch">
 
         {# Instruction pour l'utilisateur #}
-        <p class="mt-2 text-white text-left">
+        <p class="mt-4 text-left">
             Entrez le code reçu par email
         </p>
 
@@ -25,10 +20,10 @@
             </div>
 
             {# Champ pour saisir le code de confirmation avec style Tailwind #}
-            {{ form_widget(form.code, {'attr' : {'class' : 'block w-full bg-white rounded-lg border-none text-gray-900'}}) }}
+            {{ form_widget(form.code, {'attr' : {'class' : 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900'}}) }}
 
             {# Bouton de soumission du formulaire #}
-            <button class="mt-4 bg-sky-700 hover:bg-sky-800 text-white w-full font-bold py-3 text-base cursor-pointer rounded-lg transition duration-300">
+            <button class="mt-4 bg-sky-600 hover:bg-sky-700 text-white w-full font-bold py-3 text-base cursor-pointer rounded-lg transition duration-300">
                 Confirmer
             </button>
 

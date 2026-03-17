@@ -19,7 +19,7 @@
         {{ include('navigation/_header_page.html.twig', {title: 'Mes informations'}) }}
 
 		{# Container principal du profil #}
-		<div {{ stimulus_controller('alert-imc-weight-modal') }} class="bg-white shadow-balanced rounded-2xl p-6">
+		<div {{ stimulus_controller('alert-imc-weight-modal') }} class="bg-white shadow-balanced rounded-2xl p-2 md:pt-6 md:pb-8 px-2 md:px-6 lg:px-8">
 
 			{# =========================================================
 			   SECTION : Informations principales utilisateur
@@ -84,16 +84,11 @@
 				</div>
 
 				{# Lien modification mot de passe #}
-				<div class="ml-0 px-5 md:ml-auto flex flex-row items-center text-sm gap-2">
-
-					<a href="{{ path('app_profile_password_edit') }}"
-					   class="text-sky-600 hover:text-sky-700 duration-300 transition">
-
-						Modifier le mot de passe
-
-					</a>
-
-				</div>
+				<a href="{{ path('app_profile_password_edit') }}"
+					class="ml-0 px-5 md:ml-auto flex flex-row items-center text-sm gap-1 text-sky-600 hover:text-sky-700 duration-300 transition">
+					<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g data-name="Layer 14" id="Layer_14"> <path d="M22.05,12H22V8.5a5.5,5.5,0,0,0-11,0V12H11A4,4,0,0,0,7,16v9.1A4,4,0,0,0,11,29h11.1A4,4,0,0,0,26,25.05V16A4,4,0,0,0,22.05,12ZM13,8.5a3.5,3.5,0,0,1,7,0V12H13ZM24,25.05A2,2,0,0,1,22.05,27H11A2,2,0,0,1,9,25.05V16A2,2,0,0,1,11,14h11.1A2,2,0,0,1,24,16Z"></path> <path d="M16.5,17A3.5,3.5,0,1,0,20,20.5,3.5,3.5,0,0,0,16.5,17Zm0,5A1.5,1.5,0,1,1,18,20.5,1.5,1.5,0,0,1,16.5,22Z"></path> </g> </g></svg>
+					Modifier le mot de passe
+				</a>
 
 			</div>
 
@@ -276,28 +271,6 @@
 
 					</div>
 
-					{# Toggle affichage aliments interdits par les régimes #}
-					<div class="toggle-container"
-						{{ stimulus_controller('toggle-visibility-forbidden-items',
-							{ url: path('app_diets_toggle_visibility_diet_items') }) }}
-					>
-
-						<label class="switch">
-
-							<input type="checkbox"
-								{% if app.user.showDietFoods %}checked{% endif %}
-								data-action="change->toggle-visibility-forbidden-items#toggle">
-
-							<span class="slider"></span>
-
-						</label>
-
-						<span class="toggle-label">
-							Afficher les aliments interdits par mes régimes dans mes choix
-						</span>
-
-					</div>
-
 					{# =========================================================
 					   SECTION : Aliments interdits
 					========================================================= #}
@@ -338,15 +311,15 @@
 					</div>
 
 					{# Toggle affichage aliments non consommés #}
-					<div class="toggle-container"
+					<div class="toggle-container flex items-center mt-12"
 						{{ stimulus_controller('toggle-visibility-forbidden-items',
 							{ url: path('app_diets_toggle_visibility_forbidden_items') }) }}
 					>
 
-						<label class="switch">
+						<label class="switch flex-shrink-0">
 
 							<input type="checkbox"
-								{% if app.user.showForbiddenFoods %}checked{% endif %}
+								{% if app.user.canSelectForbiddenItems %}checked{% endif %}
 								data-action="change->toggle-visibility-forbidden-items#toggle">
 
 							<span class="slider"></span>
@@ -354,7 +327,7 @@
 						</label>
 
 						<span class="toggle-label">
-							Afficher les aliments non consommés dans mes choix
+							Rendre sélectionnables les aliments et plats non consommés ou interdits dans mes choix
 						</span>
 
 					</div>

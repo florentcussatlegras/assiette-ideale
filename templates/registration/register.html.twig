@@ -1,74 +1,64 @@
+{# Hérite du layout principal de la partie sécurité (login/register) #}
 {% extends "security/_layout.html.twig" %}
 
-{# Utilisation du même template pour le thème du formulaire #}
+{# Permet de personnaliser le rendu du formulaire dans ce template #}
 {% form_theme registerForm _self %}
 
-{# Titre de la page #}
 {% block title %}S'inscrire{% endblock %}
 
 {% block content %}
 
-    {# Début du formulaire avec classes CSS et désactivation de la validation HTML #}
     {{ form_start(registerForm, {'attr' : {'novalidate' : 'novalidate', 'class': 'security'}}) }}
 
-        {# Affiche les erreurs globales du formulaire #}
+        {# Affichage des erreurs globales du formulaire #}
         {{ form_errors(registerForm) }}
-
-        {# En-tête du formulaire avec titre et sous-titre #}
-        <div class="flex flex-col items-center">
-            <h1 class="text-4xl font-bold">
-                Inscription
-            </h1>
-            <div class="mt-2 text-xl text-center">Encore quelques clics pour vous connecter à votre compte !</div>
-        </div>
         
-        {# Champs principaux du formulaire : email, username, mot de passe #}
+        {# Conteneur des champs avec spacing Tailwind #}
         <div class="mt-8 flex flex-col gap-3 text-sm">
 
-            {# Champ email #}
             <div>
-                {# Erreurs liées au champ email #}
+                {# Affiche les erreurs du champ email #}
                 <span class="text-red-500">{{ form_errors(registerForm.email) }}</span>
 
-                {# Widget du champ email avec placeholder et style Tailwind #}
+                {# Champ email avec placeholder + styles #}
                 {{ form_widget(registerForm.email, {
                     'attr': {
                         'placeholder': 'Adresse e-mail',
-                        'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900'
+                        'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900 text-base'
                     }
                 }) }}
             </div>
 
-            {# Champ username #}
             <div>
-                {# Erreurs liées au champ username #}
+                {# Erreurs du champ username #}
                 <span class="text-red-500">{{ form_errors(registerForm.username) }}</span>
 
-                {# Widget du champ username #}
+                {# Champ username #}
                 {{ form_widget(registerForm.username, {
                     'attr': {
                         'placeholder': "Nom d'utilisateur",
-                        'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900'
+                        'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900 text-base'
                     }
                 }) }}
             </div>
 
-            {# Champ mot de passe #}
             <div>
-                {# Erreurs liées au champ mot de passe #}
+                {# Erreurs du mot de passe #}
                 <span class="text-red-500">{{ form_errors(registerForm.plainPassword) }}</span>
        
-                {# Champ mot de passe avec bouton permettant d'afficher/masquer la valeur saisie #}
+                {# Stimulus controller pour afficher/masquer le mot de passe #}
                 <div data-controller="password-visibility" class="relative flex items-center">
+
+                    {# Champ mot de passe #}
                     {{ form_widget(registerForm.plainPassword, {
                         'attr': {
                             'id': 'psw',
                             'placeholder': "Mot de passe",
-                            'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900'
+                            'class': 'block w-full bg-white rounded-lg border border-gray-300 text-gray-900 text-base'
                         }
                     }) }}
 
-                    {# Bouton permettant de basculer la visibilité du mot de passe #}
+                    {# Bouton (œil) pour afficher/masquer le mot de passe #}
                     {{ include('partials/_button_visibility_pwd.html.twig') }}
                 </div>
 
@@ -76,55 +66,56 @@
 
         </div>
 
-        {# Champ de case à cocher pour accepter les termes et conditions #}
+        {# Section des conditions d'utilisation #}
         <div class="flex flex-col mt-6 text-sm">
 
-            {# Erreurs liées au champ terms #}
+            {# Erreurs checkbox conditions #}
             <span class="text-red-500">{{ form_errors(registerForm.terms) }}</span>
 
             <div class="flex flex-row gap-1">
-
-                {# Widget de la case à cocher #}
                 <div>
+                    {# Checkbox des conditions #}
                     {{ form_widget(registerForm.terms) }}
                 </div>
-
-                {# Label associé à la case à cocher #}
                 <div class="mt-1">
-                    {{ form_label(registerForm.terms, null, {'label_attr': {'class': 'font-normal'}}) }}
+                    {{ form_label(registerForm.terms, null, {
+                        'label_attr': {'class': 'font-normal'}
+                    }) }}
                 </div>
-
             </div>
         </div>
 
-        {# Bouton de soumission et lien vers la page de connexion #}
         <div class="button-group text-center mt-4">
 
-            {# Bouton permettant de soumettre le formulaire d'inscription #}
-            <button type="submit" class="text-white bg-sky-600 hover:bg-sky-700 w-full font-bold py-3 text-base cursor-pointer rounded-lg transition duration-300">
+            {# Bouton submit #}
+            <button type="submit"
+                class="text-white bg-sky-600 hover:bg-sky-700 w-full font-bold py-3 text-base cursor-pointer rounded-lg transition duration-300">
                 Valider
             </button>
 
-            {# Lien vers la page de connexion pour les utilisateurs ayant déjà un compte #}
+            {# Lien vers la page de connexion #}
             <div class="mt-5 text-sm">
                 Déja inscrit? <br>
-                <a href="{{ path('app_login') }}" class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm font-semibold">
+                <a href="{{ path('app_login') }}"
+                   class="text-sky-600 hover:text-sky-700 transition duration-300 text-sm font-semibold">
                     Identifiez-vous
                 </a>
             </div>
-
         </div>
 
-        {# Mention légale sur les termes et conditions avec lien #}
-        <div class="mt-7 text-center text-sm">
+        {# Mention des termes et conditions #}
+        <div class="mt-2 text-center text-sm">
 			En vous inscrivant, vous acceptez nos
 			<br>
-			<a class="text-sky-600 hover:text-sky-700 hover:text-sky-900 transition duration-300 font-semibold" href="{{ path('app_terms') }}">
+
+            {# Lien vers la page des CGU #}
+			<a class="text-sky-600 hover:text-sky-700 hover:text-sky-900 transition duration-300 font-semibold"
+               href="{{ path('app_terms') }}">
                 Termes et Conditions
             </a>
 		</div>
 
-    {# Fin du formulaire #}
+    {# Fin du formulaire (inclut CSRF token automatiquement) #}
     {{ form_end(registerForm) }}
 
 {% endblock %}
