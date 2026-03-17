@@ -1,97 +1,153 @@
-<footer class="text-center text-surface/75 w-full pt-4 mt-0">
+<footer>
 
-    {# Vérifie si l'utilisateur n'est pas connecté ou si son profil est encore à compléter #}
-    {% if app.user is null or (app.user and app.user.firstFillProfile is same as (true)) %}
+	{# Conteneur principal du footer (centré + espacement) #}
+	<div class="flex flex-col w-full mt-8 items-center">
 
-        {# Conteneur principal des sections du footer #}
-        <div class="w-4/5 mx-auto flex flex-col lg:flex-row justify-center md:justify-between">
+		{# Wrapper responsive (colonne → ligne sur grand écran) #}
+		<div class="flex flex-col items-center lg:items-start lg:flex-row gap-4 w-full max-w-[1536px] mx-auto md:px-16">
 
-            {# Section 1 : Engagement environnemental #}
-            <div class="flex flex-col items-center gap-2 mb-4 flex-1 mx-auto">
-                <div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
-                    <h3 class="flex font-bold text-lg items-center gap-3 pb-0">
-                        <svg ...> <!-- SVG représentant un logo écologique --> </svg>
-                        <span>
-                            {% trans from 'footer' %}footer.environmental_policy{% endtrans %}
-                        </span>
-                    </h3>
-                    <div class="rounded p-2">
-                        Engagés pour l’environnement. <br>
-                        Nous réduisons notre empreinte numérique et privilégions des pratiques responsables afin de limiter l’impact écologique de notre plateforme.
-                    </div>
-                </div>
-            </div>
+			{# Affiche le footer uniquement si :
+			   - l'utilisateur n'est pas connecté
+			   - OU s'il a complété son profil (firstFillProfile = true) #}
+			{% if app.user is null or (app.user and app.user.firstFillProfile is same as (true)) %}
 
-            {# Section 2 : Liens pour l'utilisateur connecté #}
-            <div class="flex flex-col items-center gap-2 mb-4 flex-1 mx-auto">
-                <div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
-                    <h3 class="font-bold text-lg">
-                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                            {{ app.user.username }}
-                        {% endif %}
-                    </h3>
-                    <ul class="flex flex-col gap-4 items-center lg:items-start">
-                        <li>
-                            <a href="{{ path('app_homepage') }}" class="flex flex-row gap-2 items-center">
-                                <i class="fa fa-home" aria-hidden="true"></i>
-                                <span>{% trans from 'footer' %}footer.links.home{% endtrans %}</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('app_profile_index') }}" class="flex flex-row gap-2 items-center">
-                                <svg ...> <!-- SVG icône profil --> </svg>
-                                <span>{% trans from 'footer' %}footer.links.my_account{% endtrans %}</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+				{# ================= COLONNE 1 : USER / NAV ================= #}
+				<div class="flex flex-col gap-2 w-full lg:w-1/4">
+					<div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
 
-            {# Section 3 : Service client et informations légales #}
-            <div class="flex flex-col items-center gap-2 mb-4 flex-1 mx-auto">
-                <div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
-                    <h3 class="font-bold text-lg">
-                        <a href="#" class="flex flex-row gap-2 items-center">
-                            {% trans from 'footer' %}footer.links.customer_service{% endtrans %}
-                        </a>
-                    </h3>
-                    <ul class="flex flex-col gap-4 items-center lg:items-start">
-                        <li>
-                            <a href="{{ path('app_help') }}" class="flex flex-row gap-2 items-center">
-                                {% trans from 'footer' %}footer.links.help_center{% endtrans %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('app_contact') }}" class="flex flex-row gap-2 items-center">
-                                {% trans from 'footer' %}footer.links.contact{% endtrans %}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('app_terms') }}" class="flex flex-row gap-2 items-center">
-                                Termes et conditions
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+						{# Affiche le username si l'utilisateur est connecté #}
+						<h3 class="font-bold text-lg">
+							{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+								{{ app.user.username }}
+							{% endif %}
+						</h3>
 
-            {# Section 4 : Logo du site pour grands écrans (XL) #}
-            <div class="hidden xl:flex xl:flex-row">
-                <div class="flex gap-4">
-                    <div class="font-bold text-xl text-light-blue">
-                        <svg ...> <!-- Logo SITE NUTRITION --> </svg>
-                        SITE NUTRITION
-                    </div>
-                </div>
-            </div>
+						<ul class="flex flex-col gap-4 items-center lg:items-start">
 
-        </div>
+							{# Lien vers la homepage #}
+							<li>
+								<a href="{{ path('app_homepage') }}" class="flex flex-row gap-2 items-center">
+									<i class="fa fa-home"></i>
+									<span>{% trans from 'footer' %}footer.links.home{% endtrans %}</span>
+								</a>
+							</li>
 
-        {# Bas de footer avec copyright #}
-        <div class="p-6 mt-4 text-center text-sm">
-            <div>Assiette idéale © 2025 Copyright</div>
-        </div>
+							{# Lien vers le profil utilisateur #}
+							<li>
+								<a href="{{ path('app_profile_index') }}" class="flex flex-row gap-2 items-center">
 
-    {% endif %}
+									{# Icône utilisateur (SVG) #}
+									<svg width="20px" height="20px" fill="none">
+										<circle cx="12" cy="6" r="4" stroke="currentColor" stroke-width="1.5"></circle>
+										<path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z" stroke="currentColor" stroke-width="1.5"></path>
+									</svg>
+
+									<span>{% trans from 'footer' %}footer.links.my_account{% endtrans %}</span>
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+
+				{# ================= COLONNE 2 : ENTREPRISE ================= #}
+				<div class="flex flex-col gap-2 w-full lg:w-1/4">
+					<div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
+
+						<h3 class="font-bold text-lg">
+							Entreprise
+						</h3>
+
+						<ul class="flex flex-col gap-4 items-center lg:items-start">
+
+							{# Lien "À propos" #}
+							<li>
+								<a href="{{ path('app_help') }}" class="flex flex-row gap-2 items-center">
+									A propos de nous
+								</a>
+							</li>
+
+							{# Lien CGU #}
+							<li>
+								<a href="{{ path('app_terms') }}" class="flex flex-row gap-2 items-center">
+									Termes et conditions
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+
+				{# ================= COLONNE 3 : SUPPORT ================= #}
+				<div class="flex flex-col gap-2 w-full lg:w-1/4">
+					<div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
+
+						{# Titre traduit (i18n) #}
+						<h3 class="font-bold text-lg">
+							{% trans from 'footer' %}footer.links.customer_service{% endtrans %}
+						</h3>
+
+						<ul class="flex flex-col gap-4 items-center lg:items-start">
+
+							{# Centre d'aide #}
+							<li>
+								<a href="{{ path('app_help') }}" class="flex flex-row gap-2 items-center">
+									{% trans from 'footer' %}footer.links.help_center{% endtrans %}
+								</a>
+							</li>
+
+							{# Page contact #}
+							<li>
+								<a href="{{ path('app_contact') }}" class="flex flex-row gap-2 items-center">
+									Contact
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</div>
+
+				{# ================= COLONNE 4 : BRAND / COPYRIGHT ================= #}
+				<div class="flex flex-col gap-2 w-full lg:w-1/4">
+					<div class="flex flex-col gap-4 items-center lg:items-start lg:text-left">
+
+						{# Inclusion du logo / brand #}
+						<h3>
+							{{ include('partials/_brand.html.twig') }}
+						</h3>
+
+						{# Copyright #}
+						<div class="text-sm">Copyright © 2026</div>
+
+						{# Icône décorative (branding / illustration) #}
+						<h3 class="flex font-bold text-lg items-center gap-3 pb-0">
+							<svg height="36px" width="36px">
+								{# SVG complexe décoratif #}
+							</svg>
+						</h3>
+
+					</div>
+				</div>
+
+			{% endif %}
+
+		</div>
+
+		{# Ligne de séparation #}
+		<hr>
+
+		{# ================= RÉSEAUX SOCIAUX ================= #}
+		<div class="w-full mb-4">
+
+			{# Aligné à droite avec largeur fixe #}
+			<div class="ml-auto" style="width: 350px">
+
+				{# Inclusion du composant réseaux sociaux #}
+				{{ include('homepage/_socials.html.twig') }}
+
+			</div>
+		</div>
+
+	</div>
 
 </footer>
