@@ -10,12 +10,6 @@
         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 
             {% if app.user.firstFillProfile is same as(true) %}
-                {# === Menu principal pour utilisateurs ayant rempli leur profil === #}
-                <div class="my-hidden xl:flex justify-center gap-4 font-semibold">
-                    <a href="{{ path('app_dashboard_index') }}" class="text-sky-600 hover:text-sky-700">Mon espace</a>
-                    <a href="{{ path('menu_week_get_meals') }}" class="text-sky-600 hover:text-sky-700">Mon repas du jour</a>
-                    <a href="{{ path('menu_week_menu') }}" class="text-sky-600 hover:text-sky-700">Mes repas de la semaine</a>
-                </div>
 
                 <div class="flex justify-end">
                     {# === Barre de recherche === #}

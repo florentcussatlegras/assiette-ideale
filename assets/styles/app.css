@@ -1338,6 +1338,20 @@ h2 {
     .md\:justify-between {
         justify-content: space-between;
     }
+    .md\:px-4 {
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
+    .md\:px-6 {
+        padding-right: 20px !important;
+        padding-left: 20px !important;
+    }
+    .md\:pb-8 {
+        padding-bottom: 30px !important;
+    }
+    .md\:pb-10 {
+        padding-bottom: 42px !important;
+    }
 }
 
 @media (min-width: 1024px) {
@@ -1383,6 +1397,10 @@ h2 {
     }
     .lg\:ml-5 {
         margin-left: 30px !important;
+    }
+    .lg\:px-8 {
+        padding-right: 30px !important;
+        padding-left: 30px !important;
     }
 }
 
@@ -3014,12 +3032,24 @@ h1 {
     opacity: 0.3;
 }
 
+.opacity-40 {
+    opacity: 0.4;
+}
+
 .opacity-50 {
     opacity: 0.5;
 }
 
+.opacity-60 {
+    opacity: 0.6;
+}
+
 .opacity-100 {
     opacity: 1;
+}
+
+.flex-shrink-0 {
+    flex-shrink: 0;
 }
 
 .bg-opacity-60 {
@@ -6121,6 +6151,14 @@ canvas {
     padding-bottom: 15px !important;
 }
 
+.pb-8 {
+    padding-bottom: 32px !important;
+}
+
+.pb-10 {
+    padding-bottom: 44px !important;
+}
+
 .md\:pt-0 {
     @media (width >= 48rem /* 768px */) {
         padding-top: 0px !important;
@@ -6981,10 +7019,6 @@ canvas {
 
 .shadow-medium {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
-}
-
-.security input[type="checkbox"] {
-    border: none !important;
 }
 
 .text-4xl {
