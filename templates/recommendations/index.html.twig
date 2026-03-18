@@ -14,16 +14,11 @@
 
             {# Bloc 1 : Besoin énergétique de l'utilisateur #}
             <div class="w-full lg:w-1/3 bg-white h-auto rounded-xl shadow-balanced">
-                              
-                {# Titre du bloc #}
-                <span class="py-4 flex items-center justify-center font-medium border-b border-gray-300 w-full rounded-t-xl uppercase gap-2">
-                    Besoin énergétique
-                </span>
                 
                 {# Contenu central : affichage de l'énergie ou options pour la saisir/estimer #}
                 <div class="flex items-center justify-center font-bold h-28">
 
-                    <div class="flex flex-col gap-3 items-center text-red-700">
+                    <div class="flex flex-col gap-3 items-center">
                     
                         {% if app.user.energy %}
 
@@ -81,11 +76,6 @@
 
             {# Bloc 2 : Besoins par groupes alimentaires #}
             <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-balanced">
-                            
-                {# Titre du bloc #}
-                <span class="py-4 flex items-center justify-center font-medium border-b border-gray-300 w-full rounded-t-xl uppercase gap-2">
-                    Besoins par groupes alimentaires
-                </span>
                 
                 {# Liste des groupes alimentaires et des quantités recommandées #}
                 <div class="flex items-center justify-center font-bold">
@@ -117,11 +107,6 @@
 
             {# Bloc 3 : Besoins en nutriments #}
             <div class="w-full lg:w-1/3 bg-white rounded-xl shadow-balanced">
-                            
-                {# Titre du bloc #}
-                <span class="py-4 flex items-center justify-center font-medium border-b border-gray-300 w-full rounded-t-2xl uppercase gap-2">
-                    Nutriments
-                </span>
                 
                 {# Inclusion de la liste des nutriments depuis un template séparé #}
                 <div class="flex my-2 font-bold justify-center items-center">
