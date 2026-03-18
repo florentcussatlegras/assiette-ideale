@@ -6,12 +6,11 @@ use App\Entity\Dish;
 use App\Entity\Spice;
 use App\Service\FoodUtil;
 use App\Entity\StepRecipe;
-use App\Service\FoodGroupUtils;
+use App\Service\FoodGroupHandler;
 use App\Service\UploaderHelper;
 use App\Service\DishFoodHandler;
 use App\DataFixtures\BaseFixture;
 use App\DataFixtures\FoodFixtures;
-//use Florent\QuantityConverterBundle\QuantityConverter;
 use App\Repository\FoodRepository;
 use Doctrine\Persistence\ObjectManager;
 use App\Repository\UnitMeasureRepository;
@@ -20,30 +19,45 @@ use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-// class DishDevFixtures extends BaseFixture implements FixtureGroupInterface, DependentFixtureInterface
-class DishDevFixtures
+/**
+ * DishDevFixtures.php
+ *
+ * Fixture de développement pour générer des plats aléatoires avec :
+ * - étapes de recette
+ * - image
+ * - aliments associés par groupes alimentaires
+ */
+class DishDevFixtures extends BaseFixture implements FixtureGroupInterface, DependentFixtureInterface
 {
-    private $dishFoodHandler;
-    private $foodGroupUtils;
-    private $foodUtils;
-    private $foodRepository;
-    private $quantityConverter;
-    private $uploaderHelper;
-    private $unitMeasureRepository;
+    /**
+     * @param FoodRepository $foodRepository
+     * @param UnitMeasureRepository $unitMeasureRepository
+     * @param DishFoodHandler $dishFoodHandler
+     * @param FoodGroupHandler $foodGroupHandler
+     * @param FoodUtil $foodUtil
+     * @param UploaderHelper $uploaderHelper
+     */
+    public function __construct(
+        private FoodRepository $foodRepository,
+        private UnitMeasureRepository $unitMeasureRepository,
+        private DishFoodHandler $dishFoodHandler,
+        private FoodGroupHandler $foodGroupHandler,
+        private FoodUtil $foodUtil,
+        private UploaderHelper $uploaderHelper
+    ) {}
 
-    public function __construct(FoodRepository $foodRepository, UnitMeasureRepository $unitMeasureRepository,
-        DishFoodHandler $dishFoodHandler, FoodGroupUtils $foodGroupUtils, FoodUtil $foodUtil, UploaderHelper $uploaderHelper)
-        //QuantityConverter $quantityConverter)
-    {
-        $this->dishFoodHandler = $dishFoodHandler;
-        $this->foodGroupUtils = $foodGroupUtils;
-        $this->foodUtil = $foodUtil;
-        $this->foodRepository = $foodRepository;
-        $this->unitMeasureRepository = $unitMeasureRepository;
-        //$this->quantityConverter = $quantityConverter;
-        $this->uploaderHelper = $uploaderHelper;
-    }
-
+    /**
+     * Fichier : DishDevFixtures.php
+     *
+     * Crée un objet Dish complet avec :
+     * - informations de base
+     * - étapes de recette aléatoires
+     * - image associée
+     * - aliments associés par groupe alimentaire
+     *
+     * @param int $i Index utilisé pour la génération
+     * @return Dish
+     */
     private function create(int $i): Dish
     {
         $dish = new Dish();
@@ -53,68 +67,54 @@ class DishDevFixtures
         $dish->setPreparationTimeUnitTime($this->getReference('unit_times_h'));
         $dish->setCookingTime(random_int(5, 59));
         $dish->setCookingTimeUnitTime($this->getReference('unit_times_min'));
-        // $dish->addSpice($this->getReference('spices_Sel'));
-        // $dish->addSpice($this->getReference('spices_Poivre'));
 
-        //Nombre d'étape de préparation aléatoire entre 1 et 5
-        for($j = 0; $j < random_int(1, 5); $j++) {
+        // Génération aléatoire des étapes de recette
+        for ($j = 0; $j < random_int(1, 5); $j++) {
             $stepRecipe = new StepRecipe();
             $stepRecipe->setRankStep($j);
             $stepRecipe->setDescription($this->faker->text());
-
             $dish->addStepRecipe($stepRecipe);
         }
 
-        // 10 images plat1.jpeg, plat2.jpeg...plat10.jpeg dans public/images/
-        // sont utilisés pour les 100 plats
-        switch((int)($i/10)) {
-            case 0:
-                $fileName = 'plat1.jpeg';
-                break;
-            case 1:
-                $fileName = 'plat2.jpeg';
-                break;
-            case 2:
-                $fileName = 'plat3.jpeg';
-                break;
-            case 3:
-                $fileName = 'plat4.jpeg';
-                break;
-            case 4:
-                $fileName = 'plat5.jpeg';
-                break;
-            case 5:
-                $fileName = 'plat6.jpeg';
-                break;
-            case 6:
-                $fileName = 'plat7.jpeg';
-                break;
-            case 7:
-                $fileName = 'plat8.jpeg';
-                break;
-            case 8:
-                $fileName = 'plat9.jpeg';
-                break;
-            case 9:
-                $fileName = 'plat10.jpeg';
-                break;
-            default:
-                $fileName = 'plat1.jpeg';
+        // Gestion des images de plats
+        switch ((int)($i / 10)) {
+            case 0: $fileName = 'plat1.jpeg'; break;
+            case 1: $fileName = 'plat2.jpeg'; break;
+            case 2: $fileName = 'plat3.jpeg'; break;
+            case 3: $fileName = 'plat4.jpeg'; break;
+            case 4: $fileName = 'plat5.jpeg'; break;
+            case 5: $fileName = 'plat6.jpeg'; break;
+            case 6: $fileName = 'plat7.jpeg'; break;
+            case 7: $fileName = 'plat8.jpeg'; break;
+            case 8: $fileName = 'plat9.jpeg'; break;
+            case 9: $fileName = 'plat10.jpeg'; break;
+            default: $fileName = 'plat1.jpeg';
         }
-        $fs = new Filesystem();
-        $targetPath = sys_get_temp_dir().'/'.$fileName;
-        $fs->copy(__DIR__.'/images/'.$fileName, $targetPath, true);
 
-        $picture =  $this->uploaderHelper->upload(new File($targetPath), UploaderHelper::DISH);
+        $fs = new Filesystem();
+        $targetPath = sys_get_temp_dir() . '/' . $fileName;
+        $fs->copy(__DIR__ . '/images/' . $fileName, $targetPath, true);
+
+        $picture = $this->uploaderHelper->upload(new File($targetPath), UploaderHelper::DISH);
         $dish->setPicture($picture);
 
+        // Association des aliments
         return $this->dishFoodHandler->createDishFoodElement($dish, $this->getListFoods());
     }
 
+    /**
+     * Fichier : DishDevFixtures.php
+     *
+     * Charge les données en base :
+     * - épices
+     * - 100 plats générés
+     *
+     * @param ObjectManager $manager
+     * @return void
+     */
     public function loadData(ObjectManager $manager): void
     {
-        // SPICE
-
+        // Création des épices de base
         $spice = new Spice();
         $spice->setName('Sel');
         $manager->persist($spice);
@@ -130,8 +130,7 @@ class DishDevFixtures
         $manager->persist($spice);
         $this->addReference(sprintf('%s_%s', 'spices', $spice->getName()), $spice);
 
-        //createMany(int $count, string $groupName, callable $factory)
-        // créer une référence 'groupName_index'
+        // Création de 100 plats
         $this->createMany(100, 'dishs', function($i) {
             return $this->create($i);
         });
@@ -139,6 +138,11 @@ class DishDevFixtures
         $manager->flush();
     }
 
+    /**
+     * Retourne les dépendances de fixtures.
+     *
+     * @return array
+     */
     public function getDependencies()
     {
         return [
@@ -146,49 +150,50 @@ class DishDevFixtures
         ];
     }
 
+    /**
+     * Retourne les groupes de fixtures.
+     *
+     * @return array
+     */
     public static function getGroups(): array
     {
         return ['dishs'];
     }
 
     /**
-     * Renvoi un tableau de structure identique à celui necessaire à la fonction
-     * $this->dishFoodHandler->createDishFoodElement() permettant de créer les objet
-     * DishFood et DishFoodGroup
+     * Fichier : DishDevFixtures.php
+     *
+     * Génère une liste d'aliments structurée par groupe alimentaire
+     * compatible avec DishFoodHandler::createDishFoodElement()
      *
      * @return array
      */
     private function getListFoods(): array
     {
-        $foodGroupCodes = $this->foodGroupUtils->getFoodGroupAlias();
+        $foodGroupCodes = $this->foodGroupHandler->getFoodGroupAlias();
         $nombreDeFoodGroupDanslePlat = random_int(1, count($foodGroupCodes));
         shuffle($foodGroupCodes);
-        // On choiti aléatoirement un nombre alétoire de groupe d'aliments (code)
+
         $groupesRetenusPourLePlat = array_slice($foodGroupCodes, 0, $nombreDeFoodGroupDanslePlat);
 
-        foreach($groupesRetenusPourLePlat as $groupe) {
-
+        foreach ($groupesRetenusPourLePlat as $groupe) {
             $touslesAlimentsDuGroupe = $this->foodRepository->myFindByFgAlias($groupe);
             $tabIdAlimentDejaSelectionnes = [];
-            // $toutesLesUnitesDeMesures = $this->unitMeasureRepository->findAll();
+
             $unitMeasureGrammeId = $this->unitMeasureRepository->findOneByAlias('g');
             $unitMeasureUnitId = $this->unitMeasureRepository->findOneByAlias('u');
             $choiceUnitMeasures = [$unitMeasureGrammeId, $unitMeasureUnitId];
 
-            //On ajoute entre 1 ou 2 aliments
             $nombreDAlimentParGroupe = random_int(1, 2);
 
-            for($i = 0; $i < $nombreDAlimentParGroupe; $i++) {
-
-                //id aléatoire de l'aliment après vérification qu'il n'a pas déja été choisi
+            for ($i = 0; $i < $nombreDAlimentParGroupe; $i++) {
                 do {
                     $food = $touslesAlimentsDuGroupe[array_rand($touslesAlimentsDuGroupe)];
-                }while(in_array($food->getId(), $tabIdAlimentDejaSelectionnes));
+                } while (in_array($food->getId(), $tabIdAlimentDejaSelectionnes));
 
                 $tabIdAlimentDejaSelectionnes[] = $food->getId();
 
                 $quantity = random_int(10, 30);
-                // $unitMeasure = $choiceUnitMeasures[array_rand($choiceUnitMeasures)];
                 $unitMeasure = $unitMeasureGrammeId;
 
                 $quantitiesInfos = [
@@ -198,10 +203,8 @@ class DishDevFixtures
                     "food" => $food,
                 ];
 
-                //$quantitiesInfos['quantity_g'] = $this->quantityConverter->getEquivalentGramme($quantitiesInfos);
                 $results[$groupe][$food->getId()] = $quantitiesInfos;
             }
-
         }
 
         return $results;

@@ -41,6 +41,12 @@ class MealUtil
 		private FoodRepository $foodRepository,               // Pour récupérer des aliments spécifiques
 	) {}
 
+	public const TYPE_BREAKFAST = "meal.type.breakfast";
+	public const TYPE_SNACK_MORNING = "meal.type.snack_morning";
+	public const TYPE_LUNCH = "meal.type.lunch";
+	public const TYPE_SNACK_AFTERNOON = "meal.type.snack_afternoon";
+	public const TYPE_DINNER = "meal.type.dinner";
+
 	/**
 	 * Récupère la liste des FoodGroupParent principaux pour un ensemble
 	 * de plats (Dish) et aliments (Food) donnés.

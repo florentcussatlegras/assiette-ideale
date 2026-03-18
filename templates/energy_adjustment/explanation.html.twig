@@ -61,6 +61,7 @@
 
                 <div class="flex justify-end w-full mt-2">
                     <a href="{{ path('app_energy_adjustment_stop') }}" 
+                       data-turbo="false"
                        class="bg-sky-600 hover:bg-sky-700 transition-colors text-white font-semibold py-4 px-6 rounded-lg shadow">
                         Annuler le suivi
                     </a>
@@ -87,11 +88,13 @@
 
                 {# Boutons d’action : revenir au tableau de bord ou accepter la recommandation #}
                 <div class="flex justify-end w-full mt-4">
-                    <a href="{{ path('app_dashboard_index') }}" 
+                    <a href="{{ path('app_dashboard_index') }}"
+                       data-turbo="false"
                        class="text-sky-600 hover:text-sky-700 font-semibold py-4 px-6 transition duration-300">
                         Revenir à mon espace
                     </a>
-                    <a href="{{ path('app_energy_adjustment_accept') }}" 
+                    <a href="{{ path('app_energy_adjustment_accept') }}"
+                       data-turbo="false"
                        class="bg-sky-600 hover:bg-sky-700 transition-colors text-white font-semibold py-4 px-6 rounded-lg shadow">
                         J’ai compris et j’accepte
                     </a>
