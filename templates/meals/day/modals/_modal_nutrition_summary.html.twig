@@ -33,47 +33,56 @@
 			{# SECTION : ENERGY (Calories totales du repas)          #}
 			{# ====================================================== #}
 
-                {{ nutrition.accordion(
-                    'Energie',
-                    alerts.energy,
-                    messageSuggestions['energy'],
-                    'Kcal',
-                    'Kcal'
-                ) }}
+			{{ nutrition.accordion(
+				'Energie',
+				alerts.energy,
+				messageSuggestions['energy'],
+				'Kcal',
+				'Kcal'
+			) }}
 
 			{# ====================================================== #}
 			{# SECTION : NUTRIMENTS                                  #}
 			{# Exemple : protéines, lipides, glucides, sodium       #}
-				{# ====================================================== #}
+			{# ====================================================== #}
 
-                {% for nutrient, data in alerts.nutrients %}
+			{% for nutrient, data in alerts.nutrients %}
 
-                    {{ nutrition.accordion(
-                        data.nutrientName|capitalize,
-                        data,
-                        messageSuggestions[nutrient],
-                        'g',
-                        'g'
-                    ) }}
+				{{ nutrition.accordion(
+					data.nutrientName|capitalize,
+					data,
+					messageSuggestions[nutrient],
+					'g',
+					'g'
+				) }}
 
-                {% endfor %}
+			{% endfor %}
 
 			{# ====================================================== #}
 			{# SECTION : FOOD GROUP PARENTS (FGP)                    #}
 			{# Groupes alimentaires principaux : fruits, légumes...  #}
             {# ====================================================== #}
 
-				{% for fgp, data in alerts.food_groups %}
+			<div class="p-4 text-sm">
 
-                    {{ nutrition.accordion(
-                        data.fgpName,
-                        data,
-                        messageSuggestions[fgp],
-                        'g',
-                        'g'
-                    ) }}
+                <h4>Répartition de votre consommation par groupe alimentaire</h4>
+
+                {% for fgp, data in alerts.food_groups %}
+
+                    <div class="border-b border-gray-200 flex justify-between items-center py-2">
+                      
+						<div class="flex flex-row items-center gap-2">
+							<span class="w-4 h-4 rounded-full" style="background-color: {{ data.fgpColor }}"></span>
+							<span>{{ data.fgpName }}</span>
+						</div>
+
+						<div class="ml-auto mr-6">{{ data.consumed|round }} g</div>
+   
+                    </div>
 
                 {% endfor %}
+
+            </div>
 
 		</div>
 

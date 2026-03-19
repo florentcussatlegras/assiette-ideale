@@ -85,8 +85,7 @@ class AlertMessagesController extends AbstractController implements AlertUserCon
         // Génération des alertes nutritionnelles à partir des moyennes calculées
         $balanceSheetAlerts = $alertFeature->getBalanceSheetAlerts(
             $averageDailyEnergy,
-            $averageDailyNutrient,
-            $averageDailyFgp
+            $averageDailyNutrient
         );
 
         // Tableau final contenant les alertes enrichies avec leurs labels

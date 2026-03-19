@@ -275,7 +275,7 @@ class MenuController extends AbstractController
 				$dateDay = new \DateTime;
 				$date = $dateDay->format('Y-m-d');
 
-				if ($session->has('_meal_day_date') && $session->get('_meal_day_date') === $date) {
+				if ($session->has('_meal_day_date') && $session->get('_meal_day_date') === $date && $session->get('_meal_day_energy') > 0) {
 					return $this->redirectToRoute('meal_day');
 				}
 			}

@@ -136,8 +136,7 @@ class AlertController extends AbstractController implements AlertUserController
                 // Génère les alertes nutritionnelles
                 $balanceSheetAlerts = $alertFeature->getBalanceSheetAlerts(
                     $averageDailyEnergy,
-                    $averageDailyNutrient,
-                    $averageDailyFgp
+                    $averageDailyNutrient
                 );
 
                 $start = new \DateTime($start);
@@ -267,8 +266,17 @@ class AlertController extends AbstractController implements AlertUserController
      * @return Response Vue avec le message d'alerte nutriment
      */
     #[Route('/message-details-alert-nutrient/{nutrient}/{quantity}/{alertCode}', name: 'message_details_alert_nutrient', methods: ['GET'])]
-    public function messageDetailsAlertNutrient(string $nutrient, int $quantity, string $alertCode)
+    public function messageDetailsAlertNutrient(NutrientRepository $nutrientRepository, string $nutrient, int $quantity, string $alertCode)
     {
+        $nutrientObject = $nutrientRepository->findOneByCode($nutrient);
+
+        if (!$nutrientObject) {
+            $this->createNotFoundException(sprintf(
+                'Le nutriment "%s" est introuvable.',
+                $nutrient
+            ));
+        }
+
         /** @var App\Entity\User|null $user */
         $user = $this->getUser();
 
@@ -279,7 +287,7 @@ class AlertController extends AbstractController implements AlertUserController
         $quantRecommended = (int) $propertyAccessor->getValue($user, $nutrient);
 
         // Génère le message d'alerte détaillé selon la quantité consommée et le niveau d'alerte
-        $alertDetail = $this->getAlertDetailMessage($nutrient, $quantity, $quantRecommended, $alertCode);
+        $alertDetail = $this->getAlertDetailMessage($nutrientObject->getName(), $quantity, $quantRecommended, $alertCode);
 
         return $this->render('balance_sheet/_message_details_alert.html.twig', $alertDetail);
     }

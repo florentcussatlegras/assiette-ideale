@@ -47,7 +47,6 @@ class AlertFeature
 	public function __construct(
 		private RequestStack $requestStack,       // Pour accéder à la session utilisateur
 		private EntityManagerInterface $manager,  // Pour interagir avec la base de données
-		private DishUtil $dishUtil,               // Utilitaires pour les plats
 		private FoodUtil $foodUtil,               // Utilitaires pour les aliments
 		private QuantityTreatment $quantityTreatment, // Calcul des quantités consommées
 		private Security $security,               // Récupération de l'utilisateur courant
@@ -120,48 +119,6 @@ class AlertFeature
 				$entity = $isDish
 					? $this->manager->getRepository(Dish::class)->findOneById((int)$element['id'])
 					: $this->manager->getRepository(Food::class)->findOneById((int)$element['id']);
-
-				/*
-				|--------------------------------------------------------------------------
-				| ALERTES SUR LES GROUPES ALIMENTAIRES PARENTS
-				|--------------------------------------------------------------------------
-				*/
-
-				if ($isDish) {
-
-					// Calcule les quantités de chaque groupe alimentaire parent pour la portion du plat
-					$fgpQuantitiesForNPortion = $this->dishUtil
-						->getFoodGroupParentQuantitiesForNPortion($entity, $element['quantity']);
-
-					// Vérifie si une alerte doit être générée
-					if (null !== $alerts = $this->getAlerts(
-						'food_group_parent',
-						$entity,
-						$fgpQuantitiesConsumed,
-						$element['quantity'],
-						$fgpQuantitiesForNPortion,
-						$element['unitMeasureAlias'],
-						$finalListAlerts
-					)) {
-						$alertDishes[$n][$index]['food_group_parent'] = $alerts;
-					}
-				} else {
-
-					// Récupère l’alias du groupe alimentaire parent de l’aliment
-					$fgpAlias = $entity->getFoodGroup()->getParent()->getAlias();
-
-					if (null !== $alerts = $this->getAlerts(
-						'food_group_parent',
-						$entity,
-						$fgpQuantitiesConsumed,
-						(float)$element['quantity'],
-						null,
-						(string)$element['unitMeasureAlias'],
-						$finalListAlerts
-					)) {
-						$alertFoods[$n][$index]['food_group_parent'] = $alerts;
-					}
-				}
 
 				/*
 				|--------------------------------------------------------------------------
@@ -323,7 +280,6 @@ class AlertFeature
 			$rankDish,
 			$entity,
 			$type,
-			$fgpQuantitiesConsumed,
 			$nutrientsConsumed
 		);
 		// Appelle la fonction qui calcule les alertes pour le plat/aliment à sélectionner en tenant compte
@@ -425,28 +381,6 @@ class AlertFeature
 
 			// Initialise le tableau pour stocker les alertes du plat
 			$alertDishes = [];
-
-			/*
-			|--------------------------------------------------------------------------
-			| ALERTES SUR LES GROUPES PARENTS D'ALIMENTS
-			|--------------------------------------------------------------------------
-			*/
-
-			// Calcule les quantités par groupe alimentaire parent pour la portion du plat
-			$fgpQuantitiesForNPortion = $this->dishUtil
-				->getFoodGroupParentQuantitiesForNPortion($dish, $quantityOrPortion);
-
-			if (null !== $listAlertFgp = $this->getAlerts(
-				'food_group_parent',
-				$dish,
-				$fgpQuantitiesConsumed,
-				$quantityOrPortion,
-				$fgpQuantitiesForNPortion
-			)) {
-
-				$alertDishes[$dish->getId()]["food_group_parent"] = $listAlertFgp;
-				// Ajoute l'alerte sur le groupe alimentaire parent si nécessaire.
-			}
 
 			/*
 			|--------------------------------------------------------------------------
@@ -660,60 +594,25 @@ class AlertFeature
 			$quantityOrPortionOrEnergyAdded = $this->foodUtil->convertInGr($quantityOrPortionOrEnergyAdded, $object, $unitMeasureAlias);
 			// Convertit la quantité de l’aliment en grammes si elle n’est pas déjà en grammes.
 		}
+		
+		// ALERTES SUR LES NUTRIMENTS (ENERGY, PROTEIN, LIPID, CARBOHYDRATE, SODIUM)
+		$propertyAccessor = PropertyAccess::createPropertyAccessor();
+		$quantityOrEnergyDailyRecommended = (int)$propertyAccessor->getValue($this->security->getUser(), $subject);
+		// Récupère la valeur recommandée de l’utilisateur pour ce nutriment.
 
-		// ALERTES SUR LES QUANTITES DE GROUPES D'ALIMENT
-		if ('food_group_parent' === $subject) {
-			$fgpQuantitiesRecommended = $user->getRecommendedQuantities();
-			// Récupère les quantités recommandées par l’utilisateur pour chaque groupe parent.
-
-			foreach ($fgpQuantitiesRecommended as $fgpAlias => $value) {
-				// Vérifie si le plat ou l’aliment appartient à ce groupe alimentaire.
-				if (
-					($object instanceof Food && $fgpAlias === $object->getFoodGroup()->getParent()->getAlias())
-					|| ($object instanceof Dish && $fgpQuantitiesForNPortionAdded[$fgpAlias] > 0)
-				) {
-					if ($object instanceof Dish) {
-						$alert = $this->createAlert($subject, $quantityOrFgpQuantitiesOrEnergyConsumed[$fgpAlias], $fgpQuantitiesForNPortionAdded[$fgpAlias], $fgpQuantitiesRecommended[$fgpAlias], $fgpAlias);
-						// Crée une alerte pour le plat en fonction de la quantité déjà consommée, ajoutée et recommandée.
-					}
-
-					if ($object instanceof Food) {
-						$alert = $this->createAlert($subject, $quantityOrFgpQuantitiesOrEnergyConsumed[$fgpAlias], $quantityOrPortionOrEnergyAdded, $fgpQuantitiesRecommended[$fgpAlias], $fgpAlias);
-						// Crée une alerte pour l’aliment.
-					}
-
-					if (null !== $alert) {
-						$fgp = $this->manager->getRepository(FoodGroupParent::class)->findOneByAlias($fgpAlias);
-						$listAlert['messages'][] = sprintf(LevelAlert::MESSAGE_FGP_NOT_RECOMMENDED, $alert->getPlaceholderText(), strtolower($fgp->getName()));
-						$listAlert['levels'][] = $alert->getPriority();
-						$finalListAlerts[$subject][$fgpAlias] = [
-							"message" => sprintf(LevelAlert::MESSAGE_FGP_NOT_RECOMMENDED, $alert->getPlaceholderText(), strtolower($fgp->getName())),
-							"code" => $alert->getCode(),
-						];
-						// Ajoute le message et le niveau d’alerte au tableau des alertes.
-					}
-				}
+		if (null !== $alert = $this->createAlert($subject, $quantityOrFgpQuantitiesOrEnergyConsumed, $quantityOrPortionOrEnergyAdded, $quantityOrEnergyDailyRecommended)) {
+			if ('energy' === $subject) {
+				$message = sprintf(LevelAlert::MESSAGE_ENERGY_NOT_RECOMMENDED, $alert->getPlaceholderText());
+			} else {
+				$message = sprintf(LevelAlert::MESSAGE_NUTRIENT_NOT_RECOMMENDED, $alert->getPlaceholderText(), $this->translator->trans($subject, [], 'nutrient'));
 			}
-		} else {
-			// ALERTES SUR LES NUTRIMENTS (ENERGY, PROTEIN, LIPID, CARBOHYDRATE, SODIUM)
-			$propertyAccessor = PropertyAccess::createPropertyAccessor();
-			$quantityOrEnergyDailyRecommended = (int)$propertyAccessor->getValue($this->security->getUser(), $subject);
-			// Récupère la valeur recommandée de l’utilisateur pour ce nutriment.
-
-			if (null !== $alert = $this->createAlert($subject, $quantityOrFgpQuantitiesOrEnergyConsumed, $quantityOrPortionOrEnergyAdded, $quantityOrEnergyDailyRecommended)) {
-				if ('energy' === $subject) {
-					$message = sprintf(LevelAlert::MESSAGE_ENERGY_NOT_RECOMMENDED, $alert->getPlaceholderText());
-				} else {
-					$message = sprintf(LevelAlert::MESSAGE_NUTRIENT_NOT_RECOMMENDED, $alert->getPlaceholderText(), $this->translator->trans($subject, [], 'nutrient'));
-				}
-				$listAlert['messages'][] = $message;
-				$listAlert['levels'][] = $alert->getPriority();
-				$finalListAlerts[$subject] = [
-					"message" => $message,
-					"code" => $alert->getCode(),
-				];
-				// Ajoute l’alerte pour le nutriment avec le message et le code.
-			}
+			$listAlert['messages'][] = $message;
+			$listAlert['levels'][] = $alert->getPriority();
+			$finalListAlerts[$subject] = [
+				"message" => $message,
+				"code" => $alert->getCode(),
+			];
+			// Ajoute l’alerte pour le nutriment avec le message et le code.
 		}
 
 		if (!empty($listAlert)) {
@@ -939,12 +838,10 @@ class AlertFeature
 	 *
 	 * @param float $averageDailyEnergy Moyenne quotidienne de l'énergie consommée.
 	 * @param array $averageDailyNutrient Tableau associatif ['nutriment' => moyenne consommée].
-	 * @param array $averageDailyFgp Tableau associatif ['fgpAlias' => moyenne consommée].
 	 *
-	 * @return array|Response Tableau des alertes par nutriment et groupe alimentaire,
-	 *                        ou Response si aucune recommandation FGP n'est disponible.
+	 * @return array|Response Tableau des alertes par énergie et nutriment.
 	 */
-	public function getBalanceSheetAlerts(float $averageDailyEnergy, array $averageDailyNutrient, array $averageDailyFgp): array|Response
+	public function getBalanceSheetAlerts(float $averageDailyEnergy, array $averageDailyNutrient): array|Response
 	{
 		/** @var App\Entity\User|null $user */
 		$user = $this->security->getUser();
@@ -970,41 +867,8 @@ class AlertFeature
 			// Calcule le niveau d'alerte pour ce nutriment
 		}
 
-		// FOOD GROUP PARENT (FGP)
-		$fgpQuantitiesRecommended = $user->getRecommendedQuantities();
-		// Récupère les quantités recommandées pour chaque groupe d'aliment parent
-
-		if (!$fgpQuantitiesRecommended) {
-			// Si aucune recommandation n'existe, retourne une réponse explicative
-			return new Response('Vous n\'avez aucune recommendations de quantités de groupes d\'aliments');
-		}
-
-		$balanceWell = $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL);
-		// Niveau d'alerte par défaut pour un FGP équilibré
-
-		foreach ($averageDailyFgp as $fgpAlias => $averageQuantity) {
-			$fgp = $this->foodGroupParentRepository->findOneBy(['alias' => $fgpAlias]);
-			if (!$fgp || !isset($fgpQuantitiesRecommended[$fgpAlias])) {
-				continue;
-				// Ignore si le FGP n'existe pas ou n'a pas de recommandation
-			}
-
-			$levelAlert = $this->isWellBalanced($averageQuantity, $fgpQuantitiesRecommended[$fgpAlias]);
-			// Calcule le niveau d'alerte pour le FGP
-
-			if ($fgp->getIsPrincipal()) {
-				$results[$fgpAlias] = $levelAlert;
-				// Les FGP principaux gardent le niveau d'alerte calculé
-			} else {
-				$results[$fgpAlias] = in_array($levelAlert->getCode(), LevelAlert::HIGH_ALERTS, true)
-					? $levelAlert
-					: $balanceWell;
-				// Les FGP secondaires utilisent BALANCE_WELL si l'alerte n'est pas élevée
-			}
-		}
-
 		return $results;
-		// Retourne le tableau final des alertes par nutriment et FGP
+		// Retourne le tableau final des alertes par energie et nutriments
 	}
 
 	/**
@@ -1347,7 +1211,7 @@ class AlertFeature
 			: $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL);
 
 		// Stockage des informations d'énergie dans le tableau d'alertes
-		$alerts['energy'] = [
+		$alerts['energy']['energy_total'] = [
 			'consumed'     => $consumed,
 			'recommended'  => $recommended,
 			'level'        => $level,
@@ -1403,26 +1267,14 @@ class AlertFeature
 			// Consommation réelle du groupe alimentaire
 			$consumedQuantity = $fgpConsumed[$fgpAlias] ?? 0;
 
-			// Détermine si le groupe alimentaire est principal ou secondaire
-			$isPrincipal = $aliasMetaMap[$fgpAlias]['isPrincipal'];
-
-			// Si le groupe n'est pas principal et consommé moins que recommandé → niveau bien équilibré
-			if (!$isPrincipal && $consumedQuantity < $recommendedQuantity) {
-				$level = $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL);
-			} else {
-				// Sinon, calcul normal du niveau d'alerte
-				$level = $recommendedQuantity > 0
-					? $this->isWellBalanced($consumedQuantity, $recommendedQuantity)
-					: $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL);
-			}
-
 			// Stockage des alertes pour le FGP
 			$alerts['food_groups'][$fgpAlias] = [
 				'fgpName'      => $aliasMetaMap[$fgpAlias]['name'],
+				 'fgpColor'    => $aliasMetaMap[$fgpAlias]['color'],
 				'isPrincipal'  => $aliasMetaMap[$fgpAlias]['isPrincipal'],
 				'consumed'     => $consumedQuantity,
 				'recommended'  => $recommendedQuantity,
-				'level'        => $level,
+				'level'        => $this->manager->getRepository(LevelAlert::class)->findOneByCode(LevelAlert::BALANCE_WELL),
 			];
 		}
 
@@ -1622,7 +1474,7 @@ class AlertFeature
 	 *
 	 * @return array|null Retourne les alertes compilées pour l'élément ou null si aucune alerte.
 	 */
-	private function calculateAlertsForEntityAboutToBeSelected($rankMeal, $rankDish, $entity, string $type, array $fgpQuantitiesConsumed, array $nutrientsConsumed): ?array
+	private function calculateAlertsForEntityAboutToBeSelected($rankMeal, $rankDish, $entity, string $type, array $nutrientsConsumed): ?array
 	{
 		$alerts = [];
 		// Initialise le tableau qui contiendra toutes les alertes pour cet item.
@@ -1659,23 +1511,6 @@ class AlertFeature
 			if ($type === 'Food') {
 				$unitMeasureAlias = 'mg';
 				// Définit l'unité par défaut pour les aliments.
-			}
-		}
-
-		if ($type === 'Dish') {
-			// Cas où l'élément est un plat.
-			$fgpQuantitiesForNPortion = $this->dishUtil->getFoodGroupParentQuantitiesForNPortion($entity, $quantity);
-			// Calcule les quantités de chaque groupe alimentaire parent pour la portion de plat sélectionnée.
-
-			if ($listAlertFgp = $this->getAlerts('food_group_parent', $entity, $fgpQuantitiesConsumed, $quantity, $fgpQuantitiesForNPortion)) {
-				$alerts['food_group_parent'] = $listAlertFgp;
-				// Si des alertes pour les groupes alimentaires existent, on les ajoute au tableau d'alertes.
-			}
-		} else { // Food
-			// Cas où l'élément est un aliment simple.
-			if ($listAlertFgp = $this->getAlerts('food_group_parent', $entity, $fgpQuantitiesConsumed, $quantity, null, $unitMeasureAlias)) {
-				$alerts['food_group_parent'] = $listAlertFgp;
-				// Ajoute l'alerte sur le groupe alimentaire parent pour l'aliment.
 			}
 		}
 

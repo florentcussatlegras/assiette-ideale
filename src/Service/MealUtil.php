@@ -39,6 +39,7 @@ class MealUtil
 		private FoodGroupParentRepository $foodGroupParentRepository, // Pour récupérer tous les FoodGroupParents
 		private DishRepository $dishRepository,               // Pour récupérer des plats spécifiques
 		private FoodRepository $foodRepository,               // Pour récupérer des aliments spécifiques
+		private AlertFeature $alertFeature, 				  // Pour gérer les alertes sur les plats/aliments
 	) {}
 
 	public const TYPE_BREAKFAST = "meal.type.breakfast";
@@ -219,29 +220,25 @@ class MealUtil
 	 */
 	public function getNutrients(Meal $meal): array
 	{
-		// Initialisation des valeurs totales
-		$results = [
-			'protein' => 0,
-			'lipid' => 0,
-			'carbohydrate' => 0,
-			'sodium' => 0,
-		];
+		// Initialise automatiquement toutes les clés à 0
+		$results = array_fill_keys(NutrientHandler::NUTRIENTS, 0);
 
-		// Parcours de tous les éléments (plats ou aliments) du repas
 		foreach ($meal->getDishAndFoods() as $element) {
-			// Récupération des nutriments pour l'élément en fonction de la quantité et de l'unité
-			$nutrients = $this->foodUtil->getNutrientsForDishOrFoodSelected(
-				$element['id'],             // identifiant du plat ou de l'aliment
-				$element['type'],           // 'Dish' ou 'Food'
-				$element['quantity'],       // quantité choisie
-				$element['unitMeasureAlias'] // unité utilisée (ex: 'g', 'ml', 'unit')
-			);
+			$repo = ('Dish' === $element['type'] || 'dish' === $element['type'])
+				? $this->dishRepository
+				: $this->foodRepository;
 
-			// Ajout des nutriments de cet élément aux totaux
-			$results['protein'] += $nutrients['protein'];
-			$results['lipid'] += $nutrients['lipid'];
-			$results['carbohydrate'] += $nutrients['carbohydrate'];
-			$results['sodium'] += $nutrients['sodium'];
+			$item = $repo->findOneById($element['id']);
+
+			// Boucle sur tous les nutriments
+			foreach (NutrientHandler::NUTRIENTS as $nutrient) {
+				$results[$nutrient] += $this->alertFeature->extractDataFromDishOrFoodSelected(
+					$nutrient,
+					$item,
+					$element['quantity'],
+					$element['unitMeasureAlias']
+				);
+			}
 		}
 
 		return $results;

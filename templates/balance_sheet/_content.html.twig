@@ -33,13 +33,14 @@
         {# Inclusion du graphique de l’énergie moyenne #}
         {{ include('balance_sheet/average_energy.html.twig') }}
 
-        {# Titre et inclusion des graphiques des groupes d’aliments (FGP) #}
-        <h2 class="text-lg md:text-2xl mt-4 pb-4">Les groupes d'aliment</h2>
-        {{ include('balance_sheet/average_fgp.html.twig') }}
-
         {# Titre et inclusion des graphiques des nutriments #}
-        <h2 class="text-lg md:text-2xl pt-18 xl:pt-8 pb-4">Les nutriments</h2>
+        <h2 class="text-lg md:text-2xl mt-4 pb-4">Les nutriments</h2>
         {{ include('balance_sheet/average_nutrient.html.twig') }}
+
+        {# Titre et inclusion des graphiques des groupes d’aliments (FGP) #}
+        <h2 class="text-lg md:text-2xl pt-18 xl:pt-8 pb-4">Les groupes d'aliment</h2>
+        <span class="text-sm pb-4">(valeurs indicatives sans impact sur l'equilibre général de vos bilans)</span>
+        {{ include('balance_sheet/average_fgp.html.twig') }}
 
         {# Inclusion du modal pour interagir avec les graphiques #}
         {{ include('balance_sheet/_modal_chart.html.twig') }}
