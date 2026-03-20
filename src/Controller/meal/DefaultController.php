@@ -950,11 +950,33 @@ class DefaultController extends AbstractController
 			if ($item['item_type'] === 'Food') {
 
 				$food = $foodRepository->find($item['id']);
+
+				// Récupère les éventuelles restrictions personnelles du user sur cet aliment (régime, allergie, non consommé etc)
 				$reasons = $foodUtil->getForbiddenReasons($food);
+
+				// Récupère les unités spécifiques déjà liées
+				$specificUnitAliases = $food->getFoodUnitMeasures()
+					->map(fn($fum) => $fum->getUnitMeasure()->getAlias())
+					->toArray();
+
+				// Récupère les unités standard pour ce type d'aliment
+				$standardUnitAliases = $food->getStandardUnits();
+
+				// Fusionne les deux et retire les doublons
+				$allUnitAliases = array_unique(array_merge($specificUnitAliases, $standardUnitAliases));
+
+				// Récupère les ids correspondants depuis le repository
+				$unitIds = $unitMeasureRepository->findIdsByAliases($allUnitAliases); // méthode à créer
+
+				// Ajoute dans l'item pour le select
+				$item['unit_measure_ids'] = implode(',', $unitIds);
+				$item['unit_measure_aliases'] = implode(',', $allUnitAliases);
 
 			} else {
 
 				$dish = $dishRepository->find($item['id']);
+
+				// Récupère les éventuelles restrictions personnelles du user sur ce plat (régime, allergie, non consommé etc)
 				$reasons = $dishUtil->getForbiddenReasons($dish);
 
 			}

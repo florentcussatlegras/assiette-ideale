@@ -18,6 +18,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 class Food
 {
+    public const STANDARD_UNITS = [
+        'solid'  => ['g','kg','mg'],
+        'liquid' => ['g','kg','mg', 'ml','cl','l','cs','cc'],
+        'powder' => ['g','kg','mg','cs','cc','pinc'],
+        'piece'  => ['g','kg','mg', 'u'],
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
@@ -64,8 +71,8 @@ class Food
     #[ORM\Column(type: "boolean", nullable: true)]
     private ?bool $showMedianWeight = null;
 
-    #[ORM\ManyToMany(targetEntity: UnitMeasure::class, cascade: ["persist"])]
-    private Collection $unitMeasures;
+    #[ORM\OneToMany(targetEntity: FoodUnitMeasure::class, mappedBy: "food", cascade: ["persist", "remove"], orphanRemoval: true)]
+    private Collection $foodUnitMeasures;
 
     #[ORM\Column(type: "boolean")]
     private bool $haveGluten = false;
@@ -97,9 +104,12 @@ class Food
     #[ORM\ManyToMany(targetEntity: Diet::class, mappedBy: "forbiddenFoods")]
     private Collection $forbiddenDiets;
 
+    #[ORM\Column(type: "string", enumType: FoodType::class)]
+    private FoodType $type;
+
     public function __construct()
     {
-        $this->unitMeasures = new ArrayCollection();
+        $this->foodUnitMeasures = new ArrayCollection();
         $this->forbiddenDiets = new ArrayCollection();
     }
 
@@ -277,23 +287,24 @@ class Food
         return $this;
     }
 
-    public function getUnitMeasures(): Collection
+    public function addFoodUnitMeasure(FoodUnitMeasure $fum): self
     {
-        return $this->unitMeasures;
-    }
-
-    public function addUnitMeasure(UnitMeasure $unitMeasure): self
-    {
-        if (!$this->unitMeasures->contains($unitMeasure)) {
-            $this->unitMeasures->add($unitMeasure);
+        if (!$this->foodUnitMeasures->contains($fum)) {
+            $this->foodUnitMeasures->add($fum);
+            $fum->setFood($this);
         }
         return $this;
     }
 
-    public function removeUnitMeasure(UnitMeasure $unitMeasure): self
+    public function removeFoodUnitMeasure(FoodUnitMeasure $fum): self
     {
-        $this->unitMeasures->removeElement($unitMeasure);
+        $this->foodUnitMeasures->removeElement($fum);
         return $this;
+    }
+
+    public function getFoodUnitMeasures(): Collection
+    {
+        return $this->foodUnitMeasures;
     }
 
     public function getHaveGluten(): bool
@@ -422,5 +433,22 @@ class Food
             $diet->removeForbiddenFood($this);
         }
         return $this;
+    }
+
+    public function getType(): FoodType
+    {
+        return $this->type;
+    }
+
+    public function setType(FoodType $type): self
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getStandardUnits(): array
+    {
+        $type = $this->getType()?->value ?? 'solid';
+        return self::STANDARD_UNITS[$type] ?? self::STANDARD_UNITS['solid'];
     }
 }
