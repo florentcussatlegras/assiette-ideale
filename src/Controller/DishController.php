@@ -212,7 +212,6 @@ class DishController extends AbstractController
             $dish->setPreparationTimeUnitTime(new UnitTime());
         }
 
-
         $dish->setCookingTime(
             !empty($arrayDish['cookingTime'])
                 ? (int)$arrayDish['cookingTime']

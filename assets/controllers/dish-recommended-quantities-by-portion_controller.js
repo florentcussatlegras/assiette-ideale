@@ -28,13 +28,13 @@ export default class extends Controller {
     async change() {
 
         // Nombre de portions sélectionné par l'utilisateur
-        const portion = this.selectTarget.value
+        const portion = this.selectTarget.value;
 
         // Construction de l'URL en remplaçant la portion dans la route
-        const url = this.urlValue.replace(0, portion)
+        const url = this.urlValue.replace("__PORTION__", portion);
 
         // Indication visuelle de chargement
-        this.contentTarget.classList.add('opacity-50')
+        this.contentTarget.classList.add('opacity-50');
 
         // Requête AJAX vers le backend Symfony
         const response = await fetch(url, {
@@ -44,7 +44,7 @@ export default class extends Controller {
         })
 
         // Récupération du fragment HTML renvoyé
-        const html = await response.text()
+        const html = await response.text();
 
         /**
          * Parsing du HTML pour extraire uniquement
