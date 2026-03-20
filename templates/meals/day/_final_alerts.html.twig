@@ -2,7 +2,7 @@
 <div
 	{{ stimulus_controller('modal-meal-nutrition-summary') }}>
 
-	<div class="relative group inline-block">
+	<div class="relative group flex gap-2">
 		{# Bouton pour ouvrir le modal nutritionnel #}
 		<button {{ stimulus_controller('ripple') }} data-action="click->modal-meal-nutrition-summary#open click->ripple#ripple" class="btn-final-alerts rounded-full bg-gray-100 hover:bg-gray-200 p-3 transition duration-300">
 			{% if isFullyBalanced %}
@@ -28,11 +28,13 @@
 				{% endif %}
 			{% endif %}
 		</button>
-		<div class="absolute left-1/2 mb-2
-					bg-black text-white text-sm px-2 py-4 rounded
-					opacity-0 group-hover:opacity-100
-					transition duration-200 whitespace-nowrap pointer-events-none">
-			Voir le bilans nutritionnel
+		<div class="mb-2
+                bg-black text-white text-sm px-2 py-1 rounded
+                opacity-0 group-hover:opacity-100
+                transition duration-200 whitespace-nowrap pointer-events-none
+				flex items-center
+                ">
+			Voir les bilans nutritionnels
 		</div>
 	</div>
 
